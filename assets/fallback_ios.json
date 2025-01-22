@@ -1,0 +1,48 @@
+{
+    "data": [
+        {
+            "type": "adapty_inapps_fallback_paywalls",
+            "id": "1e1f0bb4-d7f6-4bd5-a824-4f244604b43f",
+            "attributes": {
+                "developer_id": "pay_once",
+                "revision": 1,
+                "variation_id": "002ccdff-ba74-4aa2-aa1f-f8814571e4de",
+                "ab_test_name": "Pay once",
+                "paywall_name": "Pay once",
+                "paywall_updated_at": 1689449385777,
+                "products": [
+                    {
+                        "title": null,
+                        "is_consumable": false,
+                        "vendor_product_id": "forever_sub",
+                        "promotional_offer_id": null,
+                        "introductory_offer_eligibility": false,
+                        "promotional_offer_eligibility": false,
+                        "timestamp": 1689453209842
+                    }
+                ],
+                "is_promo": false,
+                "visual_paywall": null,
+                "custom_payload": null,
+                "remote_config": {
+                    "lang": "en",
+                    "data": "{\"title\":\"Pay once and use for life\"}"
+                },
+                "use_paywall_builder": null
+            }
+        }
+    ],
+    "meta": {
+        "products": [
+            {
+                "title": null,
+                "is_consumable": false,
+                "vendor_product_id": "forever_sub",
+                "introductory_offer_eligibility": false,
+                "promotional_offer_eligibility": false,
+                "timestamp": 1689453209845
+            }
+        ],
+        "version": 1
+    }
+}
