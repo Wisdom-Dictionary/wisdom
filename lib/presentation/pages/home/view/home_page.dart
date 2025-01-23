@@ -25,6 +25,7 @@ class HomePage extends ViewModelBuilderWidget<HomeViewModel> {
   @override
   void onViewModelReady(HomeViewModel viewModel) {
     super.onViewModelReady(viewModel);
+
     /// I have uncommented this line to start checking for new words.
     viewModel.checkForUpdate();
     viewModel.getRandomDailyWords();
@@ -42,7 +43,7 @@ class HomePage extends ViewModelBuilderWidget<HomeViewModel> {
     return ZoomDrawer(
       menuScreen: const DrawerScreen(),
       mainScreen: ShowCaseWidget(
-        builder: Builder(builder: (context) => HomeScreen()),
+        builder: (context) => HomeScreen(),
         blurValue: 3,
         onFinish: () {
           viewModel.isShow.value = false;
@@ -64,12 +65,12 @@ class HomePage extends ViewModelBuilderWidget<HomeViewModel> {
   HomeViewModel viewModelBuilder(BuildContext context) {
     return HomeViewModel(context: context);
   }
+
   Future<void> _isAndroidPermissionGranted() async {
     if (Platform.isAndroid) {
       await flutterLocalNotificationsPlugin
-          .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()
-          ?.areNotificationsEnabled() ??
+              .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+              ?.areNotificationsEnabled() ??
           false;
     }
   }
@@ -77,24 +78,21 @@ class HomePage extends ViewModelBuilderWidget<HomeViewModel> {
   Future<void> _requestPermissions() async {
     if (Platform.isIOS || Platform.isMacOS) {
       await flutterLocalNotificationsPlugin
-          .resolvePlatformSpecificImplementation<
-          IOSFlutterLocalNotificationsPlugin>()
+          .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
           ?.requestPermissions(
-        alert: true,
-        badge: true,
-        sound: true,
-      );
+            alert: true,
+            badge: true,
+            sound: true,
+          );
       await flutterLocalNotificationsPlugin
-          .resolvePlatformSpecificImplementation<
-          MacOSFlutterLocalNotificationsPlugin>()
+          .resolvePlatformSpecificImplementation<MacOSFlutterLocalNotificationsPlugin>()
           ?.requestPermissions(
-        alert: true,
-        badge: true,
-        sound: true,
-      );
+            alert: true,
+            badge: true,
+            sound: true,
+          );
     }
   }
-
 
   void _configureSelectNotificationSubject(HomeViewModel viewModel) {
     selectNotificationStream.stream.listen((String? payload) async {

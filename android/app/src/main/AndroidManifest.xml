@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="uz.usoft.waiodictionary">
+    package="uz.usoft.waiodictionary"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
@@ -27,7 +28,7 @@
         <package android:name="air.com.ssdsoftwaresolutions.clickuz"/>
 
         <package android:name="uz.dida.payme"/>
-        // your android package name
+        
     </queries>
 
     <application
@@ -76,6 +77,13 @@
         <meta-data
                 android:name="flutterEmbedding"
                 android:value="2"/>
+
+
+        <property
+            android:name="android.adservices.AD_SERVICES_CONFIG"
+            android:resource="@xml/gma_ad_services_config"
+            tools:replace="android:resource" />
+        
 
         <meta-data
                 android:name="com.google.android.gms.ads.APPLICATION_ID"

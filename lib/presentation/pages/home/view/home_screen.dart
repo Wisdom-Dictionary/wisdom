@@ -98,8 +98,7 @@ class HomeScreen extends ViewModelWidget<HomeViewModel> {
     });
     return AddToCartAnimation(
       cartKey: viewModel.localViewModel.cartKey,
-      dragAnimation: const DragToCartAnimationOptions(
-          duration: Duration(milliseconds: 500)),
+      dragAnimation: const DragToCartAnimationOptions(duration: Duration(milliseconds: 500)),
       createAddToCartAnimation: (runAddToCartAnimation) {
         viewModel.localViewModel.runAddToCartAnimation = runAddToCartAnimation;
       },
@@ -128,9 +127,8 @@ class HomeScreen extends ViewModelWidget<HomeViewModel> {
                     child: Showcase(
                       key: viewModel.globalKeyCentre,
                       description: "Endi hamma so'zlar kaftingizda!",
-                      descTextStyle: AppTextStyle.font15W500Normal
-                          .copyWith(color: AppColors.blue),
-                      descriptionAlignment: TextAlign.center,
+                      descTextStyle: AppTextStyle.font15W500Normal.copyWith(color: AppColors.blue),
+                      descriptionAlignment: Alignment.center,
                       disableDefaultTargetGestures: false,
                       showArrow: true,
                       targetBorderRadius: BorderRadius.circular(50.r),
@@ -138,13 +136,11 @@ class HomeScreen extends ViewModelWidget<HomeViewModel> {
                         height: 100.h,
                         width: 100.h,
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50.r),
-                            color: AppColors.white),
+                            borderRadius: BorderRadius.circular(50.r), color: AppColors.white),
                         alignment: Alignment.center,
                         child: Text(
                           "GO!",
-                          style: AppTextStyle.font17W600Normal
-                              .copyWith(color: AppColors.blue),
+                          style: AppTextStyle.font17W600Normal.copyWith(color: AppColors.blue),
                         ),
                       ),
                     ),
@@ -176,8 +172,7 @@ class Home extends ViewModelWidget<HomeViewModel> {
       },
       child: Scaffold(
         drawerEnableOpenDragGesture: false,
-        backgroundColor:
-            isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
+        backgroundColor: isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
         appBar: CustomAppBar(
           leadingIcon: Assets.icons.menu,
           onTap: () => ZoomDrawer.of(context)!.toggle(),
@@ -206,19 +201,15 @@ class Home extends ViewModelWidget<HomeViewModel> {
               builder: (context) {
                 return viewModel.isSuccess(tag: viewModel.getDailyWordsTag)
                     ? ListView(
-                        padding: EdgeInsets.only(
-                            left: 15.w, right: 15.w, top: 16.h, bottom: 75.h),
+                        padding: EdgeInsets.only(left: 15.w, right: 15.w, top: 16.h, bottom: 75.h),
                         physics: const BouncingScrollPhysics(),
                         shrinkWrap: true,
                         children: [
                           Builder(
                             builder: (context) {
-                              return viewModel.isSuccess(
-                                      tag: viewModel.getDailyWordsTag)
+                              return viewModel.isSuccess(tag: viewModel.getDailyWordsTag)
                                   ? Visibility(
-                                      visible: viewModel.homeRepository
-                                                  .timelineModel.ad !=
-                                              null &&
+                                      visible: viewModel.homeRepository.timelineModel.ad != null &&
                                           !PurchasesObserver().isPro(),
                                       child: GestureDetector(
                                         onTap: () => viewModel.onAdWebClicked(),
@@ -227,57 +218,38 @@ class Home extends ViewModelWidget<HomeViewModel> {
                                           children: [
                                             Container(
                                               decoration: isDarkTheme
-                                                  ? AppDecoration
-                                                      .bannerDarkDecor
+                                                  ? AppDecoration.bannerDarkDecor
                                                   : AppDecoration.bannerDecor,
-                                              child: viewModel
-                                                              .homeRepository
-                                                              .timelineModel
-                                                              .ad !=
+                                              child: viewModel.homeRepository.timelineModel.ad !=
                                                           null &&
-                                                      viewModel
-                                                              .homeRepository
-                                                              .timelineModel
-                                                              .ad!
+                                                      viewModel.homeRepository.timelineModel.ad!
                                                               .image !=
                                                           null
                                                   ? ClipRRect(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              18.r),
+                                                      borderRadius: BorderRadius.circular(18.r),
                                                       child: Image.network(
                                                         Urls.baseUrl +
-                                                            viewModel
-                                                                .homeRepository
-                                                                .timelineModel
-                                                                .ad!
-                                                                .image!,
+                                                            viewModel.homeRepository.timelineModel
+                                                                .ad!.image!,
                                                         fit: BoxFit.cover,
-                                                        loadingBuilder: (context,
-                                                            child,
-                                                            loadingProgress) {
-                                                          if (loadingProgress ==
-                                                              null) {
+                                                        loadingBuilder:
+                                                            (context, child, loadingProgress) {
+                                                          if (loadingProgress == null) {
                                                             return child;
                                                           }
                                                           return SizedBox(
                                                             height: 165.h,
-                                                            child:
-                                                                const LoadingWidget(
-                                                              color: AppColors
-                                                                  .blue,
+                                                            child: const LoadingWidget(
+                                                              color: AppColors.blue,
                                                               width: 2,
                                                             ),
                                                           );
                                                         },
-                                                        errorBuilder: (context,
-                                                            error, stackTrace) {
+                                                        errorBuilder: (context, error, stackTrace) {
                                                           return SizedBox(
                                                             height: 165.h,
-                                                            child:
-                                                                const LoadingWidget(
-                                                              color: AppColors
-                                                                  .blue,
+                                                            child: const LoadingWidget(
+                                                              color: AppColors.blue,
                                                               width: 2,
                                                             ),
                                                           );
@@ -296,20 +268,16 @@ class Home extends ViewModelWidget<HomeViewModel> {
                           CustomBanner(
                             title: 'grammar'.tr(),
                             isInkWellEnable: true,
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 25.h, horizontal: 15.w),
+                            contentPadding: EdgeInsets.symmetric(vertical: 25.h, horizontal: 15.w),
                             onTap: () {
                               viewModel.localViewModel.isFromMain = true;
                               viewModel.localViewModel.changePageIndex(5);
                             },
                             child: Center(
                               child: Text(
-                                viewModel.homeRepository.timelineModel.grammar!
-                                    .worden!.word!,
+                                viewModel.homeRepository.timelineModel.grammar!.worden!.word!,
                                 style: AppTextStyle.font17W500Normal.copyWith(
-                                  color: isDarkTheme
-                                      ? AppColors.white
-                                      : AppColors.darkGray,
+                                  color: isDarkTheme ? AppColors.white : AppColors.darkGray,
                                 ),
                                 textAlign: TextAlign.center,
                               ),
@@ -317,23 +285,17 @@ class Home extends ViewModelWidget<HomeViewModel> {
                           ),
                           // Google ads banner
                           ValueListenableBuilder(
-                            valueListenable:
-                                viewModel.localViewModel.isNetworkAvailable,
-                            builder:
-                                (BuildContext context, value, Widget? child) {
-                              return viewModel.localViewModel.banner != null &&
-                                      value as bool
+                            valueListenable: viewModel.localViewModel.isNetworkAvailable,
+                            builder: (BuildContext context, value, Widget? child) {
+                              return viewModel.localViewModel.banner != null && value as bool
                                   ? Container(
                                       margin: EdgeInsets.only(top: 16.h),
                                       decoration: isDarkTheme
                                           ? AppDecoration.bannerDarkDecor
                                           : AppDecoration.bannerDecor,
-                                      height: viewModel.localViewModel.banner!
-                                              .size.height *
-                                          1.0,
+                                      height: viewModel.localViewModel.banner!.size.height * 1.0,
                                       child: AdWidget(
-                                        ad: viewModel.localViewModel.banner!
-                                          ..load(),
+                                        ad: viewModel.localViewModel.banner!..load(),
                                       ))
                                   : const SizedBox.shrink();
                             },
@@ -341,8 +303,7 @@ class Home extends ViewModelWidget<HomeViewModel> {
                           CustomBanner(
                             title: 'differences'.tr(),
                             isInkWellEnable: true,
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 25.h, horizontal: 15.w),
+                            contentPadding: EdgeInsets.symmetric(vertical: 25.h, horizontal: 15.w),
                             onTap: () {
                               viewModel.localViewModel.isFromMain = true;
                               viewModel.localViewModel.changePageIndex(6);
@@ -351,28 +312,20 @@ class Home extends ViewModelWidget<HomeViewModel> {
                               child: RichText(
                                 text: TextSpan(
                                   style: AppTextStyle.font17W500Normal.copyWith(
-                                    color: isDarkTheme
-                                        ? AppColors.white
-                                        : AppColors.darkGray,
+                                    color: isDarkTheme ? AppColors.white : AppColors.darkGray,
                                   ),
-                                  text: viewModel.separateDifference(
-                                      true,
-                                      viewModel.homeRepository.timelineModel
-                                          .difference!.word!),
+                                  text: viewModel.separateDifference(true,
+                                      viewModel.homeRepository.timelineModel.difference!.word!),
                                   children: [
                                     TextSpan(
                                         text: ' or ',
                                         style: AppTextStyle.font17W500Italic
-                                            .copyWith(
-                                                color: AppColors.paleGray)),
+                                            .copyWith(color: AppColors.paleGray)),
                                     TextSpan(
                                         text: viewModel.separateDifference(
                                             false,
                                             viewModel
-                                                .homeRepository
-                                                .timelineModel
-                                                .difference!
-                                                .word)),
+                                                .homeRepository.timelineModel.difference!.word)),
                                   ],
                                 ),
                                 textAlign: TextAlign.center,
@@ -380,29 +333,23 @@ class Home extends ViewModelWidget<HomeViewModel> {
                             ),
                           ),
                           CustomBanner(
-                            contentPadding: const EdgeInsets.symmetric(
-                                vertical: 30, horizontal: 20),
+                            contentPadding:
+                                const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
                             title: "do_you_know".tr(),
                             onTap: () {
-                              viewModel.localViewModel.wordDetailModel =
-                                  RecentModel(
-                                      id: viewModel.homeRepository.timelineModel
-                                          .image!.id!,
-                                      word: viewModel.homeRepository
-                                          .timelineModel.image!.word,
-                                      type: 'word');
+                              viewModel.localViewModel.wordDetailModel = RecentModel(
+                                  id: viewModel.homeRepository.timelineModel.image!.id!,
+                                  word: viewModel.homeRepository.timelineModel.image!.word,
+                                  type: 'word');
                               viewModel.localViewModel.isFromMain = true;
                               viewModel.localViewModel.changePageIndex(18);
                             },
                             isInkWellEnable: true,
                             child: Center(
                               child: Image.network(
-                                Urls.baseUrl +
-                                    viewModel.homeRepository.timelineModel
-                                        .image!.image!,
+                                Urls.baseUrl + viewModel.homeRepository.timelineModel.image!.image!,
                                 height: 200.h,
-                                loadingBuilder:
-                                    (context, child, loadingProgress) {
+                                loadingBuilder: (context, child, loadingProgress) {
                                   if (loadingProgress == null) {
                                     return child;
                                   }
@@ -419,8 +366,7 @@ class Home extends ViewModelWidget<HomeViewModel> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Image(
-                                        image: AssetImage(
-                                            Assets.images.noInternet),
+                                        image: AssetImage(Assets.images.noInternet),
                                         height: 200.h,
                                         fit: BoxFit.cover,
                                         // color: AppColors.error,
@@ -434,80 +380,64 @@ class Home extends ViewModelWidget<HomeViewModel> {
                           CustomBanner(
                             title: 'thesaurus'.tr(),
                             isInkWellEnable: true,
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 25.h, horizontal: 15.w),
+                            contentPadding: EdgeInsets.symmetric(vertical: 25.h, horizontal: 15.w),
                             onTap: () {
                               viewModel.localViewModel.isFromMain = true;
                               viewModel.localViewModel.changePageIndex(7);
                             },
                             child: Center(
                               child: Text(
-                                viewModel.homeRepository.timelineModel
-                                    .thesaurus!.worden!.word!,
+                                viewModel.homeRepository.timelineModel.thesaurus!.worden!.word!,
                                 style: AppTextStyle.font17W500Normal.copyWith(
-                                    color: isDarkTheme
-                                        ? AppColors.white
-                                        : AppColors.darkGray),
+                                    color: isDarkTheme ? AppColors.white : AppColors.darkGray),
                               ),
                             ),
                           ),
                           CustomBanner(
                             title: 'collocations'.tr(),
                             isInkWellEnable: true,
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 25.h, horizontal: 15.w),
+                            contentPadding: EdgeInsets.symmetric(vertical: 25.h, horizontal: 15.w),
                             onTap: () {
                               viewModel.localViewModel.isFromMain = true;
                               viewModel.localViewModel.changePageIndex(8);
                             },
                             child: Center(
                               child: Text(
-                                viewModel.homeRepository.timelineModel
-                                    .collocation!.worden!.word!,
+                                viewModel.homeRepository.timelineModel.collocation!.worden!.word!,
                                 style: AppTextStyle.font17W500Normal.copyWith(
-                                    color: isDarkTheme
-                                        ? AppColors.white
-                                        : AppColors.darkGray),
+                                    color: isDarkTheme ? AppColors.white : AppColors.darkGray),
                               ),
                             ),
                           ),
                           CustomBanner(
                             title: 'metaphor'.tr(),
                             isInkWellEnable: true,
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 25.h, horizontal: 15.w),
+                            contentPadding: EdgeInsets.symmetric(vertical: 25.h, horizontal: 15.w),
                             onTap: () {
                               viewModel.localViewModel.isFromMain = true;
                               viewModel.localViewModel.changePageIndex(9);
                             },
                             child: Center(
                               child: Text(
-                                viewModel.homeRepository.timelineModel.metaphor!
-                                    .worden!.word!,
+                                viewModel.homeRepository.timelineModel.metaphor!.worden!.word!,
                                 style: AppTextStyle.font17W500Normal.copyWith(
-                                    color: isDarkTheme
-                                        ? AppColors.white
-                                        : AppColors.darkGray),
+                                    color: isDarkTheme ? AppColors.white : AppColors.darkGray),
                               ),
                             ),
                           ),
                           CustomBanner(
                             title: 'speaking'.tr(),
                             isInkWellEnable: true,
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 25.h, horizontal: 15.w),
+                            contentPadding: EdgeInsets.symmetric(vertical: 25.h, horizontal: 15.w),
                             onTap: () {
                               viewModel.localViewModel.isFromMain = true;
                               viewModel.localViewModel.changePageIndex(10);
                             },
                             child: Center(
                               child: Text(
-                                viewModel.homeRepository.timelineModel.speaking!
-                                    .word!,
+                                viewModel.homeRepository.timelineModel.speaking!.word!,
                                 style: AppTextStyle.font17W500Normal.copyWith(
-                                    color: isDarkTheme
-                                        ? AppColors.white
-                                        : AppColors.darkGray),
+                                    color: isDarkTheme ? AppColors.white : AppColors.darkGray),
                                 textAlign: TextAlign.center,
                               ),
                             ),
@@ -517,8 +447,7 @@ class Home extends ViewModelWidget<HomeViewModel> {
                     : SizedBox(
                         height: MediaQuery.of(context).size.height - 75,
                         child: const Center(
-                            child: LoadingWidget(
-                                color: AppColors.paleBlue, width: 3)));
+                            child: LoadingWidget(color: AppColors.paleBlue, width: 3)));
               },
             )
           ],

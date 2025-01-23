@@ -28,7 +28,8 @@ class HomeBottomNavBar extends ViewModelWidget<HomeViewModel> {
           right: 0,
           child: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(topLeft: Radius.circular(30.r), topRight: Radius.circular(30.r)),
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30.r), topRight: Radius.circular(30.r)),
               color: (isDarkTheme ? AppColors.darkBottomBar : AppColors.blue).withOpacity(0.95),
             ),
             padding: EdgeInsets.only(top: 8.h),
@@ -42,7 +43,7 @@ class HomeBottomNavBar extends ViewModelWidget<HomeViewModel> {
                       key: viewModel.globalKeyHome,
                       title: 'Home',
                       description: "Bosh sahifa",
-                      titleAlignment: TextAlign.end,
+                      titleAlignment: Alignment.centerRight,
                       titleTextStyle: AppTextStyle.font17W600Normal.copyWith(color: AppColors.blue),
                       descTextStyle: AppTextStyle.font15W500Normal.copyWith(color: AppColors.blue),
                       disableDefaultTargetGestures: true,
@@ -63,7 +64,8 @@ class HomeBottomNavBar extends ViewModelWidget<HomeViewModel> {
                         onTap(1);
                       },
                       child: Material(
-                        color: (isDarkTheme ? AppColors.darkBottomBar : AppColors.blue).withOpacity(0.1),
+                        color: (isDarkTheme ? AppColors.darkBottomBar : AppColors.blue)
+                            .withOpacity(0.1),
                         child: ValueListenableBuilder(
                           valueListenable: viewModel.localViewModel.badgeCount,
                           builder: (BuildContext context, int valueBadge, Widget? child) {
@@ -75,7 +77,8 @@ class HomeBottomNavBar extends ViewModelWidget<HomeViewModel> {
                                     position: badges.BadgePosition.topEnd(top: -5),
                                     badgeContent: Text(
                                       valueBadge.toString(),
-                                      style: AppTextStyle.font13W500Normal.copyWith(fontSize: 12.sp),
+                                      style:
+                                          AppTextStyle.font13W500Normal.copyWith(fontSize: 12.sp),
                                     ),
                                     badgeStyle: badges.BadgeStyle(
                                       shape: badges.BadgeShape.circle,
@@ -95,10 +98,13 @@ class HomeBottomNavBar extends ViewModelWidget<HomeViewModel> {
                                       icon: Showcase(
                                         key: viewModel.globalKeyWordBank,
                                         title: 'NoteBook',
-                                        description: "Saqlangan so'zlarni ko'rish va ular ustida mashq qilish",
-                                        titleAlignment: TextAlign.center,
-                                        titleTextStyle: AppTextStyle.font17W600Normal.copyWith(color: AppColors.blue),
-                                        descTextStyle: AppTextStyle.font15W500Normal.copyWith(color: AppColors.blue),
+                                        description:
+                                            "Saqlangan so'zlarni ko'rish va ular ustida mashq qilish",
+                                        titleAlignment: Alignment.center,
+                                        titleTextStyle: AppTextStyle.font17W600Normal
+                                            .copyWith(color: AppColors.blue),
+                                        descTextStyle: AppTextStyle.font15W500Normal
+                                            .copyWith(color: AppColors.blue),
                                         disableDefaultTargetGestures: true,
                                         showArrow: true,
                                         child: BottomNavButton(
@@ -125,7 +131,7 @@ class HomeBottomNavBar extends ViewModelWidget<HomeViewModel> {
                       key: viewModel.globalKeySearch,
                       title: 'Search',
                       description: "So'z va iboralar qidiruvi",
-                      titleAlignment: TextAlign.center,
+                      titleAlignment: Alignment.center,
                       titleTextStyle: AppTextStyle.font17W600Normal.copyWith(color: AppColors.blue),
                       descTextStyle: AppTextStyle.font15W500Normal.copyWith(color: AppColors.blue),
                       disableDefaultTargetGestures: false,
@@ -144,8 +150,9 @@ class HomeBottomNavBar extends ViewModelWidget<HomeViewModel> {
                     child: Showcase(
                       key: viewModel.globalKeyCategory,
                       title: 'Catalogue',
-                      description: "So'zlarga oid grammatik va amaliy foydalanish qounun qoidalari ro'yhati",
-                      titleAlignment: TextAlign.center,
+                      description:
+                          "So'zlarga oid grammatik va amaliy foydalanish qounun qoidalari ro'yhati",
+                      titleAlignment: Alignment.center,
                       titleTextStyle: AppTextStyle.font17W600Normal.copyWith(color: AppColors.blue),
                       descTextStyle: AppTextStyle.font15W500Normal.copyWith(color: AppColors.blue),
                       disableDefaultTargetGestures: false,
@@ -169,7 +176,7 @@ class HomeBottomNavBar extends ViewModelWidget<HomeViewModel> {
                       key: viewModel.globalKeyTranslation,
                       description: 'Gap va tekslarni tarjima qilish',
                       title: 'Translate',
-                      titleAlignment: TextAlign.center,
+                      titleAlignment: Alignment.center,
                       titleTextStyle: AppTextStyle.font17W600Normal.copyWith(color: AppColors.blue),
                       descTextStyle: AppTextStyle.font15W500Normal.copyWith(color: AppColors.blue),
                       disableDefaultTargetGestures: false,
