@@ -15,6 +15,24 @@ abstract class _AssetsHolder {
 class _Icons extends _AssetsHolder {
   const _Icons() : super("assets/icons");
 
+  String get flag => '$basePath/flag.svg';
+
+  String get userAvatar => '$basePath/user-avatar.svg';
+
+  String get starActive => '$basePath/star-active.svg';
+
+  String get starInactive => '$basePath/star-inactive.svg';
+
+  String get lock => '$basePath/lock.svg';
+
+  String get star => '$basePath/star.svg';
+
+  String get verify => '$basePath/verify.svg';
+
+  String get heart => '$basePath/heart.svg';
+  
+  String get heartSlash => '$basePath/heart-slash.svg';
+
   String get abbreviations => '$basePath/abbrev.svg';
 
   String get addFolder => '$basePath/add_folder.svg';
@@ -109,6 +127,10 @@ class _Icons extends _AssetsHolder {
 
   String get unitsOutline => '$basePath/vertical_row_outline.svg';
 
+  String get cup => '$basePath/cup.svg';
+
+  String get cupOutlined => '$basePath/cup_outlined.svg';
+
   String get saveWord => '$basePath/word_save.svg';
 
   String get starFull => '$basePath/rank_full.svg';
@@ -144,4 +166,12 @@ class _Images extends _AssetsHolder {
   String get diamond => '$basePath/diamond.png';
 
   String get noInternet => '$basePath/no-wifi.png';
+
+  String get roadmapBattleBackground => '$basePath/roadmap_background.png';
+
+  String get roadmapWay => '$basePath/roadmap_way.svg';
+
+  String get roadmapWay2 => '$basePath/roadmap_way-2.svg';
+
+  String get roadmapWay3 => '$basePath/roadmap_way-3.svg';
 }

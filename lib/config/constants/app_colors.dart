@@ -5,6 +5,9 @@ abstract class AppColors {
 
   static const Color accentLight = Color(0xFFEB5757);
 
+  static const Color yellow = Color(0xFFFFCC00);
+  static const Color textDisabled = Color(0xFFB3B7BC);
+
   static const Color success = Color(0xFFBCF5CC);
   static const Color error = Color(0xFFFCD0D1);
 

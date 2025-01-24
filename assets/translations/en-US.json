@@ -149,5 +149,6 @@
   "downloadingCanceled": "Word downloading canceled",
   "downloadingCompleted": "Word downloading completed!",
   "backgroundInfo": "Don't close the app until the download is complete",
-  "youCanHideTheWindow": "You can hide the window"
+  "youCanHideTheWindow": "You can hide the window",
+  "claim" : "Claim"
 }

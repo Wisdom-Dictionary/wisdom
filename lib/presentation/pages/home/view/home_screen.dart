@@ -27,6 +27,7 @@ import 'package:wisdom/presentation/pages/grammar/view/grammar_page.dart';
 import 'package:wisdom/presentation/pages/home/viewmodel/home_viewmodel.dart';
 import 'package:wisdom/presentation/pages/metaphor/view/metaphor_details_page.dart';
 import 'package:wisdom/presentation/pages/metaphor/view/metaphor_page.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/view/roadmap_page.dart';
 import 'package:wisdom/presentation/pages/search/view/search_page.dart';
 import 'package:wisdom/presentation/pages/speaking/view/speaking_details_page.dart';
 import 'package:wisdom/presentation/pages/speaking/view/speaking_page.dart';
@@ -56,7 +57,8 @@ class HomeScreen extends ViewModelWidget<HomeViewModel> {
     const Home(), // 0
     WordBankPage(), // 1
     SearchPage(), // 2
-    CatalogsPage(), // 3
+    RoadmapPage(), // 3
+    // CatalogsPage(), // 3
     GoogleTranslatorPage(), // 4
     GrammarDetailPage(), // 5
     DifferenceDetailPage(), // 6
@@ -90,7 +92,7 @@ class HomeScreen extends ViewModelWidget<HomeViewModel> {
           viewModel.globalKeyHome,
           viewModel.globalKeyWordBank,
           viewModel.globalKeySearch,
-          viewModel.globalKeyCategory,
+          viewModel.globalKeyRoadmapBattle,
           viewModel.globalKeyTranslation,
           viewModel.globalKeyCentre
         ]);
