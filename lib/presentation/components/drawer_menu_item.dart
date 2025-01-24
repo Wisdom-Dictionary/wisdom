@@ -8,10 +8,7 @@ import 'package:wisdom/config/constants/constants.dart';
 
 class DrawerMenuItem extends StatelessWidget {
   const DrawerMenuItem(
-      {super.key,
-      required this.title,
-      required this.imgAssets,
-      required this.onTap});
+      {super.key, required this.title, required this.imgAssets, required this.onTap});
 
   final String imgAssets;
   final String title;
@@ -31,19 +28,17 @@ class DrawerMenuItem extends StatelessWidget {
               padding: EdgeInsets.only(left: 36.w),
               child: Row(
                 children: [
-                  SvgPicture.asset(
-                    imgAssets,
-                    height: 24.h,
-                    width: 24.w,
-                    fit: BoxFit.scaleDown,
-                      color: isDarkTheme ? AppColors.white: AppColors.blue
-                  ),
+                  SvgPicture.asset(imgAssets,
+                      height: 24.h,
+                      width: 24.w,
+                      fit: BoxFit.scaleDown,
+                      color: isDarkTheme ? AppColors.white : AppColors.blue),
                   Padding(
                     padding: EdgeInsets.only(left: 12.w),
                     child: Text(
                       title,
                       style: AppTextStyle.font15W500Normal
-                          .copyWith(color: isDarkTheme ? AppColors.white: AppColors.blue),
+                          .copyWith(color: isDarkTheme ? AppColors.white : AppColors.blue),
                     ),
                   )
                 ],

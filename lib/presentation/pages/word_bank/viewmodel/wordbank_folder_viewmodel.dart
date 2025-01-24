@@ -61,7 +61,8 @@ class WordBankFolderViewModel extends BaseViewModel {
   goToExercisePage() {
     if (wordEntityRepository.wordBankList.isNotEmpty) {
       var tryCount = localViewModel.preferenceHelper.getInt(Constants.EXERCISE_COUNT, 3);
-      String dateString = localViewModel.preferenceHelper.getString(Constants.EXERCISE_DATE, DateTime.now().toString());
+      String dateString = localViewModel.preferenceHelper
+          .getString(Constants.EXERCISE_DATE, DateTime.now().toString());
       DateTime dateTime = DateTime.now();
       bool isToday = true;
       if (dateString.isNotEmpty) {
@@ -74,7 +75,8 @@ class WordBankFolderViewModel extends BaseViewModel {
       if (tryCount != 0 || PurchasesObserver().isPro()) {
         tryCount--;
         localViewModel.preferenceHelper.putInt(Constants.EXERCISE_COUNT, tryCount);
-        localViewModel.preferenceHelper.putString(Constants.EXERCISE_DATE, DateTime.now().toString());
+        localViewModel.preferenceHelper
+            .putString(Constants.EXERCISE_DATE, DateTime.now().toString());
         showExerciseOption();
       } else {
         showCustomDialog(
@@ -87,8 +89,8 @@ class WordBankFolderViewModel extends BaseViewModel {
             child: Text(
               'exercise_info'.tr(),
               textAlign: TextAlign.center,
-              style:
-                  AppTextStyle.font15W600Normal.copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
+              style: AppTextStyle.font15W600Normal
+                  .copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
             ),
           ),
           positive: "buy_pro".tr(),
@@ -131,7 +133,8 @@ class WordBankFolderViewModel extends BaseViewModel {
             autofocus: true,
             decoration: InputDecoration(
               hintText: "folder_name_hint".tr(),
-              hintStyle: AppTextStyle.font15W600Normal.copyWith(color: isDarkTheme ? AppColors.gray : AppColors.blue),
+              hintStyle: AppTextStyle.font15W600Normal
+                  .copyWith(color: isDarkTheme ? AppColors.gray : AppColors.blue),
               border: OutlineInputBorder(
                 borderSide: BorderSide(
                   color: isDarkTheme ? AppColors.white : AppColors.blue,
@@ -173,7 +176,8 @@ class WordBankFolderViewModel extends BaseViewModel {
         child: Text(
           'new_folder_bound_info'.tr(),
           textAlign: TextAlign.center,
-          style: AppTextStyle.font15W600Normal.copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
+          style: AppTextStyle.font15W600Normal
+              .copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
         ),
       ),
       positive: "buy_pro".tr(),
@@ -198,7 +202,8 @@ class WordBankFolderViewModel extends BaseViewModel {
               controller: engTextController,
               decoration: InputDecoration(
                 hintText: "new_word_eng".tr(),
-                hintStyle: AppTextStyle.font15W600Normal.copyWith(color: isDarkTheme ? AppColors.gray : AppColors.blue),
+                hintStyle: AppTextStyle.font15W600Normal
+                    .copyWith(color: isDarkTheme ? AppColors.gray : AppColors.blue),
                 border: OutlineInputBorder(
                   borderSide: BorderSide(
                     color: isDarkTheme ? AppColors.white : AppColors.blue,
@@ -209,8 +214,7 @@ class WordBankFolderViewModel extends BaseViewModel {
                     color: isDarkTheme ? AppColors.white : AppColors.blue,
                   ),
                 ),
-                enabledBorder:
-                OutlineInputBorder(
+                enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(
                     color: isDarkTheme ? AppColors.white : AppColors.blue,
                   ),
@@ -225,7 +229,8 @@ class WordBankFolderViewModel extends BaseViewModel {
               controller: uzTextController,
               decoration: InputDecoration(
                 hintText: "new_word_uz".tr(),
-                hintStyle: AppTextStyle.font15W600Normal.copyWith(color: isDarkTheme ? AppColors.gray : AppColors.blue),
+                hintStyle: AppTextStyle.font15W600Normal
+                    .copyWith(color: isDarkTheme ? AppColors.gray : AppColors.blue),
                 border: OutlineInputBorder(
                   borderSide: BorderSide(
                     color: isDarkTheme ? AppColors.white : AppColors.blue,
@@ -236,8 +241,7 @@ class WordBankFolderViewModel extends BaseViewModel {
                     color: isDarkTheme ? AppColors.white : AppColors.blue,
                   ),
                 ),
-                enabledBorder:
-                OutlineInputBorder(
+                enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(
                     color: isDarkTheme ? AppColors.white : AppColors.blue,
                   ),
@@ -289,13 +293,15 @@ class WordBankFolderViewModel extends BaseViewModel {
                       var item = wordEntityRepository.wordBankFoldersList[index];
                       if (item.id != 2) {
                         return Container(
-                          decoration:
-                              const BoxDecoration(border: Border(bottom: BorderSide(color: AppColors.borderWhite))),
+                          decoration: const BoxDecoration(
+                              border: Border(bottom: BorderSide(color: AppColors.borderWhite))),
                           child: ListTile(
                             title: Text(item.folderName,
-                                style: AppTextStyle.font15W600Normal.copyWith(color: AppColors.blue)),
+                                style:
+                                    AppTextStyle.font15W600Normal.copyWith(color: AppColors.blue)),
                             onTap: () async {
-                              var bankModel = WordBankModel(word: wordEng, translation: wordUz, folderId: item.id);
+                              var bankModel = WordBankModel(
+                                  word: wordEng, translation: wordUz, folderId: item.id);
 
                               await wordEntityRepository.saveWordBank(bankModel);
                               localViewModel.changeBadgeCount(1);
@@ -338,7 +344,8 @@ class WordBankFolderViewModel extends BaseViewModel {
         child: Text(
           'exercise_option'.tr(),
           textAlign: TextAlign.center,
-          style: AppTextStyle.font15W600Normal.copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
+          style: AppTextStyle.font15W600Normal
+              .copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
         ),
       ),
       positive: "flashcard".tr(),
@@ -366,14 +373,17 @@ class WordBankFolderViewModel extends BaseViewModel {
         child: Text(
           'delete_folder_info'.tr(),
           textAlign: TextAlign.center,
-          style: AppTextStyle.font15W600Normal.copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
+          style: AppTextStyle.font15W600Normal
+              .copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
         ),
       ),
       positive: "delete".tr(),
       onPositiveTap: () {
         safeBlock(
           () async {
-            wordEntityRepository.wordBankList.where((element) => element.folderId == model.id).forEach((element) {
+            wordEntityRepository.wordBankList
+                .where((element) => element.folderId == model.id)
+                .forEach((element) {
               localViewModel.changeBadgeCount(-1);
             });
             await wordEntityRepository.deleteWordBankFolder(model.id);

@@ -25,23 +25,28 @@ class HomeRepositoryImpl extends HomeRepository {
     var timeLineDifference = Difference(id: getDifference!.dId, word: getDifference.dWord);
 
     var getThesaurus = await dbHelper.getThesaurus();
-    var timeLineThesaurus =
-        Collocation(id: getThesaurus!.tId ?? 0, worden: Worden(id: getThesaurus.tId ?? 0, word: getThesaurus.word));
+    var timeLineThesaurus = Collocation(
+        id: getThesaurus!.tId ?? 0,
+        worden: Worden(id: getThesaurus.tId ?? 0, word: getThesaurus.word));
 
     var getGrammar = await dbHelper.getGrammar();
-    var timeLineGrammar =
-        Collocation(id: getGrammar!.gId ?? 0, worden: Worden(id: getGrammar.id, word: getGrammar.word.toString()));
+    var timeLineGrammar = Collocation(
+        id: getGrammar!.gId ?? 0,
+        worden: Worden(id: getGrammar.id, word: getGrammar.word.toString()));
 
     var getImage = await dbHelper.getImage();
-    var timeLineImage = ImageT(id: getImage!.id ?? 0, image: getImage.image.toString(), word: getImage.word);
+    var timeLineImage =
+        ImageT(id: getImage!.id ?? 0, image: getImage.image.toString(), word: getImage.word);
 
     var getCollection = await dbHelper.getCollocation();
     var timeLineCollection = Collocation(
-        id: getCollection!.cId ?? 0, worden: Worden(id: getCollection.id, word: getCollection.word.toString()));
+        id: getCollection!.cId ?? 0,
+        worden: Worden(id: getCollection.id, word: getCollection.word.toString()));
 
     var getMetaphor = await dbHelper.getMetaphor();
-    var timeLineMetaphor =
-        Collocation(id: getMetaphor!.mId ?? 0, worden: Worden(id: getMetaphor.mId, word: getMetaphor.word.toString()));
+    var timeLineMetaphor = Collocation(
+        id: getMetaphor!.mId ?? 0,
+        worden: Worden(id: getMetaphor.mId, word: getMetaphor.word.toString()));
 
     var word = await dbHelper.getWord();
 

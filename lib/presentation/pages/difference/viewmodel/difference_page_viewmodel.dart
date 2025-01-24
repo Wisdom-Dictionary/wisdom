@@ -39,7 +39,8 @@ class DifferencePageViewModel extends BaseViewModel {
   }
 
   goToDetails(CatalogModel catalogModel) {
-    homeRepository.timelineModel.difference = Difference(id: catalogModel.id, word: catalogModel.word);
+    homeRepository.timelineModel.difference =
+        Difference(id: catalogModel.id, word: catalogModel.word);
     localViewModel.isFromMain = false;
     localViewModel.changePageIndex(6);
   }

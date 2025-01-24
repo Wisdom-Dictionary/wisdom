@@ -85,7 +85,8 @@ class GoogleTranslatorPage extends ViewModelBuilderWidget<GoogleTranslatorPageVi
                               maxLines: null,
                               decoration: InputDecoration(
                                 hintText: viewModel.topUzbek ? "uzbek".tr() : "english".tr(),
-                                hintStyle: AppTextStyle.font15W500Normal.copyWith(color: AppColors.lightBlue),
+                                hintStyle: AppTextStyle.font15W500Normal
+                                    .copyWith(color: AppColors.lightBlue),
                                 border: InputBorder.none,
                               ),
                             ),
@@ -108,7 +109,8 @@ class GoogleTranslatorPage extends ViewModelBuilderWidget<GoogleTranslatorPageVi
                                         });
                                       }
                                     },
-                                    iconAssets: isCancel ? Assets.icons.crossClose : Assets.icons.copy),
+                                    iconAssets:
+                                        isCancel ? Assets.icons.crossClose : Assets.icons.copy),
                                 SizedBox(
                                   width: 18.w,
                                 ),
@@ -169,7 +171,8 @@ class GoogleTranslatorPage extends ViewModelBuilderWidget<GoogleTranslatorPageVi
                               decoration: InputDecoration(
                                 hintText: viewModel.topUzbek ? "english".tr() : "uzbek".tr(),
                                 enabled: false,
-                                hintStyle: AppTextStyle.font15W500Normal.copyWith(color: AppColors.lightBlue),
+                                hintStyle: AppTextStyle.font15W500Normal
+                                    .copyWith(color: AppColors.lightBlue),
                                 border: InputBorder.none,
                               ),
                             ),
@@ -199,10 +202,15 @@ class GoogleTranslatorPage extends ViewModelBuilderWidget<GoogleTranslatorPageVi
                                   key: globalKey,
                                   child: TranslateCircleButton(
                                     onTap: () {
-                                      if (topController.text.isNotEmpty && bottomController.text.isNotEmpty) {
+                                      if (topController.text.isNotEmpty &&
+                                          bottomController.text.isNotEmpty) {
                                         viewModel.funAddToWordBank(
-                                            viewModel.topUzbek ? bottomController.text : topController.text,
-                                            viewModel.topUzbek ? topController.text : bottomController.text,
+                                            viewModel.topUzbek
+                                                ? bottomController.text
+                                                : topController.text,
+                                            viewModel.topUzbek
+                                                ? topController.text
+                                                : bottomController.text,
                                             globalKey);
                                       }
                                     },

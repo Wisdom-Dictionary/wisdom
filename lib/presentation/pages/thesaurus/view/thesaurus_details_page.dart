@@ -81,7 +81,8 @@ class ThesaurusDetailPage extends ViewModelBuilderWidget<ThesaurusDetailPageView
             children: [
               Column(mainAxisSize: MainAxisSize.min, children: [
                 Container(
-                  decoration: isDarkTheme ? AppDecoration.bannerDarkDecor : AppDecoration.bannerDecor,
+                  decoration:
+                      isDarkTheme ? AppDecoration.bannerDarkDecor : AppDecoration.bannerDecor,
                   padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 30.h),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -104,8 +105,9 @@ class ThesaurusDetailPage extends ViewModelBuilderWidget<ThesaurusDetailPageView
                                     .replaceAll("<p>", "")
                                     .replaceAll("</p>", "<br>")
                                     .replaceFirst(viewModel.getThesaurus()!, ""),
-                                textStyle: AppTextStyle.font15W400NormalHtml
-                                    .copyWith(fontSize: locator<LocalViewModel>().fontSize - 2,                                   color: isDarkTheme ? AppColors.lightGray : null,
+                                textStyle: AppTextStyle.font15W400NormalHtml.copyWith(
+                                  fontSize: locator<LocalViewModel>().fontSize - 2,
+                                  color: isDarkTheme ? AppColors.lightGray : null,
                                 ),
                               )
                             : const LoadingWidget(color: AppColors.paleBlue, width: 2),
@@ -120,7 +122,9 @@ class ThesaurusDetailPage extends ViewModelBuilderWidget<ThesaurusDetailPageView
                   return viewModel.localViewModel.banner != null && value as bool
                       ? Container(
                           margin: EdgeInsets.only(top: 16.h),
-                          decoration: isDarkTheme ? AppDecoration.bannerDarkDecor : AppDecoration.bannerDecor,
+                          decoration: isDarkTheme
+                              ? AppDecoration.bannerDarkDecor
+                              : AppDecoration.bannerDecor,
                           height: viewModel.localViewModel.banner!.size.height * 1.0,
                           child: AdWidget(
                             ad: viewModel.localViewModel.banner!..load(),

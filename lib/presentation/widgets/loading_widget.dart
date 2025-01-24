@@ -28,7 +28,12 @@ Future<T?> showLoadingDialog<T>(BuildContext context) {
         elevation: 0,
         child: Wrap(
           alignment: WrapAlignment.center,
-          children: const [LoadingWidget( color: AppColors.blue, width: 3,)],
+          children: const [
+            LoadingWidget(
+              color: AppColors.blue,
+              width: 3,
+            )
+          ],
         ),
       );
     },

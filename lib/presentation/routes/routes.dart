@@ -69,7 +69,8 @@ class Routes {
           );
         case paymentPage:
           return MaterialPageRoute(
-            builder: (_) => PaymentPage(verifyModel: args!['verifyModel'], phoneNumber: args['phoneNumber']),
+            builder: (_) =>
+                PaymentPage(verifyModel: args!['verifyModel'], phoneNumber: args['phoneNumber']),
           );
         case grammarPageabout:
           return MaterialPageRoute(

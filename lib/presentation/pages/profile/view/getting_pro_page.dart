@@ -58,7 +58,8 @@ class GettingProPage extends ViewModelBuilderWidget<GettingProPageViewModel> {
                   ),
                 ),
                 Container(
-                  decoration: isDarkTheme ? AppDecoration.bannerDarkDecor : AppDecoration.bannerDecor,
+                  decoration:
+                      isDarkTheme ? AppDecoration.bannerDarkDecor : AppDecoration.bannerDecor,
                   padding: EdgeInsets.symmetric(horizontal: 25.w, vertical: 20.h),
                   child: Column(
                     children: [
@@ -96,11 +97,14 @@ class GettingProPage extends ViewModelBuilderWidget<GettingProPageViewModel> {
                                 var item = viewModel.profileRepository.tariffsModel[index];
                                 return RadioListTile(
                                   title: Text(
-                                    ((context.locale.toString() == "en_US" ? item.name!.en : item.name!.uz) ??
+                                    ((context.locale.toString() == "en_US"
+                                                ? item.name!.en
+                                                : item.name!.uz) ??
                                             "Contact with developers")
                                         .toUpperCase(),
-                                    style: AppTextStyle.font15W500Normal
-                                        .copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
+                                    style: AppTextStyle.font15W500Normal.copyWith(
+                                        color:
+                                            isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
                                   ),
                                   contentPadding: EdgeInsets.zero,
                                   value: item.id.toString(),
@@ -114,7 +118,8 @@ class GettingProPage extends ViewModelBuilderWidget<GettingProPageViewModel> {
                             )
                           : const SizedBox.shrink(),
                       Container(
-                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(40.r), color: AppColors.blue),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(40.r), color: AppColors.blue),
                         height: 45.h,
                         margin: EdgeInsets.only(top: 15.h, bottom: 12.h),
                         child: Material(
@@ -138,14 +143,14 @@ class GettingProPage extends ViewModelBuilderWidget<GettingProPageViewModel> {
                           onTap: () => viewModel.onBuyPremiumPressed(),
                           child: RichText(
                             text: TextSpan(
-                              style: AppTextStyle.font13W500Normal
-                                  .copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
+                              style: AppTextStyle.font13W500Normal.copyWith(
+                                  color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
                               text: 'haveAccount'.tr(),
                               children: [
                                 TextSpan(
                                   text: 'getAccount'.tr(),
-                                  style: AppTextStyle.font13W500Normal
-                                      .copyWith(color: AppColors.blue, decoration: TextDecoration.underline),
+                                  style: AppTextStyle.font13W500Normal.copyWith(
+                                      color: AppColors.blue, decoration: TextDecoration.underline),
                                 ),
                               ],
                             ),
@@ -164,11 +169,12 @@ class GettingProPage extends ViewModelBuilderWidget<GettingProPageViewModel> {
                                   onTap: () => viewModel.onBuyPremiumPressed()),
                             ),
                             RichText(
-                              text:
-                                  myUrl('Privacy', Constants.PRIVACY_URL, textColor: AppColors.blue, underline: false),
+                              text: myUrl('Privacy', Constants.PRIVACY_URL,
+                                  textColor: AppColors.blue, underline: false),
                             ),
                             RichText(
-                              text: myUrl('Terms', Constants.TERMS_URL, textColor: AppColors.blue, underline: false),
+                              text: myUrl('Terms', Constants.TERMS_URL,
+                                  textColor: AppColors.blue, underline: false),
                             ),
                           ],
                         ),

@@ -59,7 +59,7 @@ class CultureDetailPage extends ViewModelBuilderWidget<CultureDetailPageViewMode
       ],
       child: WillPopScope(
         onWillPop: () async {
-          if(textSelectionControls.isTextSelected){
+          if (textSelectionControls.isTextSelected) {
             textSelectionControls.deselect();
           } else {
             viewModel.goBack();
@@ -82,7 +82,8 @@ class CultureDetailPage extends ViewModelBuilderWidget<CultureDetailPageViewMode
             children: [
               Column(mainAxisSize: MainAxisSize.min, children: [
                 Container(
-                  decoration: isDarkTheme ? AppDecoration.bannerDarkDecor : AppDecoration.bannerDecor,
+                  decoration:
+                      isDarkTheme ? AppDecoration.bannerDarkDecor : AppDecoration.bannerDecor,
                   padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 30.h),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -119,13 +120,14 @@ class CultureDetailPage extends ViewModelBuilderWidget<CultureDetailPageViewMode
                 builder: (BuildContext context, value, Widget? child) {
                   return viewModel.localViewModel.banner != null && value as bool
                       ? Container(
-                      margin: EdgeInsets.only(top: 16.h),
-                      decoration:
-                      isDarkTheme ? AppDecoration.bannerDarkDecor : AppDecoration.bannerDecor,
-                      height: viewModel.localViewModel.banner!.size.height * 1.0,
-                      child: AdWidget(
-                        ad: viewModel.localViewModel.banner!..load(),
-                      ))
+                          margin: EdgeInsets.only(top: 16.h),
+                          decoration: isDarkTheme
+                              ? AppDecoration.bannerDarkDecor
+                              : AppDecoration.bannerDecor,
+                          height: viewModel.localViewModel.banner!.size.height * 1.0,
+                          child: AdWidget(
+                            ad: viewModel.localViewModel.banner!..load(),
+                          ))
                       : const SizedBox.shrink();
                 },
               ),

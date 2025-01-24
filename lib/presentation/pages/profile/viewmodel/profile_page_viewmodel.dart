@@ -34,7 +34,8 @@ class ProfilePageViewModel extends BaseViewModel {
   getTariffs() {
     safeBlock(() async {
       try {
-        tariffsModel = TariffsModel.fromJson(jsonDecode(sharedPreferenceHelper.getString(Constants.KEY_TARIFFS, '')));
+        tariffsModel = TariffsModel.fromJson(
+            jsonDecode(sharedPreferenceHelper.getString(Constants.KEY_TARIFFS, '')));
         setSuccess(tag: getTariffsTag);
       } catch (e) {
         setSuccess(tag: getTariffsTag);

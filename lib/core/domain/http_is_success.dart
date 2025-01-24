@@ -26,4 +26,3 @@ extension FindRank on String {
     }
   }
 }
-

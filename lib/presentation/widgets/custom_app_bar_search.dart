@@ -67,12 +67,14 @@ class _CustomAppBarSearchState extends State<CustomAppBarSearch> {
   Widget build(BuildContext context) {
     if (localViewModel.searchingText.isNotEmpty) {
       controller.text = localViewModel.searchingText;
-      controller.selection = TextSelection.fromPosition(TextPosition(offset: controller.text.length));
+      controller.selection =
+          TextSelection.fromPosition(TextPosition(offset: controller.text.length));
       onChanged(localViewModel.searchingText);
       localViewModel.searchingText = "";
     } else if (localViewModel.lastSearchedText.isNotEmpty && localViewModel.goingBackFromDetail) {
       controller.text = localViewModel.lastSearchedText;
-      controller.selection = TextSelection.fromPosition(TextPosition(offset: controller.text.length));
+      controller.selection =
+          TextSelection.fromPosition(TextPosition(offset: controller.text.length));
       onChanged(localViewModel.lastSearchedText);
       localViewModel.lastSearchedText = "";
       localViewModel.goingBackFromDetail = false;
@@ -119,12 +121,14 @@ class _CustomAppBarSearchState extends State<CustomAppBarSearch> {
                 height: 47.h,
                 margin: EdgeInsets.all(14.r),
                 decoration: BoxDecoration(
-                    color: (isDarkTheme ? AppColors.darkBackground : AppColors.white).withOpacity(0.95),
+                    color: (isDarkTheme ? AppColors.darkBackground : AppColors.white)
+                        .withOpacity(0.95),
                     borderRadius: BorderRadius.circular(23.5.r)),
                 child: TextField(
                   autofocus: widget.focus,
                   focusNode: localViewModel.searchFocusNode,
-                  style: AppTextStyle.font15W400Normal.copyWith(color: isDarkTheme ? AppColors.white : AppColors.blue),
+                  style: AppTextStyle.font15W400Normal
+                      .copyWith(color: isDarkTheme ? AppColors.white : AppColors.blue),
                   cursorHeight: 19.h,
                   controller: controller,
                   onChanged: (value) {

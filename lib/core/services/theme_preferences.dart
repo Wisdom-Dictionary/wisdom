@@ -1,5 +1,3 @@
-
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ThemePreferences {
@@ -15,4 +13,3 @@ class ThemePreferences {
     return sharedPreferences.getBool(prefKey) ?? false;
   }
 }
-

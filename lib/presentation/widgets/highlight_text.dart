@@ -20,7 +20,9 @@ class HighlightText extends StatelessWidget {
           highlightColor == null || highlightStyle == null,
           'highlightColor and highlightStyle cannot be provided at same time.',
         ),
-        highlightStyle = highlightStyle ?? style?.copyWith(color: highlightColor) ?? TextStyle(color: highlightColor),
+        highlightStyle = highlightStyle ??
+            style?.copyWith(color: highlightColor) ??
+            TextStyle(color: highlightColor),
         super(key: key);
 
   @override

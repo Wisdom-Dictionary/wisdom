@@ -36,7 +36,7 @@ class GrammarDetailPageViewModel extends BaseViewModel {
   }
 
   goBack() {
-    if(localViewModel.isFromMain) {
+    if (localViewModel.isFromMain) {
       localViewModel.isFromMain = false;
       localViewModel.changePageIndex(0);
     } else {

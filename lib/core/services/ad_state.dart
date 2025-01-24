@@ -7,11 +7,11 @@ import 'package:wisdom/core/services/purchase_observer.dart';
 class AdState extends ChangeNotifier {
   AdState();
 
-   Future<InitializationStatus>? initialization;
+  Future<InitializationStatus>? initialization;
 
- Future init() async {
+  Future init() async {
     if (!PurchasesObserver().isPro()) {
-      initialization =  MobileAds.instance.initialize();
+      initialization = MobileAds.instance.initialize();
     }
   }
 

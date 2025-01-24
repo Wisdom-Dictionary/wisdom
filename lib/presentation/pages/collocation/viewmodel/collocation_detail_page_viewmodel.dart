@@ -25,7 +25,8 @@ class CollocationDetailPageViewModel extends BaseViewModel {
   Future getCollocationDetails() async {
     safeBlock(() async {
       if (homeRepository.timelineModel.collocation != null) {
-        await categoryRepository.getCollocationDetail(homeRepository.timelineModel.collocation!.id!);
+        await categoryRepository
+            .getCollocationDetail(homeRepository.timelineModel.collocation!.id!);
         if (categoryRepository.collocationDetailModel.cBody != null) {
           setSuccess(tag: getCollocationDetailsTag);
         } else {

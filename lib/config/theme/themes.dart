@@ -10,4 +10,3 @@ abstract class Themes {
     );
   }
 }
-

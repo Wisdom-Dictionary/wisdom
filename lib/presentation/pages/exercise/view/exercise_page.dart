@@ -37,8 +37,8 @@ class ExercisePage extends ViewModelBuilderWidget<ExercisePageViewModel> {
         ),
         body: viewModel.isSuccess(tag: viewModel.gettingReadyTag)
             ? SingleChildScrollView(
-          padding: const EdgeInsets.only(bottom: 200) ,
-              child: Column(
+                padding: const EdgeInsets.only(bottom: 200),
+                child: Column(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -51,14 +51,16 @@ class ExercisePage extends ViewModelBuilderWidget<ExercisePageViewModel> {
                             child: Text.rich(
                               TextSpan(
                                 text: "exercise_title".tr(),
-                                style: AppTextStyle.font17W700Normal
-                                    .copyWith(color: isDarkTheme ? AppColors.white : AppColors.darkGray),
+                                style: AppTextStyle.font17W700Normal.copyWith(
+                                    color: isDarkTheme ? AppColors.white : AppColors.darkGray),
                                 children: [
                                   TextSpan(
                                     text:
                                         ("\n${"${viewModel.tryNumber} ${"inCorrect".tr().toLowerCase()} ${viewModel.tryNumber != 1 ? "tries".tr() : "try".tr()}"} ${"left".tr()}"),
-                                    style: AppTextStyle.font17W700Normal
-                                        .copyWith(color: viewModel.tryNumber < 3 ? AppColors.accentLight : Colors.green),
+                                    style: AppTextStyle.font17W700Normal.copyWith(
+                                        color: viewModel.tryNumber < 3
+                                            ? AppColors.accentLight
+                                            : Colors.green),
                                   ),
                                 ],
                               ),
@@ -139,13 +141,14 @@ class ExercisePage extends ViewModelBuilderWidget<ExercisePageViewModel> {
                                     children: [
                                       (viewModel.uzSelectedIndex == viewModel.engSelectedIndex)
                                           ? TextSpan(
-                                              text: " - ${viewModel.englishList[viewModel.listEngIndex].translation}",
+                                              text:
+                                                  " - ${viewModel.englishList[viewModel.listEngIndex].translation}",
                                             )
                                           : const TextSpan(),
                                     ],
                                   ),
-                                  style: AppTextStyle.font17W500Normal
-                                      .copyWith(color: isDarkTheme ? AppColors.white : AppColors.darkGray),
+                                  style: AppTextStyle.font17W500Normal.copyWith(
+                                      color: isDarkTheme ? AppColors.white : AppColors.darkGray),
                                   textAlign: TextAlign.center,
                                 ),
                                 viewModel.englishList[viewModel.listEngIndex].wordClassBody != null
@@ -159,16 +162,18 @@ class ExercisePage extends ViewModelBuilderWidget<ExercisePageViewModel> {
                                             Flexible(
                                               child: Text(
                                                 "[${viewModel.englishList[viewModel.listEngIndex].wordClassBody ?? ""}]",
-                                                style: AppTextStyle.font15W400NormalHtml.copyWith(color: AppColors.gray),
+                                                style: AppTextStyle.font15W400NormalHtml
+                                                    .copyWith(color: AppColors.gray),
                                                 textAlign: TextAlign.center,
                                               ),
                                             ),
                                             InkWell(
-                                                onTap: () => viewModel
-                                                    .textToSpeech(viewModel.englishList[viewModel.listEngIndex].word),
+                                                onTap: () => viewModel.textToSpeech(viewModel
+                                                    .englishList[viewModel.listEngIndex].word),
                                                 child: Padding(
                                                   padding: EdgeInsets.all(14.w),
-                                                  child: SvgPicture.asset(Assets.icons.sound, color: AppColors.blue),
+                                                  child: SvgPicture.asset(Assets.icons.sound,
+                                                      color: AppColors.blue),
                                                 )),
                                           ],
                                         ),
@@ -178,8 +183,10 @@ class ExercisePage extends ViewModelBuilderWidget<ExercisePageViewModel> {
                                     ? Padding(
                                         padding: EdgeInsets.only(top: 5.h),
                                         child: Text(
-                                          viewModel.englishList[viewModel.listEngIndex].wordClass ?? "",
-                                          style: AppTextStyle.font15W500Normal.copyWith(color: Colors.green),
+                                          viewModel.englishList[viewModel.listEngIndex].wordClass ??
+                                              "",
+                                          style: AppTextStyle.font15W500Normal
+                                              .copyWith(color: Colors.green),
                                           textAlign: TextAlign.center,
                                         ),
                                       )
@@ -188,8 +195,10 @@ class ExercisePage extends ViewModelBuilderWidget<ExercisePageViewModel> {
                                     ? Padding(
                                         padding: EdgeInsets.only(top: 5.h),
                                         child: Text(
-                                          viewModel.englishList[viewModel.listEngIndex].example ?? "",
-                                          style: AppTextStyle.font15W500Normal.copyWith(color: AppColors.paleGray),
+                                          viewModel.englishList[viewModel.listEngIndex].example ??
+                                              "",
+                                          style: AppTextStyle.font15W500Normal
+                                              .copyWith(color: AppColors.paleGray),
                                           textAlign: TextAlign.center,
                                         ),
                                       )
@@ -200,11 +209,12 @@ class ExercisePage extends ViewModelBuilderWidget<ExercisePageViewModel> {
                         : const SizedBox.shrink(),
                   ],
                 ),
-            )
+              )
             : const LoadingWidget(),
         floatingActionButton: Container(
           margin: const EdgeInsets.only(bottom: 65),
-          decoration: BoxDecoration(color: AppColors.blue, borderRadius: BorderRadius.circular(25.r)),
+          decoration:
+              BoxDecoration(color: AppColors.blue, borderRadius: BorderRadius.circular(25.r)),
           child: Material(
             color: Colors.transparent,
             child: InkWell(
@@ -237,6 +247,7 @@ class ExercisePage extends ViewModelBuilderWidget<ExercisePageViewModel> {
 
   @override
   ExercisePageViewModel viewModelBuilder(BuildContext context) {
-    return ExercisePageViewModel(context: context, localViewModel: locator.get(), wordEntityRepository: locator.get());
+    return ExercisePageViewModel(
+        context: context, localViewModel: locator.get(), wordEntityRepository: locator.get());
   }
 }

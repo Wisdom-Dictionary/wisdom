@@ -53,8 +53,8 @@ class VerifyPage extends ViewModelBuilderWidget<VerifyPageViewModel> {
                   child: RichText(
                     text: TextSpan(
                         text: 'verification_code'.tr(),
-                        style: AppTextStyle.font13W400Normal
-                            .copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
+                        style: AppTextStyle.font13W400Normal.copyWith(
+                            color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
                         children: [
                           TextSpan(
                             text: phoneNumber.substring(4, phoneNumber.length),
@@ -64,22 +64,24 @@ class VerifyPage extends ViewModelBuilderWidget<VerifyPageViewModel> {
                           ),
                           TextSpan(
                             text: 'code_sent_to'.tr(),
-                            style: AppTextStyle.font13W400Normal
-                                .copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
+                            style: AppTextStyle.font13W400Normal.copyWith(
+                                color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
                           ),
                         ]),
                     textAlign: TextAlign.center,
                   ),
                 ),
                 Container(
-                  decoration: isDarkTheme ? AppDecoration.bannerDarkDecor : AppDecoration.bannerDecor,
+                  decoration:
+                      isDarkTheme ? AppDecoration.bannerDarkDecor : AppDecoration.bannerDecor,
                   padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 18.h),
                   child: Column(
                     children: [
                       Container(
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(40.r),
-                            color: isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground),
+                            color:
+                                isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground),
                         height: 45.h,
                         margin: EdgeInsets.only(top: 24.h, bottom: 12.h),
                         padding: EdgeInsets.only(left: 22.w, right: 22.w),
@@ -91,7 +93,8 @@ class VerifyPage extends ViewModelBuilderWidget<VerifyPageViewModel> {
                             length: 5,
                             // autoFocus: true,
                             keyboardType: TextInputType.number,
-                            textStyle: AppTextStyle.font19W500Normal.copyWith(color: AppColors.blue),
+                            textStyle:
+                                AppTextStyle.font19W500Normal.copyWith(color: AppColors.blue),
                             onChanged: (String value) {
                               viewModel.codeSMS = value;
                             },
@@ -109,7 +112,8 @@ class VerifyPage extends ViewModelBuilderWidget<VerifyPageViewModel> {
                         ),
                       ),
                       Container(
-                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(40.r), color: AppColors.blue),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(40.r), color: AppColors.blue),
                         height: 45.h,
                         margin: EdgeInsets.only(top: 20.h, bottom: 10.h),
                         child: Material(
@@ -119,7 +123,8 @@ class VerifyPage extends ViewModelBuilderWidget<VerifyPageViewModel> {
                               if (viewModel.codeSMS.length == 5) {
                                 viewModel.onNextPressed();
                               } else {
-                                viewModel.callBackError('Something went wrong. Please check sms code');
+                                viewModel
+                                    .callBackError('Something went wrong. Please check sms code');
                               }
                             },
                             borderRadius: BorderRadius.circular(40.r),
@@ -135,7 +140,8 @@ class VerifyPage extends ViewModelBuilderWidget<VerifyPageViewModel> {
                       Text(
                         'sent_info'.tr(),
                         textAlign: TextAlign.center,
-                        style: AppTextStyle.font13W400Normal.copyWith(color: const Color(0xFF919399)),
+                        style:
+                            AppTextStyle.font13W400Normal.copyWith(color: const Color(0xFF919399)),
                       ),
                       Padding(
                         padding: EdgeInsets.only(top: 15.h, bottom: 0.h),

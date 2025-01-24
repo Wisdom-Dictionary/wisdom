@@ -73,7 +73,8 @@ class WordDetailPageViewModel extends BaseViewModel {
     if (getFirstPhrase == true) {
       getFirstPhrase = false;
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-        await Scrollable.ensureVisible(scrollKey.currentContext!, duration: const Duration(milliseconds: 300));
+        await Scrollable.ensureVisible(scrollKey.currentContext!,
+            duration: const Duration(milliseconds: 300));
       });
     }
   }
@@ -89,7 +90,8 @@ class WordDetailPageViewModel extends BaseViewModel {
   }
 
   Future<void> splitingToParentWithAllModel() async {
-    parentsWithAllList.add(wordMapper.wordWithAllToParentsWithAll(wordEntityRepository.requiredWordWithAllModel));
+    parentsWithAllList
+        .add(wordMapper.wordWithAllToParentsWithAll(wordEntityRepository.requiredWordWithAllModel));
     if (wordEntityRepository.requiredWordWithAllModel.parentsWithAll != null &&
         wordEntityRepository.requiredWordWithAllModel.parentsWithAll!.isNotEmpty) {
       parentsWithAllList.addAll(wordEntityRepository.requiredWordWithAllModel.parentsWithAll!);
@@ -109,7 +111,8 @@ class WordDetailPageViewModel extends BaseViewModel {
               translation: conductToString(model.wordsUz),
               createdAt: DateTime.now().toString(),
               number: number,
-              wordClass: wordEntityRepository.requiredWordWithAllModel.word!.wordClasswordClass ?? "",
+              wordClass:
+                  wordEntityRepository.requiredWordWithAllModel.word!.wordClasswordClass ?? "",
               wordClassBody: wordEntityRepository.requiredWordWithAllModel.word!.wordClassBody,
               type: "word",
               folderId: folderModel.id);
@@ -119,7 +122,8 @@ class WordDetailPageViewModel extends BaseViewModel {
             return;
           } else {
             if (wordEntityRepository.wordBankList
-                .where((element) => element.id == wordBank.id && element.folderId == wordBank.folderId)
+                .where(
+                    (element) => element.id == wordBank.id && element.folderId == wordBank.folderId)
                 .isEmpty) {
               await funAddToWordBank(wordBank, key);
               localViewModel.boundException = false;
@@ -160,7 +164,8 @@ class WordDetailPageViewModel extends BaseViewModel {
             return;
           } else {
             if (wordEntityRepository.wordBankList
-                .where((element) => element.id == wordBank.id && element.folderId == wordBank.folderId)
+                .where(
+                    (element) => element.id == wordBank.id && element.folderId == wordBank.folderId)
                 .isEmpty) {
               await funAddToWordBank(wordBank, key);
               localViewModel.boundException = false;
@@ -201,7 +206,8 @@ class WordDetailPageViewModel extends BaseViewModel {
             return;
           } else {
             if (wordEntityRepository.wordBankList
-                .where((element) => element.id == wordBank.id && element.folderId == wordBank.folderId)
+                .where(
+                    (element) => element.id == wordBank.id && element.folderId == wordBank.folderId)
                 .isEmpty) {
               await funAddToWordBank(wordBank, key);
               localViewModel.boundException = false;
@@ -240,12 +246,16 @@ class WordDetailPageViewModel extends BaseViewModel {
                     translation: conductToString(element.wordsUz),
                     createdAt: DateTime.now().toString(),
                     number: count,
-                    wordClass: wordEntityRepository.requiredWordWithAllModel.word!.wordClasswordClass ?? "",
-                    wordClassBody: wordEntityRepository.requiredWordWithAllModel.word!.wordClassBody,
+                    wordClass:
+                        wordEntityRepository.requiredWordWithAllModel.word!.wordClasswordClass ??
+                            "",
+                    wordClassBody:
+                        wordEntityRepository.requiredWordWithAllModel.word!.wordClassBody,
                     type: "word",
                     folderId: folderModel.id);
                 if (wordEntityRepository.wordBankList
-                    .where((element) => element.id == wordBank.id && element.folderId == wordBank.folderId)
+                    .where((element) =>
+                        element.id == wordBank.id && element.folderId == wordBank.folderId)
                     .isEmpty) {
                   await funAddToWordBank(wordBank, globalKey);
                   localViewModel.boundException = false;
@@ -298,10 +308,11 @@ class WordDetailPageViewModel extends BaseViewModel {
                   var item = wordEntityRepository.wordBankFoldersList[index];
                   if (item.id != 2) {
                     return Container(
-                      decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: AppColors.borderWhite))),
+                      decoration: const BoxDecoration(
+                          border: Border(bottom: BorderSide(color: AppColors.borderWhite))),
                       child: ListTile(
-                        title:
-                            Text(item.folderName, style: AppTextStyle.font15W600Normal.copyWith(color: AppColors.blue)),
+                        title: Text(item.folderName,
+                            style: AppTextStyle.font15W600Normal.copyWith(color: AppColors.blue)),
                         onTap: () async {
                           await body(item);
                           notifyListeners();
@@ -342,7 +353,8 @@ class WordDetailPageViewModel extends BaseViewModel {
           autofocus: true,
           decoration: InputDecoration(
             hintText: "folder_name_hint".tr(),
-            hintStyle: AppTextStyle.font15W600Normal.copyWith(color: isDarkTheme ? AppColors.gray : AppColors.blue),
+            hintStyle: AppTextStyle.font15W600Normal
+                .copyWith(color: isDarkTheme ? AppColors.gray : AppColors.blue),
             border: OutlineInputBorder(
               borderSide: BorderSide(
                 color: isDarkTheme ? AppColors.white : AppColors.blue,
@@ -388,7 +400,8 @@ class WordDetailPageViewModel extends BaseViewModel {
         child: Text(
           'new_folder_bound_info'.tr(),
           textAlign: TextAlign.center,
-          style: AppTextStyle.font15W600Normal.copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
+          style: AppTextStyle.font15W600Normal
+              .copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
         ),
       ),
       positive: "buy_pro".tr(),
@@ -409,7 +422,8 @@ class WordDetailPageViewModel extends BaseViewModel {
         child: Text(
           'word_bank_add_info'.tr(),
           textAlign: TextAlign.center,
-          style: AppTextStyle.font15W600Normal.copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
+          style: AppTextStyle.font15W600Normal
+              .copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
         ),
       ),
       positive: "buy_pro".tr(),
@@ -445,8 +459,8 @@ class WordDetailPageViewModel extends BaseViewModel {
     }
   }
 
-  TextSpan conductAndHighlightUzWords(List<WordsUzModel>? wordList, List<PhrasesTranslateModel>? translate,
-      List<ParentPhrasesTranslateModel>? phraseTranslate) {
+  TextSpan conductAndHighlightUzWords(List<WordsUzModel>? wordList,
+      List<PhrasesTranslateModel>? translate, List<ParentPhrasesTranslateModel>? phraseTranslate) {
     String sourceText = "";
     if (wordList != null) {
       sourceText = conductToString(wordList);

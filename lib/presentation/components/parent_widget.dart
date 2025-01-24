@@ -15,7 +15,8 @@ import '../../config/constants/constants.dart';
 import '../pages/word_detail/viewmodel/word_detail_page_viewmodel.dart';
 
 class ParentWidget extends ViewModelWidget<WordDetailPageViewModel> {
-  ParentWidget({super.key,
+  ParentWidget({
+    super.key,
     required this.model,
     required this.orderNum,
   });
@@ -37,7 +38,9 @@ class ParentWidget extends ViewModelWidget<WordDetailPageViewModel> {
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
-              width: 1, color: isDarkTheme ? AppColors.darkForm : AppColors.borderWhite, style: BorderStyle.solid),
+              width: 1,
+              color: isDarkTheme ? AppColors.darkForm : AppColors.borderWhite,
+              style: BorderStyle.solid),
         ),
       ),
       child: model.parents!.linkWord != null && model.parents!.linkWord!.isNotEmpty
@@ -50,14 +53,15 @@ class ParentWidget extends ViewModelWidget<WordDetailPageViewModel> {
                     TextSpan(
                       text: (viewModel.parentsWithAllList.length != 1) ? "$orderNum. " : "",
                       style: AppTextStyle.font15W700Normal.copyWith(
-                          color: isDarkTheme ? AppColors.white : AppColors.darkGray, fontSize: viewModel.fontSize! - 2),
+                          color: isDarkTheme ? AppColors.white : AppColors.darkGray,
+                          fontSize: viewModel.fontSize! - 2),
                       children: [
                         TextSpan(
                           text: orderNum == "1"
                               ? "${model.parents!.wordClassBodyMeaning ?? ""} "
                               : "${model.parents!.wordClassBody ?? ""} ",
-                          style: AppTextStyle.font15W400Normal
-                              .copyWith(color: AppColors.paleGray, fontSize: viewModel.fontSize! - 2),
+                          style: AppTextStyle.font15W400Normal.copyWith(
+                              color: AppColors.paleGray, fontSize: viewModel.fontSize! - 2),
                         ),
                         viewModel.conductAndHighlightUzWords(model.wordsUz, null, null),
                       ],
@@ -114,9 +118,11 @@ class ParentWidget extends ViewModelWidget<WordDetailPageViewModel> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         InkWell(
-                          onTap: () => viewModel.addToWordBankFromParent(model, orderNum, widgetKey),
+                          onTap: () =>
+                              viewModel.addToWordBankFromParent(model, orderNum, widgetKey),
                           child: Padding(
-                            padding: EdgeInsets.only(left: 6.w, right: 16.w, top: 14.h, bottom: 14.h),
+                            padding:
+                                EdgeInsets.only(left: 6.w, right: 16.w, top: 14.h, bottom: 14.h),
                             child: SvgPicture.asset(
                               Assets.icons.saveWord,
                               color: AppColors.blue,
@@ -139,8 +145,8 @@ class ParentWidget extends ViewModelWidget<WordDetailPageViewModel> {
                                 text: orderNum == "1"
                                     ? "${model.parents!.wordClassBodyMeaning ?? ""} "
                                     : "${model.parents!.wordClassBody ?? ""} ",
-                                style: AppTextStyle.font15W400Normal
-                                    .copyWith(color: AppColors.paleGray, fontSize: viewModel.fontSize! - 2),
+                                style: AppTextStyle.font15W400Normal.copyWith(
+                                    color: AppColors.paleGray, fontSize: viewModel.fontSize! - 2),
                               ),
                               viewModel.conductAndHighlightUzWords(model.wordsUz, null, null),
                             ],
@@ -151,226 +157,249 @@ class ParentWidget extends ViewModelWidget<WordDetailPageViewModel> {
                   ),
                   expanded: value
                       ? Padding(
-                        padding: EdgeInsets.symmetric(vertical: 6.h),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Example
-                            Flexible(
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 10.w),
-                                child: HtmlWidget(
-                                  (model.parents!.example ?? "")
-                                      .replaceAll("<br>", "")
-                                      .replaceAll("<p>", "")
-                                      .replaceAll("</p>", "<br>"),
-                                  textStyle: AppTextStyle.font15W400ItalicHtml.copyWith(
-                                      fontSize: viewModel.fontSize! - 2,
-                                      color: isDarkTheme ? AppColors.lightBackground : AppColors.gray),
-                                ),
-                              ),
-                            ),
-                            // examples
-                            Flexible(
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 10.w),
-                                child: HtmlWidget(
-                                  (model.parents!.examples ?? "")
-                                      .replaceAll("<br>", "")
-                                      .replaceAll("<p>", "")
-                                      .replaceAll("</p>", "<br>"),
-                                  textStyle: AppTextStyle.font15W400ItalicHtml.copyWith(
-                                      fontSize: viewModel.fontSize! - 2,
-                                      color: isDarkTheme ? AppColors.lightBackground : AppColors.gray),
-                                ),
-                              ),
-                            ),
-                            // Synonyms
-                            CustomExpandableWidget(
-                              title: "synonyms".tr(),
-                              body: HtmlWidget(
-                                (model.parents!.synonyms ?? "")
-                                    .replaceAll("<br>", "")
-                                    .replaceAll("<p>", "")
-                                    .replaceAll("</p>", "<br>"),
-                                textStyle: AppTextStyle.font13W400ItalicHtml.copyWith(
-                                    color: isDarkTheme ? AppColors.lightBackground : AppColors.gray,
-                                    fontSize: viewModel.fontSize! - 2),
-                              ),
-                              visible: model.parents!.synonyms != null,
-                              viewModel: viewModel,
-                            ),
-                            // Antonym
-                            CustomExpandableWidget(
-                              title: "antonims".tr(),
-                              body: HtmlWidget(
-                                (model.parents!.anthonims ?? "")
-                                    .replaceAll("<br>", "")
-                                    .replaceAll("<p>", "")
-                                    .replaceAll("</p>", "<br>"),
-                                textStyle: AppTextStyle.font13W400ItalicHtml.copyWith(
-                                    color: isDarkTheme ? AppColors.lightBackground : AppColors.gray,
-                                    fontSize: viewModel.fontSize! - 2),
-                              ),
-                              visible: model.parents!.anthonims != null,
-                              viewModel: viewModel,
-                            ),
-                            // Grammar
-                            CustomExpandableWidget(
-                              title: "grammar".tr(),
-                              body: HtmlWidget(
-                                (model.grammar != null ? model.grammar!.first.body ?? "" : "")
-                                    .replaceAll("<br>", "")
-                                    .replaceAll("<p>", "")
-                                    .replaceAll("</p>", "<br>"),
-                                textStyle: AppTextStyle.font13W400ItalicHtml.copyWith(
-                                    color: isDarkTheme ? AppColors.lightBackground : AppColors.gray,
-                                    fontSize: viewModel.fontSize! - 2),
-                              ),
-                              visible: model.grammar != null && model.grammar!.isNotEmpty,
-                              viewModel: viewModel,
-                            ),
-                            //Difference
-                            CustomExpandableWidget(
-                              title: "difference".tr(),
-                              body: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    (model.difference != null ? model.difference!.first.word ?? "" : ""),
-                                    style: AppTextStyle.font15W400Normal.copyWith(
-                                        color: isDarkTheme ? AppColors.white : AppColors.darkGray,
-                                        fontSize: viewModel.fontSize! - 2),
+                          padding: EdgeInsets.symmetric(vertical: 6.h),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Example
+                              Flexible(
+                                child: Padding(
+                                  padding: EdgeInsets.only(left: 10.w),
+                                  child: HtmlWidget(
+                                    (model.parents!.example ?? "")
+                                        .replaceAll("<br>", "")
+                                        .replaceAll("<p>", "")
+                                        .replaceAll("</p>", "<br>"),
+                                    textStyle: AppTextStyle.font15W400ItalicHtml.copyWith(
+                                        fontSize: viewModel.fontSize! - 2,
+                                        color: isDarkTheme
+                                            ? AppColors.lightBackground
+                                            : AppColors.gray),
                                   ),
-                                  Padding(
-                                    padding: EdgeInsets.only(top: 10.h),
-                                    child: HtmlWidget(
-                                      (model.difference != null ? model.difference!.first.body ?? "" : "")
-                                          .replaceAll("<br>", "")
-                                          .replaceAll("<p>", "")
-                                          .replaceAll("</p>", "<br>"),
-                                      textStyle: AppTextStyle.font13W400ItalicHtml.copyWith(
-                                          color: isDarkTheme ? AppColors.lightBackground : AppColors.gray,
+                                ),
+                              ),
+                              // examples
+                              Flexible(
+                                child: Padding(
+                                  padding: EdgeInsets.only(left: 10.w),
+                                  child: HtmlWidget(
+                                    (model.parents!.examples ?? "")
+                                        .replaceAll("<br>", "")
+                                        .replaceAll("<p>", "")
+                                        .replaceAll("</p>", "<br>"),
+                                    textStyle: AppTextStyle.font15W400ItalicHtml.copyWith(
+                                        fontSize: viewModel.fontSize! - 2,
+                                        color: isDarkTheme
+                                            ? AppColors.lightBackground
+                                            : AppColors.gray),
+                                  ),
+                                ),
+                              ),
+                              // Synonyms
+                              CustomExpandableWidget(
+                                title: "synonyms".tr(),
+                                body: HtmlWidget(
+                                  (model.parents!.synonyms ?? "")
+                                      .replaceAll("<br>", "")
+                                      .replaceAll("<p>", "")
+                                      .replaceAll("</p>", "<br>"),
+                                  textStyle: AppTextStyle.font13W400ItalicHtml.copyWith(
+                                      color:
+                                          isDarkTheme ? AppColors.lightBackground : AppColors.gray,
+                                      fontSize: viewModel.fontSize! - 2),
+                                ),
+                                visible: model.parents!.synonyms != null,
+                                viewModel: viewModel,
+                              ),
+                              // Antonym
+                              CustomExpandableWidget(
+                                title: "antonims".tr(),
+                                body: HtmlWidget(
+                                  (model.parents!.anthonims ?? "")
+                                      .replaceAll("<br>", "")
+                                      .replaceAll("<p>", "")
+                                      .replaceAll("</p>", "<br>"),
+                                  textStyle: AppTextStyle.font13W400ItalicHtml.copyWith(
+                                      color:
+                                          isDarkTheme ? AppColors.lightBackground : AppColors.gray,
+                                      fontSize: viewModel.fontSize! - 2),
+                                ),
+                                visible: model.parents!.anthonims != null,
+                                viewModel: viewModel,
+                              ),
+                              // Grammar
+                              CustomExpandableWidget(
+                                title: "grammar".tr(),
+                                body: HtmlWidget(
+                                  (model.grammar != null ? model.grammar!.first.body ?? "" : "")
+                                      .replaceAll("<br>", "")
+                                      .replaceAll("<p>", "")
+                                      .replaceAll("</p>", "<br>"),
+                                  textStyle: AppTextStyle.font13W400ItalicHtml.copyWith(
+                                      color:
+                                          isDarkTheme ? AppColors.lightBackground : AppColors.gray,
+                                      fontSize: viewModel.fontSize! - 2),
+                                ),
+                                visible: model.grammar != null && model.grammar!.isNotEmpty,
+                                viewModel: viewModel,
+                              ),
+                              //Difference
+                              CustomExpandableWidget(
+                                title: "difference".tr(),
+                                body: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      (model.difference != null
+                                          ? model.difference!.first.word ?? ""
+                                          : ""),
+                                      style: AppTextStyle.font15W400Normal.copyWith(
+                                          color: isDarkTheme ? AppColors.white : AppColors.darkGray,
                                           fontSize: viewModel.fontSize! - 2),
                                     ),
-                                  )
-                                ],
+                                    Padding(
+                                      padding: EdgeInsets.only(top: 10.h),
+                                      child: HtmlWidget(
+                                        (model.difference != null
+                                                ? model.difference!.first.body ?? ""
+                                                : "")
+                                            .replaceAll("<br>", "")
+                                            .replaceAll("<p>", "")
+                                            .replaceAll("</p>", "<br>"),
+                                        textStyle: AppTextStyle.font13W400ItalicHtml.copyWith(
+                                            color: isDarkTheme
+                                                ? AppColors.lightBackground
+                                                : AppColors.gray,
+                                            fontSize: viewModel.fontSize! - 2),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                visible: model.difference != null && model.difference!.isNotEmpty,
+                                viewModel: viewModel,
                               ),
-                              visible: model.difference != null && model.difference!.isNotEmpty,
-                              viewModel: viewModel,
-                            ),
-                            // Collocations
-                            CustomExpandableWidget(
-                              title: "collocations".tr(),
-                              body: HtmlWidget(
-                                (model.collocation != null ? model.collocation!.first.body ?? "" : "")
-                                    .replaceAll("<br>", "")
-                                    .replaceAll("<p>", "")
-                                    .replaceAll("</p>", "<br>"),
-                                textStyle: AppTextStyle.font13W400ItalicHtml.copyWith(
-                                    color: isDarkTheme ? AppColors.lightBackground : AppColors.gray,
-                                    fontSize: viewModel.fontSize! - 2),
+                              // Collocations
+                              CustomExpandableWidget(
+                                title: "collocations".tr(),
+                                body: HtmlWidget(
+                                  (model.collocation != null
+                                          ? model.collocation!.first.body ?? ""
+                                          : "")
+                                      .replaceAll("<br>", "")
+                                      .replaceAll("<p>", "")
+                                      .replaceAll("</p>", "<br>"),
+                                  textStyle: AppTextStyle.font13W400ItalicHtml.copyWith(
+                                      color:
+                                          isDarkTheme ? AppColors.lightBackground : AppColors.gray,
+                                      fontSize: viewModel.fontSize! - 2),
+                                ),
+                                visible: model.collocation != null && model.collocation!.isNotEmpty,
+                                viewModel: viewModel,
                               ),
-                              visible: model.collocation != null && model.collocation!.isNotEmpty,
-                              viewModel: viewModel,
-                            ),
-                            // Thesaurus
-                            CustomExpandableWidget(
-                              title: "thesaurus".tr(),
-                              body: HtmlWidget(
-                                (model.thesaurus != null ? model.thesaurus!.first.body ?? "" : "")
-                                    .replaceAll("<br>", "")
-                                    .replaceAll("<p>", "")
-                                    .replaceAll("</p>", "<br>"),
-                                textStyle: AppTextStyle.font13W400ItalicHtml.copyWith(
-                                    color: isDarkTheme ? AppColors.lightBackground : AppColors.gray,
-                                    fontSize: viewModel.fontSize! - 2),
+                              // Thesaurus
+                              CustomExpandableWidget(
+                                title: "thesaurus".tr(),
+                                body: HtmlWidget(
+                                  (model.thesaurus != null ? model.thesaurus!.first.body ?? "" : "")
+                                      .replaceAll("<br>", "")
+                                      .replaceAll("<p>", "")
+                                      .replaceAll("</p>", "<br>"),
+                                  textStyle: AppTextStyle.font13W400ItalicHtml.copyWith(
+                                      color:
+                                          isDarkTheme ? AppColors.lightBackground : AppColors.gray,
+                                      fontSize: viewModel.fontSize! - 2),
+                                ),
+                                visible: model.thesaurus != null && model.thesaurus!.isNotEmpty,
+                                viewModel: viewModel,
                               ),
-                              visible: model.thesaurus != null && model.thesaurus!.isNotEmpty,
-                              viewModel: viewModel,
-                            ),
-                            // Metaphors
-                            CustomExpandableWidget(
-                              title: "metaphor".tr(),
-                              body: HtmlWidget(
-                                (model.metaphor != null ? model.metaphor!.first.body ?? "" : "")
-                                    .replaceAll("<br>", "")
-                                    .replaceAll("<p>", "")
-                                    .replaceAll("</p>", "<br>"),
-                                textStyle: AppTextStyle.font13W400ItalicHtml.copyWith(
-                                    color: isDarkTheme ? AppColors.lightBackground : AppColors.gray,
-                                    fontSize: viewModel.fontSize! - 2),
+                              // Metaphors
+                              CustomExpandableWidget(
+                                title: "metaphor".tr(),
+                                body: HtmlWidget(
+                                  (model.metaphor != null ? model.metaphor!.first.body ?? "" : "")
+                                      .replaceAll("<br>", "")
+                                      .replaceAll("<p>", "")
+                                      .replaceAll("</p>", "<br>"),
+                                  textStyle: AppTextStyle.font13W400ItalicHtml.copyWith(
+                                      color:
+                                          isDarkTheme ? AppColors.lightBackground : AppColors.gray,
+                                      fontSize: viewModel.fontSize! - 2),
+                                ),
+                                visible: model.metaphor != null && model.metaphor!.isNotEmpty,
+                                viewModel: viewModel,
                               ),
-                              visible: model.metaphor != null && model.metaphor!.isNotEmpty,
-                              viewModel: viewModel,
-                            ),
-                            // Culture
-                            CustomExpandableWidget(
-                              title: "culture".tr(),
-                              body: HtmlWidget(
-                                (model.culture != null ? model.culture!.first.body ?? "" : "")
-                                    .replaceAll("<br>", "")
-                                    .replaceAll("<p>", "")
-                                    .replaceAll("</p>", "<br>"),
-                                textStyle: AppTextStyle.font13W400ItalicHtml.copyWith(
-                                    color: isDarkTheme ? AppColors.lightBackground : AppColors.gray,
-                                    fontSize: viewModel.fontSize! - 2),
+                              // Culture
+                              CustomExpandableWidget(
+                                title: "culture".tr(),
+                                body: HtmlWidget(
+                                  (model.culture != null ? model.culture!.first.body ?? "" : "")
+                                      .replaceAll("<br>", "")
+                                      .replaceAll("<p>", "")
+                                      .replaceAll("</p>", "<br>"),
+                                  textStyle: AppTextStyle.font13W400ItalicHtml.copyWith(
+                                      color:
+                                          isDarkTheme ? AppColors.lightBackground : AppColors.gray,
+                                      fontSize: viewModel.fontSize! - 2),
+                                ),
+                                visible: model.culture != null && model.culture!.isNotEmpty,
+                                viewModel: viewModel,
                               ),
-                              visible: model.culture != null && model.culture!.isNotEmpty,
-                              viewModel: viewModel,
-                            ),
-                            // More examples
-                            CustomExpandableWidget(
-                              title: "more_example".tr(),
-                              body: HtmlWidget(
-                                (model.parents!.moreExamples != null ? model.parents!.moreExamples ?? "" : "")
-                                    .replaceAll("<br>", "")
-                                    .replaceAll("<p>", "")
-                                    .replaceAll("</p>", "<br>"),
-                                textStyle: AppTextStyle.font13W400ItalicHtml.copyWith(
-                                    color: isDarkTheme ? AppColors.lightBackground : AppColors.gray,
-                                    fontSize: viewModel.fontSize! - 2),
+                              // More examples
+                              CustomExpandableWidget(
+                                title: "more_example".tr(),
+                                body: HtmlWidget(
+                                  (model.parents!.moreExamples != null
+                                          ? model.parents!.moreExamples ?? ""
+                                          : "")
+                                      .replaceAll("<br>", "")
+                                      .replaceAll("<p>", "")
+                                      .replaceAll("</p>", "<br>"),
+                                  textStyle: AppTextStyle.font13W400ItalicHtml.copyWith(
+                                      color:
+                                          isDarkTheme ? AppColors.lightBackground : AppColors.gray,
+                                      fontSize: viewModel.fontSize! - 2),
+                                ),
+                                visible: model.parents!.moreExamples != null &&
+                                    model.parents!.moreExamples!.isNotEmpty,
+                                viewModel: viewModel,
                               ),
-                              visible: model.parents!.moreExamples != null && model.parents!.moreExamples!.isNotEmpty,
-                              viewModel: viewModel,
-                            ),
-                            // Phrases and Idioms
-                            // CustomExpandableWidget(
-                            //   title: "words_phrases".tr(),
-                            //   viewModel: viewModel,
-                            //   isExpanded: viewModel.hasToBeExpanded(model.phrasesWithAll),
-                            //   body: (model.phrasesWithAll != null && model.phrasesWithAll!.isNotEmpty)
-                            //       ? ListView.builder(
-                            //           shrinkWrap: true,
-                            //           physics: const NeverScrollableScrollPhysics(),
-                            //           itemCount: model.phrasesWithAll!.length,
-                            //           itemBuilder: (context, index) {
-                            //             var phraseModel = model.phrasesWithAll![index];
-                            //             bool isSelected = viewModel.isWordEqual(phraseModel.phrases!.pWord ?? "") &&
-                            //                 viewModel.getFirstPhrase;
-                            //             if (viewModel.localViewModel.isSearchByUz) {
-                            //               isSelected = viewModel.isWordContained(
-                            //                       viewModel.conductToStringPhrasesTranslate(
-                            //                           phraseModel.phrasesTranslate ?? [])) &&
-                            //                   viewModel.getFirstPhrase;
-                            //             }
-                            //             if (isSelected) {
-                            //               viewModel.firstAutoScroll();
-                            //             }
-                            //             return Container(
-                            //               key: isSelected ? viewModel.scrollKey : null,
-                            //               child: PhrasesWidget(model: phraseModel, orderNum: '1', index: index),
-                            //             );
-                            //           },
-                            //         )
-                            //       : const SizedBox.shrink(),
-                            //   visible: model.phrasesWithAll != null && model.phrasesWithAll!.isNotEmpty,
-                            // ),
-                          ],
-                        ),
-                      )
+                              // Phrases and Idioms
+                              // CustomExpandableWidget(
+                              //   title: "words_phrases".tr(),
+                              //   viewModel: viewModel,
+                              //   isExpanded: viewModel.hasToBeExpanded(model.phrasesWithAll),
+                              //   body: (model.phrasesWithAll != null && model.phrasesWithAll!.isNotEmpty)
+                              //       ? ListView.builder(
+                              //           shrinkWrap: true,
+                              //           physics: const NeverScrollableScrollPhysics(),
+                              //           itemCount: model.phrasesWithAll!.length,
+                              //           itemBuilder: (context, index) {
+                              //             var phraseModel = model.phrasesWithAll![index];
+                              //             bool isSelected = viewModel.isWordEqual(phraseModel.phrases!.pWord ?? "") &&
+                              //                 viewModel.getFirstPhrase;
+                              //             if (viewModel.localViewModel.isSearchByUz) {
+                              //               isSelected = viewModel.isWordContained(
+                              //                       viewModel.conductToStringPhrasesTranslate(
+                              //                           phraseModel.phrasesTranslate ?? [])) &&
+                              //                   viewModel.getFirstPhrase;
+                              //             }
+                              //             if (isSelected) {
+                              //               viewModel.firstAutoScroll();
+                              //             }
+                              //             return Container(
+                              //               key: isSelected ? viewModel.scrollKey : null,
+                              //               child: PhrasesWidget(model: phraseModel, orderNum: '1', index: index),
+                              //             );
+                              //           },
+                              //         )
+                              //       : const SizedBox.shrink(),
+                              //   visible: model.phrasesWithAll != null && model.phrasesWithAll!.isNotEmpty,
+                              // ),
+                            ],
+                          ),
+                        )
                       : const SizedBox.shrink(),
                   collapsed: const SizedBox.shrink(),
                 );

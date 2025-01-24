@@ -72,15 +72,19 @@ class ExerciseFinalPageViewModel extends BaseViewModel {
                       var item = wordEntityRepository.wordBankFoldersList[index];
                       if (item.id != 2) {
                         return Container(
-                          decoration:
-                              const BoxDecoration(border: Border(bottom: BorderSide(color: AppColors.borderWhite))),
+                          decoration: const BoxDecoration(
+                              border: Border(bottom: BorderSide(color: AppColors.borderWhite))),
                           child: ListTile(
                             title: Text(item.folderName,
-                                style: AppTextStyle.font15W600Normal.copyWith(color: AppColors.blue)),
+                                style:
+                                    AppTextStyle.font15W600Normal.copyWith(color: AppColors.blue)),
                             onTap: () {
-                              wordEntityRepository.moveToFolder(item.id, model.tableId!, model.id!).then((value) {
+                              wordEntityRepository
+                                  .moveToFolder(item.id, model.tableId!, model.id!)
+                                  .then((value) {
                                 if (value) {
-                                  incorrect.removeWhere((element) => element.tableId == model.tableId);
+                                  incorrect
+                                      .removeWhere((element) => element.tableId == model.tableId);
                                 } else {
                                   showTopSnackBar(
                                     Overlay.of(context),
@@ -104,7 +108,8 @@ class ExerciseFinalPageViewModel extends BaseViewModel {
           ),
           negative: "new_word_bank_type".tr(),
           onNegativeTap: () async {
-            if (!PurchasesObserver().isPro() && wordEntityRepository.wordBankFoldersList.length <= 3) {
+            if (!PurchasesObserver().isPro() &&
+                wordEntityRepository.wordBankFoldersList.length <= 3) {
               showFolderCountOutOfBound();
             } else {
               addNewFolder();
@@ -128,7 +133,8 @@ class ExerciseFinalPageViewModel extends BaseViewModel {
         child: Text(
           'new_folder_bound_info'.tr(),
           textAlign: TextAlign.center,
-          style: AppTextStyle.font15W600Normal.copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
+          style: AppTextStyle.font15W600Normal
+              .copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
         ),
       ),
       positive: "buy_pro".tr(),
@@ -192,15 +198,19 @@ class ExerciseFinalPageViewModel extends BaseViewModel {
         child: Text(
           'delete_word_info'.tr(),
           textAlign: TextAlign.center,
-          style: AppTextStyle.font15W600Normal.copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
+          style: AppTextStyle.font15W600Normal
+              .copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
         ),
       ),
       positive: "delete".tr(),
       onPositiveTap: () {
         safeBlock(
           () async {
-            var wordBank =
-                WordBankModel(id: model.id, word: model.word, translation: model.translation, tableId: model.tableId);
+            var wordBank = WordBankModel(
+                id: model.id,
+                word: model.word,
+                translation: model.translation,
+                tableId: model.tableId);
             await wordEntityRepository.deleteWorkBank(wordBank);
             localViewModel.finalList.remove(model);
             correctList.remove(model);

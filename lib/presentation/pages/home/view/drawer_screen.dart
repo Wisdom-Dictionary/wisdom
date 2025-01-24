@@ -59,9 +59,11 @@ class DrawerScreen extends ViewModelWidget<HomeViewModel> {
                 title: 'subscribe'.tr(),
                 imgAssets: Assets.icons.proVersion,
                 onTap: () {
-                  var phone = viewModel.localViewModel.preferenceHelper.getString(Constants.KEY_PHONE, "");
+                  var phone =
+                      viewModel.localViewModel.preferenceHelper.getString(Constants.KEY_PHONE, "");
                   if (phone.isNotEmpty) {
-                    Navigator.of(context).pushNamed(Routes.verifyPage, arguments: {'number': phone});
+                    Navigator.of(context)
+                        .pushNamed(Routes.verifyPage, arguments: {'number': phone});
                   } else {
                     Navigator.of(context).pushNamed(Routes.gettingProPage);
                   }
@@ -73,9 +75,10 @@ class DrawerScreen extends ViewModelWidget<HomeViewModel> {
               child: DrawerMenuItem(
                 title: 'personal_cabinet'.tr(),
                 imgAssets: Assets.icons.person,
-                onTap: () => locator.get<SharedPreferenceHelper>().getString(Constants.KEY_TARIFFS, '') != ''
-                    ? Navigator.of(context).pushNamed(Routes.profilePage)
-                    : Navigator.of(context).pushNamed(Routes.registrationPage),
+                onTap: () =>
+                    locator.get<SharedPreferenceHelper>().getString(Constants.KEY_TARIFFS, '') != ''
+                        ? Navigator.of(context).pushNamed(Routes.profilePage)
+                        : Navigator.of(context).pushNamed(Routes.registrationPage),
               ),
             ),
             DrawerMenuItem(

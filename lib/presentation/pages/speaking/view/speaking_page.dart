@@ -70,8 +70,9 @@ class SpeakingPage extends ViewModelBuilderWidget<SpeakingPageViewModel> {
                   itemBuilder: (context, index) {
                     var element = viewModel.categoryRepository.speakingWordsList[index];
                     return CatalogItem(
-                      firstText:
-                          viewModel.localViewModel.isSubSub ? element.word ?? "unknown" : element.title ?? "unknown",
+                      firstText: viewModel.localViewModel.isSubSub
+                          ? element.word ?? "unknown"
+                          : element.title ?? "unknown",
                       translateText: viewModel.localViewModel.isSubSub ? element.translate : "",
                       onTap: () => viewModel.goToNext(element),
                     );

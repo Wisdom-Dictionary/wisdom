@@ -50,14 +50,16 @@ class ExerciseCrossWordPage extends ViewModelBuilderWidget<ExercisePageViewModel
                         child: Text.rich(
                           TextSpan(
                             text: "exercise_title3".tr(),
-                            style: AppTextStyle.font17W700Normal
-                                .copyWith(color: isDarkTheme ? AppColors.white : AppColors.darkGray),
+                            style: AppTextStyle.font17W700Normal.copyWith(
+                                color: isDarkTheme ? AppColors.white : AppColors.darkGray),
                             children: [
                               TextSpan(
                                 text:
                                     ("\n${"${viewModel.tryNumber} ${"inCorrect".tr().toLowerCase()} ${viewModel.tryNumber != 1 ? "tries".tr() : "try".tr()}"} ${"left".tr()}"),
-                                style: AppTextStyle.font17W700Normal
-                                    .copyWith(color: viewModel.tryNumber < 3 ? AppColors.accentLight : Colors.green),
+                                style: AppTextStyle.font17W700Normal.copyWith(
+                                    color: viewModel.tryNumber < 3
+                                        ? AppColors.accentLight
+                                        : Colors.green),
                               ),
                             ],
                           ),
@@ -108,8 +110,8 @@ class ExerciseCrossWordPage extends ViewModelBuilderWidget<ExercisePageViewModel
                                 child: Center(
                                   child: Text(
                                     viewModel.emptyList.length > i ? viewModel.emptyList[i] : '',
-                                    style: AppTextStyle.font17W700Normal
-                                        .copyWith(color: isDarkTheme ? AppColors.white : AppColors.darkGray),
+                                    style: AppTextStyle.font17W700Normal.copyWith(
+                                        color: isDarkTheme ? AppColors.white : AppColors.darkGray),
                                   ),
                                 ),
                               ),
@@ -141,9 +143,11 @@ class ExerciseCrossWordPage extends ViewModelBuilderWidget<ExercisePageViewModel
                               ),
                               child: Center(
                                 child: Text(
-                                  viewModel.shuffledList.length > i ? viewModel.shuffledList[i] : '',
-                                  style: AppTextStyle.font17W700Normal
-                                      .copyWith(color: isDarkTheme ? AppColors.white : AppColors.darkGray),
+                                  viewModel.shuffledList.length > i
+                                      ? viewModel.shuffledList[i]
+                                      : '',
+                                  style: AppTextStyle.font17W700Normal.copyWith(
+                                      color: isDarkTheme ? AppColors.white : AppColors.darkGray),
                                 ),
                               ),
                             ),
@@ -164,7 +168,8 @@ class ExerciseCrossWordPage extends ViewModelBuilderWidget<ExercisePageViewModel
             : const LoadingWidget(),
         floatingActionButton: Container(
           margin: const EdgeInsets.only(bottom: 65),
-          decoration: BoxDecoration(color: AppColors.blue, borderRadius: BorderRadius.circular(25.r)),
+          decoration:
+              BoxDecoration(color: AppColors.blue, borderRadius: BorderRadius.circular(25.r)),
           child: Material(
             color: Colors.transparent,
             child: InkWell(
@@ -197,7 +202,8 @@ class ExerciseCrossWordPage extends ViewModelBuilderWidget<ExercisePageViewModel
 
   @override
   ExercisePageViewModel viewModelBuilder(BuildContext context) {
-    return ExercisePageViewModel(context: context, localViewModel: locator.get(), wordEntityRepository: locator.get());
+    return ExercisePageViewModel(
+        context: context, localViewModel: locator.get(), wordEntityRepository: locator.get());
   }
 }
 

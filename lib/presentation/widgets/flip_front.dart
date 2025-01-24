@@ -35,9 +35,12 @@ class FlipFrontWidget extends ViewModelWidget<ExercisePageViewModel> {
             alignment: Alignment.topCenter,
             child: Padding(
               padding: EdgeInsets.only(top: 15.h),
-              child: Text( viewModel.localViewModel.exerciseLangOption=="en" ? model.word : model.translation,
-                style:
-                    AppTextStyle.font17W700Normal.copyWith(color: isDarkTheme ? AppColors.white : AppColors.darkGray),
+              child: Text(
+                viewModel.localViewModel.exerciseLangOption == "en"
+                    ? model.word
+                    : model.translation,
+                style: AppTextStyle.font17W700Normal
+                    .copyWith(color: isDarkTheme ? AppColors.white : AppColors.darkGray),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -46,7 +49,7 @@ class FlipFrontWidget extends ViewModelWidget<ExercisePageViewModel> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                model.wordClassBody  != null && viewModel.localViewModel.exerciseLangOption=="en"
+                model.wordClassBody != null && viewModel.localViewModel.exerciseLangOption == "en"
                     ? Padding(
                         padding: EdgeInsets.only(top: 5.h),
                         child: Row(
@@ -57,7 +60,8 @@ class FlipFrontWidget extends ViewModelWidget<ExercisePageViewModel> {
                             Flexible(
                               child: Text(
                                 "[${model.wordClassBody ?? ""}]",
-                                style: AppTextStyle.font15W400NormalHtml.copyWith(color: AppColors.gray),
+                                style: AppTextStyle.font15W400NormalHtml
+                                    .copyWith(color: AppColors.gray),
                                 textAlign: TextAlign.center,
                               ),
                             ),
@@ -71,7 +75,7 @@ class FlipFrontWidget extends ViewModelWidget<ExercisePageViewModel> {
                         ),
                       )
                     : const SizedBox.shrink(),
-                model.wordClass != null && viewModel.localViewModel.exerciseLangOption=="en"
+                model.wordClass != null && viewModel.localViewModel.exerciseLangOption == "en"
                     ? Padding(
                         padding: EdgeInsets.only(top: 5.h),
                         child: Text(
@@ -81,7 +85,7 @@ class FlipFrontWidget extends ViewModelWidget<ExercisePageViewModel> {
                         ),
                       )
                     : const SizedBox.shrink(),
-                model.example != null  && viewModel.localViewModel.exerciseLangOption=="en"
+                model.example != null && viewModel.localViewModel.exerciseLangOption == "en"
                     ? Padding(
                         padding: EdgeInsets.only(top: 5.h),
                         child: Text(

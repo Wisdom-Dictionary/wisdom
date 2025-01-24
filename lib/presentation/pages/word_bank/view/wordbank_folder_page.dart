@@ -63,7 +63,9 @@ class WordBankFolderPage extends ViewModelBuilderWidget<WordBankFolderViewModel>
                             .length;
                         return WordBankFolderItem(
                           model: model,
-                          wordCount: model.id == 1 ? viewModel.wordEntityRepository.wordBankListForCount.length : count,
+                          wordCount: model.id == 1
+                              ? viewModel.wordEntityRepository.wordBankListForCount.length
+                              : count,
                         );
                       },
                     ),
@@ -86,7 +88,9 @@ class WordBankFolderPage extends ViewModelBuilderWidget<WordBankFolderViewModel>
                         return viewModel.localViewModel.banner != null && value as bool
                             ? Container(
                                 margin: EdgeInsets.only(top: 16.h, left: 16.w, right: 16.w),
-                                decoration: isDarkTheme ? AppDecoration.bannerDarkDecor : AppDecoration.bannerDecor,
+                                decoration: isDarkTheme
+                                    ? AppDecoration.bannerDarkDecor
+                                    : AppDecoration.bannerDecor,
                                 height: viewModel.localViewModel.banner!.size.height * 1.0,
                                 child: AdWidget(
                                   ad: viewModel.localViewModel.banner!..load(),

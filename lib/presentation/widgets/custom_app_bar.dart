@@ -97,7 +97,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
                 height: 47.h,
                 margin: EdgeInsets.all(14.r),
                 decoration: BoxDecoration(
-                    color: (isDarkTheme ? AppColors.darkBackground : AppColors.white).withOpacity(0.95),
+                    color: (isDarkTheme ? AppColors.darkBackground : AppColors.white)
+                        .withOpacity(0.95),
                     borderRadius: BorderRadius.circular(23.5.r)),
                 child: TextField(
                   autofocus: widget.focus,

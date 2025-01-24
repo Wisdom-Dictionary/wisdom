@@ -53,7 +53,8 @@ showCustomDialog({
           title != null
               ? Text(
                   title ?? "",
-                  style: AppTextStyle.font17W600Normal.copyWith(color: isDarkTheme ? AppColors.white : AppColors.gray),
+                  style: AppTextStyle.font17W600Normal
+                      .copyWith(color: isDarkTheme ? AppColors.white : AppColors.gray),
                   textAlign: TextAlign.center,
                 )
               : const SizedBox.shrink(),

@@ -26,7 +26,9 @@ class WordBankFolderItem extends ViewModelWidget<WordBankFolderViewModel> {
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
-                width: 1, color: isDarkTheme ? AppColors.darkForm : AppColors.borderWhite, style: BorderStyle.solid),
+                width: 1,
+                color: isDarkTheme ? AppColors.darkForm : AppColors.borderWhite,
+                style: BorderStyle.solid),
           ),
         ),
         child: Padding(
@@ -45,8 +47,8 @@ class WordBankFolderItem extends ViewModelWidget<WordBankFolderViewModel> {
                     children: [
                       TextSpan(
                           text: "  ($wordCount)",
-                          style: AppTextStyle.font15W500Normal
-                              .copyWith(color: isDarkTheme ? AppColors.borderWhite : AppColors.paleGray)),
+                          style: AppTextStyle.font15W500Normal.copyWith(
+                              color: isDarkTheme ? AppColors.borderWhite : AppColors.paleGray)),
                     ],
                   ),
                 ),

@@ -45,30 +45,36 @@ class ProfilePage extends ViewModelBuilderWidget<ProfilePageViewModel> {
                     children: [
                       CustomBanner(
                         title: 'subscription_number'.tr(),
-                        contentPadding: const EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 20),
+                        contentPadding:
+                            const EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 20),
                         child: Center(
                           child: Text(
                             viewModel.sharedPreferenceHelper.getString(Constants.KEY_PHONE, ""),
-                            style: AppTextStyle.font19W500Normal
-                                .copyWith(color: isDarkTheme ? AppColors.white : AppColors.blue, fontSize: 20),
+                            style: AppTextStyle.font19W500Normal.copyWith(
+                                color: isDarkTheme ? AppColors.white : AppColors.blue,
+                                fontSize: 20),
                           ),
                         ),
                       ),
                       CustomBanner(
                         title: 'current_plan'.tr(),
-                        contentPadding: const EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 20),
+                        contentPadding:
+                            const EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 20),
                         child: Text(
                           PurchasesObserver().isPro() ? "Pro" : "not_purchased".tr(),
                           style: TextStyle(
                               fontSize: 18.sp,
-                              color: PurchasesObserver().isPro() ? AppColors.blue : AppColors.accentLight),
+                              color: PurchasesObserver().isPro()
+                                  ? AppColors.blue
+                                  : AppColors.accentLight),
                           textAlign: TextAlign.center,
                         ),
                       ),
                       Visibility(
                         visible: !PurchasesObserver().isPro(),
                         child: Container(
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(40.r), color: AppColors.blue),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(40.r), color: AppColors.blue),
                           height: 45.h,
                           margin: EdgeInsets.only(top: 40.h, bottom: 12.h),
                           child: Material(
@@ -93,14 +99,17 @@ class ProfilePage extends ViewModelBuilderWidget<ProfilePageViewModel> {
                           children: [
                             RichText(
                               text: myUrl('Restore Purchase', '',
-                                  textColor: AppColors.blue, underline: false, onTap: () => viewModel.restore()),
+                                  textColor: AppColors.blue,
+                                  underline: false,
+                                  onTap: () => viewModel.restore()),
                             ),
                             RichText(
-                              text:
-                                  myUrl('Privacy', Constants.PRIVACY_URL, textColor: AppColors.blue, underline: false),
+                              text: myUrl('Privacy', Constants.PRIVACY_URL,
+                                  textColor: AppColors.blue, underline: false),
                             ),
                             RichText(
-                              text: myUrl('Terms', Constants.TERMS_URL, textColor: AppColors.blue, underline: false),
+                              text: myUrl('Terms', Constants.TERMS_URL,
+                                  textColor: AppColors.blue, underline: false),
                             ),
                           ],
                         ),

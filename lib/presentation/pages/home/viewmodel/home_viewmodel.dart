@@ -81,10 +81,7 @@ class HomeViewModel extends BaseViewModel {
           await saveBox<bool>(Constants.FIREBASE_SEND, true, key: 0);
         }
       }
-    },
-        callFuncName: 'addDeviceToFirebase',
-        tag: "addDeviceToFirebase",
-        inProgress: false);
+    }, callFuncName: 'addDeviceToFirebase', tag: "addDeviceToFirebase", inProgress: false);
   }
 
   void getRandomDailyWords() {
@@ -93,10 +90,7 @@ class HomeViewModel extends BaseViewModel {
       controller.add(SwipeRefreshState.hidden);
       setSuccess(tag: getDailyWordsTag);
       getAd();
-    },
-        callFuncName: 'getRandomDailyWords',
-        tag: getDailyWordsTag,
-        inProgress: false);
+    }, callFuncName: 'getRandomDailyWords', tag: getDailyWordsTag, inProgress: false);
   }
 
   void getAd() {
@@ -138,14 +132,12 @@ class HomeViewModel extends BaseViewModel {
   }
 
   Future<void> checkForUpdate() async {
-    final lastShown =
-        await localViewModel.preferenceHelper.getLastDialogShowTime();
+    final lastShown = await localViewModel.preferenceHelper.getLastDialogShowTime();
     log("lastShown: $lastShown ${isShow.value}");
     if (isShow.value) {
       return;
     }
-    if (lastShown == null ||
-        DateTime.now().difference(lastShown) > const Duration(seconds: 7)) {
+    if (lastShown == null || DateTime.now().difference(lastShown) > const Duration(seconds: 7)) {
       await localViewModel.preferenceHelper.updateLastDialogShowTime();
       safeBlock(
         () async {
@@ -163,10 +155,8 @@ class HomeViewModel extends BaseViewModel {
                     child: Text(
                       'update_info'.tr(),
                       textAlign: TextAlign.center,
-                      style: AppTextStyle.font15W600Normal.copyWith(
-                          color: isDarkTheme
-                              ? AppColors.lightGray
-                              : AppColors.darkGray),
+                      style: AppTextStyle.font15W600Normal
+                          .copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
                     ),
                   ),
                   positive: "update".tr(),
@@ -197,8 +187,7 @@ class HomeViewModel extends BaseViewModel {
       contentWidget: ValueListenableBuilder<int>(
         valueListenable: downloadedPortion,
         builder: (ctx, int value, child) {
-          if (!isDownloadingShow.value &&
-              value == wordEntity.currentSizeOfPathModel) {
+          if (!isDownloadingShow.value && value == wordEntity.currentSizeOfPathModel) {
             pop();
           }
           return Column(
@@ -289,8 +278,7 @@ class HomeViewModel extends BaseViewModel {
       downloadedPortion.value = index + 1;
       // progressDialog.update(value: index);
       for (int i = index; i < wordEntity.wordPathModel.files!.length; i++) {
-        await wordEntity
-            .getWordEntity(wordEntity.wordPathModel.files![i].path!);
+        await wordEntity.getWordEntity(wordEntity.wordPathModel.files![i].path!);
         // progressDialog.update(value: i);
         downloadedPortion.value = i + 1;
         sharedPref.putInt(Constants.INDEX, i);
@@ -348,8 +336,8 @@ class HomeViewModel extends BaseViewModel {
         onProfileStateChanged(Constants.STATE_NOT_REGISTERED);
       } else {
         // onProfileStateChanged(Constants.STATE_ACTIVE);
-        onProfileStateChanged(sharedPref.getInt(
-            Constants.KEY_PROFILE_STATE, Constants.STATE_NOT_REGISTERED));
+        onProfileStateChanged(
+            sharedPref.getInt(Constants.KEY_PROFILE_STATE, Constants.STATE_NOT_REGISTERED));
         var subscribeModel = await homeRepository.checkSubscription();
         if (subscribeModel != null && subscribeModel.status!) {
           if (subscribeModel.expiryStatus!) {
@@ -396,23 +384,22 @@ class HomeViewModel extends BaseViewModel {
       try {
         launchUrl(Uri.parse('market://details?id=uz.usoft.waiodictionary'));
       } catch (e) {
-        launchUrl(Uri.parse(
-            'http://play.google.com/store/apps/details?id=uz.usoft.waiodictionary'));
+        launchUrl(
+            Uri.parse('http://play.google.com/store/apps/details?id=uz.usoft.waiodictionary'));
       }
     } else if (Platform.isIOS) {
       try {
-        launchUrl(Uri.parse(
-            'https://apps.apple.com/us/app/wisdom-lugati-english-uzbek/id1514625154'));
+        launchUrl(
+            Uri.parse('https://apps.apple.com/us/app/wisdom-lugati-english-uzbek/id1514625154'));
       } catch (e) {
-        launchUrl(Uri.parse(
-            'https://apps.apple.com/us/app/wisdom-lugati-english-uzbek/id1514625154'));
+        launchUrl(
+            Uri.parse('https://apps.apple.com/us/app/wisdom-lugati-english-uzbek/id1514625154'));
       }
     }
   }
 
   shareApp() async {
-    await Share.share(
-        "Wisdom lug'atini tavsiya qilaman! \n\nhttp://onelink.to/wisdomdictionary");
+    await Share.share("Wisdom lug'atini tavsiya qilaman! \n\nhttp://onelink.to/wisdomdictionary");
   }
 
   bool isTheFirstTime() {

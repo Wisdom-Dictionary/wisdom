@@ -60,7 +60,8 @@ class WordBankPage extends ViewModelBuilderWidget<WordBankViewModel> {
         endDrawerEnableOpenDragGesture: true,
         floatingActionButton: Container(
           margin: const EdgeInsets.only(bottom: 65),
-          decoration: BoxDecoration(color: AppColors.blue, borderRadius: BorderRadius.circular(25.r)),
+          decoration:
+              BoxDecoration(color: AppColors.blue, borderRadius: BorderRadius.circular(25.r)),
           height: 40.h,
           width: 125.w,
           child: Material(
@@ -87,6 +88,7 @@ class WordBankPage extends ViewModelBuilderWidget<WordBankViewModel> {
 
   @override
   WordBankViewModel viewModelBuilder(BuildContext context) {
-    return WordBankViewModel(context: context, wordEntityRepository: locator.get(), localViewModel: locator.get());
+    return WordBankViewModel(
+        context: context, wordEntityRepository: locator.get(), localViewModel: locator.get());
   }
 }

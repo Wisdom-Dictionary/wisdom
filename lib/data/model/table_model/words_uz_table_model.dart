@@ -6,11 +6,12 @@ import 'package:wisdom/data/model/base_table_model.dart';
 /// word_id : 1
 /// word : ""
 
-WordsUzTableModel wordsUzTableModelFromJson(String str) => WordsUzTableModel.fromJson(json.decode(str));
+WordsUzTableModel wordsUzTableModelFromJson(String str) =>
+    WordsUzTableModel.fromJson(json.decode(str));
 
 String wordsUzTableModelToJson(WordsUzTableModel data) => json.encode(data.toJson());
 
-class WordsUzTableModel extends BaseTableModel{
+class WordsUzTableModel extends BaseTableModel {
   WordsUzTableModel({
     int? id,
     int? wordId,

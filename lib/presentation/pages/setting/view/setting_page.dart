@@ -125,7 +125,8 @@ class SettingPage extends ViewModelBuilderWidget<SettingPageViewModel> {
                               label: "light".tr(),
                               onTap: () {
                                 // viewModel.currentTheme = ThemeOption.day;
-                                Provider.of<MainProvider>(context, listen: false).changeToLightTheme();
+                                Provider.of<MainProvider>(context, listen: false)
+                                    .changeToLightTheme();
                                 viewModel.notifyListeners();
                               },
                               height: 38.h,
@@ -145,7 +146,8 @@ class SettingPage extends ViewModelBuilderWidget<SettingPageViewModel> {
                               imgAssets: Assets.icons.moon,
                               onTap: () {
                                 // viewModel.currentTheme = ThemeOption.night;
-                                Provider.of<MainProvider>(context, listen: false).changeToDarkTheme();
+                                Provider.of<MainProvider>(context, listen: false)
+                                    .changeToDarkTheme();
                                 viewModel.notifyListeners();
                               },
                               height: 38.h,
@@ -393,11 +395,12 @@ class SettingPage extends ViewModelBuilderWidget<SettingPageViewModel> {
                       padding: EdgeInsets.symmetric(horizontal: 16.w),
                       child: CustomOvalButton(
                         label: "save".tr(),
-                        onTap: () async{
+                        onTap: () async {
                           if (viewModel.currentRemind == RemindOption.manual) {
-                           await viewModel.scheduleDailyNotification(timeOfDay!);
+                            await viewModel.scheduleDailyNotification(timeOfDay!);
                           } else {
-                           await viewModel.scheduleHourlyNotification(viewModel.currentRepeatHourValue);
+                            await viewModel
+                                .scheduleHourlyNotification(viewModel.currentRepeatHourValue);
                           }
                         },
                         textStyle: AppTextStyle.font17W500Normal,

@@ -27,8 +27,7 @@ class SearchCleanButton extends StatelessWidget {
                 padding: EdgeInsets.only(left: 30.w),
                 child: Text(
                   "recent_searches".tr(),
-                  style: AppTextStyle.font19W500Normal
-                      .copyWith(color: AppColors.blue),
+                  style: AppTextStyle.font19W500Normal.copyWith(color: AppColors.blue),
                 ),
               ),
               Padding(
@@ -37,8 +36,7 @@ class SearchCleanButton extends StatelessWidget {
                   height: 32.h,
                   width: 120.w,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(21.r),
-                      color: AppColors.blue),
+                      borderRadius: BorderRadius.circular(21.r), color: AppColors.blue),
                   child: Material(
                     color: Colors.transparent,
                     child: InkWell(

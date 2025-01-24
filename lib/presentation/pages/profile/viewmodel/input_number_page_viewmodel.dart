@@ -27,8 +27,11 @@ class InputNumberPageViewModel extends BaseViewModel {
   Future<void> onNextPressed(String phoneNumber) async {
     safeBlock(
       () async {
-        var status = await profileRepository
-            .login(phoneNumber.replaceAll('+', '').replaceAll(' ', '').replaceAll('(', '').replaceAll(')', ''));
+        var status = await profileRepository.login(phoneNumber
+            .replaceAll('+', '')
+            .replaceAll(' ', '')
+            .replaceAll('(', '')
+            .replaceAll(')', ''));
         setSuccess();
         if (status) {
           sharedPreferenceHelper.putString(Constants.KEY_PHONE, phoneNumber);

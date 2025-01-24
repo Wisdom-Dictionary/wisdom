@@ -27,13 +27,15 @@ void setupLocator() {
   locator.registerSingleton<AppNotificationService>(AppNotificationService());
   locator.registerSingleton<SharedPreferenceHelper>(SharedPreferenceHelper());
   locator.registerSingleton<CustomClient>(CustomClient(sharedPreferenceHelper: locator.get()));
-  locator.registerSingleton<LocalViewModel>(
-      LocalViewModel(context: null, preferenceHelper: locator.get(), netWorkChecker: locator.get()));
+  locator.registerSingleton<LocalViewModel>(LocalViewModel(
+      context: null, preferenceHelper: locator.get(), netWorkChecker: locator.get()));
   locator.registerLazySingleton<WordEntityRepository>(
       () => WordEntityRepositoryImpl(client: locator.get(), dbHelper: locator.get()));
-  locator.registerLazySingleton<HomeRepository>(() => HomeRepositoryImpl(locator.get(), locator.get()));
+  locator.registerLazySingleton<HomeRepository>(
+      () => HomeRepositoryImpl(locator.get(), locator.get()));
   locator.registerLazySingleton<CategoryRepository>(() => CategoryRepositoryImpl(locator.get()));
-  locator.registerLazySingleton<SearchRepository>(() => SearchRepositoryImpl(locator.get(), locator.get()));
+  locator.registerLazySingleton<SearchRepository>(
+      () => SearchRepositoryImpl(locator.get(), locator.get()));
   locator.registerLazySingleton<ProfileRepository>(() => ProfileRepositoryImpl(locator.get()));
 }
 

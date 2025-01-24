@@ -158,8 +158,8 @@ class PurchasesObserver {
     return null;
   }
 
-  Future<void> callUpdateAttribution(
-      Map<dynamic, dynamic> attribution, AdaptyAttributionSource source, String networkUserId) async {
+  Future<void> callUpdateAttribution(Map<dynamic, dynamic> attribution,
+      AdaptyAttributionSource source, String networkUserId) async {
     try {
       await adapty.updateAttribution(attribution, source: source, networkUserId: networkUserId);
     } on AdaptyError catch (adaptyError) {

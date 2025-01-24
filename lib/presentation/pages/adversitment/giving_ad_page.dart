@@ -45,8 +45,8 @@ class GivingAdPage extends StatelessWidget {
                   children: [
                     Text(
                       'disc_local_ad'.tr(),
-                      style:
-                          AppTextStyle.font17W500Normal.copyWith(color: isDarkTheme ? AppColors.white : AppColors.blue),
+                      style: AppTextStyle.font17W500Normal
+                          .copyWith(color: isDarkTheme ? AppColors.white : AppColors.blue),
                       textAlign: TextAlign.center,
                     ),
                     Padding(

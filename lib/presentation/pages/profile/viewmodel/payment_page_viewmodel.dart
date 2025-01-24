@@ -52,8 +52,10 @@ class PaymentPageViewModel extends BaseViewModel {
           var tariffId = sharedPreferenceHelper.getInt(Constants.KEY_TARIFID, 0);
           subscribeModel = await profileRepository.subscribe(tariffId);
           sharedPreferenceHelper.putString(Constants.KEY_SUBSCRIBE, jsonEncode(subscribeModel));
-          tariffsList = TariffsModel.fromJson(jsonDecode(sharedPreferenceHelper.getString(Constants.KEY_TARIFFS, "")));
-          verifyModel ??= VerifyModel.fromJson(jsonDecode(sharedPreferenceHelper.getString(Constants.KEY_VERIFY, "")));
+          tariffsList = TariffsModel.fromJson(
+              jsonDecode(sharedPreferenceHelper.getString(Constants.KEY_TARIFFS, "")));
+          verifyModel ??= VerifyModel.fromJson(
+              jsonDecode(sharedPreferenceHelper.getString(Constants.KEY_VERIFY, "")));
           await PurchasesObserver().callGetProfile();
           setSuccess(tag: subscribeSuccessfulTag);
           // if (PurchasesObserver().isPro()) Future.delayed(const Duration(milliseconds: 200), () => goToProfile());
@@ -71,7 +73,8 @@ class PaymentPageViewModel extends BaseViewModel {
     try {
       await PurchasesObserver().callRestorePurchases();
       setSuccess(tag: restoreTag);
-      if (PurchasesObserver().isPro()) Future.delayed(const Duration(milliseconds: 100), () => goToProfile());
+      if (PurchasesObserver().isPro())
+        Future.delayed(const Duration(milliseconds: 100), () => goToProfile());
     } catch (e) {
       setError(VMException(e.toString()), tag: restoreTag);
     }

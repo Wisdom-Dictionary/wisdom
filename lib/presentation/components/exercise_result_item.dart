@@ -45,8 +45,8 @@ class ExerciseResultItem extends ViewModelWidget<ExerciseFinalPageViewModel> {
                   alignment: Alignment.centerLeft,
                   child: Text.rich(
                     TextSpan(
-                      style: AppTextStyle.font15W500Normal
-                          .copyWith(color: isDarkTheme ? AppColors.borderWhite : AppColors.darkGray),
+                      style: AppTextStyle.font15W500Normal.copyWith(
+                          color: isDarkTheme ? AppColors.borderWhite : AppColors.darkGray),
                       text: model.word,
                       children: [
                         // TextSpan(

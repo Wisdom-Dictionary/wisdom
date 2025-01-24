@@ -30,8 +30,7 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 final StreamController<ReceivedNotification> didReceiveLocalNotificationStream =
     StreamController<ReceivedNotification>.broadcast();
 
-final StreamController<String?> selectNotificationStream =
-    StreamController<String?>.broadcast();
+final StreamController<String?> selectNotificationStream = StreamController<String?>.broadcast();
 String? selectedNotificationPayload;
 const String navigationActionId = 'id_3';
 const String darwinNotificationCategoryText = 'textCategory';
@@ -104,9 +103,7 @@ void main() async {
         supportedLocales: const [Locale('uz', 'UZ'), Locale('en', 'US')],
         path: 'assets/translations',
         fallbackLocale: const Locale('uz', 'UZ'),
-        startLocale: Platform.isIOS
-            ? const Locale('en', 'US')
-            : const Locale('uz', 'UZ'),
+        startLocale: Platform.isIOS ? const Locale('en', 'US') : const Locale('uz', 'UZ'),
         child: MultiProvider(
             providers: [
               ChangeNotifierProvider(create: (context) => MainProvider()),
@@ -170,8 +167,7 @@ Future setupNotifications() async {
     )
   ];
 
-  final DarwinInitializationSettings initializationSettingsDarwin =
-      DarwinInitializationSettings(
+  final DarwinInitializationSettings initializationSettingsDarwin = DarwinInitializationSettings(
     requestAlertPermission: false,
     requestBadgePermission: false,
     requestSoundPermission: false,
@@ -199,8 +195,7 @@ Future setupNotifications() async {
 
   await flutterLocalNotificationsPlugin.initialize(
     initializationSettings,
-    onDidReceiveNotificationResponse:
-        (NotificationResponse notificationResponse) {
+    onDidReceiveNotificationResponse: (NotificationResponse notificationResponse) {
       print(notificationResponse.toString());
       switch (notificationResponse.notificationResponseType) {
         case NotificationResponseType.selectedNotification:

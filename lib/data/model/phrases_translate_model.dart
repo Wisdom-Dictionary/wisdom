@@ -1,8 +1,9 @@
 class PhrasesTranslateModel {
   PhrasesTranslateModel({
-      this.id, 
-      this.phrasesId, 
-      this.word,});
+    this.id,
+    this.phrasesId,
+    this.word,
+  });
 
   PhrasesTranslateModel.fromJson(dynamic json) {
     id = json['id'];
@@ -20,5 +21,4 @@ class PhrasesTranslateModel {
     map['word'] = word;
     return map;
   }
-
 }

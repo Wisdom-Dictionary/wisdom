@@ -38,8 +38,9 @@ class ThesaurusPageViewModel extends BaseViewModel {
   }
 
   goToDetails(CatalogModel catalogModel) {
-    homeRepository.timelineModel.thesaurus =
-        Collocation(id: catalogModel.id, worden: Worden(id: catalogModel.wordenid, word: catalogModel.wordenword));
+    homeRepository.timelineModel.thesaurus = Collocation(
+        id: catalogModel.id,
+        worden: Worden(id: catalogModel.wordenid, word: catalogModel.wordenword));
     localViewModel.isFromMain = false;
     localViewModel.changePageIndex(7);
   }

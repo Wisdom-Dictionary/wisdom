@@ -51,7 +51,8 @@ class GettingProPageViewModel extends BaseViewModel {
     if (subscribed()) {
       if (tariffsValue != '') {
         sharedPreferenceHelper.putInt(Constants.KEY_TARIFID, int.parse(tariffsValue));
-        sharedPreferenceHelper.putString(Constants.KEY_TARIFFS, jsonEncode(profileRepository.tariffsModel.first));
+        sharedPreferenceHelper.putString(
+            Constants.KEY_TARIFFS, jsonEncode(profileRepository.tariffsModel.first));
         navigateTo(Routes.registrationPage);
       }
     } else {

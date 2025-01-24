@@ -68,7 +68,8 @@ class GoogleTranslatorPageViewModel extends BaseViewModel {
                   .translate(text, from: topUzbek ? "uz" : "en", to: topUzbek ? "en" : "uz")
                   .then((value) => value.text);
               controller.text = translated;
-              localViewModel.preferenceHelper.putString(Constants.KEY_DATE, DateTime.now().toString());
+              localViewModel.preferenceHelper
+                  .putString(Constants.KEY_DATE, DateTime.now().toString());
               if (!PurchasesObserver().isPro()) {
                 localViewModel.preferenceHelper.putInt(Constants.KEY_TRANSLATE_COUNT, 1);
               } else {
@@ -94,8 +95,8 @@ class GoogleTranslatorPageViewModel extends BaseViewModel {
             child: Text(
               'translate_inform'.tr(),
               textAlign: TextAlign.center,
-              style:
-                  AppTextStyle.font15W600Normal.copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
+              style: AppTextStyle.font15W600Normal
+                  .copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
             ),
           ),
           positive: "buy_pro".tr(),
@@ -188,13 +189,15 @@ class GoogleTranslatorPageViewModel extends BaseViewModel {
                       var item = wordEntityRepository.wordBankFoldersList[index];
                       if (item.id != 2) {
                         return Container(
-                          decoration:
-                              const BoxDecoration(border: Border(bottom: BorderSide(color: AppColors.borderWhite))),
+                          decoration: const BoxDecoration(
+                              border: Border(bottom: BorderSide(color: AppColors.borderWhite))),
                           child: ListTile(
                             title: Text(item.folderName,
-                                style: AppTextStyle.font15W600Normal.copyWith(color: AppColors.blue)),
+                                style:
+                                    AppTextStyle.font15W600Normal.copyWith(color: AppColors.blue)),
                             onTap: () async {
-                              var bankModel = WordBankModel(word: wordEng, translation: wordUz, folderId: item.id);
+                              var bankModel = WordBankModel(
+                                  word: wordEng, translation: wordUz, folderId: item.id);
 
                               await wordEntityRepository.saveWordBank(bankModel);
                               if (key != null) {
@@ -271,7 +274,8 @@ class GoogleTranslatorPageViewModel extends BaseViewModel {
         child: Text(
           'new_folder_bound_info'.tr(),
           textAlign: TextAlign.center,
-          style: AppTextStyle.font15W600Normal.copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
+          style: AppTextStyle.font15W600Normal
+              .copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
         ),
       ),
       positive: "buy_pro".tr(),
@@ -303,7 +307,8 @@ class GoogleTranslatorPageViewModel extends BaseViewModel {
         child: Text(
           'word_bank_add_info'.tr(),
           textAlign: TextAlign.center,
-          style: AppTextStyle.font15W600Normal.copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
+          style: AppTextStyle.font15W600Normal
+              .copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
         ),
       ),
       positive: "buy_pro".tr(),

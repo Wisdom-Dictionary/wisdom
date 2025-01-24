@@ -113,7 +113,8 @@ class PaymentPage extends ViewModelBuilderWidget<PaymentPageViewModel> {
                       CustomBanner(
                         title: 'choose_payment'.tr(),
                         height: 330.h,
-                        contentPadding: const EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 20),
+                        contentPadding:
+                            const EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 20),
                         child: Column(
                           children: [
                             RadioListTile(
@@ -197,8 +198,8 @@ class PaymentPage extends ViewModelBuilderWidget<PaymentPageViewModel> {
                             //   },
                             // ),
                             Container(
-                              decoration:
-                                  BoxDecoration(borderRadius: BorderRadius.circular(40.r), color: AppColors.blue),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(40.r), color: AppColors.blue),
                               height: 45.h,
                               margin: EdgeInsets.only(top: 40.h, bottom: 12.h),
                               child: Material(
@@ -222,7 +223,9 @@ class PaymentPage extends ViewModelBuilderWidget<PaymentPageViewModel> {
                                 children: [
                                   RichText(
                                     text: myUrl('Restore Purchase', '',
-                                        textColor: AppColors.blue, underline: false, onTap: () => viewModel.restore()),
+                                        textColor: AppColors.blue,
+                                        underline: false,
+                                        onTap: () => viewModel.restore()),
                                   ),
                                   RichText(
                                     text: myUrl('Privacy', Constants.PRIVACY_URL,

@@ -36,7 +36,7 @@ class DifferenceDetailPageViewModel extends BaseViewModel {
   }
 
   goBack() {
-    if(localViewModel.isFromMain) {
+    if (localViewModel.isFromMain) {
       localViewModel.changePageIndex(0);
     } else {
       localViewModel.changePageIndex(13);

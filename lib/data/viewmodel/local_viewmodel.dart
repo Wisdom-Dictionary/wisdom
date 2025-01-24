@@ -17,9 +17,7 @@ import '../model/exercise_model.dart';
 
 class LocalViewModel extends BaseViewModel {
   LocalViewModel(
-      {required super.context,
-      required this.preferenceHelper,
-      required this.netWorkChecker});
+      {required super.context, required this.preferenceHelper, required this.netWorkChecker});
 
   final SharedPreferenceHelper preferenceHelper;
 
@@ -70,8 +68,7 @@ class LocalViewModel extends BaseViewModel {
 
   late Function(GlobalKey) runAddToCartAnimation;
 
-  double get fontSize =>
-      preferenceHelper.getDouble(preferenceHelper.fontSize, 17);
+  double get fontSize => preferenceHelper.getDouble(preferenceHelper.fontSize, 17);
 
   int subId = -1;
 
@@ -175,8 +172,7 @@ class LocalViewModel extends BaseViewModel {
   }
 
   void shareWord(String word) async {
-    await Share.share(
-        "Wisdom Dictionary : https://t.me/@wisdom_uz.\nSharing word: $word");
+    await Share.share("Wisdom Dictionary : https://t.me/@wisdom_uz.\nSharing word: $word");
   }
 
   void goByLink(String linkWord) async {

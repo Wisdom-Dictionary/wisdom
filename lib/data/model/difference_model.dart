@@ -1,9 +1,10 @@
 class DifferenceModel {
   DifferenceModel({
-      this.id, 
-      this.wordId, 
-      this.word, 
-      this.body,});
+    this.id,
+    this.wordId,
+    this.word,
+    this.body,
+  });
 
   DifferenceModel.fromJson(dynamic json) {
     id = json['id'];
@@ -25,5 +26,4 @@ class DifferenceModel {
     map['body'] = body;
     return map;
   }
-
 }

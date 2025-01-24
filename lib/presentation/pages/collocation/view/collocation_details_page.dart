@@ -79,7 +79,8 @@ class CollocationDetailPage extends ViewModelBuilderWidget<CollocationDetailPage
             children: [
               Column(mainAxisSize: MainAxisSize.min, children: [
                 Container(
-                  decoration: isDarkTheme ? AppDecoration.bannerDarkDecor : AppDecoration.bannerDecor,
+                  decoration:
+                      isDarkTheme ? AppDecoration.bannerDarkDecor : AppDecoration.bannerDecor,
                   padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 30.h),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -118,7 +119,9 @@ class CollocationDetailPage extends ViewModelBuilderWidget<CollocationDetailPage
                   return viewModel.localViewModel.banner != null && value as bool
                       ? Container(
                           margin: EdgeInsets.only(top: 16.h),
-                          decoration: isDarkTheme ? AppDecoration.bannerDarkDecor : AppDecoration.bannerDecor,
+                          decoration: isDarkTheme
+                              ? AppDecoration.bannerDarkDecor
+                              : AppDecoration.bannerDecor,
                           height: viewModel.localViewModel.banner!.size.height * 1.0,
                           child: AdWidget(
                             ad: viewModel.localViewModel.banner!..load(),

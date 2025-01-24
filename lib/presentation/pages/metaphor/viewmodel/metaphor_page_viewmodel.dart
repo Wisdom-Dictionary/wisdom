@@ -39,8 +39,9 @@ class MetaphorPageViewModel extends BaseViewModel {
   }
 
   goToDetails(CatalogModel catalogModel) {
-    homeRepository.timelineModel.metaphor =
-        Collocation(id: catalogModel.id, worden: Worden(id: catalogModel.wordenid, word: catalogModel.wordenword));
+    homeRepository.timelineModel.metaphor = Collocation(
+        id: catalogModel.id,
+        worden: Worden(id: catalogModel.wordenid, word: catalogModel.wordenword));
     localViewModel.isFromMain = false;
     localViewModel.changePageIndex(9);
   }

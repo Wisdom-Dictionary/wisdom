@@ -23,14 +23,16 @@ class AbbreviationWordItem extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: RichText(
               text: TextSpan(
-                style: AppTextStyle.font15W500Normal
-                    .copyWith(color: isDarkTheme ? AppColors.white : AppColors.darkGray,
+                style: AppTextStyle.font15W500Normal.copyWith(
+                    color: isDarkTheme ? AppColors.white : AppColors.darkGray,
                     fontSize: locator<LocalViewModel>().fontSize - 2),
                 text: firstText,
                 children: [
                   TextSpan(
                     text: ' - $secondText',
-                    style: AppTextStyle.font15W400Normal.copyWith(color: AppColors.paleGray, fontSize: locator<LocalViewModel>().fontSize - 2),
+                    style: AppTextStyle.font15W400Normal.copyWith(
+                        color: AppColors.paleGray,
+                        fontSize: locator<LocalViewModel>().fontSize - 2),
                   ),
                 ],
               ),
@@ -42,7 +44,7 @@ class AbbreviationWordItem extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 10.w),
               child: Divider(
-                color:isDarkTheme ? AppColors.darkDivider : AppColors.borderWhite,
+                color: isDarkTheme ? AppColors.darkDivider : AppColors.borderWhite,
                 height: 1,
                 thickness: 0.75,
               ),

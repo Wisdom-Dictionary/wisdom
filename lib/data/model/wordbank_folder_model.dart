@@ -3,7 +3,8 @@ import 'dart:convert';
 /// id : 1
 /// folder_name : ""
 
-WordBankFolderModel wordbankFolderModelFromJson(String str) => WordBankFolderModel.fromJson(json.decode(str));
+WordBankFolderModel wordbankFolderModelFromJson(String str) =>
+    WordBankFolderModel.fromJson(json.decode(str));
 
 String wordbankFolderModelToJson(WordBankFolderModel data) => json.encode(data.toJson());
 

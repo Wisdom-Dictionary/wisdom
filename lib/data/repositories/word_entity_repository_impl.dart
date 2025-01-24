@@ -32,14 +32,12 @@ class WordEntityRepositoryImpl extends WordEntityRepository {
       var response = await get(Uri.parse('${Urls.baseUrl}$pathUri'));
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as List<dynamic>;
-        final mappedData =
-            data.map((item) => WordEntityModel.fromJson(item)).toList();
+        final mappedData = data.map((item) => WordEntityModel.fromJson(item)).toList();
         // _wordEntityList = [for (final item in jsonDecode(response.body)) WordEntityModel.fromJson(item)];
         await dbHelper.saveAllWords(mappedData);
         log("LOG: ${Urls.baseUrl}$pathUri added");
       } else {
-        throw VMException(response.body,
-            callFuncName: 'getWordEntity', response: response);
+        throw VMException(response.body, callFuncName: 'getWordEntity', response: response);
       }
     } catch (e) {
       print(e.toString());
@@ -54,8 +52,7 @@ class WordEntityRepositoryImpl extends WordEntityRepository {
       _wordPathModel = WordPathModel.fromJson(jsonDecode(response.body));
       return _wordPathModel;
     } else {
-      throw VMException(response.body,
-          callFuncName: 'getWordsPaths', response: response);
+      throw VMException(response.body, callFuncName: 'getWordsPaths', response: response);
     }
   }
 
@@ -87,8 +84,7 @@ class WordEntityRepositoryImpl extends WordEntityRepository {
 
   @override
   Future<bool> moveToFolder(int folderId, int tableId, int wordId) async {
-    return await dbHelper.moveToFolder(
-        folderId: folderId, tableId: tableId, wordId: wordId);
+    return await dbHelper.moveToFolder(folderId: folderId, tableId: tableId, wordId: wordId);
   }
 
   @override
@@ -128,9 +124,7 @@ class WordEntityRepositoryImpl extends WordEntityRepository {
     if (response != null && response.isNotEmpty) {
       for (var element in response) {
         _wordBankFolderList.add(WordBankFolderEntity(
-            id: element.id!,
-            folderName: element.folderName!,
-            isChecked: false));
+            id: element.id!, folderName: element.folderName!, isChecked: false));
       }
     }
   }
@@ -140,8 +134,7 @@ class WordEntityRepositoryImpl extends WordEntityRepository {
     dbHelper.deleteWordBankByFolder(folderId);
     dbHelper.deleteWordBankFolderList(folderId);
     _wordBankList.removeWhere((element) => element.folderId == folderId);
-    _wordBankListForCount
-        .removeWhere((element) => element.folderId == folderId);
+    _wordBankListForCount.removeWhere((element) => element.folderId == folderId);
     _wordBankFolderList.removeWhere((element) => element.id == folderId);
   }
 
@@ -162,8 +155,7 @@ class WordEntityRepositoryImpl extends WordEntityRepository {
   }
 
   @override
-  List<WordBankModel> get wordBankListForCount =>
-      _wordBankListForCount.toList();
+  List<WordBankModel> get wordBankListForCount => _wordBankListForCount.toList();
 
   @override
   int get currentSizeOfPathModel => _wordPathModel.files?.length ?? 0;
