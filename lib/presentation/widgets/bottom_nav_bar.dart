@@ -150,8 +150,7 @@ class HomeBottomNavBar extends ViewModelWidget<HomeViewModel> {
                     child: Showcase(
                       key: viewModel.globalKeyRoadmapBattle,
                       title: 'Roadmap Battle',
-                      description:
-                          "Battle",
+                      description: "Battle",
                       titleAlignment: Alignment.center,
                       titleTextStyle: AppTextStyle.font17W600Normal.copyWith(color: AppColors.blue),
                       descTextStyle: AppTextStyle.font15W500Normal.copyWith(color: AppColors.blue),

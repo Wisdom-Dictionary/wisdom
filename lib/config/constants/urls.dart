@@ -12,7 +12,7 @@ class Urls {
   static var subscribeCheck = Uri.parse('${baseUrl}api/subscribe/check');
 
   static var getWordsVersionAndPath = Uri.parse('${baseUrl}api/download/words');
-  
+
   static var levels = Uri.parse('${baseUrl}api/levels');
 
   static subscribe(int id) => Uri.parse('${baseUrl}api/subscribe/set/$id');

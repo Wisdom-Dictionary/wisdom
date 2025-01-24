@@ -21,8 +21,7 @@ class RoadmapPage extends ViewModelBuilderWidget<RoadMapViewModel> {
   }
 
   @override
-  Widget builder(
-      BuildContext context, RoadMapViewModel viewModel, Widget? child) {
+  Widget builder(BuildContext context, RoadMapViewModel viewModel, Widget? child) {
     return Scaffold(
       appBar: NewCustomAppBar(
         child: const RoadmapAppBarContent(),
@@ -67,10 +66,7 @@ class RoadMapContent extends StatelessWidget {
             Positioned.fill(
                 child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                backgroundGradient(topGradient()),
-                backgroundGradient(bottomGradient())
-              ],
+              children: [backgroundGradient(topGradient()), backgroundGradient(bottomGradient())],
             )),
             Padding(
               padding: const EdgeInsets.only(bottom: 80),
@@ -92,10 +88,8 @@ class RoadMapContent extends StatelessWidget {
                 ),
               ),
             ),
-            const Positioned(
-                bottom: 130, right: 100, child: TaskLevelIndicatorWidget()),
-            const Positioned(
-                bottom: 160, left: 100, child: InactiveLevelIndicator())
+            const Positioned(bottom: 130, right: 100, child: TaskLevelIndicatorWidget()),
+            const Positioned(bottom: 160, left: 100, child: InactiveLevelIndicator())
           ],
         ),
       ),
@@ -157,14 +151,12 @@ class RoadmapAppBarContent extends StatelessWidget {
                   onTap: () {},
                   borderRadius: BorderRadius.circular(21.r),
                   child: Container(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+                    padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
                     height: 19.h,
                     child: Center(
                       child: Text(
                         "claim".tr(),
-                        style: AppTextStyle.font13W500Normal
-                            .copyWith(color: AppColors.blue),
+                        style: AppTextStyle.font13W500Normal.copyWith(color: AppColors.blue),
                       ),
                     ),
                   ),
@@ -184,8 +176,7 @@ class RoadmapAppBarContent extends StatelessWidget {
         SvgPicture.asset(Assets.icons.heart),
         SvgPicture.asset(
           Assets.icons.heartSlash,
-          colorFilter: ColorFilter.mode(
-              AppColors.white.withOpacity(0.5), BlendMode.srcIn),
+          colorFilter: ColorFilter.mode(AppColors.white.withOpacity(0.5), BlendMode.srcIn),
         ),
       ],
     );
@@ -197,8 +188,7 @@ class RoadmapAppBarContent extends StatelessWidget {
       children: [
         Text(
           title,
-          style:
-              AppTextStyle.font13W400Normal.copyWith(color: AppColors.yellow),
+          style: AppTextStyle.font13W400Normal.copyWith(color: AppColors.yellow),
         ),
         const SizedBox(
           width: 12,

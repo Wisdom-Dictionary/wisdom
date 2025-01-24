@@ -15,7 +15,7 @@ class LevelModel {
   int? star;
   String? status;
   int? position;
-  
+
   LevelModel({
     this.id,
     this.name,
@@ -46,5 +46,6 @@ class LevelModel {
 
   String toJson() => json.encode(toMap());
 
-  factory LevelModel.fromJson(String source) => LevelModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory LevelModel.fromJson(String source) =>
+      LevelModel.fromMap(json.decode(source) as Map<String, dynamic>);
 }

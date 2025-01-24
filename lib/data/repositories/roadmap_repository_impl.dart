@@ -29,8 +29,7 @@ class RoadmapRepositoryImpl extends RoadmapRepository {
       }
       return items;
     } else {
-      throw VMException(response.body,
-          callFuncName: 'getAd', response: response);
+      throw VMException(response.body, callFuncName: 'getAd', response: response);
     }
   }
 }

@@ -30,7 +30,7 @@ class _Icons extends _AssetsHolder {
   String get verify => '$basePath/verify.svg';
 
   String get heart => '$basePath/heart.svg';
-  
+
   String get heartSlash => '$basePath/heart-slash.svg';
 
   String get abbreviations => '$basePath/abbrev.svg';

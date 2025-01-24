@@ -20,11 +20,12 @@ class FlagIndicatorWidget extends StatelessWidget {
       child: Column(
         children: [
           SvgPicture.asset(Assets.icons.flag),
-          SizedBox(height: 4,),
+          SizedBox(
+            height: 4,
+          ),
           Text(
             "17",
-            style: AppTextStyle.font13W500Normal
-                .copyWith(fontSize: 14, color: AppColors.white),
+            style: AppTextStyle.font13W500Normal.copyWith(fontSize: 14, color: AppColors.white),
           ),
         ],
       ),
@@ -55,8 +56,7 @@ class TaskLevelIndicatorWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(1000)),
             child: Text(
               "1-20",
-              style: AppTextStyle.font13W500Normal
-                  .copyWith(fontSize: 14, color: AppColors.white),
+              style: AppTextStyle.font13W500Normal.copyWith(fontSize: 14, color: AppColors.white),
             ),
           ),
         )
@@ -111,12 +111,10 @@ class TaskLevelStarsIndicator extends StatelessWidget {
     return Row(
       children: [
         Transform.translate(
-            offset: Offset(1, 4),
-            child: SvgPicture.asset(Assets.icons.starInactive)),
+            offset: Offset(1, 4), child: SvgPicture.asset(Assets.icons.starInactive)),
         SvgPicture.asset(Assets.icons.starInactive),
         Transform.translate(
-            offset: Offset(-1, 4),
-            child: SvgPicture.asset(Assets.icons.starInactive)),
+            offset: Offset(-1, 4), child: SvgPicture.asset(Assets.icons.starInactive)),
       ],
     );
   }
