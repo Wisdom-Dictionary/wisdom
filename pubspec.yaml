@@ -28,7 +28,7 @@ dependencies:
   shared_preferences: ^2.0.15
   connectivity_plus: ^5.0.2
   swipe_refresh: ^1.0.2
-  flutter_widget_from_html: ^0.14.11
+  flutter_widget_from_html: ^0.15.3
 
   # for downloading
   sn_progress_dialog: ^1.1.3

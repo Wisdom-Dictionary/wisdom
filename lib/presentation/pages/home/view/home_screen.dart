@@ -27,7 +27,9 @@ import 'package:wisdom/presentation/pages/grammar/view/grammar_page.dart';
 import 'package:wisdom/presentation/pages/home/viewmodel/home_viewmodel.dart';
 import 'package:wisdom/presentation/pages/metaphor/view/metaphor_details_page.dart';
 import 'package:wisdom/presentation/pages/metaphor/view/metaphor_page.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/view/level_words_page.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/roadmap_page.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/view/word_details_page.dart';
 import 'package:wisdom/presentation/pages/search/view/search_page.dart';
 import 'package:wisdom/presentation/pages/speaking/view/speaking_details_page.dart';
 import 'package:wisdom/presentation/pages/speaking/view/speaking_page.dart';
@@ -79,7 +81,9 @@ class HomeScreen extends ViewModelWidget<HomeViewModel> {
     ExerciseFlipPage(), //21
     CollocationPage(), //22
     WordBankFolderPage(), //23
-    ExerciseCrossWordPage() //24
+    ExerciseCrossWordPage(), //24
+    LevelWordsPage(), //25
+    WordDetailsPage(), //26
   ];
 
   @override

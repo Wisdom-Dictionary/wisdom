@@ -45,7 +45,7 @@ class ProfileRepositoryImpl extends ProfileRepository {
         body: jsonEncode({
           'phone': phoneNumber,
           'verify_code': smsCode,
-          'phone_id': deviceId,
+          'device_id': deviceId,
         }),
         headers: {'Content-Type': 'application/json'});
     if (response.isSuccessful) {

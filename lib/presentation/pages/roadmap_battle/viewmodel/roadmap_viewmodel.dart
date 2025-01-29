@@ -14,13 +14,14 @@ class RoadMapViewModel extends BaseViewModel {
   final sharedPref = locator<SharedPreferenceHelper>();
   final localViewModel = locator<LocalViewModel>();
 
-  final String getLevelsTag = "getAdTag";
+  final String getLevelsTag = "getLevelsTag";
+  int page = 0;
 
   void getLevels() {
     safeBlock(() async {
       if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
-        var response = await homeRepository.getLevels();
-        setSuccess(value: response, tag: getLevelsTag);
+        await homeRepository.getLevels(++page);
+        setSuccess(tag: getLevelsTag);
       }
     }, callFuncName: 'getLevels', tag: getLevelsTag, inProgress: false);
   }

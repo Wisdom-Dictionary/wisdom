@@ -7,6 +7,10 @@ abstract class AppColors {
 
   static const Color yellow = Color(0xFFFFCC00);
   static const Color textDisabled = Color(0xFFB3B7BC);
+  static const Color bgGray = Color(0xFFE2E6EE);
+  static const Color bgLightBlue = Color(0xFF70AED7);
+  static const Color green = Color(0xFF00C62C);
+  static const Color bgAccent = Color(0xFFFFA500);
 
   static const Color success = Color(0xFFBCF5CC);
   static const Color error = Color(0xFFFCD0D1);
