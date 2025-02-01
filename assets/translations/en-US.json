@@ -150,9 +150,17 @@
   "downloadingCompleted": "Word downloading completed!",
   "backgroundInfo": "Don't close the app until the download is complete",
   "youCanHideTheWindow": "You can hide the window",
-  "claim" : "Claim",
-  "exercises" : "Exercises",
-  "battle" : "Battle",
-  "friend" : "Friend",
-  "start_the_exercises" : "Start the exercises"
+  "claim": "Claim",
+  "exercises": "Exercises",
+  "battle": "Battle",
+  "friend": "Friend",
+  "start_the_exercises": "Start the exercises",
+  "word_exercises": "Word exercises",
+  "submit": "Submit",
+  "exercise_result": "Exercise result",
+  "view_correct_answers": "View correct answers",
+  "retry": "Retry",
+  "right_answers": "Right answers",
+  "words_found_correctly": "Words found correctly",
+  "time_taken": "Time taken"
 }

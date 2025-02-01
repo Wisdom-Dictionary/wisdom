@@ -15,7 +15,25 @@ class Urls {
   static var getWordsVersionAndPath = Uri.parse('${baseUrl}api/download/words');
 
   static var levels = Uri.parse('${baseUrl}api/levels');
-  static var testQuestions = Uri.parse('${baseUrl}api/test-questions');
+  static Uri testQuestions(int id) => Uri.https(
+        Urls.baseAddress,
+        "/api/levels/$id/test-questions",
+      );
+
+  static Uri levelWords(int id) => Uri.https(
+        Urls.baseAddress,
+        "/api/levels/$id",
+      );
+
+  static Uri wordQuestions(int wordId) => Uri.https(
+        Urls.baseAddress,
+        "/api/word/$wordId/word-questions",
+      );
+
+  static Uri wordQuestionsCheck(int wordId) => Uri.https(
+        Urls.baseAddress,
+        "/api/word/$wordId/word-questions-check",
+      );
 
   static subscribe(int id) => Uri.parse('${baseUrl}api/subscribe/set/$id');
 

@@ -131,7 +131,7 @@ class LevelWordsPage extends ViewModelBuilderWidget<LevelWordsPageViewModel> {
         itemBuilder: (context, index) {
           return GestureDetector(
               onTap: () {
-                viewModel.searchByWord(viewModel.roadmapRepository.levelWordsList[index].word!);
+                viewModel.searchByWord(viewModel.roadmapRepository.levelWordsList[index]);
               },
               child: itemExercise(index, viewModel.roadmapRepository.levelWordsList[index]));
         },

@@ -50,22 +50,12 @@ class LevelWordsPageViewModel extends BaseViewModel {
     }, callFuncName: 'getLevelWords', tag: getLevelWordsTag);
   }
 
-  void getTestQuestions() {
-    safeBlock(() async {
-      await roadmapRepository.getTestQuestions();
-      if (roadmapRepository.testQuestionsList.isNotEmpty) {
-        setSuccess(tag: getExercisesTag);
-      } else {
-        callBackError("text");
-      }
-    }, callFuncName: 'getExercises', tag: getExercisesTag);
-  }
-
-  void searchByWord(String word) {
+  void searchByWord(LevelWordModel levelWordItem) {
     safeBlock(
       () async {
+        roadmapRepository.setSelectedLevel(levelWordItem);
         await getSearchLanguageMode();
-        searchText = word.trim();
+        searchText = levelWordItem.word!.trim();
         List<SearchResultUzModel> resultUz = [];
         List<SearchResultModel> result = [];
         if (searchText.isNotEmpty) {

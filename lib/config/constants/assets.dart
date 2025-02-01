@@ -17,6 +17,10 @@ class _Icons extends _AssetsHolder {
 
   String get flag => '$basePath/flag.svg';
 
+  String get failureIcon => '$basePath/failure-icon.svg';
+
+  String get incorrectAnswer => '$basePath/incorrect-answer.svg';
+
   String get battle => '$basePath/battle.svg';
 
   String get medalStar => '$basePath/medal-star.svg';

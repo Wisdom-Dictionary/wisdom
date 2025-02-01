@@ -5,9 +5,11 @@ import 'package:wisdom/config/constants/urls.dart';
 import 'package:wisdom/core/db/db_helper.dart';
 import 'package:wisdom/core/domain/http_is_success.dart';
 import 'package:wisdom/core/services/custom_client.dart';
+import 'package:wisdom/data/model/roadmap/answer_entity.dart';
 import 'package:wisdom/data/model/roadmap/level_model.dart';
 import 'package:wisdom/data/model/roadmap/level_word_model.dart';
 import 'package:wisdom/data/model/roadmap/test_question_model.dart';
+import 'package:wisdom/data/model/roadmap/word_answer_model.dart';
 import 'package:wisdom/domain/repositories/roadmap_repository.dart';
 
 class RoadmapRepositoryImpl extends RoadmapRepository {
@@ -16,10 +18,18 @@ class RoadmapRepositoryImpl extends RoadmapRepository {
   final DBHelper dbHelper;
   final CustomClient customClient;
 
-  List<TestQuestionModel> _testQuestionsList = [];
   List<LevelWordModel> _levelWordsList = [];
   List<LevelModel> _levelsList = [];
   int _userCurrentLevel = 0;
+  LevelWordModel? selectedLevelWord;
+
+  //test-question
+  List<TestQuestionModel> _testQuestionsList = [];
+  List<TestQuestionModel> _wordQuestionsList = [];
+  List<WordAnswerModel> _wordQuestionsCheckList = [];
+  int _levelExerciseId = 0, _wordTestId = 0, _totalQuestions = 0, _correctAnswers = 0;
+  String _startDate = "", _endDate = "";
+  bool _pass = false;
 
   // getting levels from host
   @override
@@ -42,30 +52,104 @@ class RoadmapRepositoryImpl extends RoadmapRepository {
   @override
   Future<void> getLevelWords() async {
     _levelWordsList = [];
-    for (var item in sampleLevelWordsResponse['words'] as List) {
-      _levelWordsList.add(LevelWordModel.fromMap(item));
+    var response = await customClient.get(
+      Urls.levelWords(1),
+    );
+    if (response.isSuccessful) {
+      final responseData = jsonDecode(response.body);
+      for (var item in responseData['words']) {
+        _levelWordsList.add(LevelWordModel.fromMap(item));
+      }
+    } else {
+      throw VMException(response.body, callFuncName: 'getLevels', response: response);
     }
+  }
+
+  @override
+  void setSelectedLevel(LevelWordModel item) {
+    selectedLevelWord = item;
   }
 
   @override
   Future<void> getTestQuestions() async {
     _testQuestionsList = [];
-    for (var item in sampleTestResponse['questions'] as List) {
-      _testQuestionsList.add(TestQuestionModel.fromMap(item));
+
+    var response = await customClient.get(Urls.testQuestions(1));
+    if (response.isSuccessful) {
+      final responseData = jsonDecode(response.body);
+
+      for (var item in (responseData['questions'] as List)) {
+        _testQuestionsList.add(TestQuestionModel.fromMap(item));
+      }
+
+      _endDate = responseData["end_date"];
+      _startDate = responseData["start_date"];
+      _levelExerciseId = responseData["level_exercise_id"];
+    } else {
+      throw VMException(response.body, callFuncName: 'getTestQuestions', response: response);
     }
-    // var response = await get(Urls.testQuestions);
-    // if (response.statusCode == 200) {
-    //   if (response.isSuccessful) {
-    //     for (var item in jsonDecode(response.body)['questions']) {
-    //       items.add(TestQuestionModel.fromJson(item));
-    //     }
-    //   }
-    // return items;
-    // } else {
-    //   throw VMException(response.body,
-    //       callFuncName: 'getTestQuestions', response: response);
-    // }
   }
+
+  @override
+  Future<void> getWordQuestions() async {
+    _wordQuestionsList = [];
+
+    var response = await customClient.get(Urls.wordQuestions(selectedLevelWord!.wordId!));
+    if (response.isSuccessful) {
+      final responseData = jsonDecode(response.body);
+
+      for (var item in (responseData['questions'] as List)) {
+        _wordQuestionsList.add(TestQuestionModel.fromMap(item));
+      }
+      _wordTestId = responseData['word_test_id'];
+    } else {
+      throw VMException(response.body, callFuncName: 'getWordQuestions', response: response);
+    }
+  }
+
+  @override
+  Future<void> postWordQuestionsCheck(List<AnswerEntity> answers) async {
+    _wordQuestionsCheckList = [];
+
+    final requestBody = {
+      'word_test_id': "$_wordTestId",
+      'answers': answers
+          .map(
+            (e) => e.toMap(),
+          )
+          .toList()
+    };
+    var response = await customClient.post(Urls.wordQuestionsCheck(selectedLevelWord!.wordId!),
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: jsonEncode(requestBody));
+    // var response = await customClient.post(Uri.parse('https://wisdom.yangixonsaroy.uz/api/word/3295/word-questions-check'), headers: {"Accept":"application/json"}, body: requestBody );
+    if (response.isSuccessful) {
+      final responseData = jsonDecode(response.body);
+
+      for (var item in (responseData['answers'] as List)) {
+        _wordQuestionsCheckList.add(WordAnswerModel.fromMap(item));
+      }
+      _pass = responseData['pass'];
+      _totalQuestions = responseData['total_questions'];
+      _correctAnswers = responseData['correct_answers'];
+    } else {
+      throw VMException(response.body, callFuncName: 'postWordQuestionsCheck', response: response);
+    }
+  }
+
+  static const sampleResponseWordExercisesCheck = {
+    "pass": 1,
+    "percentage": 100,
+    "total_questions": 2,
+    "correct_answers": 2,
+    "answers": [
+      {"question_id": 11, "answer_id": 29, "correct": true},
+      {"question_id": 12, "answer_id": 31, "correct": true}
+    ]
+  };
 
   @override
   List<LevelModel> get levelsList => _levelsList;
@@ -73,163 +157,33 @@ class RoadmapRepositoryImpl extends RoadmapRepository {
   @override
   List<TestQuestionModel> get testQuestionsList => _testQuestionsList;
 
-  static const sampleLevelWordsResponse = {
-    "id": 1,
-    "name": "20",
-    "canStartExercise": false,
-    "words": [
-      {
-        "id": 599,
-        "position": 1,
-        "word_id": 52,
-        "word": "A",
-        "word_class": "noun",
-        "is_learnt": false
-      },
-      {
-        "id": 600,
-        "position": 2,
-        "word_id": 3295,
-        "word": "akimbo",
-        "word_class": "adverb",
-        "is_learnt": false
-      },
-      {
-        "id": 601,
-        "position": 3,
-        "word_id": 2362,
-        "word": "beg",
-        "word_class": "verb",
-        "is_learnt": false
-      },
-      {
-        "id": 602,
-        "position": 4,
-        "word_id": 28158,
-        "word": "forcible",
-        "word_class": "adjective",
-        "is_learnt": false
-      }
-    ]
-  };
-
-  static const sampleLevelsResponse = {
-    "data": [
-      {"id": 1, "name": "20", "star": 3, "status": "published", "position": 1},
-      {"id": 3, "name": "60", "star": 0, "status": "published", "position": 3},
-      {"id": 4, "name": "80", "star": 0, "status": "published", "position": 4},
-      {"id": 5, "name": "100", "star": 0, "status": "published", "position": 12}
-    ],
-    "links": {
-      "first": "http://localhost:9007/api/levels?page=1",
-      "last": "http://localhost:9007/api/levels?page=1",
-      "prev": null,
-      "next": null
-    },
-    "meta": {
-      "current_page": 1,
-      "from": 1,
-      "last_page": 1,
-      "links": [
-        {"url": null, "label": "&laquo; Previous", "active": false},
-        {"url": "http://localhost:9007/api/levels?page=1", "label": "1", "active": true},
-        {"url": null, "label": "Next &raquo;", "active": false}
-      ],
-      "path": "http://localhost:9007/api/levels",
-      "per_page": 20,
-      "to": 4,
-      "total": 4
-    }
-  };
-
-  static const sampleTestResponse = {
-    "count": 8,
-    "questions": [
-      {
-        "id": 14,
-        "body": "a+b",
-        "position": 0,
-        "answers": [
-          {"id": 35, "body": "as"},
-          {"id": 36, "body": "ab"}
-        ]
-      },
-      {
-        "id": 11,
-        "body": "a mi?",
-        "position": 0,
-        "answers": [
-          {"id": 29, "body": "a a"},
-          {"id": 30, "body": "b"}
-        ]
-      },
-      {
-        "id": 12,
-        "body": "s",
-        "position": 0,
-        "answers": [
-          {"id": 31, "body": "d"},
-          {"id": 32, "body": "g"}
-        ]
-      },
-      {
-        "id": 8,
-        "body": "kim?",
-        "position": 0,
-        "answers": [
-          {"id": 22, "body": "men"},
-          {"id": 23, "body": "u"},
-          {"id": 24, "body": "siz"}
-        ]
-      },
-      {
-        "id": 9,
-        "body": "qaysi javob?",
-        "position": 0,
-        "answers": [
-          {"id": 25, "body": "a"},
-          {"id": 26, "body": "b"}
-        ]
-      },
-      {
-        "id": 1,
-        "body": "Are you ___ student?",
-        "position": 1,
-        "answers": [
-          {"id": 1, "body": "a"},
-          {"id": 2, "body": "an"},
-          {"id": 3, "body": "the"},
-          {"id": 14, "body": "dddd"}
-        ]
-      },
-      {
-        "id": 2,
-        "body": "I ___ a student.",
-        "position": 2,
-        "answers": [
-          {"id": 5, "body": "am"},
-          {"id": 6, "body": "is"},
-          {"id": 7, "body": "are"},
-          {"id": 8, "body": "be"}
-        ]
-      },
-      {
-        "id": 3,
-        "body": "She ___ a teacher.",
-        "position": 3,
-        "answers": [
-          {"id": 9, "body": "is"},
-          {"id": 10, "body": "am"},
-          {"id": 11, "body": "are"},
-          {"id": 12, "body": "be"}
-        ]
-      }
-    ]
-  };
+  @override
+  List<TestQuestionModel> get wordQuestionsList => _wordQuestionsList;
 
   @override
   List<LevelWordModel> get levelWordsList => _levelWordsList;
 
   @override
   int get userCurrentLevel => _userCurrentLevel;
+
+  @override
+  String get endDate => _endDate;
+
+  @override
+  int get levelExerciseId => _levelExerciseId;
+
+  @override
+  String get startDate => _startDate;
+
+  @override
+  List<WordAnswerModel> get wordQuestionsCheckList => _wordQuestionsCheckList;
+
+  @override
+  int get correctAnswers => _correctAnswers;
+
+  @override
+  bool get pass => _pass;
+
+  @override
+  int get totalQuestions => _totalQuestions;
 }

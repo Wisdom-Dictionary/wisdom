@@ -10,6 +10,8 @@ import 'package:wisdom/presentation/pages/profile/view/payment_page.dart';
 import 'package:wisdom/presentation/pages/profile/view/profile_page.dart';
 import 'package:wisdom/presentation/pages/profile/view/verify_page.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/word_details_page.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/view/word_exercises_check_page.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/view/word_exercises_page.dart';
 import 'package:wisdom/presentation/pages/setting/view/setting_page.dart';
 import 'package:wisdom/presentation/pages/grammar/view/grammar_page.dart';
 
@@ -27,6 +29,8 @@ class Routes {
   static const settingPage = '/setting';
   static const aboutUsPage = '/aboutUsPage';
   static const wordDetailsPage = '/wordDetailsPage';
+  static const wordExercisesPage = '/wordExercisesPage';
+  static const wordExercisesCheckPage = '/wordExercisesCheckPage';
 
   static Route<dynamic> generateRoutes(RouteSettings routeSettings) {
     try {
@@ -85,6 +89,14 @@ class Routes {
         case wordDetailsPage:
           return MaterialPageRoute(
             builder: (_) => WordDetailsPage(),
+          );
+        case wordExercisesPage:
+          return MaterialPageRoute(
+            builder: (_) => WordExercisesPage(),
+          );
+        case wordExercisesCheckPage:
+          return MaterialPageRoute(
+            builder: (_) => WordExercisesCheckPage(),
           );
         default:
           return MaterialPageRoute(

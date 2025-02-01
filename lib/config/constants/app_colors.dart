@@ -6,6 +6,8 @@ abstract class AppColors {
   static const Color accentLight = Color(0xFFEB5757);
 
   static const Color yellow = Color(0xFFFFCC00);
+  static const Color pink = Color(0xFFD77070);
+  static const Color red = Color(0xFFFF0000);
   static const Color textDisabled = Color(0xFFB3B7BC);
   static const Color bgGray = Color(0xFFE2E6EE);
   static const Color bgLightBlue = Color(0xFF70AED7);
@@ -16,6 +18,7 @@ abstract class AppColors {
   static const Color error = Color(0xFFFCD0D1);
 
   static const Color blue = Color(0xFF0063A4);
+  static const Color vibrantBlue = Color(0xFF007AFF);
   static const Color paleBlue = Color(0xFF6782D8);
   static const Color lightBlue = Color(0xFF94BDDB);
 
@@ -28,6 +31,8 @@ abstract class AppColors {
 
   static const Color darkGray = Color(0xFF333333);
   static const Color gray = Color(0xFF4F4F4F);
+  static const Color gray80 = Color(0xFF808080);
+  static const Color charcoal = Color(0xFF494949);
   static const Color paleGray = Color(0xFF828282);
   static const Color lightGray = Color(0xFFBDBDBD);
 

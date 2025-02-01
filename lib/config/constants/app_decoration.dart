@@ -13,6 +13,11 @@ class AppDecoration {
     ),
   ]);
 
+  static BoxDecoration resultDecor = BoxDecoration(
+    borderRadius: BorderRadius.circular(18.r),
+    color: AppColors.bgLightBlue.withValues(alpha: 0.1),
+  );
+
   static BoxDecoration bannerDarkDecor = BoxDecoration(
     borderRadius: BorderRadius.circular(18.r),
     color: AppColors.darkForm,

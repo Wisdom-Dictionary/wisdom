@@ -1,0 +1,258 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:jbaza/jbaza.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:wisdom/config/constants/app_colors.dart';
+import 'package:wisdom/config/constants/app_decoration.dart';
+import 'package:wisdom/config/constants/app_text_style.dart';
+import 'package:wisdom/config/constants/assets.dart';
+import 'package:wisdom/config/constants/constants.dart';
+import 'package:wisdom/data/model/roadmap/word_answer_model.dart';
+import 'package:wisdom/presentation/components/w_button.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/word_exercises_viewmodel.dart';
+import 'package:wisdom/presentation/widgets/custom_app_bar.dart';
+
+class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewModel> {
+  WordExercisesCheckPage({super.key});
+  @override
+  void onViewModelReady(WordExercisesViewModel viewModel) {
+    super.onViewModelReady(viewModel);
+  }
+
+  String formatText(String text, int chunkSize) {
+    final pattern = RegExp('.{1,$chunkSize}');
+    return pattern.allMatches(text).map((e) => e.group(0)).join('\n');
+  }
+
+  @override
+  Widget builder(BuildContext context, WordExercisesViewModel viewModel, Widget? child) {
+    return WillPopScope(
+        onWillPop: () => viewModel.goBack(),
+        child: Scaffold(
+          backgroundColor: isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
+          drawerEnableOpenDragGesture: false,
+          appBar: CustomAppBar(
+            isSearch: false,
+            title: "exercise_result".tr(),
+            onTap: () => viewModel.goBack(),
+            leadingIcon: Assets.icons.arrowLeft,
+          ),
+          body: ListView(
+            physics: const ClampingScrollPhysics(),
+            padding: const EdgeInsets.symmetric(vertical: 13, horizontal: 18),
+            children: [
+              statusIndicatorBar(viewModel.homeRepository.pass),
+              const SizedBox(
+                height: 8,
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                decoration: AppDecoration.resultDecor,
+                child: Column(
+                  children: [
+                    statusResultBar(viewModel.homeRepository.correctAnswers,
+                        viewModel.homeRepository.totalQuestions),
+                    const SizedBox(
+                      height: 24,
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          color: isDarkTheme ? AppColors.darkBackground : AppColors.white),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Text(
+                            "right_answers".tr(),
+                            style: AppTextStyle.font15W600Normal
+                                .copyWith(fontSize: 14, color: AppColors.charcoal),
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          questionsResultList(viewModel.homeRepository.wordQuestionsCheckList),
+                        ],
+                      ),
+                    ),
+                    GestureDetector(
+                        onTap: () {},
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 24),
+                          child: Text(
+                            "view_correct_answers".tr(),
+                            style: AppTextStyle.font15W600Normal.copyWith(
+                                color: AppColors.blue,
+                                fontSize: 14,
+                                decoration: TextDecoration.underline,
+                                decorationColor: AppColors.blue),
+                          ),
+                        )),
+                    WButton(
+                      title: "retry".tr(),
+                      onTap: () {
+                        viewModel.retryWordQuestions();
+                      },
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
+        ));
+  }
+
+  Container questionsResultList(List<WordAnswerModel> items) {
+    return Container(
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            width: 1,
+            color: AppColors.vibrantBlue.withValues(alpha: 0.15),
+          )),
+      child: ListView.separated(
+        primary: false,
+        padding: EdgeInsets.zero,
+        shrinkWrap: true,
+        itemCount: items.length,
+        separatorBuilder: (context, index) => Divider(
+          height: 1,
+          color: AppColors.vibrantBlue.withValues(alpha: 0.15),
+        ),
+        itemBuilder: (context, index) => Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text("${index + 1}",
+                  style:
+                      AppTextStyle.font15W600Normal.copyWith(fontSize: 14, color: AppColors.blue)),
+              SvgPicture.asset(
+                  items[index].isCorrect ? Assets.icons.doubleCheck : Assets.icons.incorrectAnswer)
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget statusResultBar(int correctAnswers, int totalQuestions, {int? spendTime}) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CircularPercentIndicator(
+          startAngle: 90,
+          radius: 28.0,
+          lineWidth: 5.0,
+          animation: true,
+          backgroundColor: AppColors.vibrantBlue.withValues(alpha: 0.15),
+          percent: correctAnswers / totalQuestions,
+          center: Text(
+            "$correctAnswers/$totalQuestions",
+            style: AppTextStyle.font15W600Normal.copyWith(fontSize: 10, color: AppColors.blue),
+          ),
+          progressColor: AppColors.blue,
+          circularStrokeCap: CircularStrokeCap.round,
+          footer: Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: SizedBox(
+              width: 70,
+              child: Text(
+                "words_found_correctly".tr(),
+                textAlign: TextAlign.center,
+                style: AppTextStyle.font13W500Normal.copyWith(fontSize: 10, color: AppColors.blue),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(
+          width: 12,
+        ),
+        if (spendTime != null)
+          CircularPercentIndicator(
+            startAngle: 90,
+            radius: 28.0,
+            lineWidth: 5.0,
+            animation: true,
+            backgroundColor: AppColors.vibrantBlue.withValues(alpha: 0.15),
+            percent: 0.5,
+            center: Text(
+              "$spendTime",
+              style: AppTextStyle.font15W600Normal.copyWith(fontSize: 10, color: AppColors.blue),
+            ),
+            progressColor: AppColors.blue,
+            circularStrokeCap: CircularStrokeCap.round,
+            footer: Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: SizedBox(
+                width: 70,
+                child: Text(
+                  "time_taken".tr(),
+                  style:
+                      AppTextStyle.font13W500Normal.copyWith(fontSize: 10, color: AppColors.blue),
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  SizedBox statusIndicatorBar(bool pass) {
+    return SizedBox(
+      height: 80,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+              flex: 2,
+              child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                  decoration: pass
+                      ? AppDecoration.resultDecor
+                      : AppDecoration.resultDecor
+                          .copyWith(color: AppColors.pink.withValues(alpha: 0.1)),
+                  child: SvgPicture.asset(
+                    pass ? Assets.icons.flag : Assets.icons.failureIcon,
+                    height: 56,
+                    width: 56,
+                  ))),
+          const SizedBox(
+            width: 8,
+          ),
+          Expanded(
+              flex: 5,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                decoration: pass
+                    ? AppDecoration.resultDecor
+                    : AppDecoration.resultDecor
+                        .copyWith(color: AppColors.pink.withValues(alpha: 0.1)),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: pass
+                      ? Text(
+                          "Success",
+                          style: AppTextStyle.font17W700Normal
+                              .copyWith(fontSize: 18, color: AppColors.blue),
+                        )
+                      : Text(
+                          "Failure",
+                          style: AppTextStyle.font17W700Normal
+                              .copyWith(fontSize: 18, color: AppColors.red),
+                        ),
+                ),
+              ))
+        ],
+      ),
+    );
+  }
+
+  @override
+  WordExercisesViewModel viewModelBuilder(BuildContext context) {
+    return WordExercisesViewModel(
+      context: context,
+    );
+  }
+}
