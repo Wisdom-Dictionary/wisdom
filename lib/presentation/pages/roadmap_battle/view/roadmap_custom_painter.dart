@@ -81,7 +81,7 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
           right: right,
           bottom: activeLevel && bottom != null ? bottom - 30 : bottom,
           child: GestureDetector(
-            onTap: () => locator<LocalViewModel>().changePageIndex(25),
+            onTap: () => widget.viewModel.selectLevel(repository.levelsList[index]),
             child: InactiveLevelIndicator(
               activeLevel: activeLevel,
               item: repository.levelsList[index],

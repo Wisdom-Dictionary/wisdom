@@ -7,9 +7,9 @@ import 'package:wisdom/data/model/search_result_model.dart';
 import 'package:wisdom/data/model/search_result_uz_model.dart';
 import 'package:wisdom/data/viewmodel/local_viewmodel.dart';
 import 'package:wisdom/domain/repositories/home_repository.dart';
+import 'package:wisdom/domain/repositories/level_test_repository.dart';
 import 'package:wisdom/domain/repositories/roadmap_repository.dart';
 import 'package:wisdom/domain/repositories/search_repository.dart';
-import 'package:wisdom/domain/repositories/word_entity_repository.dart';
 import 'package:wisdom/presentation/routes/routes.dart';
 
 class LevelWordsPageViewModel extends BaseViewModel {
@@ -17,12 +17,14 @@ class LevelWordsPageViewModel extends BaseViewModel {
       {required super.context,
       required this.localViewModel,
       required this.roadmapRepository,
+      required this.levelTestRepository,
       required this.preferenceHelper,
       required this.searchRepository,
       required this.homeRepository});
 
   final LocalViewModel localViewModel;
   final RoadmapRepository roadmapRepository;
+  final LevelTestRepository levelTestRepository;
 
   final SharedPreferenceHelper preferenceHelper;
   final HomeRepository homeRepository;
@@ -53,7 +55,7 @@ class LevelWordsPageViewModel extends BaseViewModel {
   void searchByWord(LevelWordModel levelWordItem) {
     safeBlock(
       () async {
-        roadmapRepository.setSelectedLevel(levelWordItem);
+        levelTestRepository.setSelectedLevelMord(levelWordItem);
         await getSearchLanguageMode();
         searchText = levelWordItem.word!.trim();
         List<SearchResultUzModel> resultUz = [];

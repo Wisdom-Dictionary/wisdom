@@ -7,6 +7,7 @@ import 'package:wisdom/config/constants/app_colors.dart';
 import 'package:wisdom/config/constants/app_text_style.dart';
 import 'package:wisdom/config/constants/assets.dart';
 import 'package:wisdom/core/di/app_locator.dart';
+import 'package:wisdom/core/domain/entities/def_enum.dart';
 import 'package:wisdom/data/model/roadmap/level_word_model.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/level_words_page_viewmodel.dart';
 import 'package:wisdom/presentation/routes/routes.dart';
@@ -50,7 +51,11 @@ class LevelWordsPage extends ViewModelBuilderWidget<LevelWordsPageViewModel> {
                                 child: Material(
                                   color: Colors.transparent,
                                   child: InkWell(
-                                    onTap: () {},
+                                    onTap: () {
+                                      viewModel.levelTestRepository
+                                          .setExerciseType(TestExerciseType.levelExercise);
+                                      Navigator.pushNamed(context, Routes.wordExercisesPage);
+                                    },
                                     borderRadius: BorderRadius.circular(40.r),
                                     child: Padding(
                                       padding:
@@ -174,6 +179,7 @@ class LevelWordsPage extends ViewModelBuilderWidget<LevelWordsPageViewModel> {
     return LevelWordsPageViewModel(
         context: context,
         preferenceHelper: locator.get(),
+        levelTestRepository: locator.get(),
         roadmapRepository: locator.get(),
         localViewModel: locator.get(),
         searchRepository: locator.get(),

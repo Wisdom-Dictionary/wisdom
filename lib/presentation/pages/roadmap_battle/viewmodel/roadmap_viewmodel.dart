@@ -1,6 +1,7 @@
 import 'package:jbaza/jbaza.dart';
 import 'package:wisdom/core/db/db_helper.dart';
 import 'package:wisdom/core/db/preference_helper.dart';
+import 'package:wisdom/data/model/roadmap/level_model.dart';
 import 'package:wisdom/data/viewmodel/local_viewmodel.dart';
 import 'package:wisdom/domain/repositories/roadmap_repository.dart';
 
@@ -24,5 +25,10 @@ class RoadMapViewModel extends BaseViewModel {
         setSuccess(tag: getLevelsTag);
       }
     }, callFuncName: 'getLevels', tag: getLevelsTag, inProgress: false);
+  }
+
+  void selectLevel(LevelModel item) {
+    homeRepository.setSelectedLevel(item);
+    locator<LocalViewModel>().changePageIndex(25);
   }
 }

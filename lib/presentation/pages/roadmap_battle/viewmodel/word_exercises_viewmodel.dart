@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:jbaza/jbaza.dart';
 import 'package:wisdom/core/db/db_helper.dart';
 import 'package:wisdom/core/db/preference_helper.dart';
+import 'package:wisdom/core/domain/entities/def_enum.dart';
 import 'package:wisdom/data/model/roadmap/answer_entity.dart';
 import 'package:wisdom/data/model/roadmap/test_question_model.dart';
 import 'package:wisdom/data/viewmodel/local_viewmodel.dart';
-import 'package:wisdom/domain/repositories/roadmap_repository.dart';
-import 'package:wisdom/presentation/pages/roadmap_battle/view/word_exercises_check_page.dart';
+import 'package:wisdom/domain/repositories/level_test_repository.dart';
 import 'package:wisdom/presentation/routes/routes.dart';
 
 import '../../../../core/di/app_locator.dart';
@@ -14,7 +14,7 @@ import '../../../../core/di/app_locator.dart';
 class WordExercisesViewModel extends BaseViewModel {
   WordExercisesViewModel({required super.context});
 
-  final homeRepository = locator<RoadmapRepository>();
+  final levelTestRepository = locator<LevelTestRepository>();
   final dbHelper = locator<DBHelper>();
   final sharedPref = locator<SharedPreferenceHelper>();
   final localViewModel = locator<LocalViewModel>();
@@ -28,9 +28,23 @@ class WordExercisesViewModel extends BaseViewModel {
     Navigator.pop(context!);
   }
 
+  bool get hasTimer =>
+      levelTestRepository.startDate.isNotEmpty || levelTestRepository.endDate.isNotEmpty;
+
+  int get givenTimeForExercise {
+    if (!hasTimer) {
+      return 0;
+    }
+    DateTime startDate = DateTime.parse(levelTestRepository.startDate);
+    DateTime endDate = DateTime.parse(levelTestRepository.endDate);
+
+    // Calculate the difference in seconds
+    return endDate.difference(startDate).inSeconds;
+  }
+
   int? get validateAnswers {
-    for (int i = 0; i < homeRepository.wordQuestionsList.length; i++) {
-      TestQuestionModel question = homeRepository.wordQuestionsList[i];
+    for (int i = 0; i < levelTestRepository.testQuestionsList.length; i++) {
+      TestQuestionModel question = levelTestRepository.testQuestionsList[i];
       if (!answers
           .map(
             (e) => e.questionId,
@@ -44,10 +58,10 @@ class WordExercisesViewModel extends BaseViewModel {
   }
 
   bool submitButtonStatus(int tabControllerIndex) {
-    if (homeRepository.wordQuestionsList.length == tabControllerIndex + 1) {
+    if (levelTestRepository.testQuestionsList.length == tabControllerIndex + 1) {
       return true;
     }
-    if (homeRepository.wordQuestionsList.length > answers.length) {
+    if (levelTestRepository.testQuestionsList.length > answers.length) {
       return false;
     }
     return true;
@@ -62,7 +76,7 @@ class WordExercisesViewModel extends BaseViewModel {
   void postTestQuestionsCheck() {
     safeBlock(() async {
       if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
-        await homeRepository.postWordQuestionsCheck(answers);
+        await levelTestRepository.postWordQuestionsCheck(answers);
         Navigator.pop(context!);
         Navigator.pushNamed(context!, Routes.wordExercisesCheckPage);
         setSuccess(tag: postWordExercisesCheckTag);
@@ -78,7 +92,11 @@ class WordExercisesViewModel extends BaseViewModel {
   void getTestQuestions() {
     safeBlock(() async {
       if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
-        await homeRepository.getWordQuestions();
+        if (levelTestRepository.exerciseType == TestExerciseType.wordExercise) {
+          await levelTestRepository.getWordQuestions();
+        } else {
+          await levelTestRepository.getTestQuestions();
+        }
         setSuccess(tag: getWordExercisesTag);
       }
     }, callFuncName: 'getWordExercises', tag: getWordExercisesTag, inProgress: false);

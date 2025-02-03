@@ -45,12 +45,13 @@ class WordExercisesPage extends ViewModelBuilderWidget<WordExercisesViewModel> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     const LifeStatusBar(),
-                    CountDownTimer(
-                      secondsRemaining: 360,
-                      whenTimeExpires: () {},
-                      countDownTimerStyle: AppTextStyle.font13W500Normal
-                          .copyWith(color: AppColors.white, fontSize: 12),
-                    ),
+                    if (viewModel.hasTimer)
+                      CountDownTimer(
+                        secondsRemaining: viewModel.givenTimeForExercise,
+                        whenTimeExpires: () {},
+                        countDownTimerStyle: AppTextStyle.font13W500Normal
+                            .copyWith(color: AppColors.white, fontSize: 12),
+                      ),
                   ],
                 ),
               )
@@ -86,7 +87,7 @@ class _WordExerciseContentState extends State<WordExerciseContent>
   @override
   void initState() {
     _tabController = TabController(
-        length: widget.viewModel.homeRepository.wordQuestionsList.length,
+        length: widget.viewModel.levelTestRepository.testQuestionsList.length,
         vsync: this,
         initialIndex: 0)
       ..addListener(
@@ -111,7 +112,7 @@ class _WordExerciseContentState extends State<WordExerciseContent>
           child: TabBarView(
               controller: _tabController,
               children: mapIndexed(
-                widget.viewModel.homeRepository.wordQuestionsList,
+                widget.viewModel.levelTestRepository.testQuestionsList,
                 (index, item) => Column(
                   children: [
                     Container(
@@ -125,7 +126,7 @@ class _WordExerciseContentState extends State<WordExerciseContent>
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 18),
                             child: Text(
-                              "$index. ${widget.viewModel.homeRepository.wordQuestionsList[index].body!}",
+                              "${index + 1}. ${widget.viewModel.levelTestRepository.testQuestionsList[index].body!}",
                               style: AppTextStyle.font15W500Normal
                                   .copyWith(fontSize: 14, color: AppColors.darkGray),
                             ),
@@ -138,12 +139,12 @@ class _WordExerciseContentState extends State<WordExerciseContent>
                             separatorBuilder: (context, index) => SizedBox(
                               height: 8,
                             ),
-                            itemCount: widget
-                                .viewModel.homeRepository.wordQuestionsList[index].answers!.length,
+                            itemCount: widget.viewModel.levelTestRepository.testQuestionsList[index]
+                                .answers!.length,
                             primary: false,
                             shrinkWrap: true,
                             itemBuilder: (context, i) => questionItem(
-                                i, widget.viewModel.homeRepository.wordQuestionsList[index]),
+                                i, widget.viewModel.levelTestRepository.testQuestionsList[index]),
                           )
                         ],
                       ),

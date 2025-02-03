@@ -42,7 +42,7 @@ class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewMod
             physics: const ClampingScrollPhysics(),
             padding: const EdgeInsets.symmetric(vertical: 13, horizontal: 18),
             children: [
-              statusIndicatorBar(viewModel.homeRepository.pass),
+              statusIndicatorBar(viewModel.levelTestRepository.pass),
               const SizedBox(
                 height: 8,
               ),
@@ -51,8 +51,8 @@ class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewMod
                 decoration: AppDecoration.resultDecor,
                 child: Column(
                   children: [
-                    statusResultBar(viewModel.homeRepository.correctAnswers,
-                        viewModel.homeRepository.totalQuestions),
+                    statusResultBar(viewModel.levelTestRepository.correctAnswers,
+                        viewModel.levelTestRepository.totalQuestions),
                     const SizedBox(
                       height: 24,
                     ),
@@ -72,7 +72,7 @@ class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewMod
                           const SizedBox(
                             height: 8,
                           ),
-                          questionsResultList(viewModel.homeRepository.wordQuestionsCheckList),
+                          questionsResultList(viewModel.levelTestRepository.wordQuestionsCheckList),
                         ],
                       ),
                     ),

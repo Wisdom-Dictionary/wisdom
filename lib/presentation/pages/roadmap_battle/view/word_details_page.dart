@@ -11,6 +11,9 @@ import 'package:wisdom/config/constants/app_decoration.dart';
 import 'package:wisdom/config/constants/app_text_style.dart';
 import 'package:wisdom/config/constants/urls.dart';
 import 'package:wisdom/core/di/app_locator.dart';
+import 'package:wisdom/core/domain/entities/def_enum.dart';
+import 'package:wisdom/domain/repositories/level_test_repository.dart';
+import 'package:wisdom/domain/repositories/roadmap_repository.dart';
 import 'package:wisdom/presentation/components/parent_widget.dart';
 import 'package:wisdom/presentation/components/phrases_widget.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/word_details_page_viewmodel.dart';
@@ -547,6 +550,8 @@ class WordDetailsPage extends ViewModelBuilderWidget<WordDetailPageViewModel> {
                             color: Colors.transparent,
                             child: InkWell(
                               onTap: () {
+                                locator<LevelTestRepository>()
+                                    .setExerciseType(TestExerciseType.wordExercise);
                                 Navigator.pushNamed(context, Routes.wordExercisesPage);
                               },
                               borderRadius: BorderRadius.circular(40.r),
