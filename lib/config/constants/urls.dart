@@ -1,5 +1,7 @@
 class Urls {
-  static const baseUrl = 'http://api.wisdomedu.uz/';
+  static const baseAddress = 'wisdom.yangixonsaroy.uz';
+  static const baseUrl = 'https://wisdom.yangixonsaroy.uz/';
+  // static const baseUrl = 'http://api.wisdomedu.uz/';
 
   static var getWordsPaths = Uri.parse('${baseUrl}api/download/words');
   static var getLenta = Uri.parse('${baseUrl}api/lenta');
@@ -11,6 +13,9 @@ class Urls {
   static var subscribeCheck = Uri.parse('${baseUrl}api/subscribe/check');
 
   static var getWordsVersionAndPath = Uri.parse('${baseUrl}api/download/words');
+
+  static var levels = Uri.parse('${baseUrl}api/levels');
+  static var testQuestions = Uri.parse('${baseUrl}api/test-questions');
 
   static subscribe(int id) => Uri.parse('${baseUrl}api/subscribe/set/$id');
 

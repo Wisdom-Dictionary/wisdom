@@ -51,7 +51,7 @@ class HomeViewModel extends BaseViewModel {
   final GlobalKey globalKeyHome = GlobalKey();
   final GlobalKey globalKeyWordBank = GlobalKey();
   final GlobalKey globalKeySearch = GlobalKey();
-  final GlobalKey globalKeyCategory = GlobalKey();
+  final GlobalKey globalKeyRoadmapBattle = GlobalKey();
   final GlobalKey globalKeyTranslation = GlobalKey();
   final GlobalKey globalKeyCentre = GlobalKey();
   ValueNotifier<bool> isShow = ValueNotifier<bool>(false);

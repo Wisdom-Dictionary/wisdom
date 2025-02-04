@@ -9,6 +9,7 @@ import 'package:wisdom/presentation/pages/profile/view/input_number_page.dart';
 import 'package:wisdom/presentation/pages/profile/view/payment_page.dart';
 import 'package:wisdom/presentation/pages/profile/view/profile_page.dart';
 import 'package:wisdom/presentation/pages/profile/view/verify_page.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/view/word_details_page.dart';
 import 'package:wisdom/presentation/pages/setting/view/setting_page.dart';
 import 'package:wisdom/presentation/pages/grammar/view/grammar_page.dart';
 
@@ -25,6 +26,7 @@ class Routes {
   static const abbreviationPage = '/abbreviation';
   static const settingPage = '/setting';
   static const aboutUsPage = '/aboutUsPage';
+  static const wordDetailsPage = '/wordDetailsPage';
 
   static Route<dynamic> generateRoutes(RouteSettings routeSettings) {
     try {
@@ -79,6 +81,10 @@ class Routes {
         case aboutUsPage:
           return MaterialPageRoute(
             builder: (_) => const AboutWisdomPage(),
+          );
+        case wordDetailsPage:
+          return MaterialPageRoute(
+            builder: (_) => WordDetailsPage(),
           );
         default:
           return MaterialPageRoute(

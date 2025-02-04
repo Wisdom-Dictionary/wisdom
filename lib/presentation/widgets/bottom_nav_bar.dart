@@ -148,10 +148,9 @@ class HomeBottomNavBar extends ViewModelWidget<HomeViewModel> {
                   ),
                   Expanded(
                     child: Showcase(
-                      key: viewModel.globalKeyCategory,
-                      title: 'Catalogue',
-                      description:
-                          "So'zlarga oid grammatik va amaliy foydalanish qounun qoidalari ro'yhati",
+                      key: viewModel.globalKeyRoadmapBattle,
+                      title: 'Roadmap Battle',
+                      description: "Battle",
                       titleAlignment: Alignment.center,
                       titleTextStyle: AppTextStyle.font17W600Normal.copyWith(color: AppColors.blue),
                       descTextStyle: AppTextStyle.font15W500Normal.copyWith(color: AppColors.blue),
@@ -159,8 +158,8 @@ class HomeBottomNavBar extends ViewModelWidget<HomeViewModel> {
                       showArrow: true,
                       child: BottomNavButton(
                           isTabSelected: value == 3,
-                          defIcon: Assets.icons.unitsOutline,
-                          filledIcon: Assets.icons.unitsFilled,
+                          defIcon: Assets.icons.cupOutlined,
+                          filledIcon: Assets.icons.cup,
                           callBack: () {
                             onTap(3);
                             viewModel.localViewModel.isFinal = false;
@@ -171,6 +170,33 @@ class HomeBottomNavBar extends ViewModelWidget<HomeViewModel> {
                           }),
                     ),
                   ),
+                  // Expanded(
+                  //   child: Showcase(
+                  //     key: viewModel.globalKeyCategory,
+                  //     title: 'Catalogue',
+                  //     description:
+                  //         "So'zlarga oid grammatik va amaliy foydalanish qounun qoidalari ro'yhati",
+                  //     titleAlignment: Alignment.center,
+                  //     titleTextStyle: AppTextStyle.font17W600Normal
+                  //         .copyWith(color: AppColors.blue),
+                  //     descTextStyle: AppTextStyle.font15W500Normal
+                  //         .copyWith(color: AppColors.blue),
+                  //     disableDefaultTargetGestures: false,
+                  //     showArrow: true,
+                  //     child: BottomNavButton(
+                  //         isTabSelected: value == 3,
+                  //         defIcon: Assets.icons.unitsOutline,
+                  //         filledIcon: Assets.icons.unitsFilled,
+                  //         callBack: () {
+                  //           onTap(3);
+                  //           viewModel.localViewModel.isFinal = false;
+                  //           viewModel.localViewModel.isTitle = false;
+                  //           viewModel.localViewModel.isSubSub = false;
+                  //           viewModel.localViewModel.subId = -1;
+                  //           viewModel.localViewModel.changePageIndex(3);
+                  //         }),
+                  //   ),
+                  // ),
                   Expanded(
                     child: Showcase(
                       key: viewModel.globalKeyTranslation,

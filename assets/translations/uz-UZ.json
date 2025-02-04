@@ -147,5 +147,10 @@
   "downloadingCanceled" : "So'zlarni yuklash to'xtatildi",
   "downloadingCompleted" : "So'zlar yuklandi!",
   "backgroundInfo"  : "So'zlar to'liq yuklab onlingungacha dasturni yopmang",
-  "youCanHideTheWindow" : "Ushbu oynani berkitishinigiz mumkin"
+  "youCanHideTheWindow" : "Ushbu oynani berkitishinigiz mumkin",
+  "claim" : "Claim",
+  "exercises" : "Mashqlar",
+  "battle" : "Battle",
+  "friend" : "Do'st",
+  "start_the_exercises" : "Mashqlarni boshlash"
 }
