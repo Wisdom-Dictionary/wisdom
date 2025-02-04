@@ -7,6 +7,7 @@ import 'package:wisdom/config/constants/app_colors.dart';
 import 'package:wisdom/config/constants/app_text_style.dart';
 import 'package:wisdom/config/constants/assets.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/roadmap_custom_painter.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/view/widgets/life_status_bar.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/roadmap_viewmodel.dart';
 import 'package:wisdom/presentation/widgets/new_custom_app_bar.dart';
 
@@ -51,7 +52,7 @@ class RoadmapAppBarContent extends StatelessWidget {
         scoreInfo("500", SvgPicture.asset(Assets.icons.verify)),
         Column(
           children: [
-            lifeStatusBar(),
+            LifeStatusBar(),
             Padding(
               padding: EdgeInsets.only(left: 2.w, right: 2.w, top: 4.h),
               child: Material(
@@ -75,19 +76,6 @@ class RoadmapAppBarContent extends StatelessWidget {
             )
           ],
         )
-      ],
-    );
-  }
-
-  Row lifeStatusBar() {
-    return Row(
-      children: [
-        SvgPicture.asset(Assets.icons.heart),
-        SvgPicture.asset(Assets.icons.heart),
-        SvgPicture.asset(
-          Assets.icons.heartSlash,
-          colorFilter: ColorFilter.mode(AppColors.white.withOpacity(0.5), BlendMode.srcIn),
-        ),
       ],
     );
   }

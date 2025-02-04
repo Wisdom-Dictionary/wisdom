@@ -11,10 +11,14 @@ import 'package:wisdom/config/constants/app_decoration.dart';
 import 'package:wisdom/config/constants/app_text_style.dart';
 import 'package:wisdom/config/constants/urls.dart';
 import 'package:wisdom/core/di/app_locator.dart';
+import 'package:wisdom/core/domain/entities/def_enum.dart';
+import 'package:wisdom/domain/repositories/level_test_repository.dart';
+import 'package:wisdom/domain/repositories/roadmap_repository.dart';
 import 'package:wisdom/presentation/components/parent_widget.dart';
 import 'package:wisdom/presentation/components/phrases_widget.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/word_details_page_viewmodel.dart';
 import 'package:wisdom/presentation/pages/word_detail/viewmodel/word_detail_page_viewmodel.dart';
+import 'package:wisdom/presentation/routes/routes.dart';
 import 'package:wisdom/presentation/widgets/custom_app_bar.dart';
 
 import '../../../../config/constants/app_colors.dart';
@@ -86,6 +90,7 @@ class WordDetailsPage extends ViewModelBuilderWidget<WordDetailPageViewModel> {
           ),
           body: viewModel.isSuccess(tag: viewModel.initTag)
               ? Stack(
+                  fit: StackFit.expand,
                   children: [
                     (viewModel.wordEntityRepository.requiredWordWithAllModel.word!.linkWord !=
                                 null &&
@@ -544,12 +549,16 @@ class WordDetailsPage extends ViewModelBuilderWidget<WordDetailPageViewModel> {
                           child: Material(
                             color: Colors.transparent,
                             child: InkWell(
-                              onTap: () {},
+                              onTap: () {
+                                locator<LevelTestRepository>()
+                                    .setExerciseType(TestExerciseType.wordExercise);
+                                Navigator.pushNamed(context, Routes.wordExercisesPage);
+                              },
                               borderRadius: BorderRadius.circular(40.r),
                               child: Center(
                                 child: Flexible(
                                   child: Text(
-                                    'start_the_exercise'.tr(),
+                                    'start_the_exercises'.tr(),
                                     style: AppTextStyle.font15W500Normal,
                                     overflow: TextOverflow.ellipsis,
                                   ),

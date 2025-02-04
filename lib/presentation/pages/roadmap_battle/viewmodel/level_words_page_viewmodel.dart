@@ -7,9 +7,9 @@ import 'package:wisdom/data/model/search_result_model.dart';
 import 'package:wisdom/data/model/search_result_uz_model.dart';
 import 'package:wisdom/data/viewmodel/local_viewmodel.dart';
 import 'package:wisdom/domain/repositories/home_repository.dart';
+import 'package:wisdom/domain/repositories/level_test_repository.dart';
 import 'package:wisdom/domain/repositories/roadmap_repository.dart';
 import 'package:wisdom/domain/repositories/search_repository.dart';
-import 'package:wisdom/domain/repositories/word_entity_repository.dart';
 import 'package:wisdom/presentation/routes/routes.dart';
 
 class LevelWordsPageViewModel extends BaseViewModel {
@@ -17,12 +17,14 @@ class LevelWordsPageViewModel extends BaseViewModel {
       {required super.context,
       required this.localViewModel,
       required this.roadmapRepository,
+      required this.levelTestRepository,
       required this.preferenceHelper,
       required this.searchRepository,
       required this.homeRepository});
 
   final LocalViewModel localViewModel;
   final RoadmapRepository roadmapRepository;
+  final LevelTestRepository levelTestRepository;
 
   final SharedPreferenceHelper preferenceHelper;
   final HomeRepository homeRepository;
@@ -41,31 +43,29 @@ class LevelWordsPageViewModel extends BaseViewModel {
 
   void getLevelWords() {
     safeBlock(() async {
+      try{
       await roadmapRepository.getLevelWords();
       if (roadmapRepository.levelWordsList.isNotEmpty) {
         setSuccess(tag: getLevelWordsTag);
       } else {
         callBackError("text");
       }
+      } catch (e) {
+        callBackError("text");
+        if(e is VMException) {
+          setError(e, tag: getLevelWordsTag);
+        }
+        setError(VMException(e.toString()), tag: getLevelWordsTag);
+      }
     }, callFuncName: 'getLevelWords', tag: getLevelWordsTag);
   }
 
-  void getTestQuestions() {
-    safeBlock(() async {
-      await roadmapRepository.getTestQuestions();
-      if (roadmapRepository.testQuestionsList.isNotEmpty) {
-        setSuccess(tag: getExercisesTag);
-      } else {
-        callBackError("text");
-      }
-    }, callFuncName: 'getExercises', tag: getExercisesTag);
-  }
-
-  void searchByWord(String word) {
+  void searchByWord(LevelWordModel levelWordItem) {
     safeBlock(
       () async {
+        levelTestRepository.setSelectedLevelMord(levelWordItem);
         await getSearchLanguageMode();
-        searchText = word.trim();
+        searchText = levelWordItem.word!.trim();
         List<SearchResultUzModel> resultUz = [];
         List<SearchResultModel> result = [];
         if (searchText.isNotEmpty) {
