@@ -29,7 +29,8 @@ class WordExercisesViewModel extends BaseViewModel {
   }
 
   bool get hasTimer =>
-      levelTestRepository.startDate.isNotEmpty || levelTestRepository.endDate.isNotEmpty;
+      levelTestRepository.startDate.isNotEmpty ||
+      levelTestRepository.endDate.isNotEmpty;
 
   int get givenTimeForExercise {
     if (!hasTimer) {
@@ -58,7 +59,8 @@ class WordExercisesViewModel extends BaseViewModel {
   }
 
   bool submitButtonStatus(int tabControllerIndex) {
-    if (levelTestRepository.testQuestionsList.length == tabControllerIndex + 1) {
+    if (levelTestRepository.testQuestionsList.length ==
+        tabControllerIndex + 1) {
       return true;
     }
     if (levelTestRepository.testQuestionsList.length > answers.length) {
@@ -76,12 +78,19 @@ class WordExercisesViewModel extends BaseViewModel {
   void postTestQuestionsCheck() {
     safeBlock(() async {
       if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
-        await levelTestRepository.postWordQuestionsCheck(answers);
+        if (levelTestRepository.exerciseType == TestExerciseType.wordExercise) {
+          await levelTestRepository.postWordQuestionsCheck(answers);
+        } else {
+          await levelTestRepository.postTestQuestionsCheck(answers, 100);
+        }
         Navigator.pop(context!);
         Navigator.pushNamed(context!, Routes.wordExercisesCheckPage);
         setSuccess(tag: postWordExercisesCheckTag);
       }
-    }, callFuncName: 'postWordExercisesCheck', tag: postWordExercisesCheckTag, inProgress: false);
+    },
+        callFuncName: 'postWordExercisesCheck',
+        tag: postWordExercisesCheckTag,
+        inProgress: false);
   }
 
   retryWordQuestions() {
@@ -91,14 +100,22 @@ class WordExercisesViewModel extends BaseViewModel {
 
   void getTestQuestions() {
     safeBlock(() async {
-      if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
-        if (levelTestRepository.exerciseType == TestExerciseType.wordExercise) {
-          await levelTestRepository.getWordQuestions();
-        } else {
-          await levelTestRepository.getTestQuestions();
+      try {
+        if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
+          if (levelTestRepository.exerciseType ==
+              TestExerciseType.wordExercise) {
+            await levelTestRepository.getWordQuestions();
+          } else {
+            await levelTestRepository.getTestQuestions();
+          }
+          setSuccess(tag: getWordExercisesTag);
         }
-        setSuccess(tag: getWordExercisesTag);
+      } catch (e) {
+        setError(VMException(e.toString()), tag: getWordExercisesTag);
       }
-    }, callFuncName: 'getWordExercises', tag: getWordExercisesTag, inProgress: false);
+    },
+        callFuncName: 'getWordExercises',
+        tag: getWordExercisesTag,
+        inProgress: false);
   }
 }

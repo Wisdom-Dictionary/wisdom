@@ -9,8 +9,9 @@ import 'package:wisdom/core/services/custom_client.dart';
 import 'package:wisdom/data/model/roadmap/answer_entity.dart';
 import 'package:wisdom/data/model/roadmap/level_model.dart';
 import 'package:wisdom/data/model/roadmap/level_word_model.dart';
+import 'package:wisdom/data/model/roadmap/test_answer_response_model.dart';
 import 'package:wisdom/data/model/roadmap/test_question_model.dart';
-import 'package:wisdom/data/model/roadmap/word_answer_model.dart';
+import 'package:wisdom/data/model/roadmap/test_answer_model.dart';
 import 'package:wisdom/domain/repositories/level_test_repository.dart';
 
 class LevelTestRepositoryImpl extends LevelTestRepository {
@@ -26,8 +27,11 @@ class LevelTestRepositoryImpl extends LevelTestRepository {
 
   //test-question
   List<TestQuestionModel> _testQuestionsList = [];
-  List<WordAnswerModel> _wordQuestionsCheckList = [];
-  int _levelExerciseId = 0, _wordTestId = 0, _totalQuestions = 0, _correctAnswers = 0;
+  LevelExerciseResultModel? _resultModel;
+  int _levelExerciseId = 0,
+      _wordTestId = 0,
+      _totalQuestions = 0,
+      _correctAnswers = 0;
   String _startDate = "", _endDate = "";
   bool _pass = false;
 
@@ -49,7 +53,8 @@ class LevelTestRepositoryImpl extends LevelTestRepository {
   @override
   Future<void> getTestQuestions() async {
     _testQuestionsList = [];
-    var response = await customClient.get(Urls.testQuestions(selectedLevel!.id!));
+    var response =
+        await customClient.get(Urls.testQuestions(selectedLevel!.id!));
     if (response.isSuccessful) {
       final responseData = jsonDecode(response.body);
 
@@ -61,14 +66,16 @@ class LevelTestRepositoryImpl extends LevelTestRepository {
       _startDate = responseData["start_date"];
       _levelExerciseId = responseData["level_exercise_id"];
     } else {
-      throw VMException(response.body, callFuncName: 'getTestQuestions', response: response);
+      throw VMException(response.body,
+          callFuncName: 'getTestQuestions', response: response);
     }
   }
 
   @override
   Future<void> getWordQuestions() async {
     _testQuestionsList = [];
-    var response = await customClient.get(Urls.wordQuestions(selectedLevelWord!.wordId!));
+    var response =
+        await customClient.get(Urls.wordQuestions(selectedLevelWord!.wordId!));
     if (response.isSuccessful) {
       final responseData = jsonDecode(response.body);
 
@@ -77,13 +84,14 @@ class LevelTestRepositoryImpl extends LevelTestRepository {
       }
       _wordTestId = responseData['word_test_id'];
     } else {
-      throw VMException(response.body, callFuncName: 'getWordQuestions', response: response);
+      throw VMException(response.body,
+          callFuncName: 'getWordQuestions', response: response);
     }
   }
 
   @override
   Future<void> postWordQuestionsCheck(List<AnswerEntity> answers) async {
-    _wordQuestionsCheckList = [];
+    _resultModel = null;
 
     final requestBody = {
       'word_test_id': "$_wordTestId",
@@ -93,7 +101,8 @@ class LevelTestRepositoryImpl extends LevelTestRepository {
           )
           .toList()
     };
-    var response = await customClient.post(Urls.wordQuestionsCheck(selectedLevelWord!.wordId!),
+    var response = await customClient.post(
+        Urls.wordQuestionsCheck(selectedLevelWord!.wordId!),
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
@@ -102,23 +111,20 @@ class LevelTestRepositoryImpl extends LevelTestRepository {
     if (response.isSuccessful) {
       final responseData = jsonDecode(response.body);
 
-      for (var item in (responseData['answers'] as List)) {
-        _wordQuestionsCheckList.add(WordAnswerModel.fromMap(item));
-      }
-      _pass = responseData['pass'];
-      _totalQuestions = responseData['total_questions'];
-      _correctAnswers = responseData['correct_answers'];
+      _resultModel = LevelExerciseResultModel.fromMap(responseData);
     } else {
-      throw VMException(response.body, callFuncName: 'postWordQuestionsCheck', response: response);
+      throw VMException(response.body,
+          callFuncName: 'postWordQuestionsCheck', response: response);
     }
   }
 
   @override
-  Future<void> postTestQuestionsCheck(List<AnswerEntity> answers, int timeTaken) async {
-    _wordQuestionsCheckList = [];
+  Future<void> postTestQuestionsCheck(
+      List<AnswerEntity> answers, int timeTaken) async {
+    _resultModel = null;
 
     final requestBody = {
-      'level_exercise_id': "$_levelExerciseId",
+      'level_exercise_id': _levelExerciseId,
       'time_taken': timeTaken,
       'answers': answers
           .map(
@@ -127,7 +133,7 @@ class LevelTestRepositoryImpl extends LevelTestRepository {
           .toList()
     };
     var response = await customClient.post(Urls.testQuestionsCheck,
-        headers: {
+     headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
         },
@@ -135,14 +141,10 @@ class LevelTestRepositoryImpl extends LevelTestRepository {
     if (response.isSuccessful) {
       final responseData = jsonDecode(response.body);
 
-      for (var item in (responseData['answers'] as List)) {
-        _wordQuestionsCheckList.add(WordAnswerModel.fromMap(item));
-      }
-      _pass = responseData['pass'];
-      _totalQuestions = responseData['total_questions'];
-      _correctAnswers = responseData['correct_answers'];
+      _resultModel = LevelExerciseResultModel.fromMap(responseData);
     } else {
-      throw VMException(response.body, callFuncName: 'postWordQuestionsCheck', response: response);
+      throw VMException(response.body,
+          callFuncName: 'postWordQuestionsCheck', response: response);
     }
   }
 
@@ -159,7 +161,7 @@ class LevelTestRepositoryImpl extends LevelTestRepository {
   String get startDate => _startDate;
 
   @override
-  List<WordAnswerModel> get wordQuestionsCheckList => _wordQuestionsCheckList;
+   LevelExerciseResultModel? get resultModel => _resultModel;
 
   @override
   int get correctAnswers => _correctAnswers;

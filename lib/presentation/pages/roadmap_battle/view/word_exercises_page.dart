@@ -27,11 +27,14 @@ class WordExercisesPage extends ViewModelBuilderWidget<WordExercisesViewModel> {
   }
 
   @override
-  Widget builder(BuildContext context, WordExercisesViewModel viewModel, Widget? child) {
+  Widget builder(
+      BuildContext context, WordExercisesViewModel viewModel, Widget? child) {
     return WillPopScope(
         onWillPop: () => viewModel.goBack(),
         child: Scaffold(
-          backgroundColor: isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
+          backgroundColor: isDarkTheme
+              ? AppColors.darkBackground
+              : AppColors.lightBackground,
           drawerEnableOpenDragGesture: false,
           appBar: CustomAppBar(
             isSearch: false,
@@ -61,7 +64,9 @@ class WordExercisesPage extends ViewModelBuilderWidget<WordExercisesViewModel> {
               ? WordExerciseContent(
                   viewModel: viewModel,
                 )
-              : const Center(child: LoadingWidget()),
+              : viewModel.isError(tag: viewModel.getWordExercisesTag)
+                  ? ErrorInfoPage(viewModel.getVMError()!)
+                  : const Center(child: LoadingWidget()),
         ));
   }
 
@@ -118,17 +123,19 @@ class _WordExerciseContentState extends State<WordExerciseContent>
                     Container(
                       margin: const EdgeInsets.all(18),
                       padding: const EdgeInsets.all(16),
-                      decoration:
-                          isDarkTheme ? AppDecoration.bannerDarkDecor : AppDecoration.bannerDecor,
+                      decoration: isDarkTheme
+                          ? AppDecoration.bannerDarkDecor
+                          : AppDecoration.bannerDecor,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 18),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 16, horizontal: 18),
                             child: Text(
                               "${index + 1}. ${widget.viewModel.levelTestRepository.testQuestionsList[index].body!}",
-                              style: AppTextStyle.font15W500Normal
-                                  .copyWith(fontSize: 14, color: AppColors.darkGray),
+                              style: AppTextStyle.font15W500Normal.copyWith(
+                                  fontSize: 14, color: AppColors.darkGray),
                             ),
                           ),
                           const SizedBox(
@@ -139,12 +146,14 @@ class _WordExerciseContentState extends State<WordExerciseContent>
                             separatorBuilder: (context, index) => SizedBox(
                               height: 8,
                             ),
-                            itemCount: widget.viewModel.levelTestRepository.testQuestionsList[index]
-                                .answers!.length,
+                            itemCount: widget.viewModel.levelTestRepository
+                                .testQuestionsList[index].answers!.length,
                             primary: false,
                             shrinkWrap: true,
                             itemBuilder: (context, i) => questionItem(
-                                i, widget.viewModel.levelTestRepository.testQuestionsList[index]),
+                                i,
+                                widget.viewModel.levelTestRepository
+                                    .testQuestionsList[index]),
                           )
                         ],
                       ),
@@ -160,7 +169,8 @@ class _WordExerciseContentState extends State<WordExerciseContent>
             children: [
               TextSpan(
                 text: "${_tabController.index + 1}",
-                style: AppTextStyle.font15W500Normal.copyWith(color: AppColors.blue),
+                style: AppTextStyle.font15W500Normal
+                    .copyWith(color: AppColors.blue),
               ),
               TextSpan(
                 text: " / ${_tabController.length}",
@@ -212,21 +222,22 @@ class _WordExerciseContentState extends State<WordExerciseContent>
             children: [
               Text(
                 letter(index),
-                style: AppTextStyle.font15W500Normal
-                    .copyWith(fontSize: 14, color: AppColors.vibrantBlue.withValues(alpha: 0.4)),
+                style: AppTextStyle.font15W500Normal.copyWith(
+                    fontSize: 14,
+                    color: AppColors.vibrantBlue.withValues(alpha: 0.4)),
               ),
               const SizedBox(
                 width: 15,
               ),
               Text(item.answers![index].body ?? "",
-                  style:
-                      AppTextStyle.font15W500Normal.copyWith(fontSize: 14, color: AppColors.blue)),
+                  style: AppTextStyle.font15W500Normal
+                      .copyWith(fontSize: 14, color: AppColors.blue)),
             ],
           ),
         ),
         onTap: () {
-          widget.viewModel
-              .setAnswer(AnswerEntity(answerId: item.answers![index].id!, questionId: item.id!));
+          widget.viewModel.setAnswer(AnswerEntity(
+              answerId: item.answers![index].id!, questionId: item.id!));
 
           int? nextQuestion = widget.viewModel.validateAnswers;
           if (nextQuestion != null) {
@@ -238,7 +249,8 @@ class _WordExerciseContentState extends State<WordExerciseContent>
       );
 }
 
-Iterable<E> mapIndexed<E, T>(Iterable<T> items, E Function(int index, T item) f) sync* {
+Iterable<E> mapIndexed<E, T>(
+    Iterable<T> items, E Function(int index, T item) f) sync* {
   var index = 0;
 
   for (final item in items) {

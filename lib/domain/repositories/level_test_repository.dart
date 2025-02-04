@@ -2,8 +2,8 @@ import 'package:wisdom/core/domain/entities/def_enum.dart';
 import 'package:wisdom/data/model/roadmap/answer_entity.dart';
 import 'package:wisdom/data/model/roadmap/level_model.dart';
 import 'package:wisdom/data/model/roadmap/level_word_model.dart';
+import 'package:wisdom/data/model/roadmap/test_answer_response_model.dart';
 import 'package:wisdom/data/model/roadmap/test_question_model.dart';
-import 'package:wisdom/data/model/roadmap/word_answer_model.dart';
 
 abstract class LevelTestRepository {
   void setSelectedLevel(LevelModel item);
@@ -22,7 +22,7 @@ abstract class LevelTestRepository {
 
   List<TestQuestionModel> get testQuestionsList;
 
-  List<WordAnswerModel> get wordQuestionsCheckList;
+  LevelExerciseResultModel? get resultModel;
 
   int get levelExerciseId;
 

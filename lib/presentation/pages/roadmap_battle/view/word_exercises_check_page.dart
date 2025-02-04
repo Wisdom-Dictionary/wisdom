@@ -8,12 +8,13 @@ import 'package:wisdom/config/constants/app_decoration.dart';
 import 'package:wisdom/config/constants/app_text_style.dart';
 import 'package:wisdom/config/constants/assets.dart';
 import 'package:wisdom/config/constants/constants.dart';
-import 'package:wisdom/data/model/roadmap/word_answer_model.dart';
+import 'package:wisdom/data/model/roadmap/test_answer_model.dart';
 import 'package:wisdom/presentation/components/w_button.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/word_exercises_viewmodel.dart';
 import 'package:wisdom/presentation/widgets/custom_app_bar.dart';
 
-class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewModel> {
+class WordExercisesCheckPage
+    extends ViewModelBuilderWidget<WordExercisesViewModel> {
   WordExercisesCheckPage({super.key});
   @override
   void onViewModelReady(WordExercisesViewModel viewModel) {
@@ -26,11 +27,14 @@ class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewMod
   }
 
   @override
-  Widget builder(BuildContext context, WordExercisesViewModel viewModel, Widget? child) {
+  Widget builder(
+      BuildContext context, WordExercisesViewModel viewModel, Widget? child) {
     return WillPopScope(
         onWillPop: () => viewModel.goBack(),
         child: Scaffold(
-          backgroundColor: isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
+          backgroundColor: isDarkTheme
+              ? AppColors.darkBackground
+              : AppColors.lightBackground,
           drawerEnableOpenDragGesture: false,
           appBar: CustomAppBar(
             isSearch: false,
@@ -42,17 +46,19 @@ class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewMod
             physics: const ClampingScrollPhysics(),
             padding: const EdgeInsets.symmetric(vertical: 13, horizontal: 18),
             children: [
-              statusIndicatorBar(viewModel.levelTestRepository.pass),
+              statusIndicatorBar(viewModel.levelTestRepository.resultModel!.pass??false),
               const SizedBox(
                 height: 8,
               ),
               Container(
-                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                 decoration: AppDecoration.resultDecor,
                 child: Column(
                   children: [
-                    statusResultBar(viewModel.levelTestRepository.correctAnswers,
-                        viewModel.levelTestRepository.totalQuestions),
+                    statusResultBar(
+                        viewModel.levelTestRepository.resultModel!.correctAnswers??0,
+                        viewModel.levelTestRepository.resultModel!.totalQuestions??0),
                     const SizedBox(
                       height: 24,
                     ),
@@ -60,19 +66,22 @@ class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewMod
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(16),
-                          color: isDarkTheme ? AppColors.darkBackground : AppColors.white),
+                          color: isDarkTheme
+                              ? AppColors.darkBackground
+                              : AppColors.white),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Text(
                             "right_answers".tr(),
-                            style: AppTextStyle.font15W600Normal
-                                .copyWith(fontSize: 14, color: AppColors.charcoal),
+                            style: AppTextStyle.font15W600Normal.copyWith(
+                                fontSize: 14, color: AppColors.charcoal),
                           ),
                           const SizedBox(
                             height: 8,
                           ),
-                          questionsResultList(viewModel.levelTestRepository.wordQuestionsCheckList),
+                          questionsResultList(viewModel
+                              .levelTestRepository.resultModel!.answers),
                         ],
                       ),
                     ),
@@ -103,7 +112,7 @@ class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewMod
         ));
   }
 
-  Container questionsResultList(List<WordAnswerModel> items) {
+  Container questionsResultList(List<TestAnswerModel> items) {
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
@@ -126,10 +135,11 @@ class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewMod
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text("${index + 1}",
-                  style:
-                      AppTextStyle.font15W600Normal.copyWith(fontSize: 14, color: AppColors.blue)),
-              SvgPicture.asset(
-                  items[index].isCorrect ? Assets.icons.doubleCheck : Assets.icons.incorrectAnswer)
+                  style: AppTextStyle.font15W600Normal
+                      .copyWith(fontSize: 14, color: AppColors.blue)),
+              SvgPicture.asset(items[index].isCorrect
+                  ? Assets.icons.doubleCheck
+                  : Assets.icons.incorrectAnswer)
             ],
           ),
         ),
@@ -137,7 +147,8 @@ class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewMod
     );
   }
 
-  Widget statusResultBar(int correctAnswers, int totalQuestions, {int? spendTime}) {
+  Widget statusResultBar(int correctAnswers, int totalQuestions,
+      {int? spendTime}) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -150,7 +161,8 @@ class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewMod
           percent: correctAnswers / totalQuestions,
           center: Text(
             "$correctAnswers/$totalQuestions",
-            style: AppTextStyle.font15W600Normal.copyWith(fontSize: 10, color: AppColors.blue),
+            style: AppTextStyle.font15W600Normal
+                .copyWith(fontSize: 10, color: AppColors.blue),
           ),
           progressColor: AppColors.blue,
           circularStrokeCap: CircularStrokeCap.round,
@@ -161,7 +173,8 @@ class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewMod
               child: Text(
                 "words_found_correctly".tr(),
                 textAlign: TextAlign.center,
-                style: AppTextStyle.font13W500Normal.copyWith(fontSize: 10, color: AppColors.blue),
+                style: AppTextStyle.font13W500Normal
+                    .copyWith(fontSize: 10, color: AppColors.blue),
               ),
             ),
           ),
@@ -179,7 +192,8 @@ class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewMod
             percent: 0.5,
             center: Text(
               "$spendTime",
-              style: AppTextStyle.font15W600Normal.copyWith(fontSize: 10, color: AppColors.blue),
+              style: AppTextStyle.font15W600Normal
+                  .copyWith(fontSize: 10, color: AppColors.blue),
             ),
             progressColor: AppColors.blue,
             circularStrokeCap: CircularStrokeCap.round,
@@ -189,8 +203,8 @@ class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewMod
                 width: 70,
                 child: Text(
                   "time_taken".tr(),
-                  style:
-                      AppTextStyle.font13W500Normal.copyWith(fontSize: 10, color: AppColors.blue),
+                  style: AppTextStyle.font13W500Normal
+                      .copyWith(fontSize: 10, color: AppColors.blue),
                 ),
               ),
             ),
@@ -208,11 +222,12 @@ class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewMod
           Expanded(
               flex: 2,
               child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                   decoration: pass
                       ? AppDecoration.resultDecor
-                      : AppDecoration.resultDecor
-                          .copyWith(color: AppColors.pink.withValues(alpha: 0.1)),
+                      : AppDecoration.resultDecor.copyWith(
+                          color: AppColors.pink.withValues(alpha: 0.1)),
                   child: SvgPicture.asset(
                     pass ? Assets.icons.flag : Assets.icons.failureIcon,
                     height: 56,

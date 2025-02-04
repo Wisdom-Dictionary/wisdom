@@ -16,7 +16,7 @@ class Urls {
 
   static var levels = Uri.parse('${baseUrl}api/levels');
 
-  static var testQuestionsCheck = Uri.parse('${baseUrl}api/levels//test-questions-check');
+  static var testQuestionsCheck = Uri.parse('${baseUrl}api/levels/test-questions-check');
 
   static Uri testQuestions(int id) => Uri.https(
         Urls.baseAddress,
