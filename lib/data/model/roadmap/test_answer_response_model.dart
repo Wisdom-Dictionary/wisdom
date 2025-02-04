@@ -42,19 +42,13 @@ class LevelExerciseResultModel {
 
   factory LevelExerciseResultModel.fromMap(Map<String, dynamic> map) {
     return LevelExerciseResultModel(
-      levelExerciseId: map['level_exercise_id'] != null
-          ? map['level_exercise_id'] as int
-          : null,
+      levelExerciseId: map['level_exercise_id'] != null ? map['level_exercise_id'] as int : null,
       pass: map['pass'] != null ? map['pass'] as bool : null,
       star: map['star'] != null ? map['star'] as int : null,
-      totalQuestions:
-          map['total_questions'] != null ? map['total_questions'] as int : null,
-      correctAnswers:
-          map['correct_answers'] != null ? map['correct_answers'] as int : null,
-      testDuration:
-          map['test_duration'] != null ? map['test_duration'] as int : null,
-      optimalTime:
-          map['optimal_time'] != null ? map['optimal_time'] as int : null,
+      totalQuestions: map['total_questions'] != null ? map['total_questions'] as int : null,
+      correctAnswers: map['correct_answers'] != null ? map['correct_answers'] as int : null,
+      testDuration: map['test_duration'] != null ? map['test_duration'] as int : null,
+      optimalTime: map['optimal_time'] != null ? map['optimal_time'] as int : null,
       timeTaken: map['time_taken'] != null ? map['time_taken'] as int : null,
       answers: List<TestAnswerModel>.from(
         (map['answers'] as List).map<TestAnswerModel>(

@@ -29,8 +29,7 @@ class WordExercisesViewModel extends BaseViewModel {
   }
 
   bool get hasTimer =>
-      levelTestRepository.startDate.isNotEmpty ||
-      levelTestRepository.endDate.isNotEmpty;
+      levelTestRepository.startDate.isNotEmpty || levelTestRepository.endDate.isNotEmpty;
 
   int get givenTimeForExercise {
     if (!hasTimer) {
@@ -59,8 +58,7 @@ class WordExercisesViewModel extends BaseViewModel {
   }
 
   bool submitButtonStatus(int tabControllerIndex) {
-    if (levelTestRepository.testQuestionsList.length ==
-        tabControllerIndex + 1) {
+    if (levelTestRepository.testQuestionsList.length == tabControllerIndex + 1) {
       return true;
     }
     if (levelTestRepository.testQuestionsList.length > answers.length) {
@@ -87,10 +85,7 @@ class WordExercisesViewModel extends BaseViewModel {
         Navigator.pushNamed(context!, Routes.wordExercisesCheckPage);
         setSuccess(tag: postWordExercisesCheckTag);
       }
-    },
-        callFuncName: 'postWordExercisesCheck',
-        tag: postWordExercisesCheckTag,
-        inProgress: false);
+    }, callFuncName: 'postWordExercisesCheck', tag: postWordExercisesCheckTag, inProgress: false);
   }
 
   retryWordQuestions() {
@@ -102,8 +97,7 @@ class WordExercisesViewModel extends BaseViewModel {
     safeBlock(() async {
       try {
         if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
-          if (levelTestRepository.exerciseType ==
-              TestExerciseType.wordExercise) {
+          if (levelTestRepository.exerciseType == TestExerciseType.wordExercise) {
             await levelTestRepository.getWordQuestions();
           } else {
             await levelTestRepository.getTestQuestions();
@@ -113,9 +107,6 @@ class WordExercisesViewModel extends BaseViewModel {
       } catch (e) {
         setError(VMException(e.toString()), tag: getWordExercisesTag);
       }
-    },
-        callFuncName: 'getWordExercises',
-        tag: getWordExercisesTag,
-        inProgress: false);
+    }, callFuncName: 'getWordExercises', tag: getWordExercisesTag, inProgress: false);
   }
 }

@@ -43,16 +43,16 @@ class LevelWordsPageViewModel extends BaseViewModel {
 
   void getLevelWords() {
     safeBlock(() async {
-      try{
-      await roadmapRepository.getLevelWords();
-      if (roadmapRepository.levelWordsList.isNotEmpty) {
-        setSuccess(tag: getLevelWordsTag);
-      } else {
-        callBackError("text");
-      }
+      try {
+        await roadmapRepository.getLevelWords();
+        if (roadmapRepository.levelWordsList.isNotEmpty) {
+          setSuccess(tag: getLevelWordsTag);
+        } else {
+          callBackError("text");
+        }
       } catch (e) {
         callBackError("text");
-        if(e is VMException) {
+        if (e is VMException) {
           setError(e, tag: getLevelWordsTag);
         }
         setError(VMException(e.toString()), tag: getLevelWordsTag);

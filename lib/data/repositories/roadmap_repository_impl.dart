@@ -42,10 +42,11 @@ class RoadmapRepositoryImpl extends RoadmapRepository {
   Future<void> getLevelWords() async {
     _levelWordsList = [];
     var response = await customClient.get(
-      Urls.levelWords(selectedLevel!.id!), headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-        },
+      Urls.levelWords(selectedLevel!.id!),
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+      },
     );
     if (response.isSuccessful) {
       final responseData = jsonDecode(response.body);

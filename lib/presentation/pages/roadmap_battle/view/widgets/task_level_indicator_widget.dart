@@ -76,7 +76,7 @@ class InactiveLevelIndicator extends StatelessWidget {
       );
 
   Container inactiveItemContent() {
-    final userLevel = item.userLevel ?? false;
+    final userLevel = item.userCurrentLevel ?? false;
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 18.5.w, vertical: 4.h),
       decoration: BoxDecoration(
