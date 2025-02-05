@@ -1,4 +1,5 @@
 import 'package:dotted_border/dotted_border.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:wisdom/config/constants/app_colors.dart';
@@ -17,7 +18,7 @@ class OpponentWasFoundDialog extends StatelessWidget {
       shrinkWrap: true,
       children: [
         Text(
-          "Opponent topildi",
+          "opponent_has_found".tr(),
           textAlign: TextAlign.center,
           style: AppTextStyle.font17W600Normal.copyWith(fontSize: 18, color: AppColors.blue),
         ),
@@ -34,7 +35,7 @@ class OpponentWasFoundDialog extends StatelessWidget {
                     height: 8,
                   ),
                   Text(
-                    "You",
+                    "you".tr(),
                     textAlign: TextAlign.center,
                     style: AppTextStyle.font15W600Normal
                         .copyWith(fontSize: 14, color: AppColors.black),
@@ -44,8 +45,9 @@ class OpponentWasFoundDialog extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(top: 16, left: 24, right: 24),
                 child: Text(
-                  "VS",
-                  style: AppTextStyle.font28W600Normal.copyWith(color: AppColors.blue),
+                  "vs".tr(),
+                  style:
+                      AppTextStyle.font28W600Normal.copyWith(color: AppColors.blue, fontSize: 24),
                 ),
               ),
               SizedBox(
@@ -97,7 +99,7 @@ class OpponentWasFoundDialog extends StatelessWidget {
                 width: 10,
               ),
               Text(
-                "Start",
+                "start".tr(),
                 style: AppTextStyle.font13W500Normal.copyWith(color: AppColors.white, fontSize: 14),
               )
             ],

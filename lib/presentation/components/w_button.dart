@@ -45,6 +45,7 @@ class WButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(borderRadius ?? 40.r),
           color: isDisable ? AppColors.gray80 : color ?? AppColors.blue),
       height: 45.h,
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       margin: margin,
       child: Material(
         color: Colors.transparent,
@@ -57,12 +58,10 @@ class WButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(borderRadius ?? 40.r),
           child: title != null
               ? Center(
-                  child: Flexible(
-                    child: Text(
-                      title ?? 'start_the_exercise'.tr(),
-                      style: titleStyle ?? AppTextStyle.font15W500Normal,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                  child: Text(
+                    title ?? 'start_the_exercise'.tr(),
+                    style: titleStyle ?? AppTextStyle.font15W500Normal,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 )
               : child ?? const Center(),

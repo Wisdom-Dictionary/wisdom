@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:wisdom/config/constants/app_colors.dart';
 import 'package:wisdom/config/constants/app_text_style.dart';
@@ -14,7 +15,7 @@ class OutOfLivesWithTimerDialog extends StatelessWidget {
       shrinkWrap: true,
       children: [
         Text(
-          "You didn’t start the battle!",
+          "you_did_not_start_the_battle".tr(),
           textAlign: TextAlign.center,
           style: AppTextStyle.font17W600Normal.copyWith(fontSize: 18, color: AppColors.orange),
         ),
@@ -23,7 +24,7 @@ class OutOfLivesWithTimerDialog extends StatelessWidget {
           child: Column(
             children: [
               Text(
-                "We couldn't find you an opponent.",
+                "we_could_not_find_you_an_opponent".tr(),
                 textAlign: TextAlign.center,
                 style: AppTextStyle.font13W500Normal.copyWith(color: AppColors.black, fontSize: 14),
               ),
@@ -35,14 +36,12 @@ class OutOfLivesWithTimerDialog extends StatelessWidget {
                 style: AppTextStyle.font13W500Normal.copyWith(color: AppColors.gray),
                 TextSpan(
                   children: [
-                    TextSpan(
-                        text:
-                            "Please wait a bit and don't forget to collect your lives when the time is right! You will get your next lives after "),
+                    TextSpan(text: "lives_timer_leading_text".tr()),
                     TextSpan(
                       text: '10:59',
                       style: AppTextStyle.font13W500Normal.copyWith(color: AppColors.blue),
                     ),
-                    TextSpan(text: ' minutes'),
+                    TextSpan(text: 'lives_timer_trailing_text'.tr()),
                   ],
                 ),
               )
@@ -50,7 +49,7 @@ class OutOfLivesWithTimerDialog extends StatelessWidget {
           ),
         ),
         WButton(
-          title: "Got it",
+          title: "got_it".tr(),
           onTap: () {
             Navigator.pop(context);
           },

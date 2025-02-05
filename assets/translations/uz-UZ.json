@@ -160,5 +160,20 @@
   "retry": "Qayta urinish",
   "right_answers": "To'g'ri javoblar",
   "words_found_correctly": "To'g'ri topilgan so'zlar",
-  "time_taken": "Sarflangan vaqt"
+  "time_taken": "Sarflangan vaqt",
+  "start": "Boshlash",
+  "participating_in_word_battle_description": "Siz keyingi bosqichga o’tish uchun Word Battleda g’olib bo’lishingiz kerak Battle qonuniga ko’ra savollar 20tadan iborat bo’ladi hamda opponent online tarzda random belgilab beriladi.",
+  "participating_in_word_battle": "Word Battleda qatnashish",
+  "got_it": "Tushundim",
+  "we_could_not_find_you_an_opponent": "Biz sizga mos raqib topa olmadik",
+  "you_did_not_start_the_battle": "Siz Battle ni boshlay olmaysiz!",
+  "you_do_not_have_enough_lives": "Siz barcha jonlaringizni sarflab bo'lgansiz, mashqlarni bajarish uchun jonlaringiz yetarli emas",
+  "lives_timer_leading_text": "Iltimos, biroz kuting va vaqti kelganda jonlaringizni yig'ishni unutmang! Keyingi jonlaringizni ",
+  "lives_timer_trailing_text": "  daqiqadan so'ng olasiz",
+  "you_are_out_of_lives": "Sizda urinishlar soni tugagan!",
+  "try_again": "Qayta urinish",
+  "vs": "VA",
+  "you": "Siz",
+  "opponent": "Raqib",
+  "opponent_has_found": "Raqib topildi"
 }

@@ -9,6 +9,7 @@ import 'package:wisdom/presentation/pages/profile/view/input_number_page.dart';
 import 'package:wisdom/presentation/pages/profile/view/payment_page.dart';
 import 'package:wisdom/presentation/pages/profile/view/profile_page.dart';
 import 'package:wisdom/presentation/pages/profile/view/verify_page.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/battle_result_page.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/searching_opponent_page.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/word_details_page.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/word_exercises_check_page.dart';
@@ -33,6 +34,7 @@ class Routes {
   static const wordExercisesPage = '/wordExercisesPage';
   static const wordExercisesCheckPage = '/wordExercisesCheckPage';
   static const searchingOpponentPage = '/searchingOpponentPage';
+  static const battleResultPage = '/battleResultPage';
 
   static Route<dynamic> generateRoutes(RouteSettings routeSettings) {
     try {
@@ -103,6 +105,10 @@ class Routes {
         case searchingOpponentPage:
           return MaterialPageRoute(
             builder: (_) => SearchingOpponentPage(),
+          );
+        case battleResultPage:
+          return MaterialPageRoute(
+            builder: (_) => BattleResultPage(),
           );
         default:
           return MaterialPageRoute(

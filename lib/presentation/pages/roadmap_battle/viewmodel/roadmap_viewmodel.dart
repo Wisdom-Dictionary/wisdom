@@ -12,6 +12,7 @@ import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/opponent_wa
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/out_of_lives_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/out_of_lives_with_timer_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/start_battle_dialog.dart';
+import 'package:wisdom/presentation/routes/routes.dart';
 
 import '../../../../core/di/app_locator.dart';
 
@@ -38,12 +39,13 @@ class RoadMapViewModel extends BaseViewModel {
 
   void selectLevel(LevelModel item) {
     if (item.type == "battle") {
-      showDialog(
-        context: context!,
-        builder: (context) => DialogBackground(
-          child: StartBattleDialog(),
-        ),
-      );
+      Navigator.pushNamed(context!, Routes.battleResultPage);
+      // showDialog(
+      //   context: context!,
+      //   builder: (context) => DialogBackground(
+      //     child: StartBattleDialog(),
+      //   ),
+      // );
       return;
     }
     roadMapRepository.setSelectedLevel(item);

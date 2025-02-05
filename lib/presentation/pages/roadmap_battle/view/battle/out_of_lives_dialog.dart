@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:wisdom/config/constants/app_colors.dart';
@@ -16,7 +17,7 @@ class OutOfLivesDialog extends StatelessWidget {
       shrinkWrap: true,
       children: [
         Text(
-          "You are out of lives!",
+          "you_are_out_of_lives".tr(),
           textAlign: TextAlign.center,
           style: AppTextStyle.font17W600Normal.copyWith(fontSize: 18, color: AppColors.orange),
         ),
@@ -25,23 +26,32 @@ class OutOfLivesDialog extends StatelessWidget {
           child: SvgPicture.asset(Assets.icons.outOfLives),
         ),
         Text(
-          "You use all your lives, you don't have enough lives to complete the exercises",
+          "you_do_not_have_enough_lives".tr(),
           textAlign: TextAlign.center,
           style: AppTextStyle.font13W500Normal.copyWith(fontSize: 14, color: AppColors.black),
         ),
         SizedBox(
           height: 16,
         ),
-        Text(
-          "Please wait a bit and don't forget to collect your lives when the time is right! You will get your next lives after 10:59 minutes",
+        Text.rich(
           textAlign: TextAlign.center,
-          style: AppTextStyle.font13W500Normal.copyWith(fontSize: 12, color: AppColors.gray),
+          style: AppTextStyle.font13W500Normal.copyWith(color: AppColors.gray),
+          TextSpan(
+            children: [
+              TextSpan(text: "lives_timer_leading_text".tr()),
+              TextSpan(
+                text: '10:59',
+                style: AppTextStyle.font13W500Normal.copyWith(color: AppColors.blue),
+              ),
+              TextSpan(text: 'lives_timer_trailing_text'.tr()),
+            ],
+          ),
         ),
         SizedBox(
           height: 32,
         ),
         WButton(
-          title: "Got it",
+          title: "got_it".tr(),
           onTap: () {},
         )
       ],

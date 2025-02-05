@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:wisdom/config/constants/app_colors.dart';
 import 'package:wisdom/config/constants/app_text_style.dart';
@@ -43,7 +44,7 @@ class OpponentWasNotFoundDialog extends StatelessWidget {
             ),
             Expanded(
               child: WButton(
-                title: "Try again",
+                title: "try_again".tr(),
                 onTap: () {
                   Navigator.pop(context);
                 },

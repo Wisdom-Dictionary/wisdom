@@ -1,6 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:jbaza/jbaza.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:wisdom/config/constants/app_colors.dart';
 import 'package:wisdom/config/constants/app_text_style.dart';
 import 'package:wisdom/config/constants/assets.dart';
@@ -13,7 +13,7 @@ class StartBattleDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      physics: ClampingScrollPhysics(),
+      physics: const ClampingScrollPhysics(),
       padding: const EdgeInsets.only(top: 32, left: 24, right: 24, bottom: 24),
       shrinkWrap: true,
       children: [
@@ -33,46 +33,49 @@ class StartBattleDialog extends StatelessWidget {
               )),
         ),
         Text(
-          "Word Battleda qatnashish",
+          "participating_in_word_battle".tr(),
           textAlign: TextAlign.center,
           style: AppTextStyle.font13W500Normal.copyWith(fontSize: 14, color: AppColors.black),
         ),
-        SizedBox(
+        const SizedBox(
           height: 16,
         ),
         Text(
-          "Siz keyingi bosqichga o’tish uchun Word Battleda g’olib bo’lishingiz kerakBattle qonuniga ko’ra savollar 20tadaniborat bo’ladi hamda opponent onlinetarzda random belgilab beriladi.",
+          "participating_in_word_battle_description".tr(),
           textAlign: TextAlign.center,
           style: AppTextStyle.font13W500Normal.copyWith(fontSize: 12, color: AppColors.gray),
         ),
-        SizedBox(
+        const SizedBox(
           height: 32,
         ),
-        Row(
-          children: [
-            Expanded(
-              child: WButton(
-                titleStyle: AppTextStyle.font15W500Normal.copyWith(color: AppColors.blue),
-                color: AppColors.lavender,
-                title: "Cancel",
-                onTap: () {
-                  Navigator.pop(context);
-                },
+        SizedBox(
+          height: 45.h,
+          child: Row(
+            children: [
+              Expanded(
+                child: WButton(
+                  titleStyle: AppTextStyle.font15W500Normal.copyWith(color: AppColors.blue),
+                  color: AppColors.lavender,
+                  title: "cancel".tr(),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
               ),
-            ),
-            SizedBox(
-              width: 8,
-            ),
-            Expanded(
-              child: WButton(
-                title: "Start",
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.pushNamed(context, Routes.searchingOpponentPage);
-                },
+              const SizedBox(
+                width: 8,
               ),
-            ),
-          ],
+              Expanded(
+                child: WButton(
+                  title: "start".tr(),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.pushNamed(context, Routes.searchingOpponentPage);
+                  },
+                ),
+              ),
+            ],
+          ),
         )
       ],
     );

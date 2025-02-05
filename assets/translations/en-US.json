@@ -162,5 +162,20 @@
   "retry": "Retry",
   "right_answers": "Right answers",
   "words_found_correctly": "Words found correctly",
-  "time_taken": "Time taken"
+  "time_taken": "Time taken",
+  "start": "Start",
+  "participating_in_word_battle_description": "You must win the Word Battle to advance to the next round. According to the rules of the Battle, there will be 20 questions and the opponent will be randomly selected online.",
+  "participating_in_word_battle": "Participating in Word Battle",
+  "got_it": "Got it",
+  "we_could_not_find_you_an_opponent": "We couldn't find you an opponent.",
+  "you_did_not_start_the_battle": "You didn’t start the battle!",
+  "you_do_not_have_enough_lives": "You use all your lives, you don't have enough lives to complete the exercises",
+  "lives_timer_leading_text": "Please wait a bit and don't forget to collect your lives when the time is right! You will get your next lives after ",
+  "lives_timer_trailing_text": " minutes",
+  "you_are_out_of_lives": "You are out of lives!",
+  "try_again": "Try again",
+  "vs": "VS",
+  "you": "You",
+  "opponent": "Opponent",
+  "opponent_has_found": "Opponent has found"
 }
