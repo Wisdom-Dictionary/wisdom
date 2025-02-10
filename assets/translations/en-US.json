@@ -177,5 +177,13 @@
   "vs": "VS",
   "you": "You",
   "opponent": "Opponent",
-  "opponent_has_found": "Opponent has found"
+  "opponent_has_found": "Opponent has found",
+  "sign_in": "Sign In",
+  "later": "Later",
+  "unlock_your_learning_journey": "Unlock Your Learning Journey!",
+  "sign_in_content": "Sign in to access interactive exercises, track your progress, and improve your English skills faster!",
+  "no_internet_content": "It looks like you’re offline. Please check your internet connection and try again.",
+  "continue": "Continue",
+  "exit": "Exit",
+  "cancel_level_exercises_content": "Do you really want to exit without completing the exercise ? You will not be able to start learning the next word!"
 }

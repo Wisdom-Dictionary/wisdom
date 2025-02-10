@@ -7,11 +7,13 @@ import 'package:wisdom/data/viewmodel/local_viewmodel.dart';
 import 'package:wisdom/domain/repositories/level_test_repository.dart';
 import 'package:wisdom/domain/repositories/roadmap_repository.dart';
 import 'package:wisdom/presentation/components/dialog_background.dart';
+import 'package:wisdom/presentation/components/no_internet_connection_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/opponent_was_found_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/opponent_was_not_found_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/out_of_lives_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/out_of_lives_with_timer_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/start_battle_dialog.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/view/sign_in_dialog.dart';
 import 'package:wisdom/presentation/routes/routes.dart';
 
 import '../../../../core/di/app_locator.dart';
@@ -30,9 +32,31 @@ class RoadMapViewModel extends BaseViewModel {
 
   void getLevels() {
     safeBlock(() async {
-      if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
-        await roadMapRepository.getLevels(++page);
-        setSuccess(tag: getLevelsTag);
+      try {
+        if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
+          await roadMapRepository.getLevels(++page);
+          setSuccess(tag: getLevelsTag);
+        } else {
+          showDialog(
+            context: context!,
+            builder: (context) => const DialogBackground(
+              child: NoInternetConnectionDialog(),
+            ),
+          );
+        }
+      } catch (e) {
+        if (e is VMException) {
+          if (e.response != null) {
+            if (e.response!.statusCode == 403) {
+              showDialog(
+                context: context!,
+                builder: (context) => const DialogBackground(
+                  child: SignInDialog(),
+                ),
+              );
+            }
+          }
+        }
       }
     }, callFuncName: 'getLevels', tag: getLevelsTag, inProgress: false);
   }
@@ -40,12 +64,6 @@ class RoadMapViewModel extends BaseViewModel {
   void selectLevel(LevelModel item) {
     if (item.type == "battle") {
       Navigator.pushNamed(context!, Routes.battleResultPage);
-      // showDialog(
-      //   context: context!,
-      //   builder: (context) => DialogBackground(
-      //     child: StartBattleDialog(),
-      //   ),
-      // );
       return;
     }
     roadMapRepository.setSelectedLevel(item);

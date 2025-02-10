@@ -11,6 +11,7 @@ import 'package:wisdom/data/repositories/level_test_repository_impl.dart';
 import 'package:wisdom/data/repositories/profile_repository_impl.dart';
 import 'package:wisdom/data/repositories/roadmap_repository_impl.dart';
 import 'package:wisdom/data/repositories/search_repository_impl.dart';
+import 'package:wisdom/data/repositories/user_live_repository_impl.dart';
 import 'package:wisdom/data/repositories/word_entity_repository_impl.dart';
 import 'package:wisdom/data/viewmodel/local_viewmodel.dart';
 import 'package:wisdom/domain/repositories/category_repository.dart';
@@ -19,6 +20,7 @@ import 'package:wisdom/domain/repositories/level_test_repository.dart';
 import 'package:wisdom/domain/repositories/profile_repository.dart';
 import 'package:wisdom/domain/repositories/roadmap_repository.dart';
 import 'package:wisdom/domain/repositories/search_repository.dart';
+import 'package:wisdom/domain/repositories/user_live_repository.dart';
 import 'package:wisdom/domain/repositories/word_entity_repository.dart';
 
 final locator = JbazaLocator.instance;
@@ -40,6 +42,7 @@ void setupLocator() {
   locator.registerLazySingleton<CategoryRepository>(() => CategoryRepositoryImpl(locator.get()));
   locator.registerLazySingleton<RoadmapRepository>(
       () => RoadmapRepositoryImpl(locator.get(), locator.get()));
+  locator.registerLazySingleton<UserLiveRepository>(() => UserLiveRepositoryImpl(locator.get()));
   locator.registerLazySingleton<LevelTestRepository>(
       () => LevelTestRepositoryImpl(locator.get(), locator.get()));
   locator.registerLazySingleton<SearchRepository>(

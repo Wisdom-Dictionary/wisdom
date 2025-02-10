@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:jbaza/jbaza.dart';
+import 'package:provider/provider.dart';
 import 'package:wisdom/config/constants/app_colors.dart';
 import 'package:wisdom/config/constants/app_text_style.dart';
 import 'package:wisdom/config/constants/assets.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/roadmap_custom_painter.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/widgets/life_status_bar.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/life_countdown_provider.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/roadmap_viewmodel.dart';
 import 'package:wisdom/presentation/widgets/new_custom_app_bar.dart';
 
@@ -23,12 +25,21 @@ class RoadmapPage extends ViewModelBuilderWidget<RoadMapViewModel> {
   @override
   Widget builder(BuildContext context, RoadMapViewModel viewModel, Widget? child) {
     return Scaffold(
-        appBar: NewCustomAppBar(
-          child: const RoadmapAppBarContent(),
-        ),
-        body: ExampleRoadMap(
+        body: Stack(
+      children: [
+        ExampleRoadMap(
           viewModel: viewModel,
-        ));
+        ),
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          child: NewCustomAppBar(
+            child: const RoadmapAppBarContent(),
+          ),
+        ),
+      ],
+    ));
   }
 
   @override
@@ -50,32 +61,7 @@ class RoadmapAppBarContent extends StatelessWidget {
       children: [
         scoreInfo("1200", SvgPicture.asset(Assets.icons.star)),
         scoreInfo("500", SvgPicture.asset(Assets.icons.verify)),
-        Column(
-          children: [
-            LifeStatusBar(),
-            Padding(
-              padding: EdgeInsets.only(left: 2.w, right: 2.w, top: 4.h),
-              child: Material(
-                borderRadius: BorderRadius.circular(21.r),
-                color: AppColors.white,
-                child: InkWell(
-                  onTap: () {},
-                  borderRadius: BorderRadius.circular(21.r),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
-                    height: 19.h,
-                    child: Center(
-                      child: Text(
-                        "claim".tr(),
-                        style: AppTextStyle.font13W500Normal.copyWith(color: AppColors.blue),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            )
-          ],
-        )
+        LifeStatusBar()
       ],
     );
   }

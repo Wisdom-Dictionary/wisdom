@@ -49,6 +49,8 @@ class LevelTestRepositoryImpl extends LevelTestRepository {
 
   @override
   Future<void> getTestQuestions() async {
+    _startDate = "";
+    _endDate = "";
     _testQuestionsList = [];
     var response = await customClient.get(Urls.testQuestions(selectedLevel!.id!));
     if (response.isSuccessful) {
@@ -68,6 +70,8 @@ class LevelTestRepositoryImpl extends LevelTestRepository {
 
   @override
   Future<void> getWordQuestions() async {
+    _startDate = "";
+    _endDate = "";
     _testQuestionsList = [];
     var response = await customClient.get(Urls.wordQuestions(selectedLevelWord!.wordId!));
     if (response.isSuccessful) {

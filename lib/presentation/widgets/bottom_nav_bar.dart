@@ -23,18 +23,18 @@ class HomeBottomNavBar extends ViewModelWidget<HomeViewModel> {
       valueListenable: viewModel.localViewModel.currentIndex,
       builder: (context, value, child) {
         return Positioned(
-          bottom: 0,
-          left: 0,
-          right: 0,
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(30.r), topRight: Radius.circular(30.r)),
-              color: (isDarkTheme ? AppColors.darkBottomBar : AppColors.blue).withOpacity(0.95),
-            ),
-            padding: EdgeInsets.only(top: 8.h),
-            child: SafeArea(
-              top: false,
+          bottom: 6,
+          left: 6,
+          right: 6,
+          child: SafeArea(
+            top: false,
+            child: Container(
+              height: 60.h,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(256.r),
+                color: (isDarkTheme ? AppColors.darkBottomBar : AppColors.blue)
+                    .withValues(alpha: 0.95),
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [

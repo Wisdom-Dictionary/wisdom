@@ -16,6 +16,7 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:wisdom/core/db/db_helper.dart';
 import 'package:wisdom/core/db/preference_helper.dart';
 import 'package:wisdom/core/services/purchase_observer.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/life_countdown_provider.dart';
 import 'package:wisdom/presentation/pages/setting/viewmodel/setting_page_viewmodel.dart';
 import 'package:workmanager/workmanager.dart';
 
@@ -107,6 +108,9 @@ void main() async {
         child: MultiProvider(
             providers: [
               ChangeNotifierProvider(create: (context) => MainProvider()),
+              ListenableProvider(
+                create: (_) => CountdownProvider(),
+              )
             ],
             builder: (context, child) {
               return const MyApp();

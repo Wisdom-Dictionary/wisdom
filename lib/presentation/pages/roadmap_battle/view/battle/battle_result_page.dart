@@ -29,8 +29,7 @@ class BattleResultPage extends StatelessWidget {
           appBar: CustomAppBar(
             isSearch: false,
             title: "exercise_result".tr(),
-            onTap: () {},
-            // onTap: () => viewModel.goBack(),
+            onTap: () => Navigator.pop(context),
             leadingIcon: Assets.icons.arrowLeft,
           ),
           body: ListView(

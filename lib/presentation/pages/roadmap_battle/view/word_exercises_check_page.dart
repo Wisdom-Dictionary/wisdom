@@ -72,7 +72,9 @@ class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewMod
                           const SizedBox(
                             height: 8,
                           ),
-                          questionsResultList(viewModel.levelTestRepository.resultModel!.answers),
+                          QuestionsResultList(
+                            items: viewModel.levelTestRepository.resultModel!.answers,
+                          )
                         ],
                       ),
                     ),
@@ -101,40 +103,6 @@ class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewMod
             ],
           ),
         ));
-  }
-
-  Container questionsResultList(List<TestAnswerModel> items) {
-    return Container(
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            width: 1,
-            color: AppColors.vibrantBlue.withValues(alpha: 0.15),
-          )),
-      child: ListView.separated(
-        primary: false,
-        padding: EdgeInsets.zero,
-        shrinkWrap: true,
-        itemCount: items.length,
-        separatorBuilder: (context, index) => Divider(
-          height: 1,
-          color: AppColors.vibrantBlue.withValues(alpha: 0.15),
-        ),
-        itemBuilder: (context, index) => Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text("${index + 1}",
-                  style:
-                      AppTextStyle.font15W600Normal.copyWith(fontSize: 14, color: AppColors.blue)),
-              SvgPicture.asset(
-                  items[index].isCorrect ? Assets.icons.doubleCheck : Assets.icons.incorrectAnswer)
-            ],
-          ),
-        ),
-      ),
-    );
   }
 
   Widget statusResultBar(int correctAnswers, int totalQuestions, {int? spendTime}) {
@@ -253,6 +221,143 @@ class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewMod
   WordExercisesViewModel viewModelBuilder(BuildContext context) {
     return WordExercisesViewModel(
       context: context,
+    );
+  }
+}
+
+class QuestionsResultList extends StatefulWidget {
+  const QuestionsResultList({super.key, required this.items});
+  final List<TestAnswerModel> items;
+  @override
+  State<QuestionsResultList> createState() => _QuestionsResultListState();
+}
+
+class _QuestionsResultListState extends State<QuestionsResultList> {
+  final ScrollController _scrollController = ScrollController();
+  bool _showGradientTop = false, _showGradientBottom = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_scrollListener);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _updateGradientVisibility();
+    });
+  }
+
+  void _scrollListener() {
+    _updateGradientVisibility();
+  }
+
+  void _updateGradientVisibility() {
+    if (!_scrollController.hasClients) return;
+
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.position.pixels;
+
+    bool shouldShowBottom = currentScroll < maxScroll;
+    if (shouldShowBottom != _showGradientBottom) {
+      setState(() {
+        _showGradientBottom = shouldShowBottom;
+        _showGradientTop = !shouldShowBottom;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          constraints: const BoxConstraints(maxHeight: 385),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                width: 1,
+                color: AppColors.vibrantBlue.withValues(alpha: 0.15),
+              )),
+          child: Stack(
+            children: [
+              ListView.separated(
+                controller: _scrollController,
+                padding: EdgeInsets.zero,
+                shrinkWrap: true,
+                itemCount: widget.items.length,
+                separatorBuilder: (context, index) => Divider(
+                  height: 1,
+                  color: AppColors.vibrantBlue.withValues(alpha: 0.15),
+                ),
+                itemBuilder: (context, index) => Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("${index + 1}",
+                          style: AppTextStyle.font15W600Normal
+                              .copyWith(fontSize: 14, color: AppColors.blue)),
+                      SvgPicture.asset(widget.items[index].isCorrect
+                          ? Assets.icons.doubleCheck
+                          : Assets.icons.incorrectAnswer)
+                    ],
+                  ),
+                ),
+              ),
+              if (_showGradientTop)
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: IgnorePointer(
+                    ignoring: true, // ListView bilan ishlashga halaqit bermaydi
+                    child: Container(
+                      height: 86,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.white,
+                            Colors.white.withOpacity(0.8),
+                            Colors.white.withOpacity(0.0),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              if (_showGradientBottom)
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: IgnorePointer(
+                    ignoring: true, // ListView bilan ishlashga halaqit bermaydi
+                    child: Container(
+                      height: 86,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.white.withOpacity(0.0),
+                            Colors.white.withOpacity(0.8),
+                            Colors.white,
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

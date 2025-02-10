@@ -95,7 +95,7 @@ class InactiveLevelIndicator extends StatelessWidget {
                 fontSize: 14, color: userLevel ? AppColors.white : AppColors.textDisabled),
           ),
           const SizedBox(
-            height: 8,
+            height: 4,
           ),
           userLevel
               ? SvgPicture.asset(

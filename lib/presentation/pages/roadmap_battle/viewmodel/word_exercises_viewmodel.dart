@@ -7,6 +7,9 @@ import 'package:wisdom/data/model/roadmap/answer_entity.dart';
 import 'package:wisdom/data/model/roadmap/test_question_model.dart';
 import 'package:wisdom/data/viewmodel/local_viewmodel.dart';
 import 'package:wisdom/domain/repositories/level_test_repository.dart';
+import 'package:wisdom/presentation/components/dialog_background.dart';
+import 'package:wisdom/presentation/components/no_internet_connection_dialog.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/view/cancel_level_exercises_dialog.dart';
 import 'package:wisdom/presentation/routes/routes.dart';
 
 import '../../../../core/di/app_locator.dart';
@@ -24,7 +27,22 @@ class WordExercisesViewModel extends BaseViewModel {
   int page = 0;
   List<AnswerEntity> answers = [];
 
-  goBack() {
+  goBack() async {
+    if (levelTestRepository.exerciseType == TestExerciseType.levelExercise) {
+      final value = await showDialog<bool>(
+        context: context!,
+        builder: (context) => const DialogBackground(
+          child: CancelLevelExercisesDialog(),
+        ),
+      );
+
+      if (value != null) {
+        if (!value) {
+          Navigator.pop(context!);
+        }
+      }
+      return;
+    }
     Navigator.pop(context!);
   }
 
@@ -74,6 +92,7 @@ class WordExercisesViewModel extends BaseViewModel {
   }
 
   void postTestQuestionsCheck() {
+    setBusy(true, tag: postWordExercisesCheckTag);
     safeBlock(() async {
       if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
         if (levelTestRepository.exerciseType == TestExerciseType.wordExercise) {
@@ -84,6 +103,14 @@ class WordExercisesViewModel extends BaseViewModel {
         Navigator.pop(context!);
         Navigator.pushNamed(context!, Routes.wordExercisesCheckPage);
         setSuccess(tag: postWordExercisesCheckTag);
+      } else {
+        showDialog(
+          context: context!,
+          builder: (context) => const DialogBackground(
+            child: NoInternetConnectionDialog(),
+          ),
+        );
+        setBusy(false, tag: postWordExercisesCheckTag);
       }
     }, callFuncName: 'postWordExercisesCheck', tag: postWordExercisesCheckTag, inProgress: false);
   }
@@ -97,6 +124,7 @@ class WordExercisesViewModel extends BaseViewModel {
     safeBlock(() async {
       try {
         if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
+          setBusy(true, tag: getWordExercisesTag);
           if (levelTestRepository.exerciseType == TestExerciseType.wordExercise) {
             await levelTestRepository.getWordQuestions();
           } else {

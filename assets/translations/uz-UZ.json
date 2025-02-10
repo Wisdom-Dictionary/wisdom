@@ -175,5 +175,13 @@
   "vs": "VA",
   "you": "Siz",
   "opponent": "Raqib",
-  "opponent_has_found": "Raqib topildi"
+  "opponent_has_found": "Raqib topildi",
+  "sign_in": "Kirish",
+  "later": "Keyinroq",
+  "unlock_your_learning_journey": "O'quv sayohatingizni oching!",
+  "sign_in_content": "Interaktiv mashqlarga kirish, muvaffaqiyatingizni kuzatish va ingliz tilini tezroq yaxshilash uchun tizimga kiring!",
+  "no_internet_content": "Internet aloqangizni tekshiring va qaytadan urinib ko'ring.",
+  "continue": "Davom etish",
+  "exit": "Chiqish",
+  "cancel_level_exercises_content": "Haqiqatan ham mashqni tugatmasdan chiqishni xohlaysizmi? Siz keyingi so'zni o'rganishni boshlay olmaysiz!"
 }

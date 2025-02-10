@@ -27,6 +27,15 @@ class LevelWordModel {
     this.isLearnt,
   });
 
+  LevelWordModel.defaultValues({
+    this.id = 0,
+    this.wordId = 0,
+    this.position = 0,
+    this.word = "",
+    this.wordClass = "",
+    this.isLearnt = false,
+  });
+
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,

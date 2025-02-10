@@ -1,14 +1,13 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:jbaza/jbaza.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:wisdom/config/constants/app_colors.dart';
 import 'package:wisdom/config/constants/app_decoration.dart';
 import 'package:wisdom/config/constants/app_text_style.dart';
 import 'package:wisdom/config/constants/assets.dart';
 import 'package:wisdom/config/constants/constants.dart';
-import 'package:wisdom/core/di/app_locator.dart';
 import 'package:wisdom/data/model/roadmap/answer_entity.dart';
 import 'package:wisdom/data/model/roadmap/test_question_model.dart';
 import 'package:wisdom/presentation/components/count_down_timer.dart';
@@ -16,7 +15,6 @@ import 'package:wisdom/presentation/components/w_button.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/widgets/life_status_bar.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/word_exercises_viewmodel.dart';
 import 'package:wisdom/presentation/widgets/custom_app_bar.dart';
-import 'package:wisdom/presentation/widgets/loading_widget.dart';
 
 class WordExercisesPage extends ViewModelBuilderWidget<WordExercisesViewModel> {
   WordExercisesPage({super.key});
@@ -38,32 +36,44 @@ class WordExercisesPage extends ViewModelBuilderWidget<WordExercisesViewModel> {
             title: "word_exercises".tr(),
             onTap: () => viewModel.goBack(),
             leadingIcon: Assets.icons.arrowLeft,
-            actions: [
+            actions: const [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
+                padding: EdgeInsets.symmetric(horizontal: 24),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    const LifeStatusBar(),
-                    if (viewModel.hasTimer)
-                      CountDownTimer(
-                        secondsRemaining: viewModel.givenTimeForExercise,
-                        whenTimeExpires: () {},
-                        countDownTimerStyle: AppTextStyle.font13W500Normal
-                            .copyWith(color: AppColors.white, fontSize: 12),
-                      ),
+                    LifeStatusBar(),
                   ],
                 ),
               )
             ],
           ),
-          body: viewModel.isSuccess(tag: viewModel.getWordExercisesTag)
-              ? WordExerciseContent(
-                  viewModel: viewModel,
-                )
-              : viewModel.isError(tag: viewModel.getWordExercisesTag)
-                  ? ErrorInfoPage(viewModel.getVMError()!)
-                  : const Center(child: LoadingWidget()),
+          body: viewModel.isBusy(tag: viewModel.getWordExercisesTag)
+              ? const ShimmerExercisesPage()
+              : viewModel.isSuccess(tag: viewModel.getWordExercisesTag)
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      child: Column(
+                        children: [
+                          if (viewModel.hasTimer)
+                            Padding(
+                              padding: const EdgeInsets.only(left: 18, right: 18, bottom: 16),
+                              child: CountDownTimer(
+                                secondsRemaining: viewModel.givenTimeForExercise,
+                                whenTimeExpires: () {},
+                                countDownTimerStyle: AppTextStyle.font13W500Normal
+                                    .copyWith(color: AppColors.blue, fontSize: 12),
+                              ),
+                            ),
+                          Expanded(
+                            child: WordExerciseContent(
+                              viewModel: viewModel,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  : const Center(),
         ));
   }
 
@@ -71,6 +81,64 @@ class WordExercisesPage extends ViewModelBuilderWidget<WordExercisesViewModel> {
   WordExercisesViewModel viewModelBuilder(BuildContext context) {
     return WordExercisesViewModel(
       context: context,
+    );
+  }
+}
+
+class ShimmerExercisesPage extends StatelessWidget {
+  const ShimmerExercisesPage({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+          padding: const EdgeInsets.all(16),
+          decoration: AppDecoration.bannerDecor,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Shimmer.fromColors(
+                baseColor: Colors.grey.shade400,
+                highlightColor: Colors.grey.shade200,
+                enabled: true,
+                period: const Duration(seconds: 2),
+                child: Container(
+                  width: double.infinity,
+                  height: 58,
+                  decoration: BoxDecoration(
+                      color: AppColors.lavender, borderRadius: BorderRadius.circular(10)),
+                ),
+              ),
+              const SizedBox(
+                height: 18,
+              ),
+              ListView.separated(
+                padding: EdgeInsets.zero,
+                separatorBuilder: (context, index) => const SizedBox(
+                  height: 8,
+                ),
+                itemCount: 4,
+                primary: false,
+                shrinkWrap: true,
+                itemBuilder: (context, index) => Shimmer.fromColors(
+                    baseColor: Colors.grey.shade300,
+                    highlightColor: Colors.grey.shade100,
+                    enabled: true,
+                    period: const Duration(seconds: 2),
+                    child: Container(
+                        width: double.infinity,
+                        height: 48,
+                        decoration: BoxDecoration(
+                            color: AppColors.lavender, borderRadius: BorderRadius.circular(32)))),
+              )
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
@@ -118,7 +186,7 @@ class _WordExerciseContentState extends State<WordExerciseContent>
                 (index, item) => Column(
                   children: [
                     Container(
-                      margin: const EdgeInsets.all(18),
+                      margin: const EdgeInsets.symmetric(horizontal: 18),
                       padding: const EdgeInsets.all(16),
                       decoration:
                           isDarkTheme ? AppDecoration.bannerDarkDecor : AppDecoration.bannerDecor,
@@ -138,7 +206,7 @@ class _WordExerciseContentState extends State<WordExerciseContent>
                           ),
                           ListView.separated(
                             padding: EdgeInsets.zero,
-                            separatorBuilder: (context, index) => SizedBox(
+                            separatorBuilder: (context, index) => const SizedBox(
                               height: 8,
                             ),
                             itemCount: widget.viewModel.levelTestRepository.testQuestionsList[index]
@@ -174,6 +242,7 @@ class _WordExerciseContentState extends State<WordExerciseContent>
           isDisable: !widget.viewModel.submitButtonStatus(_tabController.index),
           margin: EdgeInsets.only(left: 16, right: 16, top: 24.h, bottom: 12.h),
           title: 'submit'.tr(),
+          isLoading: widget.viewModel.isBusy(tag: widget.viewModel.postWordExercisesCheckTag),
           onTap: () {
             int? validateAnswers = widget.viewModel.validateAnswers;
             if (validateAnswers != null) {
@@ -209,7 +278,9 @@ class _WordExerciseContentState extends State<WordExerciseContent>
         highlightColor: AppColors.bgLightBlue.withValues(alpha: 0.6),
         color: AppColors.bgLightBlue.withValues(alpha: 0.1),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 15.5),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 18,
+          ),
           child: Row(
             children: [
               Text(

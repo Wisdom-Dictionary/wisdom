@@ -15,6 +15,10 @@ abstract class _AssetsHolder {
 class _Icons extends _AssetsHolder {
   const _Icons() : super("assets/icons");
 
+  String get wifiOff => '$basePath/wifi-off.svg';
+
+  String get clock => '$basePath/clock.svg';
+
   String get outOfLives => '$basePath/out-of-lives.svg';
 
   String get searchingOpponentAvatar => '$basePath/searching-opponent-avatar.svg';
