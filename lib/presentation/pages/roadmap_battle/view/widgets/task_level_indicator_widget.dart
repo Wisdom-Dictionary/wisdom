@@ -76,7 +76,7 @@ class InactiveLevelIndicator extends StatelessWidget {
       );
 
   Container inactiveItemContent() {
-    final userLevel = item.userLevel ?? false;
+    final userLevel = item.userCurrentLevel ?? false;
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 18.5.w, vertical: 4.h),
       decoration: BoxDecoration(
@@ -95,7 +95,7 @@ class InactiveLevelIndicator extends StatelessWidget {
                 fontSize: 14, color: userLevel ? AppColors.white : AppColors.textDisabled),
           ),
           const SizedBox(
-            height: 8,
+            height: 4,
           ),
           userLevel
               ? SvgPicture.asset(

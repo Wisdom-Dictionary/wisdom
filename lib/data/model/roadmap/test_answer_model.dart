@@ -20,7 +20,7 @@ class TestAnswerModel {
   factory TestAnswerModel.fromMap(Map<String, dynamic> map) {
     return TestAnswerModel(
       questionId: map['question_id'] as int,
-      isCorrect: map['is_correct'] != null ? map['is_correct'] as bool : false ,
+      isCorrect: map['is_correct'] != null ? map['is_correct'] as bool : false,
     );
   }
 

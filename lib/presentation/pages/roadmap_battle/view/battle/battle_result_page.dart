@@ -1,24 +1,17 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:jbaza/jbaza.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:wisdom/config/constants/app_colors.dart';
 import 'package:wisdom/config/constants/app_decoration.dart';
 import 'package:wisdom/config/constants/app_text_style.dart';
 import 'package:wisdom/config/constants/assets.dart';
 import 'package:wisdom/config/constants/constants.dart';
-import 'package:wisdom/data/model/roadmap/test_answer_model.dart';
 import 'package:wisdom/presentation/components/w_button.dart';
-import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/word_exercises_viewmodel.dart';
 import 'package:wisdom/presentation/widgets/custom_app_bar.dart';
 
-class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewModel> {
-  WordExercisesCheckPage({super.key});
-  @override
-  void onViewModelReady(WordExercisesViewModel viewModel) {
-    super.onViewModelReady(viewModel);
-  }
+class BattleResultPage extends StatelessWidget {
+  BattleResultPage({super.key});
 
   String formatText(String text, int chunkSize) {
     final pattern = RegExp('.{1,$chunkSize}');
@@ -26,23 +19,24 @@ class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewMod
   }
 
   @override
-  Widget builder(BuildContext context, WordExercisesViewModel viewModel, Widget? child) {
+  Widget build(BuildContext context) {
     return WillPopScope(
-        onWillPop: () => viewModel.goBack(),
+        // onWillPop: () => viewModel.goBack(),
+        onWillPop: null,
         child: Scaffold(
           backgroundColor: isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
           drawerEnableOpenDragGesture: false,
           appBar: CustomAppBar(
             isSearch: false,
             title: "exercise_result".tr(),
-            onTap: () => viewModel.goBack(),
+            onTap: () => Navigator.pop(context),
             leadingIcon: Assets.icons.arrowLeft,
           ),
           body: ListView(
             physics: const ClampingScrollPhysics(),
             padding: const EdgeInsets.symmetric(vertical: 13, horizontal: 18),
             children: [
-              statusIndicatorBar(viewModel.levelTestRepository.resultModel!.pass ?? false),
+              statusIndicatorBar(true, 2),
               const SizedBox(
                 height: 8,
               ),
@@ -51,8 +45,89 @@ class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewMod
                 decoration: AppDecoration.resultDecor,
                 child: Column(
                   children: [
-                    statusResultBar(viewModel.levelTestRepository.resultModel!.correctAnswers ?? 0,
-                        viewModel.levelTestRepository.resultModel!.totalQuestions ?? 0),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Column(
+                          children: [
+                            SvgPicture.asset(Assets.icons.userAvatar),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            Text(
+                              "you".tr(),
+                              textAlign: TextAlign.center,
+                              style: AppTextStyle.font15W700Normal
+                                  .copyWith(fontSize: 14, color: AppColors.black),
+                            )
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 16, left: 24, right: 24),
+                          child: Text(
+                            "5:5",
+                            style: AppTextStyle.font28W600Normal
+                                .copyWith(color: AppColors.blue, fontSize: 24),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 80,
+                          child: Column(
+                            children: [
+                              SvgPicture.asset(Assets.icons.userAvatar),
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              Text(
+                                "Sevara Fozilova",
+                                textAlign: TextAlign.center,
+                                style: AppTextStyle.font15W700Normal
+                                    .copyWith(fontSize: 14, color: AppColors.black),
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 24,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                            child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(
+                              'You:',
+                              style: AppTextStyle.font15W600Normal
+                                  .copyWith(color: AppColors.black, fontSize: 10),
+                            ),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            statusResultBar(5, 8, spendTime: 286, givenTime: 420),
+                          ],
+                        )),
+                        divider(),
+                        Expanded(
+                            child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(
+                              'Opponent:',
+                              style: AppTextStyle.font15W600Normal
+                                  .copyWith(color: AppColors.black, fontSize: 10),
+                            ),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            statusResultBar(1, 20, spendTime: 254, givenTime: 420),
+                          ],
+                        )),
+                      ],
+                    ),
                     const SizedBox(
                       height: 24,
                     ),
@@ -61,20 +136,28 @@ class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewMod
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(16),
                           color: isDarkTheme ? AppColors.darkBackground : AppColors.white),
-                      child: Column(
+                      child: const Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Text(
-                            "right_answers".tr(),
-                            style: AppTextStyle.font15W600Normal
-                                .copyWith(fontSize: 14, color: AppColors.charcoal),
-                          ),
-                          const SizedBox(
-                            height: 8,
-                          ),
-                          QuestionsResultList(
-                            items: viewModel.levelTestRepository.resultModel!.answers,
-                          )
+                          QuestionsResultList(items: [
+                            "enough",
+                            "very",
+                            "many",
+                            "too",
+                            "enough",
+                            "many",
+                            "too",
+                            "enough",
+                            "many",
+                            "too",
+                            "enough",
+                            "many",
+                            "too",
+                            "very",
+                            "many",
+                            "too",
+                            "enough",
+                          ]),
                         ],
                       ),
                     ),
@@ -93,9 +176,7 @@ class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewMod
                         )),
                     WButton(
                       title: "retry".tr(),
-                      onTap: () {
-                        viewModel.retryWordQuestions();
-                      },
+                      onTap: () {},
                     )
                   ],
                 ),
@@ -105,9 +186,20 @@ class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewMod
         ));
   }
 
-  Widget statusResultBar(int correctAnswers, int totalQuestions, {int? spendTime}) {
+  SizedBox divider() {
+    return const SizedBox(
+        height: 57,
+        child: VerticalDivider(
+          thickness: 1,
+          width: 26,
+          color: AppColors.blue,
+        ));
+  }
+
+  Widget statusResultBar(int correctAnswers, int totalQuestions, {int? spendTime, int? givenTime}) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         CircularPercentIndicator(
           startAngle: 90,
@@ -137,14 +229,14 @@ class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewMod
         const SizedBox(
           width: 12,
         ),
-        if (spendTime != null)
+        if (spendTime != null && givenTime != null)
           CircularPercentIndicator(
             startAngle: 90,
             radius: 28.0,
             lineWidth: 5.0,
             animation: true,
             backgroundColor: AppColors.vibrantBlue.withValues(alpha: 0.15),
-            percent: 0.5,
+            percent: spendTime / givenTime,
             center: Text(
               "$spendTime",
               style: AppTextStyle.font15W600Normal.copyWith(fontSize: 10, color: AppColors.blue),
@@ -157,6 +249,7 @@ class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewMod
                 width: 70,
                 child: Text(
                   "time_taken".tr(),
+                  textAlign: TextAlign.center,
                   style:
                       AppTextStyle.font13W500Normal.copyWith(fontSize: 10, color: AppColors.blue),
                 ),
@@ -167,7 +260,7 @@ class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewMod
     );
   }
 
-  SizedBox statusIndicatorBar(bool pass) {
+  SizedBox statusIndicatorBar(bool pass, int livesStatusIndicator) {
     return SizedBox(
       height: 80,
       child: Row(
@@ -197,19 +290,22 @@ class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewMod
                     ? AppDecoration.resultDecor
                     : AppDecoration.resultDecor
                         .copyWith(color: AppColors.pink.withValues(alpha: 0.1)),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: pass
-                      ? Text(
-                          "Success",
-                          style: AppTextStyle.font17W700Normal
-                              .copyWith(fontSize: 18, color: AppColors.blue),
-                        )
-                      : Text(
-                          "Failure",
-                          style: AppTextStyle.font17W700Normal
-                              .copyWith(fontSize: 18, color: AppColors.red),
-                        ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    pass
+                        ? Text(
+                            "You Won",
+                            style: AppTextStyle.font17W700Normal
+                                .copyWith(fontSize: 18, color: AppColors.blue),
+                          )
+                        : Text(
+                            "Failure",
+                            style: AppTextStyle.font17W700Normal
+                                .copyWith(fontSize: 18, color: AppColors.red),
+                          ),
+                    statusIndicatorLivesBar(livesStatusIndicator),
+                  ],
                 ),
               ))
         ],
@@ -217,17 +313,40 @@ class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewMod
     );
   }
 
-  @override
-  WordExercisesViewModel viewModelBuilder(BuildContext context) {
-    return WordExercisesViewModel(
-      context: context,
+  Widget statusIndicatorLivesBar(int index) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(1000),
+          color: index.isNegative ? AppColors.white : AppColors.blue),
+      child: Row(
+        children: [
+          Text(
+            index.isNegative ? "$index" : "+$index",
+            style: AppTextStyle.font17W600Normal
+                .copyWith(color: index.isNegative ? AppColors.red : AppColors.yellow, fontSize: 18),
+          ),
+          const SizedBox(
+            width: 4,
+          ),
+          index.isNegative
+              ? SvgPicture.asset(
+                  Assets.icons.heart,
+                  colorFilter: const ColorFilter.mode(AppColors.red, BlendMode.srcIn),
+                )
+              : SvgPicture.asset(
+                  Assets.icons.starFull,
+                  colorFilter: const ColorFilter.mode(AppColors.yellow, BlendMode.srcIn),
+                )
+        ],
+      ),
     );
   }
 }
 
 class QuestionsResultList extends StatefulWidget {
   const QuestionsResultList({super.key, required this.items});
-  final List<TestAnswerModel> items;
+  final List<String> items;
   @override
   State<QuestionsResultList> createState() => _QuestionsResultListState();
 }
@@ -274,6 +393,27 @@ class _QuestionsResultListState extends State<QuestionsResultList> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "you".tr(),
+                style:
+                    AppTextStyle.font15W600Normal.copyWith(fontSize: 14, color: AppColors.charcoal),
+              ),
+              Text(
+                "opponent".tr(),
+                style:
+                    AppTextStyle.font15W600Normal.copyWith(fontSize: 14, color: AppColors.charcoal),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(
+          height: 8,
+        ),
         Container(
           constraints: const BoxConstraints(maxHeight: 385),
           decoration: BoxDecoration(
@@ -294,16 +434,15 @@ class _QuestionsResultListState extends State<QuestionsResultList> {
                   color: AppColors.vibrantBlue.withValues(alpha: 0.15),
                 ),
                 itemBuilder: (context, index) => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("${index + 1}",
+                      SvgPicture.asset(Assets.icons.doubleCheck),
+                      Text(widget.items[index],
                           style: AppTextStyle.font15W600Normal
                               .copyWith(fontSize: 14, color: AppColors.blue)),
-                      SvgPicture.asset(widget.items[index].isCorrect
-                          ? Assets.icons.doubleCheck
-                          : Assets.icons.incorrectAnswer)
+                      SvgPicture.asset(Assets.icons.incorrectAnswer)
                     ],
                   ),
                 ),

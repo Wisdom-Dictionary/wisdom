@@ -13,17 +13,17 @@ class LevelModel {
   int? id;
   String? name;
   int? star;
-  String? status;
+  String? type;
   int? position;
-  bool? userLevel;
+  bool? userCurrentLevel;
 
   LevelModel({
     this.id,
     this.name,
     this.star,
-    this.status,
+    this.type,
     this.position,
-    this.userLevel,
+    this.userCurrentLevel,
   });
 
   Map<String, dynamic> toMap() {
@@ -31,9 +31,9 @@ class LevelModel {
       'id': id,
       'name': name,
       'star': star,
-      'status': status,
+      'status': type,
       'position': position,
-      'userLevel': userLevel,
+      'userLevel': userCurrentLevel,
     };
   }
 
@@ -42,9 +42,10 @@ class LevelModel {
       id: map['id'] != null ? map['id'] as int : null,
       name: map['name'] != null ? map['name'] as String : null,
       star: map['star'] != null ? map['star'] as int : null,
-      status: map['status'] != null ? map['status'] as String : null,
+      type: map['type'] != null ? map['type'] as String : null,
       position: map['position'] != null ? map['position'] as int : null,
-      userLevel: map['user_level'] != null ? map['user_level'] as bool : null,
+      userCurrentLevel:
+          map['user_current_level'] != null ? map['user_current_level'] as bool : null,
     );
   }
 

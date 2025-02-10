@@ -16,6 +16,7 @@ import 'package:wisdom/domain/repositories/level_test_repository.dart';
 import 'package:wisdom/domain/repositories/roadmap_repository.dart';
 import 'package:wisdom/presentation/components/parent_widget.dart';
 import 'package:wisdom/presentation/components/phrases_widget.dart';
+import 'package:wisdom/presentation/components/w_button.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/word_details_page_viewmodel.dart';
 import 'package:wisdom/presentation/pages/word_detail/viewmodel/word_detail_page_viewmodel.dart';
 import 'package:wisdom/presentation/routes/routes.dart';
@@ -541,31 +542,14 @@ class WordDetailsPage extends ViewModelBuilderWidget<WordDetailPageViewModel> {
                         bottom: 31,
                         left: 16,
                         right: 16,
-                        child: Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(40.r), color: AppColors.blue),
-                          height: 45.h,
+                        child: WButton(
                           margin: EdgeInsets.only(top: 40.h, bottom: 12.h),
-                          child: Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              onTap: () {
-                                locator<LevelTestRepository>()
-                                    .setExerciseType(TestExerciseType.wordExercise);
-                                Navigator.pushNamed(context, Routes.wordExercisesPage);
-                              },
-                              borderRadius: BorderRadius.circular(40.r),
-                              child: Center(
-                                child: Flexible(
-                                  child: Text(
-                                    'start_the_exercises'.tr(),
-                                    style: AppTextStyle.font15W500Normal,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
+                          title: 'start_the_exercises'.tr(),
+                          onTap: () {
+                            locator<LevelTestRepository>()
+                                .setExerciseType(TestExerciseType.wordExercise);
+                            Navigator.pushNamed(context, Routes.wordExercisesPage);
+                          },
                         ))
                   ],
                 )

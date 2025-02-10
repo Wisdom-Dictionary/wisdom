@@ -1,0 +1,48 @@
+import 'dart:convert';
+
+import 'package:jbaza/jbaza.dart';
+import 'package:wisdom/config/constants/urls.dart';
+import 'package:wisdom/core/domain/http_is_success.dart';
+import 'package:wisdom/core/services/custom_client.dart';
+import 'package:wisdom/data/model/roadmap/user_life_entity.dart';
+import 'package:wisdom/domain/repositories/user_live_repository.dart';
+
+class UserLiveRepositoryImpl extends UserLiveRepository {
+  UserLiveRepositoryImpl(this.customClient);
+
+  final CustomClient customClient;
+
+  UserLifeModel? _userLifesModel;
+
+  @override
+  Future<void> getLives() async {
+    _userLifesModel = null;
+    var response = await customClient.get(Urls.lives);
+    if (response.isSuccessful) {
+      final responseData = jsonDecode(response.body);
+      _userLifesModel = UserLifeModel.fromMap(responseData);
+    } else {
+      throw VMException(response.body, callFuncName: 'getLives', response: response);
+    }
+  }
+
+  static const sampleResponse = {
+    "lives": 2,
+    "max_lives": 3,
+    "recovery_time_datetime": "2025-02-06 10:28:05"
+  };
+
+  @override
+  UserLifeModel? get userLifesModel => _userLifesModel;
+
+  @override
+  Future<void> claimLives() async {
+    var response = await customClient.post(Urls.claimlives);
+    if (response.isSuccessful) {
+      final responseData = jsonDecode(response.body);
+      _userLifesModel = UserLifeModel.fromMap(responseData);
+    } else {
+      throw VMException(response.body, callFuncName: 'postClaimLives', response: response);
+    }
+  }
+}

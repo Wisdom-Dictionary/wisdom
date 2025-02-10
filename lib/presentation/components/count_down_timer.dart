@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:wisdom/config/constants/app_colors.dart';
+import 'package:wisdom/config/constants/assets.dart';
 
 class CountDownTimer extends StatefulWidget {
   const CountDownTimer({
@@ -98,9 +102,46 @@ class _CountDownTimerState extends State<CountDownTimer> with TickerProviderStat
       child: AnimatedBuilder(
         animation: _controller,
         builder: (_, Widget? child) {
-          return Text(
-            timerDisplayString,
-            style: widget.countDownTimerStyle,
+          return Row(
+            children: [
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: AppColors.lavender, borderRadius: BorderRadius.circular(6)),
+                  padding: EdgeInsets.symmetric(horizontal: 3, vertical: 2.5),
+                  child: LinearPercentIndicator(
+                    lineHeight: 7,
+                    progressColor: AppColors.green,
+                    backgroundColor: Colors.transparent,
+                    padding: EdgeInsets.zero,
+                    fillColor: Colors.transparent,
+                    barRadius: const Radius.circular(6),
+                    percent: ((_controller.duration! * _controller.value).inSeconds) /
+                        widget.secondsRemaining,
+                  ),
+                ),
+              ),
+              const SizedBox(
+                width: 8,
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3.5),
+                decoration: BoxDecoration(
+                    color: AppColors.lavender, borderRadius: BorderRadius.circular(32)),
+                child: Row(
+                  children: [
+                    SvgPicture.asset(Assets.icons.clock),
+                    const SizedBox(
+                      width: 4,
+                    ),
+                    Text(
+                      timerDisplayString,
+                      style: widget.countDownTimerStyle,
+                    ),
+                  ],
+                ),
+              )
+            ],
           );
         },
       ),

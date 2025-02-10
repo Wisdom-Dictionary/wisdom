@@ -2,12 +2,14 @@ import 'dart:ui' as ui;
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:wisdom/config/constants/app_colors.dart';
 import 'package:wisdom/config/constants/assets.dart';
 import 'package:wisdom/core/di/app_locator.dart';
 import 'package:wisdom/data/model/roadmap/level_model.dart';
 import 'package:wisdom/data/viewmodel/local_viewmodel.dart';
 import 'package:wisdom/domain/repositories/roadmap_repository.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/view/widgets/roadmap_shimmer_widget.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/widgets/task_level_indicator_widget.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/roadmap_viewmodel.dart';
 import 'package:wisdom/presentation/widgets/loading_widget.dart';
@@ -73,17 +75,15 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
     return List.generate(repository.levelsList.length, (index) {
       double? left = (positions[index]["left"] as int?)?.toDouble();
       double? right = (positions[index]["right"] as int?)?.toDouble();
-      double? bottom =
-          ((positions[index]["bottom"] ?? 1) * pathCornerRad * 2).toDouble();
+      double? bottom = ((positions[index]["bottom"] ?? 1) * pathCornerRad * 2).toDouble();
       bool activeLevel = repository.userCurrentLevel == index;
 
       return Positioned(
           left: left,
           right: right,
-          bottom: activeLevel && bottom != null ? bottom - 30 : bottom,
+          bottom: activeLevel && bottom != null ? bottom - 80 : (bottom! - 50),
           child: GestureDetector(
-            onTap: () =>
-                widget.viewModel.selectLevel(repository.levelsList[index]),
+            onTap: () => widget.viewModel.selectLevel(repository.levelsList[index]),
             child: InactiveLevelIndicator(
               activeLevel: activeLevel,
               item: repository.levelsList[index],
@@ -96,28 +96,7 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        if (!widget.viewModel.isSuccess(tag: widget.viewModel.getLevelsTag))
-          Positioned.fill(
-            child: Stack(
-              children: [
-                Positioned.fill(
-                  child: Image.asset(
-                    Assets.images.roadmapBattleBackground,
-                    repeat: ImageRepeat.repeat,
-                    fit: BoxFit.fitWidth,
-                  ),
-                ),
-                Positioned.fill(
-                    child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    backgroundGradient(topGradient()),
-                    backgroundGradient(bottomGradient())
-                  ],
-                ))
-              ],
-            ),
-          ),
+        if (!widget.viewModel.isSuccess(tag: widget.viewModel.getLevelsTag)) RoadmapShimmerWidget(),
         if (widget.viewModel.isSuccess(tag: widget.viewModel.getLevelsTag))
           Center(
             child: SingleChildScrollView(
@@ -130,6 +109,7 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
                         Positioned.fill(
                           child: Image.asset(
                             Assets.images.roadmapBattleBackground,
+                            alignment: Alignment.bottomCenter,
                             repeat: ImageRepeat.repeat,
                             fit: BoxFit.fitWidth,
                           ),
@@ -148,12 +128,8 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
                   CustomPaint(
                     painter: DashedPathPainter(
                       originalPath: (size) {
-                        return _customPath(
-                                size,
-                                pathCornerRad,
-                                iconSize,
-                                widget
-                                    .viewModel.roadMapRepository.levelsList.length)
+                        return _customPath(size, pathCornerRad, iconSize,
+                                widget.viewModel.roadMapRepository.levelsList.length)
                             .reversed
                             .toList();
                       },
@@ -163,7 +139,7 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
                       dashGapLength: 0.01,
                       dashLength: 7.0,
                     ),
-                    child: Center(),
+                    child: const Center(),
                   ),
                   CustomPaint(
                     painter: DashedPathPainter(
@@ -180,23 +156,17 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
                     child: SizedBox(
                         width: iconSize * 70,
                         height: (pathCornerRad * 2) *
-                            (widget.viewModel.roadMapRepository.levelsList.length <
-                                    6
+                            (widget.viewModel.roadMapRepository.levelsList.length < 6
                                 ? 6
-                                : widget.viewModel.roadMapRepository.levelsList
-                                    .length),
-                        child: Stack(
-                            children:
-                                levelItems(widget.viewModel.roadMapRepository))),
+                                : widget.viewModel.roadMapRepository.levelsList.length),
+                        child: Stack(children: levelItems(widget.viewModel.roadMapRepository))),
                   ),
                 ],
               ),
             ),
           ),
-        if (!widget.viewModel.isSuccess(tag: widget.viewModel.getLevelsTag))
-          const Center(child: LoadingWidget()),
         Positioned(
-            top: 10,
+            top: 90,
             right: 5,
             child: FlagIndicatorWidget(
               userLevel: widget.viewModel.roadMapRepository.userCurrentLevel,
@@ -205,8 +175,7 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
     );
   }
 
-  List<Path> _customPath(
-      Size size, double painterCornerRad, double iconSize, int iconCount) {
+  List<Path> _customPath(Size size, double painterCornerRad, double iconSize, int iconCount) {
     final width = size.width;
 
     List<Path> paths = [];
@@ -215,7 +184,7 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
     final path = Path();
 
     final startX = iconSize / 2;
-    final startY = ((iconCount - 2) * painterCornerRad * 2) + (iconSize / 2);
+    final startY = ((iconCount - 2) * painterCornerRad * 2) + (iconSize);
     path.moveTo(startX, startY);
     path
       ..arcToPoint(
@@ -237,7 +206,7 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
 
       if (i % 2 == 0) {
         final startX = iconSize / 2;
-        final startY = (i * painterCornerRad * 2) + (iconSize / 2);
+        final startY = (i * painterCornerRad * 2) + (iconSize);
         path.moveTo(startX, startY);
         path
           ..arcToPoint(
@@ -253,7 +222,7 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
           );
       } else {
         final startX = width - iconSize / 2;
-        final startY = (i * painterCornerRad * 2) + (iconSize / 2);
+        final startY = (i * painterCornerRad * 2) + (iconSize);
         path.moveTo(startX, startY);
         path
           ..arcToPoint(
@@ -268,6 +237,7 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
             radius: Radius.circular(painterCornerRad),
           );
       }
+
       paths.add(path);
     }
 

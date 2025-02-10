@@ -18,6 +18,11 @@ class AppDecoration {
     color: AppColors.bgLightBlue.withValues(alpha: 0.1),
   );
 
+  static BoxDecoration battleComponentDecor = BoxDecoration(
+    borderRadius: BorderRadius.circular(37.r),
+    color: AppColors.blue,
+  );
+
   static BoxDecoration bannerDarkDecor = BoxDecoration(
     borderRadius: BorderRadius.circular(18.r),
     color: AppColors.darkForm,
