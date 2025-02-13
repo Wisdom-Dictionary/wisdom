@@ -183,5 +183,22 @@
   "no_internet_content": "Internet aloqangizni tekshiring va qaytadan urinib ko'ring.",
   "continue": "Davom etish",
   "exit": "Chiqish",
-  "cancel_level_exercises_content": "Haqiqatan ham mashqni tugatmasdan chiqishni xohlaysizmi? Siz keyingi so'zni o'rganishni boshlay olmaysiz!"
+  "cancel_level_exercises_content": "Haqiqatan ham mashqni tugatmasdan chiqishni xohlaysizmi? Siz keyingi so'zni o'rganishni boshlay olmaysiz!",
+  "my_contacts": "Mening kontaktlarim",
+  "title_my_contacts_list_empty": "Hozircha kontaktlar yoʻq",
+  "description_my_contacts_list_empty": "Kontaktlar roʻyxati boʻsh koʻrinadi. Aloqada qolish uchun odamlarni qo‘shing",
+  "contacts_list": "Kontaktlar ro'yhati",
+  "followed": "Obuna bo'lingan",
+  "title_my_followed_list_empty": "Hali obuna bo'lmagansiz",
+  "description_my_followed_list_empty": "Siz hali hech kimga obuna bo'lmaganga o‘xshaysiz. Aloqada qolish uchun odamlarni qo‘shing",
+  "games": "o'yinlar",
+  "words": "so'zlar",
+  "3_star_wins": "3 yulduzli yutuqlar",
+  "daily_record": "kunlik natija",
+  "weekly_record": "haftalik natija",
+  "monthly_record": "oylik natija",
+  "win_rate": "g'alaba darajasi",
+  "game_accuracy": "o'yin aniqligi",
+  "average_time": "o'rtacha vaqt",
+  "best_time": "eng yaxshi vaqt"
 }

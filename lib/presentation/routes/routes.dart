@@ -4,10 +4,15 @@ import 'package:wisdom/presentation/pages/abbreviation/abbreviation_page.dart';
 import 'package:wisdom/presentation/pages/about_wisdom/about_wisdom.dart';
 import 'package:wisdom/presentation/pages/adversitment/giving_ad_page.dart';
 import 'package:wisdom/presentation/pages/home/view/home_page.dart';
+import 'package:wisdom/presentation/pages/my_contacts/view/contact_details_page.dart';
+import 'package:wisdom/presentation/pages/my_contacts/view/my_contacts_page.dart';
+import 'package:wisdom/presentation/pages/my_contacts/view/my_contacts_search_page.dart';
+import 'package:wisdom/presentation/pages/profile/view/edit_user_page.dart';
 import 'package:wisdom/presentation/pages/profile/view/getting_pro_page.dart';
 import 'package:wisdom/presentation/pages/profile/view/input_number_page.dart';
 import 'package:wisdom/presentation/pages/profile/view/payment_page.dart';
 import 'package:wisdom/presentation/pages/profile/view/profile_page.dart';
+import 'package:wisdom/presentation/pages/profile/view/user_cabinet_page.dart';
 import 'package:wisdom/presentation/pages/profile/view/verify_page.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/battle_result_page.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/searching_opponent_page.dart';
@@ -35,10 +40,16 @@ class Routes {
   static const wordExercisesCheckPage = '/wordExercisesCheckPage';
   static const searchingOpponentPage = '/searchingOpponentPage';
   static const battleResultPage = '/battleResultPage';
+  static const userCabinetPage = '/userCabinetPage';
+  static const editUserPage = '/editUserPage';
+  static const myContactsPage = '/myContactsPage';
+  static const myContactsSearchPage = '/myContactsSearchPage';
+  static const contactDetailsPage = '/contactDetailsPage';
 
   static Route<dynamic> generateRoutes(RouteSettings routeSettings) {
     try {
-      final Map<String, dynamic>? args = routeSettings.arguments as Map<String, dynamic>?;
+      final Map<String, dynamic>? args =
+          routeSettings.arguments as Map<String, dynamic>?;
       args ?? <String, dynamic>{};
       switch (routeSettings.name) {
         case mainPage:
@@ -79,8 +90,9 @@ class Routes {
           );
         case paymentPage:
           return MaterialPageRoute(
-            builder: (_) =>
-                PaymentPage(verifyModel: args!['verifyModel'], phoneNumber: args['phoneNumber']),
+            builder: (_) => PaymentPage(
+                verifyModel: args!['verifyModel'],
+                phoneNumber: args['phoneNumber']),
           );
         case grammarPageabout:
           return MaterialPageRoute(
@@ -109,6 +121,26 @@ class Routes {
         case battleResultPage:
           return MaterialPageRoute(
             builder: (_) => BattleResultPage(),
+          );
+        case userCabinetPage:
+          return MaterialPageRoute(
+            builder: (_) => const UserCabinetPage(),
+          );
+        case editUserPage:
+          return MaterialPageRoute(
+            builder: (_) => const EditUserPage(),
+          );
+        case myContactsPage:
+          return MaterialPageRoute(
+            builder: (_) => const MyContactsPage(),
+          );
+        case myContactsSearchPage:
+          return MaterialPageRoute(
+            builder: (_) =>  MyContactsSearchPage(),
+          );
+        case contactDetailsPage:
+          return MaterialPageRoute(
+            builder: (_) => ContactDetailsPage(data: routeSettings.arguments,),
           );
         default:
           return MaterialPageRoute(

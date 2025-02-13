@@ -15,4 +15,5 @@ abstract class ProfileRepository {
   Future<SubscribeModel> subscribe(int id);
 
   List<TariffsModel> get tariffsModel;
+  
 }

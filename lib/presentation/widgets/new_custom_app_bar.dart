@@ -13,12 +13,13 @@ class NewCustomAppBar extends StatefulWidget implements PreferredSizeWidget {
     super.key,
     this.title,
     this.child,
+    this.bottom,
     this.onTap,
     this.focusNode,
     this.isSearch = false,
     this.isLeading = true,
     this.isTitle = true,
-    this.leadingIcon,
+    this.leading,
     this.onChange,
     this.focus = false,
     this.actions = const [],
@@ -26,9 +27,10 @@ class NewCustomAppBar extends StatefulWidget implements PreferredSizeWidget {
 
   final String? title;
   final Widget? child;
+  final PreferredSizeWidget? bottom;
   final Function()? onTap;
   final Function(String text)? onChange;
-  final String? leadingIcon;
+  final Widget? leading;
   FocusNode? focusNode;
   bool isSearch;
   bool isLeading;
@@ -42,7 +44,7 @@ class NewCustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => Size.fromHeight(isTitle
       ? isSearch
-          ? 134.h
+          ? 111.h
           : 75.h
       : 75.h);
 }
@@ -54,8 +56,10 @@ class _NewCustomAppBarState extends State<NewCustomAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: (isDarkTheme ? AppColors.darkForm : AppColors.blue).withValues(alpha: 0.95),
-      shadowColor: isDarkTheme ? null : const Color(0xFF6D8DAD).withValues(alpha: 0.15),
+      backgroundColor: (isDarkTheme ? AppColors.darkForm : AppColors.blue)
+          .withValues(alpha: 0.95),
+      shadowColor:
+          isDarkTheme ? null : const Color(0xFF6D8DAD).withValues(alpha: 0.15),
       elevation: 4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
@@ -64,24 +68,27 @@ class _NewCustomAppBarState extends State<NewCustomAppBar> {
         ),
       ),
       actions: widget.actions,
-      leading: widget.isLeading && widget.leadingIcon != null
-          ? InkResponse(
-              onTap: () => widget.onTap!(),
-              child: Padding(
-                padding: EdgeInsets.only(
-                  left: 5.w,
-                  right: 5.w,
-                  top: 15.h,
-                ),
-                child: SvgPicture.asset(
-                  widget.leadingIcon!,
-                  height: 24.h,
-                  width: 24.h,
-                  fit: BoxFit.scaleDown,
-                ),
+      leading: widget.leading ??
+          InkResponse(
+            onTap: () {
+              if (widget.onTap != null) {
+                widget.onTap!();
+              }
+            },
+            child: Padding(
+              padding: EdgeInsets.only(
+                left: 5.w,
+                right: 5.w,
+                top: 15.h,
               ),
-            )
-          : null,
+              child: SvgPicture.asset(
+                Assets.icons.arrowLeft,
+                height: 24.h,
+                width: 24.h,
+                fit: BoxFit.scaleDown,
+              ),
+            ),
+          ),
       centerTitle: true,
       title: Padding(
         padding: EdgeInsets.only(top: 12.h),
@@ -96,12 +103,15 @@ class _NewCustomAppBarState extends State<NewCustomAppBar> {
                 height: 47.h,
                 margin: EdgeInsets.all(14.r),
                 decoration: BoxDecoration(
-                    color: (isDarkTheme ? AppColors.darkBackground : AppColors.white)
+                    color: (isDarkTheme
+                            ? AppColors.darkBackground
+                            : AppColors.white)
                         .withValues(alpha: 0.95),
                     borderRadius: BorderRadius.circular(23.5.r)),
                 child: TextField(
                   autofocus: widget.focus,
-                  style: AppTextStyle.font15W400Normal.copyWith(color: AppColors.blue),
+                  style: AppTextStyle.font15W400Normal
+                      .copyWith(color: AppColors.blue),
                   cursorHeight: 19.h,
                   controller: controller,
                   onChanged: (value) {
@@ -148,7 +158,7 @@ class _NewCustomAppBarState extends State<NewCustomAppBar> {
                 ),
               ),
             )
-          : null,
+          : widget.bottom,
     );
   }
 

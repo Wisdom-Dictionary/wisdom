@@ -20,7 +20,15 @@ class Urls {
 
   static var claimlives = Uri.parse('${baseUrl}api/lives/claim');
 
-  static var testQuestionsCheck = Uri.parse('${baseUrl}api/levels/test-questions-check');
+  static var testQuestionsCheck =
+      Uri.parse('${baseUrl}api/levels/test-questions-check');
+  static var myContactsFollowed =
+      Uri.parse('${baseUrl}api/my-contacts/followed');
+  static var myContacts = Uri.parse('${baseUrl}api/my-contacts/contacts');
+  static var myContactsFollow = Uri.parse('${baseUrl}api/my-contacts/follow');
+  static var myContactsUnFollow =
+      Uri.parse('${baseUrl}api/my-contacts/unfollow');
+  static var myContactsSearch = Uri.parse('${baseUrl}api/my-contacts/search');
 
   static Uri testQuestions(int id) => Uri.https(
         Urls.baseAddress,
@@ -44,5 +52,6 @@ class Urls {
 
   static subscribe(int id) => Uri.parse('${baseUrl}api/subscribe/set/$id');
 
-  static getSpeakingView(int id) => Uri.parse("${baseUrl}api/catalogue/speaking/word/view/$id");
+  static getSpeakingView(int id) =>
+      Uri.parse("${baseUrl}api/catalogue/speaking/word/view/$id");
 }
