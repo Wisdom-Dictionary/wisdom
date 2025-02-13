@@ -1,18 +1,32 @@
+import 'dart:developer';
 import 'dart:io';
 
-import 'package:adapty_flutter/adapty_flutter.dart';
+// import 'package:adapty_flutter/adapty_flutter.dart';
 import 'package:add_to_cart_animation/add_to_cart_animation.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:jbaza/jbaza.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:wisdom/config/constants/app_text_style.dart';
+import 'package:wisdom/config/constants/constants.dart';
 import 'package:wisdom/core/db/preference_helper.dart';
+import 'package:wisdom/core/di/app_locator.dart';
+import 'package:wisdom/core/localization/locale_keys.g.dart';
+import 'package:wisdom/core/services/ad/ad_service.dart';
 import 'package:wisdom/core/services/custom_client.dart';
 import 'package:wisdom/data/model/catalog_model.dart';
 import 'package:wisdom/data/model/recent_model.dart';
 import 'package:wisdom/data/model/word_bank_model.dart';
+import 'package:wisdom/domain/repositories/word_entity_repository.dart';
+import 'package:wisdom/presentation/routes/routes.dart';
 
+import '../../config/constants/app_colors.dart';
 import '../../core/domain/entities/def_enum.dart';
+import '../../presentation/widgets/custom_dialog.dart';
 import '../model/exercise_model.dart';
 
 class LocalViewModel extends BaseViewModel {
@@ -24,8 +38,6 @@ class LocalViewModel extends BaseViewModel {
   final NetWorkChecker netWorkChecker;
 
   FocusNode? searchFocusNode;
-
-  BannerAd? banner;
 
   String exerciseLangOption = '';
 
@@ -74,14 +86,15 @@ class LocalViewModel extends BaseViewModel {
 
   int? folderId; // to change folder when enter
 
+
   InterstitialAd? interstitialAd;
-
-  final adapty = Adapty();
-
-  List<AdaptyPaywall> tests = [];
-
+  // BannerAd? banner;
   bool boundException = false;
   bool boundExceptionLoop = false;
+
+  Widget get bannerAdWidget => locator.get<AdService>().getBannerAdWidget();
+
+  AdService get adService => locator.get<AdService>();
 
   void createInterstitialAd() {
     InterstitialAd.load(
@@ -103,20 +116,21 @@ class LocalViewModel extends BaseViewModel {
   }
 
   void showInterstitialAd() {
-    if (interstitialAd == null) {
-      return;
-    }
-    interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
-      onAdDismissedFullScreenContent: (InterstitialAd ad) {
-        ad.dispose();
-        createInterstitialAd();
-      },
-      onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
-        ad.dispose();
-        createInterstitialAd();
-      },
-    );
-    interstitialAd!.show();
+    adService.showInterstitialAd();
+    // if (interstitialAd == null) {
+    //   return;
+    // }
+    // interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+    //   onAdDismissedFullScreenContent: (InterstitialAd ad) {
+    //     ad.dispose();
+    //     createInterstitialAd();
+    //   },
+    //   onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
+    //     ad.dispose();
+    //     createInterstitialAd();
+    //   },
+    // );
+    // interstitialAd!.show();
     // interstitialAd = null;
     // initialised
   }
@@ -126,9 +140,9 @@ class LocalViewModel extends BaseViewModel {
   }
 
   void changePageIndex(int index) async {
-    if (banner != null) {
-      banner!.dispose();
-    }
+    // if (banner != null) {
+    //   banner!.dispose();
+    // }
     if (index < 5) {
       currentIndex.value = index;
     }
@@ -154,18 +168,22 @@ class LocalViewModel extends BaseViewModel {
     );
     pageController.jumpToPage(index);
     checkNetworkConnection();
+    log('changePageIndex : $index');
   }
 
-  void changeBadgeCount(int how) {
-    if (how == -1 && badgeCount.value >= 0) {
-      badgeCount.value--;
-    } else if (how == 1) {
-      badgeCount.value++;
-    } else if (how == 0) {
-      badgeCount.value = 0;
-    } else {
-      badgeCount.value = how;
-    }
+  Future changeBadgeCount(int how) async {
+    int count = await locator.get<WordEntityRepository>().allWordBanksCount;
+    log('allWordBanksCount $count');
+    badgeCount.value = count;
+    // if (how == -1 && badgeCount.value >= 0) {
+    //   badgeCount.value--;
+    // } else if (how == 1) {
+    //   badgeCount.value++;
+    // } else if (how == 0) {
+    //   badgeCount.value = 0;
+    // } else {
+    //   badgeCount.value = how;
+    // }
     cartKey.currentState!.runCartAnimation(
       (badgeCount.value).toString(),
     );
@@ -178,5 +196,75 @@ class LocalViewModel extends BaseViewModel {
   void goByLink(String linkWord) async {
     searchingText = linkWord;
     changePageIndex(2);
+  }
+
+  bool get isLoggedIn => preferenceHelper.getString(Constants.KEY_TOKEN, '') != '';
+
+  bool hasConnection() => isNetworkAvailable.value;
+
+  Future<bool> canAddWordBank(BuildContext context) async {
+    if (isLoggedIn) {
+      if (await netWorkChecker.isNetworkAvailable()) {
+        return true;
+      } else {
+        noInternetMessage(context);
+        return false;
+      }
+    } else {
+      showLoginDialog(context);
+      return false;
+    }
+  }
+
+  Future canAddWordBankFree(BuildContext context) async {
+    if (isLoggedIn) {
+      if (await netWorkChecker.isNetworkAvailable()) {
+        return true;
+      } else {
+        noInternetMessage(context);
+        return false;
+      }
+    } else {
+      showLoginDialog(context);
+      return false;
+    }
+  }
+
+  void noInternetMessage(BuildContext context) {
+    showTopSnackBar(
+      Overlay.of(context),
+      CustomSnackBar.error(
+        message: LocaleKeys.no_internet.tr(),
+      ),
+    );
+  }
+
+  void showLoginDialog(BuildContext context) {
+    showCustomDialog(
+      context: context,
+      iconColor: AppColors.blue,
+      iconBackgroundColor: AppColors.borderWhite,
+      contentWidget: Padding(
+        padding: EdgeInsets.only(top: 20.h),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "login_required".tr(),
+              textAlign: TextAlign.center,
+              style: AppTextStyle.font15W600Normal.copyWith(color: Colors.black),
+            ),
+          ],
+        ),
+      ),
+      positive: "login".tr(),
+      onPositiveTap: () async {
+        Navigator.popAndPushNamed(context, Routes.loginPage);
+      },
+      negative: "cancel".tr(),
+      onNegativeTap: () async {
+        Navigator.pop(context);
+      },
+    );
   }
 }

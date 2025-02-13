@@ -4,7 +4,6 @@ import 'package:wisdom/data/model/timeline_model.dart';
 import 'package:wisdom/data/viewmodel/local_viewmodel.dart';
 import 'package:wisdom/domain/repositories/home_repository.dart';
 
-import '../../../../core/di/app_locator.dart';
 import '../../../../domain/repositories/category_repository.dart';
 
 class GrammarPageViewModel extends BaseViewModel {

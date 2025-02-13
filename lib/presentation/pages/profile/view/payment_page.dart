@@ -11,8 +11,8 @@ import 'package:wisdom/config/constants/assets.dart';
 import 'package:wisdom/data/model/verify_model.dart';
 import 'package:wisdom/presentation/widgets/custom_app_bar.dart';
 
-import '../../../../core/di/app_locator.dart';
 import '../../../../config/constants/constants.dart';
+import '../../../../core/di/app_locator.dart';
 import '../../../components/custom_banner.dart';
 import '../../../widgets/my_url.dart';
 import '../viewmodel/payment_page_viewmodel.dart';
@@ -30,17 +30,19 @@ class PaymentPage extends ViewModelBuilderWidget<PaymentPageViewModel> {
   TextEditingController editingController = TextEditingController();
 
   @override
-  void onViewModelReady(PaymentPageViewModel viewModel) {
-    viewModel.init();
+  void onViewModelReady(PaymentPageViewModel viewModel) async {
+    await viewModel.init();
     super.onViewModelReady(viewModel);
   }
 
   @override
-  Widget builder(BuildContext context, PaymentPageViewModel viewModel, Widget? child) {
+  Widget builder(
+      BuildContext context, PaymentPageViewModel viewModel, Widget? child) {
     return WillPopScope(
       onWillPop: () => viewModel.goToProfile(),
       child: Scaffold(
-        backgroundColor: isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
+        backgroundColor:
+            isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
         appBar: CustomAppBar(
           title: 'payment'.tr(),
           onTap: () => viewModel.goToProfile(),
@@ -54,67 +56,11 @@ class PaymentPage extends ViewModelBuilderWidget<PaymentPageViewModel> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      // Container(
-                      //   decoration: isDarkTheme ? AppDecoration.bannerDarkDecor : AppDecoration.bannerDecor,
-                      //   padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 27.h),
-                      //   child: Column(
-                      //     children: [
-                      //       SvgPicture.asset(
-                      //         isDarkTheme ? Assets.icons.logoWhiteText : Assets.icons.logoBlueText,
-                      //         height: 32.h,
-                      //         fit: BoxFit.scaleDown,
-                      //       ),
-                      //       Padding(
-                      //         padding: EdgeInsets.only(top: 20.h),
-                      //         child: Text(
-                      //           'payment_full_descr'.tr(),
-                      //           style: AppTextStyle.font13W500Normal.copyWith(color: isDarkTheme ? AppColors.lightGray: AppColors.darkGray),
-                      //           textAlign: TextAlign.center,
-                      //         ),
-                      //       ),
-                      //       Padding(
-                      //         padding: EdgeInsets.only(top: 20.h),
-                      //         child: RichText(
-                      //           text: TextSpan(
-                      //               text: 'order_id'.tr(),
-                      //               style: AppTextStyle.font13W500Normal.copyWith(color: isDarkTheme ? AppColors.lightGray: AppColors.darkGray),
-                      //               children: [
-                      //                 TextSpan(
-                      //                   text: viewModel.subscribeModel.billingId.toString(),
-                      //                   style: AppTextStyle.font17W600Normal.copyWith(
-                      //                     color: AppColors.blue,
-                      //                   ),
-                      //                 ),
-                      //               ]),
-                      //           textAlign: TextAlign.center,
-                      //         ),
-                      //       ),
-                      //       Padding(
-                      //         padding: EdgeInsets.only(top: 20.h),
-                      //         child: RichText(
-                      //           text: TextSpan(
-                      //               text: 'selected_subs'.tr(),
-                      //               style: AppTextStyle.font13W500Normal.copyWith(color: isDarkTheme ? AppColors.lightGray: AppColors.darkGray),
-                      //               children: [
-                      //                 TextSpan(
-                      //                   text:
-                      //                       (viewModel.tariffsList.name!.en ?? "Contact with developers").toUpperCase(),
-                      //                   style: AppTextStyle.font15W700Normal.copyWith(
-                      //                     color: AppColors.blue,
-                      //                   ),
-                      //                 ),
-                      //               ]),
-                      //           textAlign: TextAlign.center,
-                      //         ),
-                      //       ),
-                      //     ],
-                      //   ),
-                      // ),
                       CustomBanner(
                         title: 'choose_payment'.tr(),
                         height: 330.h,
-                        contentPadding:
-                            const EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 20),
+                        contentPadding: const EdgeInsets.only(
+                            top: 30, left: 20, right: 20, bottom: 20),
                         child: Column(
                           children: [
                             RadioListTile(
@@ -175,37 +121,18 @@ class PaymentPage extends ViewModelBuilderWidget<PaymentPageViewModel> {
                                   viewModel.notifyListeners();
                                 },
                               ),
-                            // const Padding(
-                            //   padding: EdgeInsets.symmetric(horizontal: 30),
-                            //   child: Divider(
-                            //     height: 1,
-                            //     thickness: 0.5,
-                            //     color: AppColors.borderWhite,
-                            //   ),
-                            // ),
-                            // RadioListTile(
-                            //   title: Padding(
-                            //     padding: EdgeInsets.only(left: 100.w),
-                            //     child: SvgPicture.asset(
-                            //       Assets.images.paynet,
-                            //     ),
-                            //   ),
-                            //   value: 'paynet',
-                            //   groupValue: viewModel.radioValue,
-                            //   onChanged: (value) {
-                            //     viewModel.radioValue = value.toString();
-                            //     viewModel.notifyListeners();
-                            //   },
-                            // ),
                             Container(
                               decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(40.r), color: AppColors.blue),
+                                  borderRadius: BorderRadius.circular(40.r),
+                                  color: AppColors.blue),
                               height: 45.h,
                               margin: EdgeInsets.only(top: 40.h, bottom: 12.h),
                               child: Material(
                                 color: Colors.transparent,
                                 child: InkWell(
-                                  onTap: () => viewModel.onPayPressed(),
+                                  onTap: () async {
+                                    await viewModel.onPayPressed().then((value) => exit(0));
+                                  },
                                   borderRadius: BorderRadius.circular(40.r),
                                   child: Center(
                                     child: Text(
@@ -219,7 +146,8 @@ class PaymentPage extends ViewModelBuilderWidget<PaymentPageViewModel> {
                             Padding(
                               padding: const EdgeInsets.only(top: 10),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
                                 children: [
                                   RichText(
                                     text: myUrl('Restore Purchase', '',
@@ -228,12 +156,15 @@ class PaymentPage extends ViewModelBuilderWidget<PaymentPageViewModel> {
                                         onTap: () => viewModel.restore()),
                                   ),
                                   RichText(
-                                    text: myUrl('Privacy', Constants.PRIVACY_URL,
-                                        textColor: AppColors.blue, underline: false),
+                                    text: myUrl(
+                                        'Privacy', Constants.PRIVACY_URL,
+                                        textColor: AppColors.blue,
+                                        underline: false),
                                   ),
                                   RichText(
                                     text: myUrl('Terms', Constants.TERMS_URL,
-                                        textColor: AppColors.blue, underline: false),
+                                        textColor: AppColors.blue,
+                                        underline: false),
                                   ),
                                 ],
                               ),

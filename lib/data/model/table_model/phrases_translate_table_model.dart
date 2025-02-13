@@ -9,8 +9,7 @@ import 'package:wisdom/data/model/base_table_model.dart';
 PhrasesTranslateTableModel phrasesTranslateTableModelFromJson(String str) =>
     PhrasesTranslateTableModel.fromJson(json.decode(str));
 
-String phrasesTranslateTableModelToJson(PhrasesTranslateTableModel data) =>
-    json.encode(data.toJson());
+String phrasesTranslateTableModelToJson(PhrasesTranslateTableModel data) => json.encode(data.toJson());
 
 class PhrasesTranslateTableModel extends BaseTableModel {
   PhrasesTranslateTableModel({

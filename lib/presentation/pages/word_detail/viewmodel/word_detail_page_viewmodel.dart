@@ -1,12 +1,15 @@
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 import 'package:jbaza/jbaza.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:wisdom/config/constants/assets.dart';
 import 'package:wisdom/core/db/preference_helper.dart';
+import 'package:wisdom/core/di/app_locator.dart';
+import 'package:wisdom/core/utils/text_reader.dart';
 import 'package:wisdom/data/model/parent_phrases_example_model.dart';
 import 'package:wisdom/data/model/parent_phrases_translate_model.dart';
 import 'package:wisdom/data/model/phrases_example_model.dart';
@@ -58,7 +61,8 @@ class WordDetailPageViewModel extends BaseViewModel {
     safeBlock(
       () async {
         fontSize = preferenceHelper.getDouble(preferenceHelper.fontSize, 16);
-        await wordEntityRepository.getRequiredWord(localViewModel.wordDetailModel.id ?? 0);
+        await wordEntityRepository
+            .getRequiredWord(localViewModel.wordDetailModel.id ?? 0);
         if (wordEntityRepository.requiredWordWithAllModel.word != null) {
           await splitingToParentWithAllModel();
           setSuccess(tag: initTag);
@@ -82,25 +86,35 @@ class WordDetailPageViewModel extends BaseViewModel {
   void textToSpeech() async {
     if (wordEntityRepository.requiredWordWithAllModel.word != null &&
         wordEntityRepository.requiredWordWithAllModel.word!.word != null) {
-      FlutterTts tts = FlutterTts();
-      await tts.setSharedInstance(true); // For IOS
-      tts.setLanguage('en-US');
-      tts.speak(wordEntityRepository.requiredWordWithAllModel.word!.word!);
+      // FlutterTts tts = FlutterTts();
+      // await tts.setSharedInstance(true); // For IOS
+      // tts.setLanguage('en-US');
+      // tts.speak(wordEntityRepository.requiredWordWithAllModel.word!.word!,);
+      locator
+          .get<TextReader>()
+          .readText(wordEntityRepository.requiredWordWithAllModel.word!.word!);
     }
   }
 
   Future<void> splitingToParentWithAllModel() async {
-    parentsWithAllList
-        .add(wordMapper.wordWithAllToParentsWithAll(wordEntityRepository.requiredWordWithAllModel));
+    parentsWithAllList.add(wordMapper.wordWithAllToParentsWithAll(
+        wordEntityRepository.requiredWordWithAllModel));
     if (wordEntityRepository.requiredWordWithAllModel.parentsWithAll != null &&
-        wordEntityRepository.requiredWordWithAllModel.parentsWithAll!.isNotEmpty) {
-      parentsWithAllList.addAll(wordEntityRepository.requiredWordWithAllModel.parentsWithAll!);
+        wordEntityRepository
+            .requiredWordWithAllModel.parentsWithAll!.isNotEmpty) {
+      parentsWithAllList.addAll(
+          wordEntityRepository.requiredWordWithAllModel.parentsWithAll!);
     }
   }
 
-  addToWordBankFromParent(ParentsWithAll model, String num, GlobalKey key) async {
+  addToWordBankFromParent(
+      ParentsWithAll model, String num, GlobalKey key) async {
+    log('addToWordBankFromParent');
+    if (!(await localViewModel.canAddWordBank(context!))) {
+      return;
+    }
     safeBlock(() async {
-      showFolderDialog(
+      await showFolderDialog(
         (folderModel) async {
           int number = int.parse(num.isEmpty ? "0" : num);
           var wordBank = WordBankModel(
@@ -111,19 +125,22 @@ class WordDetailPageViewModel extends BaseViewModel {
               translation: conductToString(model.wordsUz),
               createdAt: DateTime.now().toString(),
               number: number,
-              wordClass:
-                  wordEntityRepository.requiredWordWithAllModel.word!.wordClasswordClass ?? "",
-              wordClassBody: wordEntityRepository.requiredWordWithAllModel.word!.wordClassBody,
+              wordClass: wordEntityRepository
+                      .requiredWordWithAllModel.word!.wordClasswordClass ??
+                  "",
+              wordClassBody: wordEntityRepository
+                  .requiredWordWithAllModel.word!.wordClassBody,
               type: "word",
               folderId: folderModel.id);
-          int dbCount = await wordEntityRepository.getWordBankCount();
-          if (dbCount > 29 && !PurchasesObserver().isPro() && !localViewModel.boundException) {
-            showCountOutOfBound();
+          int dbCount = await wordEntityRepository.allWordBanksCount;
+          if (dbCount > 29 && !PurchasesObserver().isPro()) {
+            await showCountOutOfBound();
             return;
           } else {
             if (wordEntityRepository.wordBankList
-                .where(
-                    (element) => element.id == wordBank.id && element.folderId == wordBank.folderId)
+                .where((element) =>
+                    element.id == wordBank.id &&
+                    element.folderId == wordBank.folderId)
                 .isEmpty) {
               await funAddToWordBank(wordBank, key);
               localViewModel.boundException = false;
@@ -141,7 +158,12 @@ class WordDetailPageViewModel extends BaseViewModel {
     }, callFuncName: 'addToWordBankFromParent', inProgress: false);
   }
 
-  addToWordBankFromPhrase(PhrasesWithAll model, String num, GlobalKey key) {
+  addToWordBankFromPhrase(
+      PhrasesWithAll model, String num, GlobalKey key) async {
+    log('addToWordBankFromPhrase');
+    if (!(await localViewModel.canAddWordBank(context!))) {
+      return;
+    }
     safeBlock(() async {
       showFolderDialog(
         (folderModel) async {
@@ -151,7 +173,8 @@ class WordDetailPageViewModel extends BaseViewModel {
               word: model.phrases!.pWord,
               parentId: localViewModel.wordDetailModel.id,
               example: model.phrasesExample![0].value,
-              translation: conductToStringPhrasesTranslate(model.phrasesTranslate!),
+              translation:
+                  conductToStringPhrasesTranslate(model.phrasesTranslate!),
               createdAt: DateTime.now().toString(),
               type: "phrases",
               wordClass: "",
@@ -159,13 +182,16 @@ class WordDetailPageViewModel extends BaseViewModel {
               number: number,
               folderId: folderModel.id);
           int dbCount = await wordEntityRepository.getWordBankCount();
-          if (dbCount > 29 && !PurchasesObserver().isPro() && !localViewModel.boundException) {
+          if (dbCount > 29 &&
+              !PurchasesObserver().isPro() &&
+              !localViewModel.boundException) {
             showCountOutOfBound();
             return;
           } else {
             if (wordEntityRepository.wordBankList
-                .where(
-                    (element) => element.id == wordBank.id && element.folderId == wordBank.folderId)
+                .where((element) =>
+                    element.id == wordBank.id &&
+                    element.folderId == wordBank.folderId)
                 .isEmpty) {
               await funAddToWordBank(wordBank, key);
               localViewModel.boundException = false;
@@ -183,7 +209,12 @@ class WordDetailPageViewModel extends BaseViewModel {
     }, callFuncName: 'addToWordBankFromPhrase', inProgress: false);
   }
 
-  addToWordBankFromParentPhrase(ParentPhrasesWithAll model, String num, GlobalKey key) {
+  addToWordBankFromParentPhrase(
+      ParentPhrasesWithAll model, String num, GlobalKey key) async {
+    log('addToWordBankFromParentPhrase');
+    if (!(await localViewModel.canAddWordBank(context!))) {
+      return;
+    }
     safeBlock(() async {
       showFolderDialog(
         (folderModel) async {
@@ -193,7 +224,8 @@ class WordDetailPageViewModel extends BaseViewModel {
               word: model.parentPhrases!.word ?? "",
               parentId: localViewModel.wordDetailModel.id,
               example: model.phrasesExample![0].value,
-              translation: conductToStringParentPhrasesTranslate(model.parentPhrasesTranslate!),
+              translation: conductToStringParentPhrasesTranslate(
+                  model.parentPhrasesTranslate!),
               createdAt: DateTime.now().toString(),
               type: "phrases",
               wordClass: "",
@@ -201,13 +233,16 @@ class WordDetailPageViewModel extends BaseViewModel {
               number: number,
               folderId: folderModel.id);
           int dbCount = await wordEntityRepository.getWordBankCount();
-          if (dbCount > 29 && PurchasesObserver().isPro() && !localViewModel.boundException) {
+          if (dbCount > 29 &&
+              PurchasesObserver().isPro() &&
+              !localViewModel.boundException) {
             showCountOutOfBound();
             return;
           } else {
             if (wordEntityRepository.wordBankList
-                .where(
-                    (element) => element.id == wordBank.id && element.folderId == wordBank.folderId)
+                .where((element) =>
+                    element.id == wordBank.id &&
+                    element.folderId == wordBank.folderId)
                 .isEmpty) {
               await funAddToWordBank(wordBank, key);
               localViewModel.boundException = false;
@@ -225,7 +260,11 @@ class WordDetailPageViewModel extends BaseViewModel {
     }, callFuncName: 'addToWordBankFromParentPhrase', inProgress: false);
   }
 
-  addAllWords(GlobalKey globalKey) {
+  addAllWords(GlobalKey globalKey) async {
+    log('addAllWords');
+    if (!(await localViewModel.canAddWordBank(context!))) {
+      return;
+    }
     safeBlock(() async {
       if (parentsWithAllList.isNotEmpty) {
         showFolderDialog(
@@ -233,7 +272,7 @@ class WordDetailPageViewModel extends BaseViewModel {
             var count = 0;
             for (var element in parentsWithAllList) {
               int dbCount = await wordEntityRepository.getWordBankCount();
-              if (dbCount > 29 && !PurchasesObserver().isPro() && !localViewModel.boundException) {
+              if (dbCount > 29 && !PurchasesObserver().isPro()) {
                 showCountOutOfBound();
                 break;
               } else {
@@ -246,16 +285,17 @@ class WordDetailPageViewModel extends BaseViewModel {
                     translation: conductToString(element.wordsUz),
                     createdAt: DateTime.now().toString(),
                     number: count,
-                    wordClass:
-                        wordEntityRepository.requiredWordWithAllModel.word!.wordClasswordClass ??
-                            "",
-                    wordClassBody:
-                        wordEntityRepository.requiredWordWithAllModel.word!.wordClassBody,
+                    wordClass: wordEntityRepository.requiredWordWithAllModel
+                            .word!.wordClasswordClass ??
+                        "",
+                    wordClassBody: wordEntityRepository
+                        .requiredWordWithAllModel.word!.wordClassBody,
                     type: "word",
                     folderId: folderModel.id);
                 if (wordEntityRepository.wordBankList
                     .where((element) =>
-                        element.id == wordBank.id && element.folderId == wordBank.folderId)
+                        element.id == wordBank.id &&
+                        element.folderId == wordBank.folderId)
                     .isEmpty) {
                   await funAddToWordBank(wordBank, globalKey);
                   localViewModel.boundException = false;
@@ -281,7 +321,7 @@ class WordDetailPageViewModel extends BaseViewModel {
       if (key != null) {
         localViewModel.runAddToCartAnimation(key);
       }
-      localViewModel.changeBadgeCount(1);
+      await localViewModel.changeBadgeCount(1);
     }, callFuncName: 'funAddToWordBank', inProgress: false);
   }
 
@@ -293,7 +333,8 @@ class WordDetailPageViewModel extends BaseViewModel {
       context: context!,
       title: 'folder_dialog'.tr(),
       contentWidget: StatefulBuilder(
-        builder: (BuildContext context, void Function(void Function()) setState) {
+        builder:
+            (BuildContext context, void Function(void Function()) setState) {
           changer.addListener(() {
             setState(() {});
           });
@@ -309,10 +350,13 @@ class WordDetailPageViewModel extends BaseViewModel {
                   if (item.id != 2) {
                     return Container(
                       decoration: const BoxDecoration(
-                          border: Border(bottom: BorderSide(color: AppColors.borderWhite))),
+                          border: Border(
+                              bottom:
+                                  BorderSide(color: AppColors.borderWhite))),
                       child: ListTile(
-                        title: Text(item.folderName,
-                            style: AppTextStyle.font15W600Normal.copyWith(color: AppColors.blue)),
+                        title: Text(item.folderName.tr(),
+                            style: AppTextStyle.font15W600Normal
+                                .copyWith(color: AppColors.blue)),
                         onTap: () async {
                           await body(item);
                           notifyListeners();
@@ -329,10 +373,11 @@ class WordDetailPageViewModel extends BaseViewModel {
       ),
       negative: "new_word_bank_type".tr(),
       onNegativeTap: () async {
-        if (!PurchasesObserver().isPro() && wordEntityRepository.wordBankFoldersList.length >= 3) {
+        if (!PurchasesObserver().isPro() &&
+            wordEntityRepository.wordBankFoldersList.length >= 3) {
           showFolderCountOutOfBound();
         } else {
-          addNewFolder();
+          await addNewFolder();
         }
       },
     );
@@ -340,7 +385,7 @@ class WordDetailPageViewModel extends BaseViewModel {
 
   ValueNotifier<int> changer = ValueNotifier<int>(1);
 
-  void addNewFolder() {
+  Future addNewFolder() async {
     showCustomDialog(
       context: context!,
       icon: Assets.icons.addFolder,
@@ -376,8 +421,12 @@ class WordDetailPageViewModel extends BaseViewModel {
       ),
       positive: "add".tr(),
       onPositiveTap: () async {
+        if (!(await localViewModel.canAddWordBank(context!))) {
+          return;
+        }
         if (folderTextController.text.isNotEmpty) {
-          await wordEntityRepository.addNewWordBankFolder(folderTextController.text);
+          await wordEntityRepository
+              .addNewWordBankFolder(folderTextController.text);
           changer.value++;
           pop();
         }
@@ -400,8 +449,8 @@ class WordDetailPageViewModel extends BaseViewModel {
         child: Text(
           'new_folder_bound_info'.tr(),
           textAlign: TextAlign.center,
-          style: AppTextStyle.font15W600Normal
-              .copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
+          style: AppTextStyle.font15W600Normal.copyWith(
+              color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
         ),
       ),
       positive: "buy_pro".tr(),
@@ -411,7 +460,7 @@ class WordDetailPageViewModel extends BaseViewModel {
     );
   }
 
-  showCountOutOfBound() {
+  showCountOutOfBound() async {
     showCustomDialog(
       context: context!,
       icon: Assets.icons.saveWord,
@@ -422,8 +471,8 @@ class WordDetailPageViewModel extends BaseViewModel {
         child: Text(
           'word_bank_add_info'.tr(),
           textAlign: TextAlign.center,
-          style: AppTextStyle.font15W600Normal
-              .copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
+          style: AppTextStyle.font15W600Normal.copyWith(
+              color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
         ),
       ),
       positive: "buy_pro".tr(),
@@ -459,8 +508,10 @@ class WordDetailPageViewModel extends BaseViewModel {
     }
   }
 
-  TextSpan conductAndHighlightUzWords(List<WordsUzModel>? wordList,
-      List<PhrasesTranslateModel>? translate, List<ParentPhrasesTranslateModel>? phraseTranslate) {
+  TextSpan conductAndHighlightUzWords(
+      List<WordsUzModel>? wordList,
+      List<PhrasesTranslateModel>? translate,
+      List<ParentPhrasesTranslateModel>? phraseTranslate) {
     String sourceText = "";
     if (wordList != null) {
       sourceText = conductToString(wordList);
@@ -489,7 +540,8 @@ class WordDetailPageViewModel extends BaseViewModel {
           spans.add(_normalSpan(sourceText.substring(start, indexOfHighlight)));
         }
         start = indexOfHighlight + targetHighlight.length;
-        spans.add(_highlightSpan(sourceText.substring(indexOfHighlight, start)));
+        spans
+            .add(_highlightSpan(sourceText.substring(indexOfHighlight, start)));
       } while (true);
 
       return TextSpan(children: spans);
@@ -516,7 +568,8 @@ class WordDetailPageViewModel extends BaseViewModel {
             backgroundColor: Colors.transparent));
   }
 
-  String conductToStringPhrasesTranslate(List<PhrasesTranslateModel>? translateList) {
+  String conductToStringPhrasesTranslate(
+      List<PhrasesTranslateModel>? translateList) {
     if (translateList != null && translateList.isNotEmpty) {
       var concatenate = StringBuffer();
       for (var item in translateList) {
@@ -532,7 +585,8 @@ class WordDetailPageViewModel extends BaseViewModel {
     }
   }
 
-  String conductToStringParentPhrasesTranslate(List<ParentPhrasesTranslateModel>? translateList) {
+  String conductToStringParentPhrasesTranslate(
+      List<ParentPhrasesTranslateModel>? translateList) {
     if (translateList != null && translateList.isNotEmpty) {
       var concatenate = StringBuffer();
       for (var item in translateList) {
@@ -548,7 +602,8 @@ class WordDetailPageViewModel extends BaseViewModel {
     }
   }
 
-  String conductToStringPhrasesExamples(List<PhrasesExampleModel>? examplesList) {
+  String conductToStringPhrasesExamples(
+      List<PhrasesExampleModel>? examplesList) {
     if (examplesList != null && examplesList.isNotEmpty) {
       var concatenate = StringBuffer();
       for (var item in examplesList) {
@@ -564,7 +619,8 @@ class WordDetailPageViewModel extends BaseViewModel {
     }
   }
 
-  String conductToStringParentPhrasesExamples(List<ParentPhrasesExampleModel>? examplesList) {
+  String conductToStringParentPhrasesExamples(
+      List<ParentPhrasesExampleModel>? examplesList) {
     if (examplesList != null && examplesList.isNotEmpty) {
       var concatenate = StringBuffer();
       for (var item in examplesList) {
@@ -652,7 +708,8 @@ class WordDetailPageViewModel extends BaseViewModel {
     return false;
   }
 
-  bool isParentPhraseTranslateContainsWord(List<ParentPhrasesTranslateModel> list) {
+  bool isParentPhraseTranslateContainsWord(
+      List<ParentPhrasesTranslateModel> list) {
     for (var item in list) {
       if (isWordUzEqual(item.word ?? "")) {
         return true;
@@ -675,9 +732,11 @@ class WordDetailPageViewModel extends BaseViewModel {
           if (isPhraseTranslateContainsWord(model.phrasesTranslate ?? [])) {
             return true;
           }
-          if (model.parentPhrasesWithAll != null && model.parentPhrasesWithAll!.isNotEmpty) {
+          if (model.parentPhrasesWithAll != null &&
+              model.parentPhrasesWithAll!.isNotEmpty) {
             for (var item in model.parentPhrasesWithAll!) {
-              if (isParentPhraseTranslateContainsWord(item.parentPhrasesTranslate ?? [])) {
+              if (isParentPhraseTranslateContainsWord(
+                  item.parentPhrasesTranslate ?? [])) {
                 return true;
               }
             }
@@ -694,8 +753,10 @@ class WordDetailPageViewModel extends BaseViewModel {
       context: context!,
       builder: (context) {
         return AlertDialog(
+          contentPadding: EdgeInsets.zero,
           content: Image.network(
-            Urls.baseUrl + wordEntityRepository.requiredWordWithAllModel.word!.image!,
+            Urls.baseUrl +
+                wordEntityRepository.requiredWordWithAllModel.word!.image!,
             fit: BoxFit.scaleDown,
           ),
         );

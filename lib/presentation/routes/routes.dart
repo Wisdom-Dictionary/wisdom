@@ -1,13 +1,19 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:wisdom/data/model/user/user_model.dart';
 import 'package:wisdom/presentation/components/about_unit_item_page.dart';
 import 'package:wisdom/presentation/pages/abbreviation/abbreviation_page.dart';
 import 'package:wisdom/presentation/pages/about_wisdom/about_wisdom.dart';
 import 'package:wisdom/presentation/pages/adversitment/giving_ad_page.dart';
+import 'package:wisdom/presentation/pages/grammar/view/grammar_page.dart';
 import 'package:wisdom/presentation/pages/home/view/home_page.dart';
 import 'package:wisdom/presentation/pages/my_contacts/view/contact_details_page.dart';
 import 'package:wisdom/presentation/pages/my_contacts/view/my_contacts_page.dart';
 import 'package:wisdom/presentation/pages/my_contacts/view/my_contacts_search_page.dart';
 import 'package:wisdom/presentation/pages/profile/view/edit_user_page.dart';
+import 'package:wisdom/presentation/pages/login/login_with_phone_page.dart';
+import 'package:wisdom/presentation/pages/login/view/login_page.dart';
 import 'package:wisdom/presentation/pages/profile/view/getting_pro_page.dart';
 import 'package:wisdom/presentation/pages/profile/view/input_number_page.dart';
 import 'package:wisdom/presentation/pages/profile/view/payment_page.dart';
@@ -20,7 +26,8 @@ import 'package:wisdom/presentation/pages/roadmap_battle/view/word_details_page.
 import 'package:wisdom/presentation/pages/roadmap_battle/view/word_exercises_check_page.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/word_exercises_page.dart';
 import 'package:wisdom/presentation/pages/setting/view/setting_page.dart';
-import 'package:wisdom/presentation/pages/grammar/view/grammar_page.dart';
+
+import '../pages/form_page/view/form_page.dart';
 
 class Routes {
   static const mainPage = '/';
@@ -45,6 +52,13 @@ class Routes {
   static const myContactsPage = '/myContactsPage';
   static const myContactsSearchPage = '/myContactsSearchPage';
   static const contactDetailsPage = '/contactDetailsPage';
+  static const loginPage = '/loginPage';
+  static const loginWithPhonePage = '/loginWithPhonePage';
+  static const formPage = '/formPage';
+
+  static _showRouteName(String routeName) {
+    log(routeName);
+  }
 
   static Route<dynamic> generateRoutes(RouteSettings routeSettings) {
     try {
@@ -53,18 +67,22 @@ class Routes {
       args ?? <String, dynamic>{};
       switch (routeSettings.name) {
         case mainPage:
+          _showRouteName(mainPage);
           return MaterialPageRoute(
             builder: (_) => HomePage(),
           );
         case grammarPage:
+          _showRouteName(grammarPage);
           return MaterialPageRoute(
             builder: (_) => GrammarPage(),
           );
         case gettingProPage:
+          _showRouteName(gettingProPage);
           return MaterialPageRoute(
             builder: (_) => GettingProPage(),
           );
         case profilePage:
+          _showRouteName(profilePage);
           return MaterialPageRoute(
             builder: (_) => ProfilePage(),
           );
@@ -74,7 +92,7 @@ class Routes {
           );
         case givingAdPage:
           return MaterialPageRoute(
-            builder: (_) => const GivingAdPage(),
+            builder: (_) => GivingAdPage(),
           );
         case settingPage:
           return MaterialPageRoute(
@@ -95,6 +113,7 @@ class Routes {
                 phoneNumber: args['phoneNumber']),
           );
         case grammarPageabout:
+          _showRouteName(grammarPageabout);
           return MaterialPageRoute(
             builder: (_) => AboutUnitItemPage(title: args!['title']),
           );
@@ -136,13 +155,30 @@ class Routes {
           );
         case myContactsSearchPage:
           return MaterialPageRoute(
-            builder: (_) =>  MyContactsSearchPage(),
+            builder: (_) => MyContactsSearchPage(),
           );
         case contactDetailsPage:
           return MaterialPageRoute(
-            builder: (_) => ContactDetailsPage(data: routeSettings.arguments,),
+            builder: (_) => ContactDetailsPage(
+              data: routeSettings.arguments,
+            ),
+          );
+        case loginPage:
+          return MaterialPageRoute(
+            builder: (_) => LoginPage(),
+          );
+        case formPage:
+          return MaterialPageRoute(
+            builder: (_) => FormPage(
+              userModel: args!['userModel'] as UserModel,
+            ),
+          );
+        case loginWithPhonePage:
+          return MaterialPageRoute(
+            builder: (_) => LoginWithPhonePage(),
           );
         default:
+          _showRouteName(mainPage);
           return MaterialPageRoute(
             builder: (_) => HomePage(),
           );

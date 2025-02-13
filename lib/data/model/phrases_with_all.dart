@@ -20,8 +20,7 @@ class PhrasesWithAll {
   List<PhrasesExampleModel>? phrasesExample;
   List<ParentPhrasesWithAll>? parentPhrasesWithAll;
 
-  PhrasesWithAll(
-      this.phrases, this.phrasesTranslate, this.phrasesExample, this.parentPhrasesWithAll);
+  PhrasesWithAll(this.phrases, this.phrasesTranslate, this.phrasesExample, this.parentPhrasesWithAll);
 }
 
 class ParentPhrasesWithAll {
@@ -33,8 +32,8 @@ class ParentPhrasesWithAll {
 }
 
 class ParentsWithAll {
-  ParentsWithAll(this.parents, this.wordsUz, this.collocation, this.culture, this.difference,
-      this.grammar, this.metaphor, this.thesaurus, this.phrasesWithAll);
+  ParentsWithAll(this.parents, this.wordsUz, this.collocation, this.culture, this.difference, this.grammar,
+      this.metaphor, this.thesaurus, this.phrasesWithAll);
 
   ParentsModel? parents;
   List<WordsUzModel>? wordsUz;

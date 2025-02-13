@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:clipboard/clipboard.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +7,7 @@ import 'package:jbaza/jbaza.dart';
 import 'package:lottie/lottie.dart';
 import 'package:wisdom/config/constants/app_decoration.dart';
 import 'package:wisdom/core/di/app_locator.dart';
+import 'package:wisdom/data/viewmodel/local_viewmodel.dart';
 import 'package:wisdom/presentation/components/translate_circle_button.dart';
 import 'package:wisdom/presentation/pages/google_translator/viewmodel/google_translator_page_viewmodel.dart';
 import 'package:wisdom/presentation/widgets/change_language_button_translate.dart';
@@ -18,7 +17,6 @@ import '../../../../config/constants/app_colors.dart';
 import '../../../../config/constants/app_text_style.dart';
 import '../../../../config/constants/assets.dart';
 import '../../../../config/constants/constants.dart';
-import '../../../widgets/change_language_button.dart';
 
 // ignore: must_be_immutable
 class GoogleTranslatorPage extends ViewModelBuilderWidget<GoogleTranslatorPageViewModel> {
@@ -201,17 +199,20 @@ class GoogleTranslatorPage extends ViewModelBuilderWidget<GoogleTranslatorPageVi
                                 Container(
                                   key: globalKey,
                                   child: TranslateCircleButton(
-                                    onTap: () {
+                                    onTap: () async{
                                       if (topController.text.isNotEmpty &&
                                           bottomController.text.isNotEmpty) {
-                                        viewModel.funAddToWordBank(
+                                        if(await locator.get<LocalViewModel>().canAddWordBank(context)){
+                                          viewModel.funAddToWordBank(
                                             viewModel.topUzbek
                                                 ? bottomController.text
                                                 : topController.text,
                                             viewModel.topUzbek
                                                 ? topController.text
                                                 : bottomController.text,
-                                            globalKey);
+                                            globalKey,
+                                          );
+                                        }
                                       }
                                     },
                                     iconAssets: Assets.icons.saveWord,

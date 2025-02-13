@@ -11,7 +11,7 @@ abstract class WordEntityRepository {
 
   Future<void> getRequiredWord(int wordId);
 
-  Future<bool> moveToFolder(int folderId, int tableId, int wordId);
+  Future<bool> moveToFolder(int folderId, int tableId, int? wordId);
 
   Future<void> getWordBankFolders();
 
@@ -27,6 +27,10 @@ abstract class WordEntityRepository {
 
   Future<void> getWordBankList(int? folderId);
 
+  Future updateWordBank();
+
+  Future clearWordBank();
+
   List<WordBankModel> get wordBankList;
 
   List<WordBankModel> get wordBankListForCount;
@@ -40,4 +44,6 @@ abstract class WordEntityRepository {
   WordPathModel get wordPathModel;
 
   int get currentSizeOfPathModel;
+  int get wrongFolderId;
+  Future<int> get allWordBanksCount;
 }

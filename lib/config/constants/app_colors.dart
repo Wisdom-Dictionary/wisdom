@@ -43,4 +43,5 @@ abstract class AppColors {
   static const Color black = Color(0xFF000000);
   static const Color darkBottomBar = Color(0xFF333646);
   static const Color darkDivider = Color(0xFF003C64);
+  static const Color sheetIndicatorColor = Color(0xffD9D9D9);
 }

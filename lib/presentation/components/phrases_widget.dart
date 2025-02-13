@@ -54,9 +54,7 @@ class PhrasesWidget extends ViewModelWidget<WordDetailPageViewModel> {
                       : AppColors.blue
                   : AppColors.blue,
               fontSize: viewModel.fontSize! - 2,
-              backgroundColor: viewModel.isWordEqual(model.phrases!.pWord ?? "")
-                  ? Colors.yellow
-                  : Colors.transparent),
+              backgroundColor: viewModel.isWordEqual(model.phrases!.pWord ?? "") ? Colors.yellow : Colors.transparent),
         ),
         expanded: Column(
           mainAxisSize: MainAxisSize.min,
@@ -70,8 +68,7 @@ class PhrasesWidget extends ViewModelWidget<WordDetailPageViewModel> {
                   child: Container(
                     key: widgetKey,
                     child: Visibility(
-                      visible:
-                          (model.phrasesTranslate != null && model.phrasesTranslate!.isNotEmpty),
+                      visible: (model.phrasesTranslate != null && model.phrasesTranslate!.isNotEmpty),
                       child: InkWell(
                         onTap: () => viewModel.addToWordBankFromPhrase(model, orderNum, widgetKey),
                         child: Padding(
@@ -91,8 +88,7 @@ class PhrasesWidget extends ViewModelWidget<WordDetailPageViewModel> {
                 Flexible(
                   child: Text.rich(
                     TextSpan(
-                      text: (model.parentPhrasesWithAll != null &&
-                              model.parentPhrasesWithAll!.isNotEmpty)
+                      text: (model.parentPhrasesWithAll != null && model.parentPhrasesWithAll!.isNotEmpty)
                           ? "$orderNum. "
                           : "",
                       style: AppTextStyle.font15W700Normal.copyWith(
@@ -121,8 +117,7 @@ class PhrasesWidget extends ViewModelWidget<WordDetailPageViewModel> {
                 child: Text(
                   (viewModel.conductToStringPhrasesExamples(model.phrasesExample)),
                   style: AppTextStyle.font15W400ItalicHtml.copyWith(
-                      color: isDarkTheme ? AppColors.lightGray : AppColors.gray,
-                      fontSize: viewModel.fontSize! - 2),
+                      color: isDarkTheme ? AppColors.lightGray : AppColors.gray, fontSize: viewModel.fontSize! - 2),
                 ),
               ),
             ),
@@ -136,8 +131,7 @@ class PhrasesWidget extends ViewModelWidget<WordDetailPageViewModel> {
                     .replaceAll("<p>", "")
                     .replaceAll("</p>", "<br>"),
                 textStyle: AppTextStyle.font13W400ItalicHtml.copyWith(
-                    fontSize: viewModel.fontSize! - 4,
-                    color: isDarkTheme ? AppColors.lightBackground : AppColors.gray),
+                    fontSize: viewModel.fontSize! - 4, color: isDarkTheme ? AppColors.lightBackground : AppColors.gray),
               ),
               visible: model.phrases!.pSynonyms != null,
             ),
@@ -149,14 +143,12 @@ class PhrasesWidget extends ViewModelWidget<WordDetailPageViewModel> {
                     itemCount: model.parentPhrasesWithAll!.length,
                     itemBuilder: (context, index) {
                       var phraseModel = model.parentPhrasesWithAll![index];
-                      bool isSelected =
-                          viewModel.isWordEqual(phraseModel.parentPhrases!.word ?? "") &&
-                              viewModel.getFirstPhrase &&
-                              viewModel.isWordEqual(model.phrases!.pWord ?? "");
+                      bool isSelected = viewModel.isWordEqual(phraseModel.parentPhrases!.word ?? "") &&
+                          viewModel.getFirstPhrase &&
+                          viewModel.isWordEqual(model.phrases!.pWord ?? "");
                       if (viewModel.localViewModel.isSearchByUz) {
-                        isSelected = viewModel.isWordContained(
-                                viewModel.conductToStringParentPhrasesTranslate(
-                                    phraseModel.parentPhrasesTranslate ?? [])) &&
+                        isSelected = viewModel.isWordContained(viewModel
+                                .conductToStringParentPhrasesTranslate(phraseModel.parentPhrasesTranslate ?? [])) &&
                             viewModel.getFirstPhrase &&
                             viewModel.isWordEqual(model.phrases!.pWord ?? "");
                       }

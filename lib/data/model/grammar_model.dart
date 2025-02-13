@@ -1,9 +1,8 @@
 class GrammarModel {
   GrammarModel({
-    this.id,
-    this.wordId,
-    this.body,
-  });
+      this.id, 
+      this.wordId, 
+      this.body,});
 
   GrammarModel.fromJson(dynamic json) {
     id = json['id'];
@@ -21,4 +20,5 @@ class GrammarModel {
     map['body'] = body;
     return map;
   }
+
 }

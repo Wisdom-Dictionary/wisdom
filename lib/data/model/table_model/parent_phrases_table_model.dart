@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:wisdom/data/model/base_table_model.dart';
-
 /// id : 0
 /// phrase_id : 0
 /// word : ""
@@ -10,20 +9,17 @@ import 'package:wisdom/data/model/base_table_model.dart';
 /// word_class_comment : ""
 /// parent_phrase : ""
 
-ParentPhrasesTableModel parentPhrasesTableModelFromJson(String str) =>
-    ParentPhrasesTableModel.fromJson(json.decode(str));
+ParentPhrasesTableModel parentPhrasesTableModelFromJson(String str) => ParentPhrasesTableModel.fromJson(json.decode(str));
 String parentPhrasesTableModelToJson(ParentPhrasesTableModel data) => json.encode(data.toJson());
-
 class ParentPhrasesTableModel extends BaseTableModel {
   ParentPhrasesTableModel({
-    int? id,
-    int? phraseId,
-    String? word,
-    int? star,
-    String? synonyms,
-    String? wordClassComment,
-    String? parentPhrase,
-  }) {
+      int? id, 
+      int? phraseId, 
+      String? word, 
+      int? star, 
+      String? synonyms, 
+      String? wordClassComment, 
+      String? parentPhrase,}){
     _id = id;
     _phraseId = phraseId;
     _word = word;
@@ -31,7 +27,7 @@ class ParentPhrasesTableModel extends BaseTableModel {
     _synonyms = synonyms;
     _wordClassComment = wordClassComment;
     _parentPhrase = parentPhrase;
-  }
+}
 
   ParentPhrasesTableModel.fromJson(dynamic json) {
     _id = json['id'];
@@ -49,24 +45,21 @@ class ParentPhrasesTableModel extends BaseTableModel {
   String? _synonyms;
   String? _wordClassComment;
   String? _parentPhrase;
-  ParentPhrasesTableModel copyWith({
-    int? id,
-    int? phraseId,
-    String? word,
-    int? star,
-    String? synonyms,
-    String? wordClassComment,
-    String? parentPhrase,
-  }) =>
-      ParentPhrasesTableModel(
-        id: id ?? _id,
-        phraseId: phraseId ?? _phraseId,
-        word: word ?? _word,
-        star: star ?? _star,
-        synonyms: synonyms ?? _synonyms,
-        wordClassComment: wordClassComment ?? _wordClassComment,
-        parentPhrase: parentPhrase ?? _parentPhrase,
-      );
+ParentPhrasesTableModel copyWith({  int? id,
+  int? phraseId,
+  String? word,
+  int? star,
+  String? synonyms,
+  String? wordClassComment,
+  String? parentPhrase,
+}) => ParentPhrasesTableModel(  id: id ?? _id,
+  phraseId: phraseId ?? _phraseId,
+  word: word ?? _word,
+  star: star ?? _star,
+  synonyms: synonyms ?? _synonyms,
+  wordClassComment: wordClassComment ?? _wordClassComment,
+  parentPhrase: parentPhrase ?? _parentPhrase,
+);
   int? get id => _id;
   int? get phraseId => _phraseId;
   String? get word => _word;
@@ -87,4 +80,5 @@ class ParentPhrasesTableModel extends BaseTableModel {
     map['parent_phrase'] = _parentPhrase;
     return map;
   }
+
 }

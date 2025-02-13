@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:wisdom/config/constants/constants.dart';
 import 'package:wisdom/presentation/components/custom_oval_button.dart';
+
 import '../../config/constants/app_colors.dart';
 import '../../config/constants/app_text_style.dart';
 import '../../config/constants/assets.dart';
 import '../components/circular_icon_place.dart';
+import 'image_picker_dialog.dart';
 
 showCustomDialog({
   required BuildContext context,
@@ -52,7 +55,7 @@ showCustomDialog({
           ),
           title != null
               ? Text(
-                  title ?? "",
+                  title,
                   style: AppTextStyle.font17W600Normal
                       .copyWith(color: isDarkTheme ? AppColors.white : AppColors.gray),
                   textAlign: TextAlign.center,
@@ -103,5 +106,15 @@ showCustomDialog({
         ),
       ],
     ),
+  );
+}
+
+Future showImagePicker(
+  BuildContext context, {
+  required Function(XFile? img) onSelected,
+}) async {
+  showModalBottomSheet(
+    context: context,
+    builder: (context) => ImagePickerDialog(onSelected: onSelected),
   );
 }

@@ -26,9 +26,7 @@ class WordBankItem extends ViewModelWidget<WordBankViewModel> {
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
-                width: 1,
-                color: isDarkTheme ? AppColors.darkForm : AppColors.borderWhite,
-                style: BorderStyle.solid),
+                width: 1, color: isDarkTheme ? AppColors.darkForm : AppColors.borderWhite, style: BorderStyle.solid),
           ),
         ),
         child: ExpandablePanel(
@@ -49,8 +47,8 @@ class WordBankItem extends ViewModelWidget<WordBankViewModel> {
                 Flexible(
                   child: RichText(
                     text: TextSpan(
-                      style: AppTextStyle.font15W500Normal.copyWith(
-                          color: isDarkTheme ? AppColors.borderWhite : AppColors.darkGray),
+                      style: AppTextStyle.font15W500Normal
+                          .copyWith(color: isDarkTheme ? AppColors.borderWhite : AppColors.darkGray),
                       text: model.word ?? "",
                       children: [
                         TextSpan(

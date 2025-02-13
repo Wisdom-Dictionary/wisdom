@@ -21,28 +21,26 @@ import '../../data/model/word_and_phrases_model.dart';
 import '../../data/model/word_entity_model.dart';
 
 class WordMapper {
-  List<WordModel> wordListToWordEntity(List<WordEntityModel> wordEntity) => wordEntity
-      .map(
+  List<WordModel> wordListToWordEntity(List<WordEntityModel> wordEntity) => wordEntity.map(
         (e) => WordModel(
-            id: e.id,
-            word: e.word,
-            star: e.star.toString(),
-            anthonims: e.anthonims,
-            body: e.body,
-            comment: e.comment,
-            example: e.example,
-            examples: e.examples,
-            image: e.image,
-            linkWord: e.linkWord,
-            moreExamples: e.moreExamples,
-            synonyms: e.synonyms,
-            wordClassBody: e.wordClassBody,
-            wordClassBodyMeaning: e.wordClassBodyMeaning,
-            wordClassid: e.wordClass?.id,
-            wordClasswordId: e.id,
-            wordClasswordClass: e.wordClass?.wordClass),
-      )
-      .toList();
+        id: e.id,
+        word: e.word,
+        star: e.star.toString(),
+        anthonims: e.anthonims,
+        body: e.body,
+        comment: e.comment,
+        example: e.example,
+        examples: e.examples,
+        image: e.image,
+        linkWord: e.linkWord,
+        moreExamples: e.moreExamples,
+        synonyms: e.synonyms,
+        wordClassBody: e.wordClassBody,
+        wordClassBodyMeaning: e.wordClassBodyMeaning,
+        wordClassid: e.wordClass?.id,
+        wordClasswordId: e.id,
+        wordClasswordClass: e.wordClass?.wordClass),
+  ).toList();
 
   List<WordsUzTableModel> wordListToWordUz(List<WordEntityModel> wordEntity) {
     List<WordsUzTableModel> result = [];
@@ -204,8 +202,7 @@ class WordMapper {
     return result;
   }
 
-  List<ParentPhrasesTranslateTableModel> wordListToParentPhrasesTranslate(
-      List<WordEntityModel> wordEntity) {
+  List<ParentPhrasesTranslateTableModel> wordListToParentPhrasesTranslate(List<WordEntityModel> wordEntity) {
     List<ParentPhrasesTranslateTableModel> result = [];
     for (var list in wordEntity) {
       if (list.phrases != null) {
@@ -235,8 +232,7 @@ class WordMapper {
             for (var parentPhrase in phrase.parentPhrases!) {
               if (parentPhrase.examples != null) {
                 for (var e in parentPhrase.examples!) {
-                  result.add(
-                      PhrasesExampleTableId(id: 0, value: e.value, phrasesId: parentPhrase.id));
+                  result.add(PhrasesExampleTableId(id: 0, value: e.value, phrasesId: parentPhrase.id));
                 }
               }
             }
@@ -332,8 +328,7 @@ class WordMapper {
         for (var parent in list.parents!) {
           if (parent.difference != null) {
             for (var e in parent.difference!) {
-              result.add(
-                  DifferenceTableModel(id: e.id, wordId: parent.id, body: e.body, word: e.word));
+              result.add(DifferenceTableModel(id: e.id, wordId: parent.id, body: e.body, word: e.word));
             }
           }
         }
@@ -415,8 +410,7 @@ class WordMapper {
     return result;
   }
 
-  List<PhrasesTranslateTableModel> wordListToPhrasesTranslateParent(
-      List<WordEntityModel> wordEntity) {
+  List<PhrasesTranslateTableModel> wordListToPhrasesTranslateParent(List<WordEntityModel> wordEntity) {
     List<PhrasesTranslateTableModel> result = [];
     for (var list in wordEntity) {
       if (list.parents != null) {
@@ -489,8 +483,7 @@ class WordMapper {
     return result;
   }
 
-  List<ParentPhrasesTranslateTableModel> wordListToParentPhrasesTranslateParent(
-      List<WordEntityModel> wordEntity) {
+  List<ParentPhrasesTranslateTableModel> wordListToParentPhrasesTranslateParent(List<WordEntityModel> wordEntity) {
     List<ParentPhrasesTranslateTableModel> result = [];
     for (var list in wordEntity) {
       if (list.parents != null) {
@@ -503,10 +496,7 @@ class WordMapper {
                     for (var e in parentPhrase.translate!) {
                       result.add(
                         ParentPhrasesTranslateTableModel(
-                            id: 0,
-                            phraseId: e.phraseId,
-                            word: e.word,
-                            parentPhraseId: parentPhrase.id),
+                            id: 0, phraseId: e.phraseId, word: e.word, parentPhraseId: parentPhrase.id),
                       );
                     }
                   }
@@ -576,8 +566,7 @@ class WordMapper {
         wordWithAll.phrasesWithAll,
       );
 
-  List<SearchResultModel> wordEntityListToSearchResultList(
-          List<WordModel> model, String type, String searchText) =>
+  List<SearchResultModel> wordEntityListToSearchResultList(List<WordModel> model, String type, String searchText) =>
       List<SearchResultModel>.from(
         model.map((e) {
           var star = e.word == searchText ? int.parse(e.star!) + 10 : int.parse(e.star!);
@@ -625,8 +614,7 @@ class WordMapper {
         if (element.word!.isNotEmpty) {
           arrayForSearch.add(element);
           prevResult.add(element.word!);
-          mapWordDtoToSearchResultFroParentPhraseList(wordDto, type, search, prevResult)
-              .forEach((second) {
+          mapWordDtoToSearchResultFroParentPhraseList(wordDto, type, search, prevResult).forEach((second) {
             prevResult.add(second.word!);
             arrayForSearch.add(second);
           });
@@ -637,10 +625,7 @@ class WordMapper {
   }
 
   List<SearchResultModel> mapWordDtoToSearchResultFroParentPhrase(
-      WordAndParentsAndPhrasesModel parentsAndPhrasesModel,
-      String type,
-      String search,
-      List<String> exclude) {
+      WordAndParentsAndPhrasesModel parentsAndPhrasesModel, String type, String search, List<String> exclude) {
     var phraseWord = "";
     List<SearchResultModel> searchResultList = [];
     if (parentsAndPhrasesModel.pWord!.startsWith(search) &&
@@ -664,13 +649,9 @@ class WordMapper {
   }
 
   List<SearchResultModel> mapWordDtoToSearchResultFroParentPhraseList(
-      WordAndParentsAndPhrasesModel parentsAndPhrasesModel,
-      String type,
-      String search,
-      List<String> exclude) {
+      WordAndParentsAndPhrasesModel parentsAndPhrasesModel, String type, String search, List<String> exclude) {
     List<SearchResultModel> searchResultList = [];
-    if (parentsAndPhrasesModel.pWord!.startsWith(search) &&
-        !exclude.contains(parentsAndPhrasesModel.pWord)) {
+    if (parentsAndPhrasesModel.pWord!.startsWith(search) && !exclude.contains(parentsAndPhrasesModel.pWord)) {
       // var star = parentsAndPhrasesModel.pWord == search ? parentsAndPhrasesModel.star! + 10 : parentsAndPhrasesModel.star!;
       searchResultList.add(
         SearchResultModel(

@@ -16,17 +16,16 @@ class SearchRepositoryImpl extends SearchRepository {
 
   @override
   Future<List<SearchResultModel>> searchByWord(String searchText) async {
+
     var searchByWordEntity = await dbHelper.searchByWord(searchText);
-    var searchByWordList =
-        mapper.wordEntityListToSearchResultList(searchByWordEntity!, 'word', searchText);
+    var searchByWordList = mapper.wordEntityListToSearchResultList(searchByWordEntity!, 'word', searchText);
 
     var searchByPhrasesEntity = await dbHelper.searchByPhrases(searchText);
-    var searchByPhrasesList =
-        mapper.wordEntityListToSearchPhraseList(searchByPhrasesEntity!, 'phrases', searchText);
+    var searchByPhrasesList = mapper.wordEntityListToSearchPhraseList(searchByPhrasesEntity!, 'phrases', searchText);
 
     var searchByPhrases1Entity = await dbHelper.searchByWordParent1(searchText);
-    var searchByPhrases1List = await mapper.wordEntityListToSearchPhraseParentList(
-        searchByPhrases1Entity!, 'phrases', searchText);
+    var searchByPhrases1List =
+        await mapper.wordEntityListToSearchPhraseParentList(searchByPhrases1Entity!, 'phrases', searchText);
 
     _searchResult.clear();
     _searchResult.addAll(searchByWordList);

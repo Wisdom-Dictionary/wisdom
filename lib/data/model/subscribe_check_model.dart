@@ -24,9 +24,11 @@ class SubscribeCheckModel {
     _expiryDate = json['expiry_date'];
     _expiryStatus = json['expiry_status'];
   }
+
   bool? _status;
   String? _expiryDate;
   bool? _expiryStatus;
+
   SubscribeCheckModel copyWith({
     bool? status,
     String? expiryDate,
@@ -37,8 +39,11 @@ class SubscribeCheckModel {
         expiryDate: expiryDate ?? _expiryDate,
         expiryStatus: expiryStatus ?? _expiryStatus,
       );
+
   bool? get status => _status;
+
   String? get expiryDate => _expiryDate;
+
   bool? get expiryStatus => _expiryStatus;
 
   Map<String, dynamic> toJson() {

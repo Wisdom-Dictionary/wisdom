@@ -1,10 +1,11 @@
+import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:jbaza/jbaza.dart';
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart' as p;
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:wisdom/core/extensions/db_extension.dart';
 import 'package:wisdom/core/utils/word_mapper.dart';
 import 'package:wisdom/data/model/collocation_model.dart';
@@ -86,31 +87,70 @@ class DBHelper {
   final String tableWordBankFolder = 'folders';
   final String tableSpeakingView = 'speaking_view';
 
+  // final int _dbVersion = 2;
+
   Future<void> init() async {
     late String databasesPath;
     if (Platform.isAndroid) {
       databasesPath = await getDatabasesPath();
+    } else if (Platform.isWindows) {
+      sqfliteFfiInit();
+      databaseFactory = databaseFactoryFfi;
+      databasesPath = await databaseFactory.getDatabasesPath();
     } else {
       var platformPath = await getLibraryDirectory();
       databasesPath = platformPath.path;
     }
-    var path = join(databasesPath, databaseName);
+    var path = p.join(databasesPath, databaseName);
 
     var exists = await databaseExists(path);
 
     if (!exists) {
       try {
-        await Directory(dirname(path)).create(recursive: true);
-      } catch (_) {}
+        await Directory(p.dirname(path)).create(recursive: true);
+      } catch (e) {
+        log("init", error: e.toString());
+      }
 
-      ByteData data = await rootBundle.load(join("assets", databaseName));
-      List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+      ByteData data = await rootBundle.load(p.join("assets", databaseName));
+      List<int> bytes =
+          data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
       await File(path).writeAsBytes(bytes, flush: true);
-    } else {}
-    database = await openDatabase(
-      path,
-      readOnly: false,
-    );
+    }
+    if (Platform.isWindows) {
+      database = await databaseFactory.openDatabase(
+        path,
+        options: OpenDatabaseOptions(
+          onUpgrade: _onUpgrade,
+          readOnly: false,
+          version: 10,
+        ),
+      );
+    } else {
+      database = await openDatabase(
+        path,
+        readOnly: false,
+        version: 10,
+        onUpgrade: _onUpgrade,
+      );
+    }
+  }
+
+  _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    var batch = db.batch();
+    if (newVersion == 10) {
+      _addFolderIsDefault(batch);
+    }
+    await batch.commit();
+  }
+
+  String joinPath(String v1, String v2) {
+    return '$v1${Platform.isWindows ? '/' : '\''}$v2';
+  }
+
+  void _addFolderIsDefault(Batch batch) {
+    batch.execute(
+        'alter table folders add  column is_default bolean default false');
   }
 
   //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\/////////////////////////\\\\\\\\\\\\\\\\\\\\\\\///////////////////////////
@@ -119,36 +159,49 @@ class DBHelper {
     try {
       await saveToWordEntity(wordMapper.wordListToWordEntity(wordEntityModel));
       await saveToWordUz(wordMapper.wordListToWordUz(wordEntityModel));
-      await saveToCollocation(wordMapper.wordListToCollocation(wordEntityModel));
+      await saveToCollocation(
+          wordMapper.wordListToCollocation(wordEntityModel));
       await saveToCulture(wordMapper.wordListToCulture(wordEntityModel));
       await saveToDifference(wordMapper.wordListToDifference(wordEntityModel));
       await saveToGrammar(wordMapper.wordListToGrammar(wordEntityModel));
       await saveToMetaphor(wordMapper.wordListToMetaphor(wordEntityModel));
       await saveToThesaurus(wordMapper.wordListToThesaurus(wordEntityModel));
       await saveToPhrases(wordMapper.wordListToPhrases(wordEntityModel));
-      await saveToPhrasesTranslate(wordMapper.wordListToPhrasesTranslate(wordEntityModel));
-      await saveToPhrasesExample(wordMapper.wordListToPhrasesExample(wordEntityModel));
-      await saveToParentPhrases(wordMapper.wordListToParentPhrases(wordEntityModel));
+      await saveToPhrasesTranslate(
+          wordMapper.wordListToPhrasesTranslate(wordEntityModel));
+      await saveToPhrasesExample(
+          wordMapper.wordListToPhrasesExample(wordEntityModel));
+      await saveToParentPhrases(
+          wordMapper.wordListToParentPhrases(wordEntityModel));
       await saveToParentPhrasesTranslate(
           wordMapper.wordListToParentPhrasesTranslate(wordEntityModel));
-      await saveToParentPhrasesExample(wordMapper.wordListToParentPhraseExample(wordEntityModel));
+      await saveToParentPhrasesExample(
+          wordMapper.wordListToParentPhraseExample(wordEntityModel));
       await saveToParents(wordMapper.wordListToParents(wordEntityModel));
     } catch (e) {}
     try {
       await saveToWordUz(wordMapper.wordListToWordUzParent(wordEntityModel));
-      await saveToCollocation(wordMapper.wordListToCollocationParent(wordEntityModel));
+      await saveToCollocation(
+          wordMapper.wordListToCollocationParent(wordEntityModel));
       await saveToCulture(wordMapper.wordListToCultureParent(wordEntityModel));
-      await saveToDifference(wordMapper.wordListToDifferenceParent(wordEntityModel));
+      await saveToDifference(
+          wordMapper.wordListToDifferenceParent(wordEntityModel));
       await saveToGrammar(wordMapper.wordListToGrammarParent(wordEntityModel));
-      await saveToMetaphor(wordMapper.wordListToMetaphorParent(wordEntityModel));
-      await saveToThesaurus(wordMapper.wordListToThesaurusParent(wordEntityModel));
+      await saveToMetaphor(
+          wordMapper.wordListToMetaphorParent(wordEntityModel));
+      await saveToThesaurus(
+          wordMapper.wordListToThesaurusParent(wordEntityModel));
       await saveToPhrases(wordMapper.wordListToPhrasesParent(wordEntityModel));
-      await saveToPhrasesTranslate(wordMapper.wordListToPhrasesTranslateParent(wordEntityModel));
-      await saveToPhrasesExample(wordMapper.wordListToPhrasesExampleParent(wordEntityModel));
-      await saveToParentPhrases(wordMapper.wordListToParentPhrasesParent(wordEntityModel));
+      await saveToPhrasesTranslate(
+          wordMapper.wordListToPhrasesTranslateParent(wordEntityModel));
+      await saveToPhrasesExample(
+          wordMapper.wordListToPhrasesExampleParent(wordEntityModel));
+      await saveToParentPhrases(
+          wordMapper.wordListToParentPhrasesParent(wordEntityModel));
       await saveToParentPhrasesTranslate(
           wordMapper.wordListToParentPhrasesTranslateParent(wordEntityModel));
-      await saveToParentPhrasesExample(wordMapper.wordListToPhrasesExampleParent(wordEntityModel));
+      await saveToParentPhrasesExample(
+          wordMapper.wordListToPhrasesExampleParent(wordEntityModel));
     } catch (e) {}
   }
 
@@ -168,7 +221,8 @@ class DBHelper {
       return '(${formattedValues.join(', ')})';
     }).join(', ');
 
-    var updateValues = entities[0].toJson().keys.map((key) => '$key=excluded.$key').join(', ');
+    var updateValues =
+        entities[0].toJson().keys.map((key) => '$key=excluded.$key').join(', ');
 
     return 'INSERT INTO word_entity ($columns) VALUES $values ON CONFLICT(id) DO UPDATE SET $updateValues;';
   }
@@ -179,13 +233,6 @@ class DBHelper {
         final query = wordDBO.generateInsertOrReplaceQuery(tableWordEntity);
         if (query.isNotEmpty) await database.rawInsert(query);
         log(wordDBO.last.toJson().toString());
-        // for (var element in wordDBO) {
-        //   await database.insert(tableWordEntity, element.toJson(),
-        //       conflictAlgorithm: ConflictAlgorithm.replace);
-        // }
-        // final date3 = DateTime.now();
-
-        // log("saveToWordEntity-> ${date2.difference(date1).inMilliseconds}");
       }
     } catch (e) {
       log("saveToWordEntity", error: e.toString());
@@ -197,10 +244,6 @@ class DBHelper {
       if (database.isOpen) {
         final query = wordDBO.generateInsertOrReplaceQuery(tableWordsUz);
         if (query.isNotEmpty) await database.rawInsert(query);
-        // for (var element in wordDBO) {
-        //   await database.insert(tableWordsUz, element.toJson(),
-        //       conflictAlgorithm: ConflictAlgorithm.replace);
-        // }
       }
     } catch (e) {
       log("saveToWordUz", error: e.toString());
@@ -315,10 +358,12 @@ class DBHelper {
     }
   }
 
-  Future<void> saveToPhrasesTranslate(List<PhrasesTranslateTableModel> wordDBO) async {
+  Future<void> saveToPhrasesTranslate(
+      List<PhrasesTranslateTableModel> wordDBO) async {
     try {
       if (database.isOpen) {
-        final query = wordDBO.generateInsertOrReplaceQuery(tablePhrasesTranslate);
+        final query =
+            wordDBO.generateInsertOrReplaceQuery(tablePhrasesTranslate);
         if (query.isNotEmpty) await database.rawInsert(query);
         // for (var element in wordDBO) {
         //   await database.insert(tablePhrasesTranslate, element.toJson(),
@@ -346,7 +391,8 @@ class DBHelper {
     }
   }
 
-  Future<void> saveToParentPhrases(List<ParentPhrasesTableModel> wordDBO) async {
+  Future<void> saveToParentPhrases(
+      List<ParentPhrasesTableModel> wordDBO) async {
     var query = '';
     try {
       if (database.isOpen) {
@@ -365,10 +411,12 @@ class DBHelper {
     }
   }
 
-  Future<void> saveToParentPhrasesTranslate(List<ParentPhrasesTranslateTableModel> wordDBO) async {
+  Future<void> saveToParentPhrasesTranslate(
+      List<ParentPhrasesTranslateTableModel> wordDBO) async {
     try {
       if (database.isOpen) {
-        final query = wordDBO.generateInsertOrReplaceQuery(tableParentPhrasesTranslate);
+        final query =
+            wordDBO.generateInsertOrReplaceQuery(tableParentPhrasesTranslate);
         if (query.isNotEmpty) await database.rawInsert(query);
 
         // for (var element in wordDBO) {
@@ -381,10 +429,12 @@ class DBHelper {
     }
   }
 
-  Future<void> saveToParentPhrasesExample(List<PhrasesExampleTableId> wordDBO) async {
+  Future<void> saveToParentPhrasesExample(
+      List<PhrasesExampleTableId> wordDBO) async {
     try {
       if (database.isOpen) {
-        final query = wordDBO.generateInsertOrReplaceQuery(tableParentPhrasesExample);
+        final query =
+            wordDBO.generateInsertOrReplaceQuery(tableParentPhrasesExample);
         if (query.isNotEmpty) await database.rawInsert(query);
 
         // for (var element in wordDBO) {
@@ -426,7 +476,8 @@ class DBHelper {
     }
   }
 
-  Future<List<CatalogModel>?> getSpeakingViewList(int parentId, String query) async {
+  Future<List<CatalogModel>?> getSpeakingViewList(
+      int parentId, String query) async {
     try {
       if (database.isOpen) {
         var response = await database.rawQuery(
@@ -520,8 +571,8 @@ class DBHelper {
   Future<WordModel?> getImage() async {
     try {
       if (database.isOpen) {
-        var response = await database
-            .rawQuery("select * from word_entity where image!='null' order by random() limit 1");
+        var response = await database.rawQuery(
+            "select * from word_entity where image!='null' order by random() limit 1");
         var model = WordModel.fromJson(response.first);
         return model;
       }
@@ -534,8 +585,8 @@ class DBHelper {
   Future<WordModel?> getWord() async {
     try {
       if (database.isOpen) {
-        var response = await database
-            .rawQuery("select * from word_entity where word !='[]' order by random() limit 1");
+        var response = await database.rawQuery(
+            "select * from word_entity where word !='[]' order by random() limit 1");
         var wordModel = WordModel.fromJson(response.first);
         return wordModel;
       }
@@ -559,7 +610,8 @@ class DBHelper {
     return null;
   }
 
-  Future<WordWithTheasurusModel?> getTimeLineThesaurus(String thesaurusId) async {
+  Future<WordWithTheasurusModel?> getTimeLineThesaurus(
+      String thesaurusId) async {
     try {
       if (database.isOpen) {
         var response = await database.rawQuery(
@@ -573,7 +625,8 @@ class DBHelper {
     return null;
   }
 
-  Future<WordWithCollocationModel?> getTimeLineCollocation(String collocationId) async {
+  Future<WordWithCollocationModel?> getTimeLineCollocation(
+      String collocationId) async {
     try {
       if (database.isOpen) {
         var response = await database.rawQuery(
@@ -615,7 +668,8 @@ class DBHelper {
     return null;
   }
 
-  Future<WordWithDifferenceModel?> getTimeLineDifference(String differenceId) async {
+  Future<WordWithDifferenceModel?> getTimeLineDifference(
+      String differenceId) async {
     try {
       if (database.isOpen) {
         var response = await database.rawQuery(
@@ -646,9 +700,10 @@ class DBHelper {
   Future<List<CatalogModel>?> getCatalogsList(String catalogId) async {
     try {
       if (database.isOpen) {
-        var response =
-            await database.rawQuery("SELECT * FROM catalogue WHERE category= '$catalogId' ");
-        var model = List<CatalogModel>.from(response.map((e) => CatalogModel.fromJson(e)));
+        var response = await database
+            .rawQuery("SELECT * FROM catalogue WHERE category= '$catalogId' ");
+        var model = List<CatalogModel>.from(
+            response.map((e) => CatalogModel.fromJson(e)));
         return model;
       }
     } catch (e) {
@@ -660,10 +715,12 @@ class DBHelper {
   Future<List<CatalogModel>?> getCollocationList(String? searchText) async {
     try {
       if (database.isOpen) {
-        var newQuery = searchText != null ? "WHERE we.word LIKE '$searchText%'" : "";
+        var newQuery =
+            searchText != null ? "WHERE we.word LIKE '$searchText%'" : "";
         var response = await database.rawQuery(
             "SELECT c.id,we.word FROM word_entity we INNER JOIN collocation c ON we.id=c.word_id $newQuery");
-        var model = List<CatalogModel>.from(response.map((e) => CatalogModel.fromJson(e)));
+        var model = List<CatalogModel>.from(
+            response.map((e) => CatalogModel.fromJson(e)));
         return model;
       }
     } catch (e) {
@@ -672,13 +729,15 @@ class DBHelper {
     return null;
   }
 
-  Future<List<CatalogModel>?> getTitleList(String categoryId, String? title) async {
+  Future<List<CatalogModel>?> getTitleList(
+      String categoryId, String? title) async {
     try {
       var newTitle = title != null ? "AND title LIKE '$title%'" : "";
       if (database.isOpen) {
-        var response = await database
-            .rawQuery("SELECT * FROM catalogue WHERE category='$categoryId' $newTitle");
-        var model = List<CatalogModel>.from(response.map((e) => CatalogModel.fromJson(e)));
+        var response = await database.rawQuery(
+            "SELECT * FROM catalogue WHERE category='$categoryId' $newTitle");
+        var model = List<CatalogModel>.from(
+            response.map((e) => CatalogModel.fromJson(e)));
         return model;
         // TODO:
       }
@@ -688,12 +747,14 @@ class DBHelper {
     return null;
   }
 
-  Future<List<CatalogModel>?> getCatalogWordList(String categoryId, String query) async {
+  Future<List<CatalogModel>?> getCatalogWordList(
+      String categoryId, String query) async {
     try {
       if (database.isOpen) {
         var response = await database.rawQuery(
             "SELECT * FROM catalogue WHERE category= '$categoryId' AND word LIKE '${query.replaceAll("'", "''")}%'");
-        var model = List<CatalogModel>.from(response.map((e) => CatalogModel.fromJson(e)));
+        var model = List<CatalogModel>.from(
+            response.map((e) => CatalogModel.fromJson(e)));
         return model;
         // TODO:
       }
@@ -703,12 +764,14 @@ class DBHelper {
     return null;
   }
 
-  Future<List<CatalogModel>?> getIfWordIsWordenList(String categoryId, String query) async {
+  Future<List<CatalogModel>?> getIfWordIsWordenList(
+      String categoryId, String query) async {
     try {
       if (database.isOpen) {
         var response = await database.rawQuery(
             "SELECT * FROM catalogue WHERE category= '$categoryId' AND wordenword LIKE '${query.replaceAll("'", "''")}%'");
-        var model = List<CatalogModel>.from(response.map((e) => CatalogModel.fromJson(e)));
+        var model = List<CatalogModel>.from(
+            response.map((e) => CatalogModel.fromJson(e)));
         return model;
       }
     } catch (e) {
@@ -721,46 +784,59 @@ class DBHelper {
     try {
       WordWithAll _word;
       if (database.isOpen) {
-        var responseAll = await database.rawQuery("SELECT * FROM word_entity WHERE id=$id LIMIT 1");
-        var word = responseAll.isNotEmpty ? WordModel.fromJson(responseAll.first) : null;
-
-        var responseWordUz = await database.rawQuery("SELECT * FROM words_uz WHERE word_id=$id");
-        var wordWordUz = responseWordUz.isNotEmpty
-            ? List<WordsUzModel>.from(responseWordUz.map((e) => WordsUzModel.fromJson(e)))
+        var responseAll = await database
+            .rawQuery("SELECT * FROM word_entity WHERE id=$id LIMIT 1");
+        var word = responseAll.isNotEmpty
+            ? WordModel.fromJson(responseAll.first)
             : null;
 
-        var responseCollocation =
-            await database.rawQuery("SELECT * FROM collocation WHERE word_id=$id ");
+        var responseWordUz =
+            await database.rawQuery("SELECT * FROM words_uz WHERE word_id=$id");
+        var wordWordUz = responseWordUz.isNotEmpty
+            ? List<WordsUzModel>.from(
+                responseWordUz.map((e) => WordsUzModel.fromJson(e)))
+            : null;
+
+        var responseCollocation = await database
+            .rawQuery("SELECT * FROM collocation WHERE word_id=$id ");
         var wordCollocation = responseCollocation.isNotEmpty
             ? List<CollocationModel>.from(
                 responseCollocation.map((e) => CollocationModel.fromJson(e)))
             : null;
 
-        var responseCulture = await database.rawQuery("SELECT * FROM culture WHERE word_id=$id ");
+        var responseCulture =
+            await database.rawQuery("SELECT * FROM culture WHERE word_id=$id ");
         var wordCulture = responseCulture.isNotEmpty
-            ? List<CultureModel>.from(responseCulture.map((e) => CultureModel.fromJson(e)))
+            ? List<CultureModel>.from(
+                responseCulture.map((e) => CultureModel.fromJson(e)))
             : null;
 
-        var responseDifference =
-            await database.rawQuery("SELECT * FROM difference WHERE word_id=$id ");
+        var responseDifference = await database
+            .rawQuery("SELECT * FROM difference WHERE word_id=$id ");
         var wordDifference = responseDifference.isNotEmpty
-            ? List<DifferenceModel>.from(responseDifference.map((e) => DifferenceModel.fromJson(e)))
+            ? List<DifferenceModel>.from(
+                responseDifference.map((e) => DifferenceModel.fromJson(e)))
             : null;
 
-        var responseGrammar = await database.rawQuery("SELECT * FROM grammar WHERE word_id=$id ");
+        var responseGrammar =
+            await database.rawQuery("SELECT * FROM grammar WHERE word_id=$id ");
         var wordGrammar = responseGrammar.isNotEmpty
-            ? List<GrammarModel>.from(responseGrammar.map((e) => GrammarModel.fromJson(e)))
+            ? List<GrammarModel>.from(
+                responseGrammar.map((e) => GrammarModel.fromJson(e)))
             : null;
 
-        var responseMetaphor = await database.rawQuery("SELECT * FROM metaphor WHERE word_id=$id ");
+        var responseMetaphor = await database
+            .rawQuery("SELECT * FROM metaphor WHERE word_id=$id ");
         var wordMetaphor = responseMetaphor.isNotEmpty
-            ? List<MetaphorModel>.from(responseMetaphor.map((e) => MetaphorModel.fromJson(e)))
+            ? List<MetaphorModel>.from(
+                responseMetaphor.map((e) => MetaphorModel.fromJson(e)))
             : null;
 
-        var responseThesaurus =
-            await database.rawQuery("SELECT * FROM thesaurus WHERE word_id=$id ");
+        var responseThesaurus = await database
+            .rawQuery("SELECT * FROM thesaurus WHERE word_id=$id ");
         var wordThesaurus = responseThesaurus.isNotEmpty
-            ? List<ThesaurusModel>.from(responseThesaurus.map((e) => ThesaurusModel.fromJson(e)))
+            ? List<ThesaurusModel>.from(
+                responseThesaurus.map((e) => ThesaurusModel.fromJson(e)))
             : null;
 
         var phrasesWithAll = await getPhrasesAll(id);
@@ -790,39 +866,43 @@ class DBHelper {
   Future<List<PhrasesWithAll>> getPhrasesAll(int? id) async {
     List<PhrasesWithAll> phrasesWithAll = [];
 
-    var responsePhrases = await database.rawQuery("SELECT * FROM phrases WHERE p_word_id=$id ");
+    var responsePhrases =
+        await database.rawQuery("SELECT * FROM phrases WHERE p_word_id=$id ");
     var phrases = responsePhrases.isNotEmpty
-        ? List<PhrasesModel>.from(responsePhrases.map((e) => PhrasesModel.fromJson(e)))
+        ? List<PhrasesModel>.from(
+            responsePhrases.map((e) => PhrasesModel.fromJson(e)))
         : [];
 
     for (var element in phrases) {
-      var responsePhrasesTranslate = await database
-          .rawQuery("SELECT * FROM phrases_translate WHERE phrase_id=${element.pId} ");
+      var responsePhrasesTranslate = await database.rawQuery(
+          "SELECT * FROM phrases_translate WHERE phrase_id=${element.pId} ");
       var wordPhraseTranslate = responsePhrasesTranslate.isNotEmpty
-          ? List<PhrasesTranslateModel>.from(
-              responsePhrasesTranslate.map((e) => PhrasesTranslateModel.fromJson(e)))
+          ? List<PhrasesTranslateModel>.from(responsePhrasesTranslate
+              .map((e) => PhrasesTranslateModel.fromJson(e)))
           : null;
 
-      var responsePhrasesExample =
-          await database.rawQuery("SELECT * FROM phrases_example WHERE phrase_id=${element.pId} ");
+      var responsePhrasesExample = await database.rawQuery(
+          "SELECT * FROM phrases_example WHERE phrase_id=${element.pId} ");
       var wordPhraseExample = responsePhrasesExample.isNotEmpty
-          ? List<PhrasesExampleModel>.from(
-              responsePhrasesExample.map((e) => PhrasesExampleModel.fromJson(e)))
+          ? List<PhrasesExampleModel>.from(responsePhrasesExample
+              .map((e) => PhrasesExampleModel.fromJson(e)))
           : null;
 
-      var parentsPhrasesWithAll = await getParentPhrasesWithAll(element.pId, element.pWord);
+      var parentsPhrasesWithAll =
+          await getParentPhrasesWithAll(element.pId, element.pWord);
 
-      phrasesWithAll.add(
-          PhrasesWithAll(element, wordPhraseTranslate, wordPhraseExample, parentsPhrasesWithAll));
+      phrasesWithAll.add(PhrasesWithAll(element, wordPhraseTranslate,
+          wordPhraseExample, parentsPhrasesWithAll));
     }
     return phrasesWithAll;
   }
 
-  Future<List<ParentPhrasesWithAll>> getParentPhrasesWithAll(int? pId, String pWord) async {
+  Future<List<ParentPhrasesWithAll>> getParentPhrasesWithAll(
+      int? pId, String pWord) async {
     List<ParentPhrasesWithAll>? _parentPhrasesWithAll = [];
 
-    var responseParentPhrases =
-        await database.rawQuery("SELECT * FROM parent_phrases WHERE phrase_id=$pId");
+    var responseParentPhrases = await database
+        .rawQuery("SELECT * FROM parent_phrases WHERE phrase_id=$pId");
     var parentPhrases = responseParentPhrases.isNotEmpty
         ? List<ParentPhrasesModel>.from(
             responseParentPhrases.map((e) => ParentPhrasesModel.fromJson(e)))
@@ -830,22 +910,25 @@ class DBHelper {
 
     for (var element in parentPhrases) {
       element.word = pWord;
-      var responseParentPhrasesExample = await database
-          .rawQuery("SELECT * FROM parent_phrases_example WHERE phrase_id=${element.id}");
-      var wordPhraseParentPhrasesExample = responseParentPhrasesExample.isNotEmpty
-          ? List<ParentPhrasesExampleModel>.from(
-              responseParentPhrasesExample.map((e) => ParentPhrasesExampleModel.fromJson(e)))
+      var responseParentPhrasesExample = await database.rawQuery(
+          "SELECT * FROM parent_phrases_example WHERE phrase_id=${element.id}");
+      var wordPhraseParentPhrasesExample = responseParentPhrasesExample
+              .isNotEmpty
+          ? List<ParentPhrasesExampleModel>.from(responseParentPhrasesExample
+              .map((e) => ParentPhrasesExampleModel.fromJson(e)))
           : null;
 
-      var responseParentPhrasesTranslate = await database
-          .rawQuery("SELECT * FROM parent_phrases_translate WHERE phrase_id=${element.id}");
-      var wordPhraseParentPhrasesTranslate = responseParentPhrasesTranslate.isNotEmpty
-          ? List<ParentPhrasesTranslateModel>.from(
-              responseParentPhrasesTranslate.map((e) => ParentPhrasesTranslateModel.fromJson(e)))
-          : null;
+      var responseParentPhrasesTranslate = await database.rawQuery(
+          "SELECT * FROM parent_phrases_translate WHERE phrase_id=${element.id}");
+      var wordPhraseParentPhrasesTranslate =
+          responseParentPhrasesTranslate.isNotEmpty
+              ? List<ParentPhrasesTranslateModel>.from(
+                  responseParentPhrasesTranslate
+                      .map((e) => ParentPhrasesTranslateModel.fromJson(e)))
+              : null;
       if ((responseParentPhrasesTranslate.isNotEmpty)) {
-        _parentPhrasesWithAll.add(ParentPhrasesWithAll(
-            element, wordPhraseParentPhrasesExample, wordPhraseParentPhrasesTranslate));
+        _parentPhrasesWithAll.add(ParentPhrasesWithAll(element,
+            wordPhraseParentPhrasesExample, wordPhraseParentPhrasesTranslate));
       }
     }
     return _parentPhrasesWithAll;
@@ -854,60 +937,76 @@ class DBHelper {
   Future<List<ParentsWithAll>?> getParentsWithAll(int? id) async {
     List<ParentsWithAll> _parentsWithAll = [];
 
-    var responseParents = await database.rawQuery("SELECT * FROM parents WHERE word_id=$id");
+    var responseParents =
+        await database.rawQuery("SELECT * FROM parents WHERE word_id=$id");
     var parents = responseParents.isNotEmpty
-        ? List<ParentsModel>.from(responseParents.map((e) => ParentsModel.fromJson(e)))
+        ? List<ParentsModel>.from(
+            responseParents.map((e) => ParentsModel.fromJson(e)))
         : [];
 
     for (var value in parents) {
-      var responseWordUz =
-          await database.rawQuery("SELECT * FROM words_uz WHERE word_id=${value.id} ");
+      var responseWordUz = await database
+          .rawQuery("SELECT * FROM words_uz WHERE word_id=${value.id} ");
       var wordWordUz = responseWordUz.isNotEmpty
-          ? List<WordsUzModel>.from(responseWordUz.map((e) => WordsUzModel.fromJson(e)))
+          ? List<WordsUzModel>.from(
+              responseWordUz.map((e) => WordsUzModel.fromJson(e)))
           : null;
 
-      var responseCollocation =
-          await database.rawQuery("SELECT * FROM collocation WHERE word_id=${value.id} ");
+      var responseCollocation = await database
+          .rawQuery("SELECT * FROM collocation WHERE word_id=${value.id} ");
       var wordCollocation = responseCollocation.isNotEmpty
           ? List<CollocationModel>.from(
               responseCollocation.map((e) => CollocationModel.fromJson(e)))
           : null;
 
-      var responseCulture =
-          await database.rawQuery("SELECT * FROM culture WHERE word_id=${value.id}");
+      var responseCulture = await database
+          .rawQuery("SELECT * FROM culture WHERE word_id=${value.id}");
       var wordCulture = responseCulture.isNotEmpty
-          ? List<CultureModel>.from(responseCulture.map((e) => CultureModel.fromJson(e)))
+          ? List<CultureModel>.from(
+              responseCulture.map((e) => CultureModel.fromJson(e)))
           : null;
 
-      var responseDifference =
-          await database.rawQuery("SELECT * FROM difference WHERE word_id=${value.id} ");
+      var responseDifference = await database
+          .rawQuery("SELECT * FROM difference WHERE word_id=${value.id} ");
       var wordDifference = responseDifference.isNotEmpty
-          ? List<DifferenceModel>.from(responseDifference.map((e) => DifferenceModel.fromJson(e)))
+          ? List<DifferenceModel>.from(
+              responseDifference.map((e) => DifferenceModel.fromJson(e)))
           : null;
 
-      var responseGrammar =
-          await database.rawQuery("SELECT * FROM grammar WHERE word_id=${value.id} ");
+      var responseGrammar = await database
+          .rawQuery("SELECT * FROM grammar WHERE word_id=${value.id} ");
       var wordGrammar = responseGrammar.isNotEmpty
-          ? List<GrammarModel>.from(responseGrammar.map((e) => GrammarModel.fromJson(e)))
+          ? List<GrammarModel>.from(
+              responseGrammar.map((e) => GrammarModel.fromJson(e)))
           : null;
 
-      var responseMetaphor =
-          await database.rawQuery("SELECT * FROM metaphor WHERE word_id=${value.id} ");
+      var responseMetaphor = await database
+          .rawQuery("SELECT * FROM metaphor WHERE word_id=${value.id} ");
       var wordMetaphor = responseMetaphor.isNotEmpty
-          ? List<MetaphorModel>.from(responseMetaphor.map((e) => MetaphorModel.fromJson(e)))
+          ? List<MetaphorModel>.from(
+              responseMetaphor.map((e) => MetaphorModel.fromJson(e)))
           : null;
 
-      var responseThesaurus =
-          await database.rawQuery("SELECT * FROM thesaurus WHERE word_id=${value.id} ");
+      var responseThesaurus = await database
+          .rawQuery("SELECT * FROM thesaurus WHERE word_id=${value.id} ");
       var wordThesaurus = responseThesaurus.isNotEmpty
-          ? List<ThesaurusModel>.from(responseThesaurus.map((e) => ThesaurusModel.fromJson(e)))
+          ? List<ThesaurusModel>.from(
+              responseThesaurus.map((e) => ThesaurusModel.fromJson(e)))
           : null;
 
       var phrasesWithAll = await getPhrasesAll(value.id);
 
       _parentsWithAll.add(
-        ParentsWithAll(value, wordWordUz, wordCollocation, wordCulture, wordDifference, wordGrammar,
-            wordMetaphor, wordThesaurus, phrasesWithAll),
+        ParentsWithAll(
+            value,
+            wordWordUz,
+            wordCollocation,
+            wordCulture,
+            wordDifference,
+            wordGrammar,
+            wordMetaphor,
+            wordThesaurus,
+            phrasesWithAll),
       );
     }
 
@@ -920,7 +1019,8 @@ class DBHelper {
         var response = await database.rawQuery(
             "SELECT we.id,we.word,we.word_classid,we.word_classword_id,we.word_classword_class, we.star, group_concat(wu.word) as body FROM word_entity we LEFT JOIN words_uz wu ON we.id=wu.word_id WHERE we.word LIKE '${word.replaceAll("'", "''")}%' GROUP BY we.id ORDER BY we.word COLLATE NOCASE ASC LIMIT 40");
         // "SELECT id,word,word_classid,word_classword_id,word_classword_class, star FROM word_entity WHERE word LIKE '${word.replaceAll("'", "''")}%' ORDER BY word COLLATE NOCASE ASC LIMIT 40");
-        var words = List<WordModel>.from(response.map((e) => WordModel.fromJson(e)));
+        var words =
+            List<WordModel>.from(response.map((e) => WordModel.fromJson(e)));
         return words;
       }
     } catch (e) {
@@ -935,8 +1035,8 @@ class DBHelper {
         var response = await database.rawQuery(
             // "SELECT id,word_classid,word_classword_id,word_classword_class,p_word, p_star as star FROM word_entity INNER JOIN phrases ON id=p_word_id AND p_word LIKE '${search.replaceAll("'", "''")}%' ORDER BY word COLLATE NOCASE asc limit 40");
             "SELECT we.id,we.word_classid,we.word_classword_id,we.word_classword_class, ph.p_word, ph.p_star as star, group_concat(pt.word) as body FROM word_entity we LEFT JOIN phrases ph ON we.id=ph.p_word_id INNER JOIN phrases_translate pt ON ph.p_id=pt.phrase_id AND ph.p_word LIKE '${search.replaceAll("'", "''")}%' GROUP BY we.id ORDER BY we.word COLLATE NOCASE asc limit 40");
-        var wordWithPhrases =
-            List<WordAndPhrasesModel>.from(response.map((e) => WordAndPhrasesModel.fromJson(e)));
+        var wordWithPhrases = List<WordAndPhrasesModel>.from(
+            response.map((e) => WordAndPhrasesModel.fromJson(e)));
         return wordWithPhrases;
       }
     } catch (e) {
@@ -945,14 +1045,16 @@ class DBHelper {
     return null;
   }
 
-  Future<List<WordAndParentsAndPhrasesModel>?> searchByWordParent1(String parents) async {
+  Future<List<WordAndParentsAndPhrasesModel>?> searchByWordParent1(
+      String parents) async {
     try {
       if (database.isOpen) {
         var response = await database.rawQuery(
             // "SELECT w.id,w.word_classid,w.word_classword_id,w.word_classword_class,ph.p_word, ph.p_star as star, wu.word FROM word_entity w INNER JOIN parents p ON w.id=p.word_id INNER JOIN phrases ph ON p.id=ph.p_word_id INNER JOIN words_uz wu ON w.word_classword_id=wu.word_id AND ph.p_word LIKE '${parents.replaceAll("'", "''")}%' GROUP BY w.id ORDER BY ph.p_word COLLATE NOCASE asc limit 40");
             "SELECT w.id,w.word_classid,w.word_classword_id,w.word_classword_class,ph.p_word, ph.p_star as star, group_concat(pt.word) as word FROM word_entity w LEFT JOIN parents p ON w.id=p.word_id INNER JOIN phrases ph ON p.id=ph.p_word_id INNER JOIN phrases_translate pt ON ph.p_id=pt.phrase_id AND ph.p_word LIKE '${parents.replaceAll("'", "''")}%' GROUP BY ph.p_word ORDER BY ph.p_word COLLATE NOCASE asc limit 40");
-        var wordsAndParentsAndWordsUzModel = List<WordAndParentsAndPhrasesModel>.from(
-            response.map((e) => WordAndParentsAndPhrasesModel.fromJson(e)));
+        var wordsAndParentsAndWordsUzModel =
+            List<WordAndParentsAndPhrasesModel>.from(
+                response.map((e) => WordAndParentsAndPhrasesModel.fromJson(e)));
         return wordsAndParentsAndWordsUzModel;
       }
     } catch (e) {
@@ -961,13 +1063,15 @@ class DBHelper {
     return null;
   }
 
-  Future<List<WordAndParentsAndWordsUzModel>?> searchByWordParent2(String parents) async {
+  Future<List<WordAndParentsAndWordsUzModel>?> searchByWordParent2(
+      String parents) async {
     try {
       if (database.isOpen) {
         var response = await database.rawQuery(
             "SELECT w.id,w.word as word_class,p.star,wu.word as word FROM word_entity w INNER JOIN parents p ON w.id=p.word_id INNER JOIN words_uz wu ON p.id=wu.word_id AND wu.word LIKE '${parents.replaceAll("'", "''")}%' order by w.word COLLATE NOCASE asc limit 40");
-        var wordsAndParentsAndWordsUzModel = List<WordAndParentsAndWordsUzModel>.from(
-            response.map((e) => WordAndParentsAndWordsUzModel.fromJson(e)));
+        var wordsAndParentsAndWordsUzModel =
+            List<WordAndParentsAndWordsUzModel>.from(
+                response.map((e) => WordAndParentsAndWordsUzModel.fromJson(e)));
         return wordsAndParentsAndWordsUzModel;
       }
     } catch (e) {
@@ -982,8 +1086,9 @@ class DBHelper {
       if (database.isOpen) {
         var response = await database.rawQuery(
             "SELECT w.id,ph.p_word as word_class,ph.p_star,pt.word as word FROM word_entity w INNER JOIN parents p ON w.id=p.word_id INNER JOIN phrases ph ON p.id=ph.p_word_id INNER JOIN phrases_translate pt ON ph.p_id=pt.phrase_id AND pt.word LIKE '${parents.replaceAll("'", "''")}%' order by w.word COLLATE NOCASE asc limit 40");
-        var wordsAndParentsAndWordsUzModel = List<WordAndParentsAndPhrasesAndTranslateModel>.from(
-            response.map((e) => WordAndParentsAndPhrasesAndTranslateModel.fromJson(e)));
+        var wordsAndParentsAndWordsUzModel =
+            List<WordAndParentsAndPhrasesAndTranslateModel>.from(response.map(
+                (e) => WordAndParentsAndPhrasesAndTranslateModel.fromJson(e)));
         return wordsAndParentsAndWordsUzModel;
       }
     } catch (e) {
@@ -993,18 +1098,22 @@ class DBHelper {
   }
 
   Future<List<WordAndParentsAndPhrasesParentPhrasesAndTranslateModel>?>
-      searchWordAndParentsAndPhrasesParentPhrasesAndTranslate(String parents) async {
+      searchWordAndParentsAndPhrasesParentPhrasesAndTranslate(
+          String parents) async {
     try {
       if (database.isOpen) {
         var response = await database.rawQuery(
             "SELECT w.id,w.word as word_class,p_ph.star,ppt.word as word FROM word_entity w INNER JOIN parents p ON w.id=p.word_id INNER JOIN phrases ph ON p.id=ph.p_word_id INNER JOIN parent_phrases p_ph ON ph.p_id=p_ph.phrase_id INNER JOIN parent_phrases_translate ppt ON p_ph.id=ppt.parent_phrase_id AND ppt.word LIKE '${parents.replaceAll("'", "''")}%' order by  w.word COLLATE NOCASE asc limit 40");
         var wordAndParentsAndPhrasesParentPhrasesAndTranslateModel =
-            List<WordAndParentsAndPhrasesParentPhrasesAndTranslateModel>.from(response
-                .map((e) => WordAndParentsAndPhrasesParentPhrasesAndTranslateModel.fromJson(e)));
+            List<WordAndParentsAndPhrasesParentPhrasesAndTranslateModel>.from(
+                response.map((e) =>
+                    WordAndParentsAndPhrasesParentPhrasesAndTranslateModel
+                        .fromJson(e)));
         return wordAndParentsAndPhrasesParentPhrasesAndTranslateModel;
       }
     } catch (e) {
-      log("searchWordAndParentsAndPhrasesParentPhrasesAndTranslate", error: e.toString());
+      log("searchWordAndParentsAndPhrasesParentPhrasesAndTranslate",
+          error: e.toString());
     }
     return null;
   }
@@ -1111,8 +1220,8 @@ UNION
         parent_phrases_translate.parent_phrase_id
       ORDER BY
         star DESC LIMIT 40''');
-        var wordAndWordsUzModel =
-            List<SearchResultUzModel>.from(response.map((e) => SearchResultUzModel.fromJson(e)));
+        var wordAndWordsUzModel = List<SearchResultUzModel>.from(
+            response.map((e) => SearchResultUzModel.fromJson(e)));
         return wordAndWordsUzModel;
       }
     } catch (e) {
@@ -1121,13 +1230,15 @@ UNION
     return null;
   }
 
-  Future<List<WordAndPhrasesAndTranslateModel>?> searchByPhrasesUz1(String phrases) async {
+  Future<List<WordAndPhrasesAndTranslateModel>?> searchByPhrasesUz1(
+      String phrases) async {
     try {
       if (database.isOpen) {
         var response = await database.rawQuery(
             "SELECT w.id,w.word as word_class,p.p_star,pt.word as word FROM word_entity w INNER JOIN phrases p ON w.id=p.p_word_id INNER JOIN phrases_translate pt ON p.p_id=pt.phrase_id AND p.p_word LIKE '${phrases.replaceAll("'", "''")}%' order by w.word COLLATE NOCASE asc,w.star desc limit 40");
-        var wordAndPhrasesAndTranslateModel = List<WordAndPhrasesAndTranslateModel>.from(
-            response.map((e) => WordAndPhrasesAndTranslateModel.fromJson(e)));
+        var wordAndPhrasesAndTranslateModel =
+            List<WordAndPhrasesAndTranslateModel>.from(response
+                .map((e) => WordAndPhrasesAndTranslateModel.fromJson(e)));
         return wordAndPhrasesAndTranslateModel;
       }
     } catch (e) {
@@ -1141,9 +1252,10 @@ UNION
       if (database.isOpen) {
         var filter = '';
         if (folderId != null) filter = "WHERE folder_id='$folderId'";
-        var response =
-            await database.rawQuery("SELECT * from word_bank $filter ORDER BY created_at DESC");
-        var wordBankList = List<WordBankModel>.from(response.map((e) => WordBankModel.fromJson(e)));
+        var response = await database.rawQuery(
+            "SELECT * from word_bank $filter ORDER BY created_at DESC");
+        var wordBankList = List<WordBankModel>.from(
+            response.map((e) => WordBankModel.fromJson(e)));
         return wordBankList;
       }
     } catch (e) {
@@ -1155,9 +1267,10 @@ UNION
   Future<List<WordBankFolderModel>?> getWordBankFolderList() async {
     try {
       if (database.isOpen) {
-        var response = await database.rawQuery("SELECT * FROM folders");
-        var wordBankFolderList =
-            List<WordBankFolderModel>.from(response.map((e) => WordBankFolderModel.fromJson(e)));
+        var response = await database
+            .rawQuery("select * from folders order by is_default desc");
+        var wordBankFolderList = List<WordBankFolderModel>.from(
+            response.map((e) => WordBankFolderModel.fromJson(e)));
         return wordBankFolderList;
       }
     } catch (e) {
@@ -1166,10 +1279,12 @@ UNION
     return null;
   }
 
-  Future<List<WordBankFolderModel>?> deleteWordBankFolderList(int folderId) async {
+  Future<List<WordBankFolderModel>?> deleteWordBankFolderList(
+      int folderId) async {
     try {
       if (database.isOpen) {
-        await database.delete('folders', where: "id = ?", whereArgs: [folderId]);
+        await database
+            .delete('folders', where: "id = ?", whereArgs: [folderId]);
       }
     } catch (e) {
       log("deleteWordBankFolderList", error: e.toString());
@@ -1180,8 +1295,11 @@ UNION
   Future<int?> saveToWordBank(WordBankModel wordBankModel) async {
     try {
       if (database.isOpen) {
-        var id = await database.insert(tableWordBank, wordBankModel.toJson(),
-            conflictAlgorithm: ConflictAlgorithm.replace);
+        var id = await database.insert(
+          tableWordBank,
+          wordBankModel.toJson(),
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
         return id;
       }
     } catch (e) {
@@ -1191,11 +1309,15 @@ UNION
   }
 
   Future<bool> moveToFolder(
-      {required int folderId, required int tableId, required int wordId}) async {
+      {required int folderId,
+      required int tableId,
+      required int? wordId}) async {
     try {
       if (database.isOpen) {
         var all = await getWordBankList(folderId);
-        var same = all != null ? all.where((element) => element.id == wordId).length : 0;
+        var same = all != null
+            ? all.where((element) => element.id == wordId).length
+            : 0;
         if (same == 0) {
           await database.update(tableWordBank, {'folder_id': folderId},
               where: 'tableId = ?',
@@ -1211,10 +1333,15 @@ UNION
     return false;
   }
 
-  Future<int?> saveToWordBankFolder(String folderName) async {
+  Future<int?> saveToWordBankFolder(String folderName, int id) async {
     try {
       if (database.isOpen) {
-        var newId = await database.insert(tableWordBankFolder, {'folder_name': folderName},
+        var newId = await database.insert(
+            tableWordBankFolder,
+            {
+              'id': id,
+              'folder_name': folderName,
+            },
             conflictAlgorithm: ConflictAlgorithm.replace);
         return newId;
       }
@@ -1227,7 +1354,8 @@ UNION
   Future<List<WordBankModel>> getWordBankCount() async {
     try {
       var response = await database.rawQuery("SELECT * FROM $tableWordBank");
-      var wordBankList = List<WordBankModel>.from(response.map((e) => WordBankModel.fromJson(e)));
+      var wordBankList = List<WordBankModel>.from(
+          response.map((e) => WordBankModel.fromJson(e)));
       return wordBankList;
     } catch (e) {
       log("saveToWordBank", error: e.toString());
@@ -1245,10 +1373,66 @@ UNION
     }
   }
 
+  Future deleteAllWordBankFolder() async {
+    try {
+      if (database.isOpen) {
+        await database.delete(tableWordBankFolder);
+      }
+    } catch (e) {
+      log("deleteAllWordBankFolder", error: e.toString());
+    }
+  }
+
+  Future<int> getWordbankCount() async {
+    try {
+      if (database.isOpen) {
+        final data = await database.rawQuery('select count(*) from word_bank');
+        return data.first.values.first as int;
+      }
+    } catch (e) {
+      log('');
+    }
+    return 0;
+  }
+
+  Future saveWordBankFolderList(
+      List<WordBankFolderModel> wordBankFolderList) async {
+    try {
+      if (database.isOpen) {
+        for (var element in wordBankFolderList) {
+          await database.insert(
+            tableWordBankFolder,
+            element.toJson(),
+            conflictAlgorithm: ConflictAlgorithm.replace,
+          );
+        }
+      }
+    } catch (e) {
+      log("saveWordBankFolderList", error: e.toString());
+    }
+  }
+
+  Future saveWordBankList(List<WordBankModel> wordBankList) async {
+    try {
+      if (database.isOpen) {
+        for (var element in wordBankList) {
+          await database.insert(
+            tableWordBank,
+            element.toJson(),
+            conflictAlgorithm: ConflictAlgorithm.replace,
+          );
+        }
+      }
+    } catch (e) {
+      log("saveWordBankList", error: e.toString());
+    }
+  }
+
   Future<void> deleteWordBank(int id) async {
     try {
       if (database.isOpen) {
-        await database.delete(tableWordBank, where: "tableId = ?", whereArgs: [id]);
+        await database
+            .delete(tableWordBank, where: "tableId = ?", whereArgs: [id]);
       }
     } catch (e) {
       log("deleteWordBank", error: e.toString());
@@ -1258,7 +1442,8 @@ UNION
   Future<void> deleteWordBankByFolder(int folderId) async {
     try {
       if (database.isOpen) {
-        await database.delete(tableWordBank, where: "folder_id = ?", whereArgs: [folderId]);
+        await database.delete(tableWordBank,
+            where: "folder_id = ?", whereArgs: [folderId]);
       }
     } catch (e) {
       log("deleteWordBankByFolder", error: e.toString());
@@ -1272,8 +1457,10 @@ UNION
       List<String> all = [];
       if (database.isOpen) {
         List<String> responseWordUz = await wordsUz(id, searchText);
-        List<String> parentWithAll = await getParentsWithAllTranslate(id, searchText);
-        List<String> phrasesWithAll = await getPhrasesAllTranslate(id, searchText);
+        List<String> parentWithAll =
+            await getParentsWithAllTranslate(id, searchText);
+        List<String> phrasesWithAll =
+            await getPhrasesAllTranslate(id, searchText);
         all.addAll(responseWordUz);
         all.addAll(phrasesWithAll);
         all.addAll(parentWithAll);
@@ -1287,9 +1474,11 @@ UNION
 
   Future<List<String>> wordsUz(int id, String searchText) async {
     try {
-      var responseWordUz = await database.rawQuery("SELECT word FROM words_uz WHERE word_id=$id");
+      var responseWordUz = await database
+          .rawQuery("SELECT word FROM words_uz WHERE word_id=$id");
       List<String> wordWordUz = responseWordUz.isNotEmpty
-          ? List<String>.from(responseWordUz.map((e) => WordsUzModel.fromJson(e).word ?? ""))
+          ? List<String>.from(
+              responseWordUz.map((e) => WordsUzModel.fromJson(e).word ?? ""))
           : [];
       if (wordWordUz.toString().contains(searchText)) {
         return wordWordUz;
@@ -1300,20 +1489,23 @@ UNION
     return [];
   }
 
-  Future<List<String>> getPhrasesAllTranslate(int? id, String searchText) async {
+  Future<List<String>> getPhrasesAllTranslate(
+      int? id, String searchText) async {
     List<String> wordsUzAll = [];
 
-    var responsePhrases = await database.rawQuery("SELECT * FROM phrases WHERE p_word_id=$id");
+    var responsePhrases =
+        await database.rawQuery("SELECT * FROM phrases WHERE p_word_id=$id");
     var phrases = responsePhrases.isNotEmpty
-        ? List<PhrasesModel>.from(responsePhrases.map((e) => PhrasesModel.fromJson(e)))
+        ? List<PhrasesModel>.from(
+            responsePhrases.map((e) => PhrasesModel.fromJson(e)))
         : [];
 
     for (var element in phrases) {
-      var responsePhrasesTranslate = await database
-          .rawQuery("SELECT word FROM phrases_translate WHERE phrase_id=${element.pId}");
+      var responsePhrasesTranslate = await database.rawQuery(
+          "SELECT word FROM phrases_translate WHERE phrase_id=${element.pId}");
       List<String> wordsUz = responsePhrasesTranslate.isNotEmpty
-          ? List<String>.from(
-              responsePhrasesTranslate.map((e) => PhrasesTranslateModel.fromJson(e).word ?? ""))
+          ? List<String>.from(responsePhrasesTranslate
+              .map((e) => PhrasesTranslateModel.fromJson(e).word ?? ""))
           : [];
       if (wordsUz.toString().contains(searchText)) {
         wordsUzAll.addAll(wordsUz);
@@ -1322,19 +1514,23 @@ UNION
     return wordsUzAll;
   }
 
-  Future<List<String>> getParentsWithAllTranslate(int? id, String searchText) async {
+  Future<List<String>> getParentsWithAllTranslate(
+      int? id, String searchText) async {
     List<String> translations = [];
 
-    var responseParents = await database.rawQuery("SELECT * FROM parents WHERE word_id=$id");
+    var responseParents =
+        await database.rawQuery("SELECT * FROM parents WHERE word_id=$id");
     var parents = responseParents.isNotEmpty
-        ? List<ParentsModel>.from(responseParents.map((e) => ParentsModel.fromJson(e)))
+        ? List<ParentsModel>.from(
+            responseParents.map((e) => ParentsModel.fromJson(e)))
         : [];
 
     for (var value in parents) {
-      var responseWordUz =
-          await database.rawQuery("SELECT * FROM words_uz WHERE word_id=${value.id}");
+      var responseWordUz = await database
+          .rawQuery("SELECT * FROM words_uz WHERE word_id=${value.id}");
       List<String> wordWordUz = responseWordUz.isNotEmpty
-          ? List<String>.from(responseWordUz.map((e) => WordsUzModel.fromJson(e).word))
+          ? List<String>.from(
+              responseWordUz.map((e) => WordsUzModel.fromJson(e).word))
           : [];
       var phrasesWithAll = await getPhrasesAllTranslate(value.id, searchText);
 

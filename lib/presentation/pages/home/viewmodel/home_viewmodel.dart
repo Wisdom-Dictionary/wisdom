@@ -5,8 +5,8 @@ import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:http/http.dart';
 import 'package:jbaza/jbaza.dart';
 import 'package:share_plus/share_plus.dart';
@@ -22,7 +22,6 @@ import 'package:wisdom/config/constants/app_text_style.dart';
 import 'package:wisdom/core/db/db_helper.dart';
 import 'package:wisdom/core/db/preference_helper.dart';
 import 'package:wisdom/core/domain/http_is_success.dart';
-import 'package:wisdom/core/services/ad_state.dart';
 import 'package:wisdom/core/services/purchase_observer.dart';
 import 'package:wisdom/data/viewmodel/local_viewmodel.dart';
 import 'package:wisdom/domain/repositories/home_repository.dart';
@@ -58,7 +57,6 @@ class HomeViewModel extends BaseViewModel {
   ValueNotifier<bool> isDownloadingShow = ValueNotifier<bool>(false);
   ValueNotifier<int> downloadedPortion = ValueNotifier<int>(0);
   late bool singleton = true;
-
   late ProgressDialog progressDialog;
 
   final controller = StreamController<SwipeRefreshState>.broadcast();
@@ -69,31 +67,45 @@ class HomeViewModel extends BaseViewModel {
 
   final String getDailyWordsTag = "getDailyWordsTag";
   final String getAdTag = "getAdTag";
+  final String getRefreshAd = "getRefreshAd";
   final String checkSubscriptionTag = "checkSubscriptionTag";
 
   Future<void> addDeviceToFirebase() async {
-    safeBlock(() async {
-      if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
-        final value = await getBox<bool>(Constants.FIREBASE_SEND, key: 0);
-        if (value != true) {
-          String? token = await FirebaseMessaging.instance.getToken();
-          locator<ProfileRepository>().applyFirebaseId(token!);
-          await saveBox<bool>(Constants.FIREBASE_SEND, true, key: 0);
+    if (Platform.isWindows) return;
+    safeBlock(
+      () async {
+        if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
+          final value = await getBox<bool>(Constants.FIREBASE_SEND, key: 0);
+          if (value != true) {
+            String? token = await FirebaseMessaging.instance.getToken();
+            log("fmcToken $token");
+            locator<ProfileRepository>().applyFirebaseId(token!);
+            await saveBox<bool>(Constants.FIREBASE_SEND, true, key: 0);
+          }
         }
-      }
-    }, callFuncName: 'addDeviceToFirebase', tag: "addDeviceToFirebase", inProgress: false);
+      },
+      callFuncName: 'addDeviceToFirebase',
+      tag: "addDeviceToFirebase",
+      inProgress: false,
+    );
   }
 
-  void getRandomDailyWords() {
-    safeBlock(() async {
-      await homeRepository.getRandomWords();
-      controller.add(SwipeRefreshState.hidden);
-      setSuccess(tag: getDailyWordsTag);
-      getAd();
-    }, callFuncName: 'getRandomDailyWords', tag: getDailyWordsTag, inProgress: false);
+  Future getRandomDailyWords() async {
+    safeBlock(
+      () async {
+        await homeRepository.getRandomWords();
+        controller.add(SwipeRefreshState.hidden);
+        setSuccess(tag: getDailyWordsTag);
+        await getAd();
+        await getRefreshAds();
+      },
+      callFuncName: 'getRandomDailyWords',
+      tag: getDailyWordsTag,
+      inProgress: false,
+    );
   }
 
-  void getAd() {
+  Future getAd() async {
     safeBlock(() async {
       if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
         var response = await homeRepository.getAd();
@@ -103,6 +115,21 @@ class HomeViewModel extends BaseViewModel {
         setSuccess(tag: getAdTag);
       }
     }, callFuncName: 'getAd', tag: getAdTag, inProgress: false);
+  }
+
+  Future getRefreshAds() async {
+    safeBlock(
+      () async {
+        setBusy(true, tag: getRefreshAd);
+        await Future.delayed(const Duration(seconds: 1));
+        await localViewModel.adService.refreshAds();
+        setBusy(false, tag: getRefreshAd);
+        setSuccess(tag: getRefreshAd);
+      },
+      callFuncName: 'getRefreshAd',
+      tag: getRefreshAd,
+      inProgress: false,
+    );
   }
 
   isAdHTTPWorking(String uri) async {
@@ -137,7 +164,7 @@ class HomeViewModel extends BaseViewModel {
     if (isShow.value) {
       return;
     }
-    if (lastShown == null || DateTime.now().difference(lastShown) > const Duration(seconds: 7)) {
+    if (lastShown == null || DateTime.now().difference(lastShown) > const Duration(days: 7)) {
       await localViewModel.preferenceHelper.updateLastDialogShowTime();
       safeBlock(
         () async {
@@ -323,9 +350,9 @@ class HomeViewModel extends BaseViewModel {
     safeBlock(() async {
       await wordEntity.getWordBankList(null);
       await wordEntity.getWordBankCount();
-      localViewModel.changeBadgeCount(0);
+      await localViewModel.changeBadgeCount(0);
       wordEntity.getWordBankFolders();
-      localViewModel.changeBadgeCount(wordEntity.wordBankList.length);
+      await localViewModel.changeBadgeCount(wordEntity.wordBankList.length);
     }, callFuncName: 'getWordBank', inProgress: false);
   }
 
@@ -340,7 +367,7 @@ class HomeViewModel extends BaseViewModel {
             sharedPref.getInt(Constants.KEY_PROFILE_STATE, Constants.STATE_NOT_REGISTERED));
         var subscribeModel = await homeRepository.checkSubscription();
         if (subscribeModel != null && subscribeModel.status!) {
-          if (subscribeModel.expiryStatus!) {
+          if (subscribeModel.expiryStatus == true) {
             onProfileStateChanged(Constants.STATE_ACTIVE);
           } else {
             onProfileStateChanged(Constants.STATE_INACTIVE);
@@ -365,18 +392,18 @@ class HomeViewModel extends BaseViewModel {
   }
 
   setupAds() async {
-    localViewModel.createInterstitialAd();
-    if (!PurchasesObserver().isPro()) {
-      var adState = locator<AdState>();
-      adState.initialization?.then((status) {
-        localViewModel.banner = BannerAd(
-          adUnitId: adState.bannerId,
-          size: AdSize.mediumRectangle,
-          listener: adState.adListener,
-          request: const AdRequest(),
-        );
-      });
-    }
+    // localViewModel.createInterstitialAd();
+    // if (!PurchasesObserver().isPro()) {
+    //   var adState = locator<AdState>();
+    //   await adState.getInitialization().then((status) {
+    //     localViewModel.banner = BannerAd(
+    //       adUnitId: adState.bannerId,
+    //       size: AdSize.mediumRectangle,
+    //       listener: adState.adListener,
+    //       request: const AdRequest(),
+    //     );
+    //   });
+    // }
   }
 
   rateApp() async {
@@ -405,22 +432,4 @@ class HomeViewModel extends BaseViewModel {
   bool isTheFirstTime() {
     return sharedPref.getBoolean(Constants.APP_STATE, true);
   }
-
-  void redirect() {
-    var result = locator<SharedPreferenceHelper>().getBoolean("notif", false);
-    if (result) {
-      //   localViewModel.changePageIndex(1);
-      //   locator<SharedPreferenceHelper>().putBoolean("notif", false);
-    }
-  }
 }
-
-// @pragma('vm:entry-point')
-// void isolate2(SendPort sendPort) async {
-//   for (int i = 0; i < 100; i++) {
-//     sendPort.send("Isolate 2: $i with arg");
-//     await Future.delayed(
-//       const Duration(seconds: 1),
-//     );
-//   }
-// }

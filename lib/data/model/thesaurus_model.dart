@@ -1,9 +1,8 @@
 class ThesaurusModel {
   ThesaurusModel({
-    this.id,
-    this.wordId,
-    this.body,
-  });
+      this.id, 
+      this.wordId, 
+      this.body,});
 
   ThesaurusModel.fromJson(dynamic json) {
     id = json['id'];
@@ -21,4 +20,5 @@ class ThesaurusModel {
     map['body'] = body;
     return map;
   }
+
 }

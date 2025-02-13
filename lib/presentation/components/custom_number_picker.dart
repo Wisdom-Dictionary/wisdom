@@ -58,11 +58,10 @@ class CustomNumberPicker extends StatelessWidget {
             minValue: minValue,
             maxValue: maxValue,
             infiniteLoop: infiniteLoop,
-            textStyle: AppTextStyle.font15W500Normal
-                .copyWith(color: isDarkTheme ? AppColors.darkGray : AppColors.lightGray),
-            selectedTextStyle: AppTextStyle.font15W500Normal.copyWith(
-                color: isDarkTheme ? AppColors.white : AppColors.darkGray,
-                fontWeight: FontWeight.w600),
+            textStyle:
+                AppTextStyle.font15W500Normal.copyWith(color: isDarkTheme ? AppColors.darkGray : AppColors.lightGray),
+            selectedTextStyle: AppTextStyle.font15W500Normal
+                .copyWith(color: isDarkTheme ? AppColors.white : AppColors.darkGray, fontWeight: FontWeight.w600),
             zeroPad: zeroPad,
             onChanged: (value) => onChange(value),
           )),

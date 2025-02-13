@@ -48,8 +48,8 @@ class ExerciseFlipPage extends ViewModelBuilderWidget<ExercisePageViewModel> {
                         child: Text.rich(
                           TextSpan(
                             text: "exercise_title2".tr(),
-                            style: AppTextStyle.font17W700Normal.copyWith(
-                                color: isDarkTheme ? AppColors.white : AppColors.darkGray),
+                            style: AppTextStyle.font17W700Normal
+                                .copyWith(color: isDarkTheme ? AppColors.white : AppColors.darkGray),
                             children: [
                               // TextSpan(
                               //   text:
@@ -94,8 +94,7 @@ class ExerciseFlipPage extends ViewModelBuilderWidget<ExercisePageViewModel> {
             : const LoadingWidget(),
         floatingActionButton: Container(
           margin: const EdgeInsets.only(bottom: 65),
-          decoration:
-              BoxDecoration(color: AppColors.blue, borderRadius: BorderRadius.circular(25.r)),
+          decoration: BoxDecoration(color: AppColors.blue, borderRadius: BorderRadius.circular(25.r)),
           child: Material(
             color: Colors.transparent,
             child: InkWell(
@@ -128,7 +127,6 @@ class ExerciseFlipPage extends ViewModelBuilderWidget<ExercisePageViewModel> {
 
   @override
   ExercisePageViewModel viewModelBuilder(BuildContext context) {
-    return ExercisePageViewModel(
-        context: context, localViewModel: locator.get(), wordEntityRepository: locator.get());
+    return ExercisePageViewModel(context: context, localViewModel: locator.get(), wordEntityRepository: locator.get());
   }
 }

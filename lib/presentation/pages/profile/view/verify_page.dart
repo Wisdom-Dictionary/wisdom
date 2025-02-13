@@ -26,7 +26,11 @@ class VerifyPage extends ViewModelBuilderWidget<VerifyPageViewModel> {
   TextEditingController editingController = TextEditingController();
 
   @override
-  Widget builder(BuildContext context, VerifyPageViewModel viewModel, Widget? child) {
+  Widget builder(
+    BuildContext context,
+    VerifyPageViewModel viewModel,
+    Widget? child,
+  ) {
     return Scaffold(
       backgroundColor: isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
       appBar: CustomAppBar(
@@ -54,18 +58,23 @@ class VerifyPage extends ViewModelBuilderWidget<VerifyPageViewModel> {
                     text: TextSpan(
                         text: 'verification_code'.tr(),
                         style: AppTextStyle.font13W400Normal.copyWith(
-                            color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
+                          color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray,
+                          fontSize: 13.sp,
+                        ),
                         children: [
                           TextSpan(
-                            text: phoneNumber.substring(4, phoneNumber.length),
+                            text: phoneNumber.replaceAll('998', ''),
                             style: AppTextStyle.font13W500Normal.copyWith(
                               color: AppColors.blue,
+                              fontSize: 13.sp,
                             ),
                           ),
                           TextSpan(
                             text: 'code_sent_to'.tr(),
                             style: AppTextStyle.font13W400Normal.copyWith(
-                                color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
+                              color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray,
+                              fontSize: 13.sp,
+                            ),
                           ),
                         ]),
                     textAlign: TextAlign.center,
@@ -91,10 +100,12 @@ class VerifyPage extends ViewModelBuilderWidget<VerifyPageViewModel> {
                             controller: editingController,
                             appContext: context,
                             length: 5,
-                            // autoFocus: true,
+                            autoFocus: true,
                             keyboardType: TextInputType.number,
-                            textStyle:
-                                AppTextStyle.font19W500Normal.copyWith(color: AppColors.blue),
+                            textStyle: AppTextStyle.font19W500Normal.copyWith(
+                              color: AppColors.blue,
+                              fontSize: 19.sp,
+                            ),
                             onChanged: (String value) {
                               viewModel.codeSMS = value;
                             },
@@ -170,18 +181,21 @@ class VerifyPage extends ViewModelBuilderWidget<VerifyPageViewModel> {
   @override
   void onDestroy(VerifyPageViewModel model) {
     log('onDestroy VerifyPageViewModel ');
-    editingController.dispose();
+    // editingController.dispose();
     super.onDestroy(model);
   }
 
   @override
   VerifyPageViewModel viewModelBuilder(BuildContext context) {
     return VerifyPageViewModel(
-        context: context,
-        profileRepository: locator.get(),
-        localViewModel: locator.get(),
-        sharedPreferenceHelper: locator.get(),
-        homeRepository: locator.get(),
-        phoneNumber: phoneNumber);
+      context: context,
+      profileRepository: locator.get(),
+      localViewModel: locator.get(),
+      sharedPreferenceHelper: locator.get(),
+      homeRepository: locator.get(),
+      phoneNumber: phoneNumber,
+      wordEntityRepository: locator.get(),
+    );
   }
+
 }

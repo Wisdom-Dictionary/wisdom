@@ -46,21 +46,17 @@ class ParentPhrasesWidget extends ViewModelWidget<WordDetailPageViewModel> {
                 Container(
                   key: widgetKey,
                   child: Visibility(
-                    visible: (model.parentPhrasesTranslate != null &&
-                        model.parentPhrasesTranslate!.isNotEmpty),
+                    visible: (model.parentPhrasesTranslate != null && model.parentPhrasesTranslate!.isNotEmpty),
                     child: InkWell(
-                        onTap: () =>
-                            viewModel.addToWordBankFromParentPhrase(model, orderNum, widgetKey),
+                        onTap: () => viewModel.addToWordBankFromParentPhrase(model, orderNum, widgetKey),
                         child: Padding(
-                            padding: EdgeInsets.only(right: 10.w),
-                            child: SvgPicture.asset(Assets.icons.saveWord))),
+                            padding: EdgeInsets.only(right: 10.w), child: SvgPicture.asset(Assets.icons.saveWord))),
                   ),
                 ),
                 (model.parentPhrases!.star ?? 0).toString() != "0"
                     ? Padding(
                         padding: EdgeInsets.only(right: 10.w),
-                        child: SvgPicture.asset(
-                            viewModel.findRank(model.parentPhrases!.star!.toString())))
+                        child: SvgPicture.asset(viewModel.findRank(model.parentPhrases!.star!.toString())))
                     : const SizedBox.shrink(),
                 Flexible(
                   child: Text.rich(
@@ -76,8 +72,7 @@ class ParentPhrasesWidget extends ViewModelWidget<WordDetailPageViewModel> {
                               color: isDarkTheme ? AppColors.lightGray : AppColors.gray,
                               fontSize: viewModel.fontSize! - 2),
                         ),
-                        viewModel.conductAndHighlightUzWords(
-                            null, null, model.parentPhrasesTranslate)
+                        viewModel.conductAndHighlightUzWords(null, null, model.parentPhrasesTranslate)
                       ],
                     ),
                   ),
@@ -91,9 +86,8 @@ class ParentPhrasesWidget extends ViewModelWidget<WordDetailPageViewModel> {
               padding: EdgeInsets.only(left: 10.w),
               child: Text(
                 (viewModel.conductToStringParentPhrasesExamples(model.phrasesExample)),
-                style: AppTextStyle.font15W400ItalicHtml.copyWith(
-                    color: isDarkTheme ? AppColors.lightGray : null,
-                    fontSize: viewModel.fontSize! - 2),
+                style: AppTextStyle.font15W400ItalicHtml
+                    .copyWith(color: isDarkTheme ? AppColors.lightGray : null, fontSize: viewModel.fontSize! - 2),
               ),
             ),
           ),
@@ -107,9 +101,8 @@ class ParentPhrasesWidget extends ViewModelWidget<WordDetailPageViewModel> {
                   .replaceAll("<br>", "")
                   .replaceAll("<p>", "")
                   .replaceAll("</p>", "<br>"),
-              textStyle: AppTextStyle.font13W400ItalicHtml.copyWith(
-                  fontSize: viewModel.fontSize! - 4,
-                  color: isDarkTheme ? AppColors.lightBackground : AppColors.white),
+              textStyle: AppTextStyle.font13W400ItalicHtml
+                  .copyWith(fontSize: viewModel.fontSize! - 4, color: isDarkTheme ? AppColors.lightBackground : AppColors.white),
             ),
             visible: model.parentPhrases!.symonyms != null,
           ),

@@ -39,8 +39,8 @@ class CulturePageViewModel extends BaseViewModel {
   }
 
   void goToDetails(CatalogModel catalogModel) {
-    categoryRepository.cultureModel = CultureModel(
-        id: catalogModel.id, wordId: catalogModel.wordenid, body: catalogModel.wordenword);
+    categoryRepository.cultureModel =
+        CultureModel(id: catalogModel.id, wordId: catalogModel.wordenid, body: catalogModel.wordenword);
     localViewModel.isFromMain = false;
     localViewModel.changePageIndex(16);
   }

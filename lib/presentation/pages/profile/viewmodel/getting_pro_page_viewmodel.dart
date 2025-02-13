@@ -7,7 +7,7 @@ import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:wisdom/config/constants/constants.dart';
 import 'package:wisdom/core/db/preference_helper.dart';
-import 'package:wisdom/core/services/purchase_observer.dart';
+import 'package:wisdom/data/model/tariffs_model.dart';
 import 'package:wisdom/data/viewmodel/local_viewmodel.dart';
 import 'package:wisdom/domain/repositories/profile_repository.dart';
 import 'package:wisdom/presentation/widgets/loading_widget.dart';
@@ -28,6 +28,7 @@ class GettingProPageViewModel extends BaseViewModel {
   final SharedPreferenceHelper sharedPreferenceHelper;
   String getTariffsTag = 'getTariffsTag';
   String restoreTag = 'restoreTag';
+  TariffsModel? tariffsModel;
   String tariffsValue = '';
 
   getTariffs() {
@@ -35,6 +36,7 @@ class GettingProPageViewModel extends BaseViewModel {
       if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
         await profileRepository.getTariffs();
         tariffsValue = profileRepository.tariffsModel.first.id.toString();
+        tariffsModel = profileRepository.tariffsModel.firstOrNull;
         setSuccess(tag: getTariffsTag);
       } else {
         callBackError("no_internet".tr());
@@ -43,20 +45,21 @@ class GettingProPageViewModel extends BaseViewModel {
     }, callFuncName: 'getTariffs', tag: getTariffsTag);
   }
 
-  bool haveAccount() => sharedPreferenceHelper.getString(Constants.KEY_TOKEN, "") == "";
+  bool haveAccount() => sharedPreferenceHelper.getString(Constants.KEY_TOKEN, "").isNotEmpty;
 
   bool subscribed() => sharedPreferenceHelper.getString(Constants.KEY_SUBSCRIBE, "") == "";
 
   void onBuyPremiumPressed() {
-    if (subscribed()) {
+    if (haveAccount()) {
       if (tariffsValue != '') {
         sharedPreferenceHelper.putInt(Constants.KEY_TARIFID, int.parse(tariffsValue));
         sharedPreferenceHelper.putString(
             Constants.KEY_TARIFFS, jsonEncode(profileRepository.tariffsModel.first));
-        navigateTo(Routes.registrationPage);
+        navigateTo(Routes.paymentPage, arg: {'verifyModel': null, 'phoneNumber': null});
       }
     } else {
-      navigateTo(Routes.profilePage);
+      navigateTo(Routes.loginPage);
+      // navigateTo(Routes.paymentPage, arg: {'verifyModel': null, 'phoneNumber': null});
     }
   }
 

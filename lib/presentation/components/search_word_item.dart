@@ -27,7 +27,7 @@ class SearchWordItem extends StatelessWidget {
     return InkWell(
       onTap: () => onTap(),
       child: SizedBox(
-        height: 52.h,
+        height: 52.w,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -47,13 +47,22 @@ class SearchWordItem extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           text: TextSpan(
                             style: AppTextStyle.font15W500Normal.copyWith(
-                                color: isDarkTheme ? AppColors.white : AppColors.darkGray),
+                              color: isDarkTheme
+                                  ? AppColors.white
+                                  : AppColors.darkGray,
+                              fontSize: 15.sp,
+                            ),
                             text: firstText,
                             children: [
                               TextSpan(
-                                  text: '   $secondText',
-                                  style: AppTextStyle.font15W500Normal.copyWith(
-                                      color: isDarkTheme ? AppColors.lightGray : AppColors.blue)),
+                                text: '   $secondText',
+                                style: AppTextStyle.font15W500Normal.copyWith(
+                                  color: isDarkTheme
+                                      ? AppColors.lightGray
+                                      : AppColors.blue,
+                                  fontSize: 15.sp,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -62,8 +71,10 @@ class SearchWordItem extends StatelessWidget {
                           child: Text(
                             replaceSame(thirdText ?? "", firstText),
                             overflow: TextOverflow.ellipsis,
-                            style:
-                                AppTextStyle.font13W500Normal.copyWith(color: AppColors.lightGray),
+                            style: AppTextStyle.font13W500Normal.copyWith(
+                              color: AppColors.lightGray,
+                              fontSize: 13.sp,
+                            ),
                           ),
                         ),
                       ],
@@ -104,6 +115,9 @@ class SearchWordItem extends StatelessWidget {
   }
 
   String replaceSame(String s1, String target) {
-    return s1.replaceAll("$target,", "").replaceAll(",$target", "").replaceAll(target, "");
+    return s1
+        .replaceAll("$target,", "")
+        .replaceAll(",$target", "")
+        .replaceAll(target, "");
   }
 }

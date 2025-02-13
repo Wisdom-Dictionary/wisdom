@@ -36,7 +36,7 @@ class ThesaurusDetailPageViewModel extends BaseViewModel {
   }
 
   goBack() {
-    if (locator<LocalViewModel>().isFromMain) {
+    if(locator<LocalViewModel>().isFromMain) {
       locator<LocalViewModel>().isFromMain = false;
       locator<LocalViewModel>().changePageIndex(0);
     } else {

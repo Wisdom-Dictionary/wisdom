@@ -1,6 +1,5 @@
 import 'package:jbaza/jbaza.dart';
 import 'package:wisdom/data/model/catalog_model.dart';
-import 'package:wisdom/data/model/culture_model.dart';
 import 'package:wisdom/data/model/timeline_model.dart';
 import 'package:wisdom/data/viewmodel/local_viewmodel.dart';
 import 'package:wisdom/domain/repositories/home_repository.dart';

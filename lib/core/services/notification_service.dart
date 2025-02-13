@@ -18,6 +18,7 @@ class AppNotificationService {
   final String _reminderBody = "Yangi so’zlarni qaytarish payti keldi";
 
   Future initNotification() async {
+    if(Platform.isWindows) return;
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
     FirebaseMessaging messaging = FirebaseMessaging.instance;
     NotificationSettings? settings = await messaging.requestPermission(
@@ -32,20 +33,24 @@ class AppNotificationService {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (Platform.isAndroid) showNotification(message, '');
     });
-    var androidInitializationSettings = const AndroidInitializationSettings('@mipmap/ic_launcher');
+    var androidInitializationSettings =
+        const AndroidInitializationSettings('@mipmap/ic_launcher');
     var iosInitializationSettings = const DarwinInitializationSettings();
     await flutterLocalNotificationsPlugin.initialize(
       InitializationSettings(
         android: androidInitializationSettings,
         iOS: iosInitializationSettings,
       ),
-      onDidReceiveNotificationResponse: (NotificationResponse notificationResponse) async {
+      onDidReceiveNotificationResponse:
+          (NotificationResponse notificationResponse) async {
         locator<LocalViewModel>().changePageIndex(1);
         print("Notification callback worked from alive");
       },
       onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
     );
-    await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails().then((details) async {
+    await flutterLocalNotificationsPlugin
+        .getNotificationAppLaunchDetails()
+        .then((details) async {
       if (details != null) {
         if (details.didNotificationLaunchApp) {
           Future.delayed(
@@ -78,7 +83,8 @@ class AppNotificationService {
   }
 
   Future showNotification(RemoteMessage message, String playLoad) async {
-    var androidPlatformChannelSpecifics = const AndroidNotificationDetails('Takk', 'Takk channel',
+    var androidPlatformChannelSpecifics = const AndroidNotificationDetails(
+        'Takk', 'Takk channel',
         playSound: true,
         importance: Importance.max,
         priority: Priority.high,
@@ -116,12 +122,30 @@ class AppNotificationService {
   Future<bool> requestPermissions() async {
     if (Platform.isAndroid) {
       final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
-          flutterLocalNotificationsPlugin
-              .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+          flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>();
 
       final bool? grantedNotificationPermission =
           await androidImplementation?.requestNotificationsPermission();
       return grantedNotificationPermission ?? false;
+    } else if (Platform.isIOS) {
+      await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+          IOSFlutterLocalNotificationsPlugin>()
+          ?.requestPermissions(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+      await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+          MacOSFlutterLocalNotificationsPlugin>()
+          ?.requestPermissions(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+      return true;
     }
     return false;
   }
@@ -133,13 +157,15 @@ class AppNotificationService {
     int? hour,
   }) async {
     cancelAll();
-    const AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails(
+    const AndroidNotificationDetails androidNotificationDetails =
+        AndroidNotificationDetails(
       'repeating channel id',
       'repeating channel name',
       channelDescription: 'repeating description',
       sound: RawResourceAndroidNotificationSound('slow_spring_board'),
     );
-    const DarwinNotificationDetails darwinNotificationDetails = DarwinNotificationDetails(
+    const DarwinNotificationDetails darwinNotificationDetails =
+        DarwinNotificationDetails(
       sound: 'slow_spring_board.aiff',
     );
     const NotificationDetails notificationDetails = NotificationDetails(
@@ -180,7 +206,8 @@ class AppNotificationService {
       ),
       payload: '',
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: DateTimeComponents.time,
     );
   }
@@ -228,10 +255,12 @@ class AppNotificationService {
     );
 
     await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(channel);
 
-    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
       alert: true,
       badge: true,
       sound: true,

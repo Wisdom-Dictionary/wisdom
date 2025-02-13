@@ -1,7 +1,7 @@
 import 'package:wisdom/data/model/base_table_model.dart';
 
 extension EntityExtension on List<BaseTableModel> {
-  String generateInsertOrReplaceQuery(String tableName) {
+  String  generateInsertOrReplaceQuery(String tableName) {
     final entities = this;
     if (entities.isEmpty) {
       return '';

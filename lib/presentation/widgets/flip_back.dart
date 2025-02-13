@@ -39,11 +39,9 @@ class FlipBackWidget extends ViewModelWidget<ExercisePageViewModel> {
             child: Padding(
               padding: EdgeInsets.only(top: 15.h),
               child: Text(
-                viewModel.localViewModel.exerciseLangOption == "en"
-                    ? model.translation
-                    : model.word,
-                style: AppTextStyle.font17W700Normal
-                    .copyWith(color: isDarkTheme ? AppColors.white : AppColors.darkGray),
+                viewModel.localViewModel.exerciseLangOption == "en" ? model.translation : model.word,
+                style:
+                    AppTextStyle.font17W700Normal.copyWith(color: isDarkTheme ? AppColors.white : AppColors.darkGray),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -63,8 +61,7 @@ class FlipBackWidget extends ViewModelWidget<ExercisePageViewModel> {
                             Flexible(
                               child: Text(
                                 "[${model.wordClassBody ?? ""}]",
-                                style: AppTextStyle.font15W400NormalHtml
-                                    .copyWith(color: AppColors.gray),
+                                style: AppTextStyle.font15W400NormalHtml.copyWith(color: AppColors.gray),
                                 textAlign: TextAlign.center,
                               ),
                             ),

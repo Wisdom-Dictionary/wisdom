@@ -31,11 +31,12 @@ class ExerciseFinalPageViewModel extends BaseViewModel {
   List<ExerciseFinalModel> incorrect = [];
 
   init() async {
+    final wrongFolderId = wordEntityRepository.wrongFolderId;
     for (var element in localViewModel.finalList) {
       element.result ? correctList.add(element) : incorrect.add(element);
     }
     for (var element in incorrect) {
-      wordEntityRepository.moveToFolder(2, element.tableId!, element.id!);
+    await  wordEntityRepository.moveToFolder(wrongFolderId, element.tableId!, element.id);
     }
     notifyListeners();
   }
@@ -75,12 +76,12 @@ class ExerciseFinalPageViewModel extends BaseViewModel {
                           decoration: const BoxDecoration(
                               border: Border(bottom: BorderSide(color: AppColors.borderWhite))),
                           child: ListTile(
-                            title: Text(item.folderName,
+                            title: Text(item.folderName.tr(),
                                 style:
                                     AppTextStyle.font15W600Normal.copyWith(color: AppColors.blue)),
-                            onTap: () {
-                              wordEntityRepository
-                                  .moveToFolder(item.id, model.tableId!, model.id!)
+                            onTap: () async{
+                             await wordEntityRepository
+                                  .moveToFolder(item.id, model.tableId!, model.id)
                                   .then((value) {
                                 if (value) {
                                   incorrect
@@ -112,7 +113,7 @@ class ExerciseFinalPageViewModel extends BaseViewModel {
                 wordEntityRepository.wordBankFoldersList.length <= 3) {
               showFolderCountOutOfBound();
             } else {
-              addNewFolder();
+             await addNewFolder();
             }
           },
         );
@@ -155,7 +156,7 @@ class ExerciseFinalPageViewModel extends BaseViewModel {
     );
   }
 
-  void addNewFolder() {
+  Future addNewFolder() async {
     showCustomDialog(
       context: context!,
       icon: Assets.icons.addFolder,
@@ -174,6 +175,9 @@ class ExerciseFinalPageViewModel extends BaseViewModel {
       ),
       positive: "add".tr(),
       onPositiveTap: () async {
+        if (!(await localViewModel.canAddWordBank(context!))) {
+          return;
+        }
         if (folderTextController.text.isNotEmpty) {
           await wordEntityRepository.addNewWordBankFolder(folderTextController.text);
           changer.value++;
@@ -214,7 +218,7 @@ class ExerciseFinalPageViewModel extends BaseViewModel {
             await wordEntityRepository.deleteWorkBank(wordBank);
             localViewModel.finalList.remove(model);
             correctList.remove(model);
-            localViewModel.changeBadgeCount(-1);
+            await localViewModel.changeBadgeCount(-1);
             notifyListeners();
           },
           callFuncName: 'deleteWordBankModel',

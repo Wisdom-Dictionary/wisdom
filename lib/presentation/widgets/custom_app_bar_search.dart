@@ -67,21 +67,24 @@ class _CustomAppBarSearchState extends State<CustomAppBarSearch> {
   Widget build(BuildContext context) {
     if (localViewModel.searchingText.isNotEmpty) {
       controller.text = localViewModel.searchingText;
-      controller.selection =
-          TextSelection.fromPosition(TextPosition(offset: controller.text.length));
+      controller.selection = TextSelection.fromPosition(
+          TextPosition(offset: controller.text.length));
       onChanged(localViewModel.searchingText);
       localViewModel.searchingText = "";
-    } else if (localViewModel.lastSearchedText.isNotEmpty && localViewModel.goingBackFromDetail) {
+    } else if (localViewModel.lastSearchedText.isNotEmpty &&
+        localViewModel.goingBackFromDetail) {
       controller.text = localViewModel.lastSearchedText;
-      controller.selection =
-          TextSelection.fromPosition(TextPosition(offset: controller.text.length));
+      controller.selection = TextSelection.fromPosition(
+          TextPosition(offset: controller.text.length));
       onChanged(localViewModel.lastSearchedText);
       localViewModel.lastSearchedText = "";
       localViewModel.goingBackFromDetail = false;
     }
     return AppBar(
-      backgroundColor: (isDarkTheme ? AppColors.darkForm : AppColors.blue).withOpacity(0.95),
-      shadowColor: isDarkTheme ? null : const Color(0xFF6D8DAD).withOpacity(0.15),
+      backgroundColor:
+          (isDarkTheme ? AppColors.darkForm : AppColors.blue).withOpacity(0.95),
+      shadowColor:
+          isDarkTheme ? null : const Color(0xFF6D8DAD).withOpacity(0.15),
       elevation: 4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
@@ -94,7 +97,7 @@ class _CustomAppBarSearchState extends State<CustomAppBarSearch> {
               padding: EdgeInsets.only(
                 left: 5.w,
                 right: 5.w,
-                top: 15.h,
+                top: 15.w,
               ),
               child: InkResponse(
                 onTap: () => widget.onTap(),
@@ -117,62 +120,86 @@ class _CustomAppBarSearchState extends State<CustomAppBarSearch> {
       bottom: widget.isSearch
           ? PreferredSize(
               preferredSize: Size.fromHeight(50.h),
-              child: Container(
-                height: 47.h,
-                margin: EdgeInsets.all(14.r),
-                decoration: BoxDecoration(
-                    color: (isDarkTheme ? AppColors.darkBackground : AppColors.white)
-                        .withOpacity(0.95),
-                    borderRadius: BorderRadius.circular(23.5.r)),
-                child: TextField(
-                  autofocus: widget.focus,
-                  focusNode: localViewModel.searchFocusNode,
-                  style: AppTextStyle.font15W400Normal
-                      .copyWith(color: isDarkTheme ? AppColors.white : AppColors.blue),
-                  cursorHeight: 19.h,
-                  controller: controller,
-                  onChanged: (value) {
-                    onChanged(value);
-                  },
-                  decoration: InputDecoration(
-                    prefixIcon: Padding(
-                      padding: EdgeInsets.only(left: 8.0.w),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  InkResponse(
+                    onTap: () => widget.onTap(),
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 10.w),
                       child: SvgPicture.asset(
-                        Assets.icons.searchText,
+                        Assets.icons.arrowLeft,
+                        height: 24.h,
+                        width: 24.h,
                         fit: BoxFit.scaleDown,
                       ),
                     ),
-                    suffixIcon: ValueListenableBuilder(
-                      valueListenable: hasText,
-                      builder: (context, value, child) {
-                        return Visibility(
-                          visible: hasText.value,
-                          child: Padding(
-                            padding: EdgeInsets.only(right: 8.0.w),
-                            child: InkResponse(
-                              onTap: () {
-                                controller.clear();
-                                onChanged("");
-                              },
-                              child: SvgPicture.asset(
-                                Assets.icons.crossClose,
-                                height: 10.h,
-                                width: 10.h,
-                                fit: BoxFit.scaleDown,
-                              ),
+                  ),
+                  Expanded(
+                    child: Container(
+                      height: 47.h,
+                      margin: EdgeInsets.all(14.r),
+                      decoration: BoxDecoration(
+                          color: (isDarkTheme
+                                  ? AppColors.darkBackground
+                                  : AppColors.white)
+                              .withOpacity(0.95),
+                          borderRadius: BorderRadius.circular(23.5.r)),
+                      child: TextField(
+                        autofocus: widget.focus,
+                        focusNode: localViewModel.searchFocusNode,
+                        style: AppTextStyle.font15W400Normal.copyWith(
+                          color: isDarkTheme ? AppColors.white : AppColors.blue,
+                          fontSize: 15.sp,
+                        ),
+                        cursorHeight: 19.r,
+                        controller: controller,
+                        onChanged: (value) {
+                          onChanged(value);
+                        },
+                        decoration: InputDecoration(
+                          prefixIcon: Padding(
+                            padding: EdgeInsets.only(left: 8.0.w),
+                            child: SvgPicture.asset(
+                              Assets.icons.searchText,
+                              fit: BoxFit.scaleDown,
                             ),
                           ),
-                        );
-                      },
-                    ),
-                    hintText: 'search_hint'.tr(),
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(vertical: 14.h),
-                    hintStyle: AppTextStyle.font15W400Normal.copyWith(
-                      color: AppColors.paleBlue.withOpacity(0.5),
+                          suffixIcon: ValueListenableBuilder(
+                            valueListenable: hasText,
+                            builder: (context, value, child) {
+                              return Visibility(
+                                visible: hasText.value,
+                                child: Padding(
+                                  padding: EdgeInsets.only(right: 8.0.w),
+                                  child: InkResponse(
+                                    onTap: () {
+                                      controller.clear();
+                                      onChanged("");
+                                    },
+                                    child: SvgPicture.asset(
+                                      Assets.icons.crossClose,
+                                      height: 10.h,
+                                      width: 10.h,
+                                      fit: BoxFit.scaleDown,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                          hintText: 'search_hint'.tr(),
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(vertical: 14.r),
+                          hintStyle: AppTextStyle.font15W400Normal.copyWith(
+                            color: AppColors.paleBlue.withOpacity(0.5),
+                            fontSize: 15.sp,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
             )
           : null,

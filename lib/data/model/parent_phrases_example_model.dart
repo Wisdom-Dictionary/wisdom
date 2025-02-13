@@ -1,9 +1,8 @@
 class ParentPhrasesExampleModel {
   ParentPhrasesExampleModel({
-    this.id,
-    this.value,
-    this.phraseId,
-  });
+      this.id, 
+      this.value, 
+      this.phraseId,});
 
   ParentPhrasesExampleModel.fromJson(dynamic json) {
     id = json['id'];
@@ -21,4 +20,5 @@ class ParentPhrasesExampleModel {
     map['phrase_id'] = phraseId;
     return map;
   }
+
 }

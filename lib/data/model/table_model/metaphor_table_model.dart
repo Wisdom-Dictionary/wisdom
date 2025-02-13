@@ -1,25 +1,21 @@
 import 'dart:convert';
 
 import 'package:wisdom/data/model/base_table_model.dart';
-
 /// id : 1
 /// word_id : 1
 /// body : ""
 
-MetaphorTableModel metaphorTableModelFromJson(String str) =>
-    MetaphorTableModel.fromJson(json.decode(str));
+MetaphorTableModel metaphorTableModelFromJson(String str) => MetaphorTableModel.fromJson(json.decode(str));
 String metaphorTableModelToJson(MetaphorTableModel data) => json.encode(data.toJson());
-
 class MetaphorTableModel extends BaseTableModel {
   MetaphorTableModel({
-    int? id,
-    int? wordId,
-    String? body,
-  }) {
+      int? id, 
+      int? wordId, 
+      String? body,}){
     _id = id;
     _wordId = wordId;
     _body = body;
-  }
+}
 
   MetaphorTableModel.fromJson(dynamic json) {
     _id = json['id'];
@@ -29,16 +25,13 @@ class MetaphorTableModel extends BaseTableModel {
   int? _id;
   int? _wordId;
   String? _body;
-  MetaphorTableModel copyWith({
-    int? id,
-    int? wordId,
-    String? body,
-  }) =>
-      MetaphorTableModel(
-        id: id ?? _id,
-        wordId: wordId ?? _wordId,
-        body: body ?? _body,
-      );
+MetaphorTableModel copyWith({  int? id,
+  int? wordId,
+  String? body,
+}) => MetaphorTableModel(  id: id ?? _id,
+  wordId: wordId ?? _wordId,
+  body: body ?? _body,
+);
   int? get id => _id;
   int? get wordId => _wordId;
   String? get body => _body;
@@ -51,4 +44,5 @@ class MetaphorTableModel extends BaseTableModel {
     map['body'] = _body;
     return map;
   }
+
 }

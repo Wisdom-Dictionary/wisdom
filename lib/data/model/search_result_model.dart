@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 /// id : 1
 /// word : ""
 /// translation : ""
@@ -9,21 +8,18 @@ import 'dart:convert';
 /// word_classword_class : ""
 /// type : ""
 
-SearchResultModel searchResultModelFromJson(String str) =>
-    SearchResultModel.fromJson(json.decode(str));
+SearchResultModel searchResultModelFromJson(String str) => SearchResultModel.fromJson(json.decode(str));
 String searchResultModelToJson(SearchResultModel data) => json.encode(data.toJson());
-
 class SearchResultModel {
   SearchResultModel({
-    int? id,
-    String? word,
-    String? translation,
+      int? id, 
+      String? word, 
+      String? translation,
     String? star,
-    int? wordClassid,
-    int? wordClasswordId,
-    String? wordClasswordClass,
-    String? type,
-  }) {
+      int? wordClassid, 
+      int? wordClasswordId, 
+      String? wordClasswordClass, 
+      String? type,}){
     _id = id;
     _word = word;
     _translation = translation;
@@ -32,7 +28,7 @@ class SearchResultModel {
     _wordClasswordId = wordClasswordId;
     _wordClasswordClass = wordClasswordClass;
     _type = type;
-  }
+}
 
   SearchResultModel.fromJson(dynamic json) {
     _id = json['id'];
@@ -52,26 +48,23 @@ class SearchResultModel {
   int? _wordClasswordId;
   String? _wordClasswordClass;
   String? _type;
-  SearchResultModel copyWith({
-    int? id,
-    String? word,
-    String? translation,
-    String? star,
-    int? wordClassid,
-    int? wordClasswordId,
-    String? wordClasswordClass,
-    String? type,
-  }) =>
-      SearchResultModel(
-        id: id ?? _id,
-        word: word ?? _word,
-        translation: translation ?? _translation,
-        star: star ?? _star,
-        wordClassid: wordClassid ?? _wordClassid,
-        wordClasswordId: wordClasswordId ?? _wordClasswordId,
-        wordClasswordClass: wordClasswordClass ?? _wordClasswordClass,
-        type: type ?? _type,
-      );
+SearchResultModel copyWith({  int? id,
+  String? word,
+  String? translation,
+  String? star,
+  int? wordClassid,
+  int? wordClasswordId,
+  String? wordClasswordClass,
+  String? type,
+}) => SearchResultModel(  id: id ?? _id,
+  word: word ?? _word,
+  translation: translation ?? _translation,
+  star: star ?? _star,
+  wordClassid: wordClassid ?? _wordClassid,
+  wordClasswordId: wordClasswordId ?? _wordClasswordId,
+  wordClasswordClass: wordClasswordClass ?? _wordClasswordClass,
+  type: type ?? _type,
+);
   int? get id => _id;
   String? get word => _word;
   String? get translation => _translation;
@@ -93,4 +86,5 @@ class SearchResultModel {
     map['type'] = _type;
     return map;
   }
+
 }

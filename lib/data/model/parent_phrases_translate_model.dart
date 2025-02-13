@@ -1,10 +1,9 @@
 class ParentPhrasesTranslateModel {
   ParentPhrasesTranslateModel({
-    this.id,
-    this.word,
-    this.phraseId,
-    this.parentPhraseId,
-  });
+      this.id, 
+      this.word, 
+      this.phraseId, 
+      this.parentPhraseId,});
 
   ParentPhrasesTranslateModel.fromJson(dynamic json) {
     id = json['id'];
@@ -25,4 +24,5 @@ class ParentPhrasesTranslateModel {
     map['parent_phrase_id'] = parentPhraseId;
     return map;
   }
+
 }

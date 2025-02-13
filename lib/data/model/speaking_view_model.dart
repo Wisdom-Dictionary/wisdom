@@ -1,26 +1,22 @@
 import 'dart:convert';
-
 /// parentId : 1
 /// wordId : 1
 /// translation : ""
 /// word : ""
 
-SpeakingViewModel speakingViewModelFromJson(String str) =>
-    SpeakingViewModel.fromJson(json.decode(str));
+SpeakingViewModel speakingViewModelFromJson(String str) => SpeakingViewModel.fromJson(json.decode(str));
 String speakingViewModelToJson(SpeakingViewModel data) => json.encode(data.toJson());
-
 class SpeakingViewModel {
   SpeakingViewModel({
-    int? parentId,
-    int? wordId,
-    String? translation,
-    String? word,
-  }) {
+      int? parentId, 
+      int? wordId, 
+      String? translation, 
+      String? word,}){
     _parentId = parentId;
     _wordId = wordId;
     _translation = translation;
     _word = word;
-  }
+}
 
   SpeakingViewModel.fromJson(dynamic json) {
     _parentId = json['parentId'];
@@ -32,18 +28,15 @@ class SpeakingViewModel {
   int? _wordId;
   String? _translation;
   String? _word;
-  SpeakingViewModel copyWith({
-    int? parentId,
-    int? wordId,
-    String? translation,
-    String? word,
-  }) =>
-      SpeakingViewModel(
-        parentId: parentId ?? _parentId,
-        wordId: wordId ?? _wordId,
-        translation: translation ?? _translation,
-        word: word ?? _word,
-      );
+SpeakingViewModel copyWith({  int? parentId,
+  int? wordId,
+  String? translation,
+  String? word,
+}) => SpeakingViewModel(  parentId: parentId ?? _parentId,
+  wordId: wordId ?? _wordId,
+  translation: translation ?? _translation,
+  word: word ?? _word,
+);
   int? get parentId => _parentId;
   int? get wordId => _wordId;
   String? get translation => _translation;
@@ -57,4 +50,5 @@ class SpeakingViewModel {
     map['word'] = _word;
     return map;
   }
+
 }

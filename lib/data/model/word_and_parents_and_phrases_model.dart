@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 /// id : 1
 /// word_classid : 1
 /// star : 1
@@ -9,22 +8,18 @@ import 'dart:convert';
 /// body : ""
 /// word : ""
 
-WordAndParentsAndPhrasesModel wordAndParentsAndPhrasesModelFromJson(String str) =>
-    WordAndParentsAndPhrasesModel.fromJson(json.decode(str));
-String wordAndParentsAndPhrasesModelToJson(WordAndParentsAndPhrasesModel data) =>
-    json.encode(data.toJson());
-
+WordAndParentsAndPhrasesModel wordAndParentsAndPhrasesModelFromJson(String str) => WordAndParentsAndPhrasesModel.fromJson(json.decode(str));
+String wordAndParentsAndPhrasesModelToJson(WordAndParentsAndPhrasesModel data) => json.encode(data.toJson());
 class WordAndParentsAndPhrasesModel {
   WordAndParentsAndPhrasesModel({
-    int? id,
-    int? wordClassid,
+      int? id, 
+      int? wordClassid,
     String? star,
-    int? wordClasswordId,
-    String? wordClasswordClass,
-    String? pWord,
-    String? body,
-    String? word,
-  }) {
+      int? wordClasswordId, 
+      String? wordClasswordClass, 
+      String? pWord, 
+      String? body, 
+      String? word,}){
     _id = id;
     _wordClassid = wordClassid;
     _star = star;
@@ -33,7 +28,7 @@ class WordAndParentsAndPhrasesModel {
     _pWord = pWord;
     _body = body;
     _word = word;
-  }
+}
 
   WordAndParentsAndPhrasesModel.fromJson(dynamic json) {
     _id = json['id'];
@@ -53,26 +48,23 @@ class WordAndParentsAndPhrasesModel {
   String? _pWord;
   String? _body;
   String? _word;
-  WordAndParentsAndPhrasesModel copyWith({
-    int? id,
-    int? wordClassid,
-    String? star,
-    int? wordClasswordId,
-    String? wordClasswordClass,
-    String? pWord,
-    String? body,
-    String? word,
-  }) =>
-      WordAndParentsAndPhrasesModel(
-        id: id ?? _id,
-        wordClassid: wordClassid ?? _wordClassid,
-        star: star ?? _star,
-        wordClasswordId: wordClasswordId ?? _wordClasswordId,
-        wordClasswordClass: wordClasswordClass ?? _wordClasswordClass,
-        pWord: pWord ?? _pWord,
-        body: body ?? _body,
-        word: word ?? _word,
-      );
+WordAndParentsAndPhrasesModel copyWith({  int? id,
+  int? wordClassid,
+  String? star,
+  int? wordClasswordId,
+  String? wordClasswordClass,
+  String? pWord,
+  String? body,
+  String? word,
+}) => WordAndParentsAndPhrasesModel(  id: id ?? _id,
+  wordClassid: wordClassid ?? _wordClassid,
+  star: star ?? _star,
+  wordClasswordId: wordClasswordId ?? _wordClasswordId,
+  wordClasswordClass: wordClasswordClass ?? _wordClasswordClass,
+  pWord: pWord ?? _pWord,
+  body: body ?? _body,
+  word: word ?? _word,
+);
   int? get id => _id;
   int? get wordClassid => _wordClassid;
   String? get star => _star;
@@ -94,4 +86,5 @@ class WordAndParentsAndPhrasesModel {
     map['word'] = _word;
     return map;
   }
+
 }

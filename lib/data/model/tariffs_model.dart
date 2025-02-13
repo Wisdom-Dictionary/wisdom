@@ -1,11 +1,15 @@
 import 'dart:convert';
 
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+
 /// id : 1
 /// name : {"uz":"","en":""}
 /// days : 1
 /// price : 1
 
-TariffsModel tariffsModelFromJson(String str) => TariffsModel.fromJson(json.decode(str));
+TariffsModel tariffsModelFromJson(String str) =>
+    TariffsModel.fromJson(json.decode(str));
 
 String tariffsModelToJson(TariffsModel data) => json.encode(data.toJson());
 
@@ -109,5 +113,13 @@ class Name {
     map['uz'] = _uz;
     map['en'] = _en;
     return map;
+  }
+
+  String? getLocaleName(BuildContext context) {
+    return switch (context.locale.languageCode) {
+      'uz' => _uz,
+      'en' => _en,
+      _ => ''
+    };
   }
 }

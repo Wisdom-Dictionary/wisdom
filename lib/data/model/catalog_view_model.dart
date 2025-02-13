@@ -1,29 +1,25 @@
 import 'dart:convert';
-
 /// id : 1
 /// body : ""
 /// word : ""
 /// status : true
 /// error : 1
 
-CatalogViewModel catalogViewModelFromJson(String str) =>
-    CatalogViewModel.fromJson(json.decode(str));
+CatalogViewModel catalogViewModelFromJson(String str) => CatalogViewModel.fromJson(json.decode(str));
 String catalogViewModelToJson(CatalogViewModel data) => json.encode(data.toJson());
-
 class CatalogViewModel {
   CatalogViewModel({
-    int? id,
-    String? body,
-    String? word,
-    bool? status,
-    int? error,
-  }) {
+      int? id, 
+      String? body, 
+      String? word, 
+      bool? status, 
+      int? error,}){
     _id = id;
     _body = body;
     _word = word;
     _status = status;
     _error = error;
-  }
+}
 
   CatalogViewModel.fromJson(dynamic json) {
     _id = json['id'];
@@ -37,20 +33,17 @@ class CatalogViewModel {
   String? _word;
   bool? _status;
   int? _error;
-  CatalogViewModel copyWith({
-    int? id,
-    String? body,
-    String? word,
-    bool? status,
-    int? error,
-  }) =>
-      CatalogViewModel(
-        id: id ?? _id,
-        body: body ?? _body,
-        word: word ?? _word,
-        status: status ?? _status,
-        error: error ?? _error,
-      );
+CatalogViewModel copyWith({  int? id,
+  String? body,
+  String? word,
+  bool? status,
+  int? error,
+}) => CatalogViewModel(  id: id ?? _id,
+  body: body ?? _body,
+  word: word ?? _word,
+  status: status ?? _status,
+  error: error ?? _error,
+);
   int? get id => _id;
   String? get body => _body;
   String? get word => _word;
@@ -66,4 +59,5 @@ class CatalogViewModel {
     map['error'] = _error;
     return map;
   }
+
 }

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -6,6 +8,7 @@ import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:jbaza/jbaza.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wisdom/core/db/preference_helper.dart';
+import 'package:wisdom/core/localization/locale_keys.g.dart';
 import 'package:wisdom/presentation/pages/home/viewmodel/home_viewmodel.dart';
 import 'package:wisdom/presentation/routes/routes.dart';
 
@@ -13,6 +16,7 @@ import '../../../../config/constants/app_colors.dart';
 import '../../../../config/constants/assets.dart';
 import '../../../../config/constants/constants.dart';
 import '../../../../core/di/app_locator.dart';
+import '../../../../core/services/purchase_observer.dart';
 import '../../../components/drawer_menu_item.dart';
 
 class DrawerScreen extends ViewModelWidget<HomeViewModel> {
@@ -20,6 +24,9 @@ class DrawerScreen extends ViewModelWidget<HomeViewModel> {
 
   @override
   Widget build(BuildContext context, HomeViewModel viewModel) {
+    final bool isLoggedIn =
+        locator.get<SharedPreferenceHelper>().getString(Constants.KEY_TOKEN, '') != '';
+    log('isLoggedIn: $isLoggedIn');
     return Scaffold(
       backgroundColor:
           isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
@@ -58,21 +65,18 @@ class DrawerScreen extends ViewModelWidget<HomeViewModel> {
               ),
             ),
             Visibility(
-              visible:
-                  viewModel.sharedPref.getString(Constants.KEY_SUBSCRIBE, "") ==
-                      "",
+              visible: !PurchasesObserver().isPro(),
               child: DrawerMenuItem(
-                title: 'subscribe'.tr(),
+                title: LocaleKeys.subscribe.tr(),
                 imgAssets: Assets.icons.proVersion,
                 onTap: () {
-                  var phone = viewModel.localViewModel.preferenceHelper
-                      .getString(Constants.KEY_PHONE, "");
-                  if (phone.isNotEmpty) {
-                    Navigator.of(context).pushNamed(Routes.verifyPage,
-                        arguments: {'number': phone});
-                  } else {
-                    Navigator.of(context).pushNamed(Routes.gettingProPage);
-                  }
+                  Navigator.of(context).pushNamed(Routes.gettingProPage);
+                  // var phone = viewModel.localViewModel.preferenceHelper.getString(Constants.KEY_PHONE, "");
+                  // if (phone.isNotEmpty) {
+                  //   Navigator.of(context).pushNamed(Routes.verifyPage, arguments: {'number': phone});
+                  // } else {
+                  //   Navigator.of(context).pushNamed(Routes.gettingProPage);
+                  // }
                 },
               ),
             ),
@@ -93,8 +97,18 @@ class DrawerScreen extends ViewModelWidget<HomeViewModel> {
                     Navigator.of(context).pushNamed(Routes.myContactsPage),
               ),
             ),
+               DrawerMenuItem(
+              title: isLoggedIn ? LocaleKeys.personal_cabinet.tr() : LocaleKeys.login.tr(),
+              imgAssets: Assets.icons.person,
+              onTap: () {
+                isLoggedIn
+                    ? Navigator.of(context).pushNamed(Routes.profilePage)
+                    : viewModel.navigateTo(Routes.loginPage);
+                ZoomDrawer.of(context)!.toggle();
+              },
+            ),
             DrawerMenuItem(
-              title: 'place_ad'.tr(),
+              title: LocaleKeys.contacts.tr(),
               imgAssets: Assets.icons.giveAd,
               onTap: () => Navigator.of(context).pushNamed(Routes.givingAdPage),
             ),

@@ -1,28 +1,24 @@
 import 'dart:convert';
-
 /// id : 1
 /// word_class : ""
 /// star : ""
 /// word : ""
 /// related_words : ""
 
-WordAndWordsUzModel wordAndWordsUzModelFromJson(String str) =>
-    WordAndWordsUzModel.fromJson(json.decode(str));
+WordAndWordsUzModel wordAndWordsUzModelFromJson(String str) => WordAndWordsUzModel.fromJson(json.decode(str));
 String wordAndWordsUzModelToJson(WordAndWordsUzModel data) => json.encode(data.toJson());
-
 class WordAndWordsUzModel {
   WordAndWordsUzModel({
-    int? id,
-    String? wordClass,
-    String? star,
-    String? word,
-    String? relatedWords,
-  }) {
+      int? id, 
+      String? wordClass, 
+      String? star, 
+      String? word, 
+      String? relatedWords,}){
     _id = id;
     _wordClass = wordClass;
     _star = star;
     _word = word;
-  }
+}
 
   WordAndWordsUzModel.fromJson(dynamic json) {
     _id = json['id'];
@@ -34,18 +30,15 @@ class WordAndWordsUzModel {
   String? _wordClass;
   String? _star;
   String? _word;
-  WordAndWordsUzModel copyWith({
-    int? id,
-    String? wordClass,
-    String? star,
-    String? word,
-  }) =>
-      WordAndWordsUzModel(
-        id: id ?? _id,
-        wordClass: wordClass ?? _wordClass,
-        star: star ?? _star,
-        word: word ?? _word,
-      );
+WordAndWordsUzModel copyWith({  int? id,
+  String? wordClass,
+  String? star,
+  String? word,
+}) => WordAndWordsUzModel(  id: id ?? _id,
+  wordClass: wordClass ?? _wordClass,
+  star: star ?? _star,
+  word: word ?? _word,
+);
   int? get id => _id;
   String? get wordClass => _wordClass;
   String? get star => _star;
@@ -59,4 +52,5 @@ class WordAndWordsUzModel {
     map['word'] = _word;
     return map;
   }
+
 }

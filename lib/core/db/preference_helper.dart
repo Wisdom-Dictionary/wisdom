@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferenceHelper {
@@ -87,4 +86,8 @@ class SharedPreferenceHelper {
   clear() {
     prefs.clear();
   }
+  void clearUserData() {
+    prefs.clear();
+  }
+
 }

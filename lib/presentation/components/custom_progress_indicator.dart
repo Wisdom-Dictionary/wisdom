@@ -13,7 +13,7 @@ class ProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final barWidth = (MediaQuery.of(context).size.width) * 0.7;
+    final barWidth = (MediaQuery.of(context).size.width)*0.7;
     const double barHeight = 6.0;
 
     return Stack(
@@ -28,7 +28,7 @@ class ProgressBar extends StatelessWidget {
         ),
         Container(
           height: barHeight,
-          width: barWidth * percent / 100,
+          width: barWidth * percent/100,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15.0),
             color: AppColors.blue,

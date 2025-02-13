@@ -28,7 +28,7 @@ class SearchHistoryItem extends StatelessWidget {
     return InkWell(
       onTap: () => onTap(),
       child: SizedBox(
-        height: 52.h,
+        height: 52.w,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -47,13 +47,22 @@ class SearchHistoryItem extends StatelessWidget {
                         RichText(
                           text: TextSpan(
                             style: AppTextStyle.font15W500Normal.copyWith(
-                                color: isDarkTheme ? AppColors.white : AppColors.darkGray),
-                            text: firstText.length > 20 ? firstText.substring(0, 20) : firstText,
+                              color: isDarkTheme
+                                  ? AppColors.white
+                                  : AppColors.darkGray,
+                              fontSize: 15.sp,
+                            ),
+                            text: firstText.length > 20
+                                ? firstText.substring(0, 20)
+                                : firstText,
                             children: [
                               TextSpan(
-                                  text: '   $secondText',
-                                  style: AppTextStyle.font15W500Normal
-                                      .copyWith(color: AppColors.paleBlue)),
+                                text: '   $secondText',
+                                style: AppTextStyle.font15W500Normal.copyWith(
+                                  color: AppColors.paleBlue,
+                                  fontSize: 15.sp,
+                                ),
+                              ),
                             ],
                           ),
                           overflow: TextOverflow.ellipsis,
@@ -63,8 +72,10 @@ class SearchHistoryItem extends StatelessWidget {
                           child: Text(
                             thirdText ?? "",
                             overflow: TextOverflow.ellipsis,
-                            style:
-                                AppTextStyle.font13W500Normal.copyWith(color: AppColors.lightGray),
+                            style: AppTextStyle.font13W500Normal.copyWith(
+                              color: AppColors.lightGray,
+                              fontSize: 13.sp,
+                            ),
                           ),
                         ),
                       ],

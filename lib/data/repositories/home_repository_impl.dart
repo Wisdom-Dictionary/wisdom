@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:jbaza/jbaza.dart';
 import 'package:wisdom/core/db/db_helper.dart';
-import 'package:wisdom/core/domain/http_is_success.dart';
 import 'package:wisdom/core/services/custom_client.dart';
+import 'package:wisdom/core/services/dio_client.dart';
 import 'package:wisdom/data/model/subscribe_check_model.dart';
 import 'package:wisdom/data/model/timeline_model.dart';
 
@@ -12,10 +12,11 @@ import '../../config/constants/urls.dart';
 import '../../domain/repositories/home_repository.dart';
 
 class HomeRepositoryImpl extends HomeRepository {
-  HomeRepositoryImpl(this.dbHelper, this.customClient);
+  HomeRepositoryImpl(this.dbHelper, this.customClient, this._dioClient);
 
   final DBHelper dbHelper;
   final CustomClient customClient;
+  final DioClient _dioClient;
   TimelineModel _timeLineModel = TimelineModel();
   Ad _ad = Ad();
 
@@ -104,14 +105,17 @@ class HomeRepositoryImpl extends HomeRepository {
 
   @override
   Future<SubscribeCheckModel?> checkSubscription() async {
-    var response = await customClient.get(
-      Urls.subscribeCheck,
+    var response = await _dioClient.get(
+      Urls.subscribeCheck.path,
     );
     if (response.isSuccessful) {
-      var subscribeModel = SubscribeCheckModel.fromJson(jsonDecode(response.body));
+      var subscribeModel = SubscribeCheckModel.fromJson(jsonDecode(response.data));
       return subscribeModel;
     } else {
-      throw VMException(response.body, callFuncName: 'checkSubscription', response: response);
+      throw VMException(
+        response.data,
+        callFuncName: 'checkSubscription',
+      );
     }
   }
 

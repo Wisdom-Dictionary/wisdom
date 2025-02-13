@@ -1,26 +1,22 @@
 import 'dart:convert';
-
 /// id : 1
 /// word : ""
 /// c_id : 1
 /// c_body : ""
 
-WordWithCultureModel wordWithCultureModelFromJson(String str) =>
-    WordWithCultureModel.fromJson(json.decode(str));
+WordWithCultureModel wordWithCultureModelFromJson(String str) => WordWithCultureModel.fromJson(json.decode(str));
 String wordWithCultureModelToJson(WordWithCultureModel data) => json.encode(data.toJson());
-
 class WordWithCultureModel {
   WordWithCultureModel({
-    int? id,
-    String? word,
-    int? cId,
-    String? cBody,
-  }) {
+      int? id, 
+      String? word, 
+      int? cId, 
+      String? cBody,}){
     _id = id;
     _word = word;
     _cId = cId;
     _cBody = cBody;
-  }
+}
 
   WordWithCultureModel.fromJson(dynamic json) {
     _id = json['id'];
@@ -32,18 +28,15 @@ class WordWithCultureModel {
   String? _word;
   int? _cId;
   String? _cBody;
-  WordWithCultureModel copyWith({
-    int? id,
-    String? word,
-    int? cId,
-    String? cBody,
-  }) =>
-      WordWithCultureModel(
-        id: id ?? _id,
-        word: word ?? _word,
-        cId: cId ?? _cId,
-        cBody: cBody ?? _cBody,
-      );
+WordWithCultureModel copyWith({  int? id,
+  String? word,
+  int? cId,
+  String? cBody,
+}) => WordWithCultureModel(  id: id ?? _id,
+  word: word ?? _word,
+  cId: cId ?? _cId,
+  cBody: cBody ?? _cBody,
+);
   int? get id => _id;
   String? get word => _word;
   int? get cId => _cId;
@@ -57,4 +50,5 @@ class WordWithCultureModel {
     map['c_body'] = _cBody;
     return map;
   }
+
 }

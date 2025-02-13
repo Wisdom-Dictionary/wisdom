@@ -1,17 +1,21 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:wisdom/core/db/preference_helper.dart';
+import 'package:wisdom/core/di/app_locator.dart';
 
 import 'config/constants/constants.dart';
 import 'core/services/theme_preferences.dart';
 import 'presentation/routes/routes.dart';
 
+final navigatorKey = GlobalKey<NavigatorState>();
+
 class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
-  static final navigatorKey = GlobalKey<NavigatorState>();
+  const MyApp({super.key});
 
   static Future<void> restartApp(BuildContext context) async {
     context.findAncestorStateOfType<_MyAppState>()?.restartApp();
@@ -49,23 +53,41 @@ class _MyAppState extends State<MyApp> {
               return MaterialApp(
                 title: 'Wisdom Dictionary',
                 debugShowCheckedModeBanner: false,
-                navigatorKey: MyApp.navigatorKey,
+                navigatorKey: navigatorKey,
                 localizationsDelegates: context.localizationDelegates,
                 supportedLocales: context.supportedLocales,
                 locale: context.locale,
+                theme: ThemeData(
+                  primarySwatch: Colors.blue,
+                  useMaterial3: false,
+                ),
                 builder: (context, child) {
                   return MediaQuery(
-                    data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+                    data: MediaQuery.of(context)
+                        .copyWith(textScaler: const TextScaler.linear(1.0)),
                     child: child!,
                   );
                 },
                 onGenerateRoute: (setting) => Routes.generateRoutes(setting),
+                initialRoute: _getInitialRoute(),
               );
             },
           );
         },
       ),
     );
+  }
+
+  String? _getInitialRoute() {
+    if (Platform.isWindows || Platform.isMacOS) {
+      if (locator
+          .get<SharedPreferenceHelper>()
+          .getString(Constants.KEY_TOKEN, '')
+          .isEmpty) {
+        return Routes.loginPage;
+      }
+    }
+    return null;
   }
 }
 

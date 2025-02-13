@@ -27,14 +27,14 @@ class CustomBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: 16.h),
+      padding:const  EdgeInsets.only(top: 16),
       child: Stack(
         children: [
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                margin: EdgeInsets.only(top: 12.h),
+                margin: EdgeInsets.only(top: 12),
                 width: double.maxFinite,
                 decoration: isDarkTheme ? AppDecoration.bannerDarkDecor : AppDecoration.bannerDecor,
                 child: isInkWellEnable
@@ -59,7 +59,7 @@ class CustomBanner extends StatelessWidget {
           Align(
             alignment: Alignment.topCenter,
             child: Container(
-              height: 23.h,
+              height: 23.w,
               width: 181.w,
               decoration: BoxDecoration(
                 color: AppColors.blue,
@@ -68,7 +68,7 @@ class CustomBanner extends StatelessWidget {
               child: Center(
                 child: Text(
                   title,
-                  style: AppTextStyle.font13W500Normal,
+                  style: AppTextStyle.font13W500Normal.copyWith(fontSize: 13.sp),
                 ),
               ),
             ),

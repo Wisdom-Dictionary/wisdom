@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -43,7 +44,7 @@ class WordBankFolderItem extends ViewModelWidget<WordBankFolderViewModel> {
                   text: TextSpan(
                     style: AppTextStyle.font15W500Normal
                         .copyWith(color: isDarkTheme ? AppColors.borderWhite : AppColors.darkGray),
-                    text: model.folderName,
+                    text: model.folderName.tr(),
                     children: [
                       TextSpan(
                           text: "  ($wordCount)",
@@ -55,27 +56,25 @@ class WordBankFolderItem extends ViewModelWidget<WordBankFolderViewModel> {
               ),
               Row(
                 children: [
-                  model.id != null
-                      ? SizedBox(
-                          height: 48.h,
-                          width: 48.h,
-                          child: Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              onTap: () => viewModel.goToBankList(model),
-                              borderRadius: BorderRadius.circular(24.r),
-                              child: SvgPicture.asset(
-                                Assets.icons.arrowCircleRight,
-                                height: 24.h,
-                                width: 24.h,
-                                fit: BoxFit.scaleDown,
-                              ),
-                            ),
-                          ),
-                        )
-                      : const SizedBox.shrink(),
+                  SizedBox(
+                    height: 48.h,
+                    width: 48.h,
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () => viewModel.goToBankList(model),
+                        borderRadius: BorderRadius.circular(24.r),
+                        child: SvgPicture.asset(
+                          Assets.icons.arrowCircleRight,
+                          height: 24.h,
+                          width: 24.h,
+                          fit: BoxFit.scaleDown,
+                        ),
+                      ),
+                    ),
+                  ),
                   Visibility(
-                    visible: model.id != 1 && model.id != 2,
+                    visible: model.isDefault == 0,
                     child: SizedBox(
                       height: 48.h,
                       width: 48.h,

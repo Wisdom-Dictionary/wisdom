@@ -1,28 +1,24 @@
 import 'dart:convert';
 
 import '../base_table_model.dart';
-
 /// id : 1
 /// word_id : 1
 /// word : ""
 /// body : ""
 
-DifferenceTableModel differenceTableModelFromJson(String str) =>
-    DifferenceTableModel.fromJson(json.decode(str));
+DifferenceTableModel differenceTableModelFromJson(String str) => DifferenceTableModel.fromJson(json.decode(str));
 String differenceTableModelToJson(DifferenceTableModel data) => json.encode(data.toJson());
-
 class DifferenceTableModel extends BaseTableModel {
   DifferenceTableModel({
-    int? id,
-    int? wordId,
-    String? word,
-    String? body,
-  }) {
+      int? id, 
+      int? wordId, 
+      String? word, 
+      String? body,}){
     _id = id;
     _wordId = wordId;
     _word = word;
     _body = body;
-  }
+}
 
   DifferenceTableModel.fromJson(dynamic json) {
     _id = json['id'];
@@ -34,18 +30,15 @@ class DifferenceTableModel extends BaseTableModel {
   int? _wordId;
   String? _word;
   String? _body;
-  DifferenceTableModel copyWith({
-    int? id,
-    int? wordId,
-    String? word,
-    String? body,
-  }) =>
-      DifferenceTableModel(
-        id: id ?? _id,
-        wordId: wordId ?? _wordId,
-        word: word ?? _word,
-        body: body ?? _body,
-      );
+DifferenceTableModel copyWith({  int? id,
+  int? wordId,
+  String? word,
+  String? body,
+}) => DifferenceTableModel(  id: id ?? _id,
+  wordId: wordId ?? _wordId,
+  word: word ?? _word,
+  body: body ?? _body,
+);
   int? get id => _id;
   int? get wordId => _wordId;
   String? get word => _word;
@@ -60,4 +53,5 @@ class DifferenceTableModel extends BaseTableModel {
     map['body'] = _body;
     return map;
   }
+
 }

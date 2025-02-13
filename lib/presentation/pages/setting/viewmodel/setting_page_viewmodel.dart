@@ -65,7 +65,7 @@ class SettingPageViewModel extends BaseViewModel {
   }
 
   Future<void> scheduleDailyNotification(TimeOfDay timeOfDay) async {
-    if (!(await AppNotificationService.to.requestPermissions())) {
+    if(!(await AppNotificationService.to.requestPermissions())){
       return;
     }
     await AppNotificationService.to.scheduleDailyNotification(
@@ -144,7 +144,7 @@ void callbackDispatcher() {
       case fetchBackground:
         {
           print('${task} ${inputData}');
-          await AppNotificationService.to.showNotification(
+         await AppNotificationService.to.showNotification(
             const RemoteMessage(
               notification: RemoteNotification(
                 title: "Wisdom dictionary",

@@ -1,11 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:wisdom/config/constants/constants.dart';
-import 'package:wisdom/core/di/app_locator.dart';
-import 'package:wisdom/data/viewmodel/local_viewmodel.dart';
+
 import '../../config/constants/app_colors.dart';
 import '../../config/constants/app_text_style.dart';
 import '../../config/constants/assets.dart';
@@ -55,8 +53,10 @@ class _CustomAppBarState extends State<CustomAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: (isDarkTheme ? AppColors.darkForm : AppColors.blue).withOpacity(0.95),
-      shadowColor: isDarkTheme ? null : const Color(0xFF6D8DAD).withOpacity(0.15),
+      backgroundColor:
+          (isDarkTheme ? AppColors.darkForm : AppColors.blue).withOpacity(0.95),
+      shadowColor:
+          isDarkTheme ? null : const Color(0xFF6D8DAD).withOpacity(0.15),
       elevation: 4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
@@ -94,16 +94,21 @@ class _CustomAppBarState extends State<CustomAppBar> {
           ? PreferredSize(
               preferredSize: Size.fromHeight(50.h),
               child: Container(
-                height: 47.h,
+                height: 47.r,
                 margin: EdgeInsets.all(14.r),
                 decoration: BoxDecoration(
-                    color: (isDarkTheme ? AppColors.darkBackground : AppColors.white)
+                    color: (isDarkTheme
+                            ? AppColors.darkBackground
+                            : AppColors.white)
                         .withOpacity(0.95),
                     borderRadius: BorderRadius.circular(23.5.r)),
                 child: TextField(
                   autofocus: widget.focus,
-                  style: AppTextStyle.font15W400Normal.copyWith(color: AppColors.blue),
-                  cursorHeight: 19.h,
+                  style: AppTextStyle.font15W400Normal.copyWith(
+                    color: AppColors.blue,
+                    fontSize: 15.sp,
+                  ),
+                  cursorHeight: 19.r,
                   controller: controller,
                   onChanged: (value) {
                     onChanged(value);
@@ -141,9 +146,10 @@ class _CustomAppBarState extends State<CustomAppBar> {
                     ),
                     hintText: 'search_hint'.tr(),
                     border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(vertical: 14.h),
+                    contentPadding: EdgeInsets.symmetric(vertical: 14.r),
                     hintStyle: AppTextStyle.font15W400Normal.copyWith(
                       color: AppColors.paleBlue.withOpacity(0.5),
+                      fontSize: 15.sp,
                     ),
                   ),
                 ),

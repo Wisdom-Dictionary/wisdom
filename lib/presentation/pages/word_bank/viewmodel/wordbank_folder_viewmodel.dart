@@ -117,7 +117,7 @@ class WordBankFolderViewModel extends BaseViewModel {
     }
   }
 
-  void addNewFolder() {
+  Future addNewFolder() async{
     if (!PurchasesObserver().isPro() && wordEntityRepository.wordBankFoldersList.length >= 3) {
       showFolderCountOutOfBound();
     } else {
@@ -151,6 +151,9 @@ class WordBankFolderViewModel extends BaseViewModel {
         ),
         positive: "add".tr(),
         onPositiveTap: () async {
+          if (!(await localViewModel.canAddWordBank(context!))) {
+            return;
+          }
           if (folderTextController.text.isNotEmpty) {
             await wordEntityRepository.addNewWordBankFolder(folderTextController.text);
             notifyListeners();
@@ -187,7 +190,10 @@ class WordBankFolderViewModel extends BaseViewModel {
     );
   }
 
-  void addNewWord() {
+  void addNewWord()async {
+    if (!(await localViewModel.canAddWordBank(context!))) {
+      return;
+    }
     showCustomDialog(
       context: context!,
       icon: Assets.icons.saveWord,
@@ -296,7 +302,7 @@ class WordBankFolderViewModel extends BaseViewModel {
                           decoration: const BoxDecoration(
                               border: Border(bottom: BorderSide(color: AppColors.borderWhite))),
                           child: ListTile(
-                            title: Text(item.folderName,
+                            title: Text(item.folderName.tr(),
                                 style:
                                     AppTextStyle.font15W600Normal.copyWith(color: AppColors.blue)),
                             onTap: () async {
@@ -304,7 +310,7 @@ class WordBankFolderViewModel extends BaseViewModel {
                                   word: wordEng, translation: wordUz, folderId: item.id);
 
                               await wordEntityRepository.saveWordBank(bankModel);
-                              localViewModel.changeBadgeCount(1);
+                              await localViewModel.changeBadgeCount(1);
 
                               notifyListeners();
                               pop();
@@ -325,7 +331,7 @@ class WordBankFolderViewModel extends BaseViewModel {
                 wordEntityRepository.wordBankFoldersList.length >= 3) {
               showFolderCountOutOfBound();
             } else {
-              addNewFolder();
+              await addNewFolder();
             }
           },
         );
@@ -381,12 +387,8 @@ class WordBankFolderViewModel extends BaseViewModel {
       onPositiveTap: () {
         safeBlock(
           () async {
-            wordEntityRepository.wordBankList
-                .where((element) => element.folderId == model.id)
-                .forEach((element) {
-              localViewModel.changeBadgeCount(-1);
-            });
             await wordEntityRepository.deleteWordBankFolder(model.id);
+            await localViewModel.changeBadgeCount(-1);
             notifyListeners();
           },
           callFuncName: 'deleteWordBankModel',

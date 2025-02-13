@@ -3,17 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:jbaza/jbaza.dart';
 import 'package:wisdom/core/di/app_locator.dart';
-import 'package:wisdom/core/services/purchase_observer.dart';
 import 'package:wisdom/presentation/components/custom_oval_button.dart';
 import 'package:wisdom/presentation/components/wordbank_folder_item.dart';
+import 'package:wisdom/presentation/widgets/banner_ad_widget.dart';
 import 'package:wisdom/presentation/widgets/empty_jar.dart';
 import 'package:wisdom/presentation/widgets/loading_widget.dart';
 
 import '../../../../config/constants/app_colors.dart';
-import '../../../../config/constants/app_decoration.dart';
 import '../../../../config/constants/app_text_style.dart';
 import '../../../../config/constants/assets.dart';
 import '../../../../config/constants/constants.dart';
@@ -74,7 +72,7 @@ class WordBankFolderPage extends ViewModelBuilderWidget<WordBankFolderViewModel>
                       children: [
                         CustomOvalButton(
                           label: 'new_word_bank_type'.tr(),
-                          onTap: () => viewModel.addNewFolder(),
+                          onTap: () async => await viewModel.addNewFolder(),
                           textStyle: AppTextStyle.font15W500Normal,
                           prefixIcon: true,
                           imgAssets: Assets.icons.addFolder,
@@ -82,22 +80,7 @@ class WordBankFolderPage extends ViewModelBuilderWidget<WordBankFolderViewModel>
                         ),
                       ],
                     ),
-                    ValueListenableBuilder(
-                      valueListenable: viewModel.localViewModel.isNetworkAvailable,
-                      builder: (BuildContext context, value, Widget? child) {
-                        return viewModel.localViewModel.banner != null && value as bool
-                            ? Container(
-                                margin: EdgeInsets.only(top: 16.h, left: 16.w, right: 16.w),
-                                decoration: isDarkTheme
-                                    ? AppDecoration.bannerDarkDecor
-                                    : AppDecoration.bannerDecor,
-                                height: viewModel.localViewModel.banner!.size.height * 1.0,
-                                child: AdWidget(
-                                  ad: viewModel.localViewModel.banner!..load(),
-                                ))
-                            : const SizedBox.shrink();
-                      },
-                    ),
+                    const BannerAdWidget(),
                   ],
                 ),
               )

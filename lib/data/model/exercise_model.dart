@@ -50,8 +50,7 @@ class ExerciseFinalModel {
   }
 
   @override
-  int get hashCode =>
-      id.hashCode ^ word.hashCode ^ translation.hashCode ^ result.hashCode ^ tableId.hashCode;
+  int get hashCode => id.hashCode ^ word.hashCode ^ translation.hashCode ^ result.hashCode ^ tableId.hashCode;
 
   final int? tableId;
   final int? id;

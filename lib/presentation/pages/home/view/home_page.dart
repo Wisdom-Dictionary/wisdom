@@ -8,8 +8,11 @@ import 'package:jbaza/jbaza.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:wisdom/config/constants/app_colors.dart';
 import 'package:wisdom/core/di/app_locator.dart';
+import 'package:wisdom/core/services/ad/ad_service.dart';
+import 'package:wisdom/core/utils/common.dart';
 import 'package:wisdom/data/viewmodel/local_viewmodel.dart';
 import 'package:wisdom/main.dart';
+import 'package:wisdom/presentation/pages/home/view/get_pro_bottomsheet.dart';
 import 'package:wisdom/presentation/pages/home/viewmodel/home_viewmodel.dart';
 
 import '../../../../config/constants/constants.dart';
@@ -31,8 +34,9 @@ class HomePage extends ViewModelBuilderWidget<HomeViewModel> {
     viewModel.getRandomDailyWords();
     viewModel.getWordBank();
     viewModel.checkStatus();
+    viewModel.localViewModel.checkNetworkConnection();
+    locator.get<AdService>().initialize();
     viewModel.addDeviceToFirebase();
-    viewModel.redirect();
     _isAndroidPermissionGranted();
     _requestPermissions();
     _configureSelectNotificationSubject(viewModel);
@@ -63,6 +67,13 @@ class HomePage extends ViewModelBuilderWidget<HomeViewModel> {
 
   @override
   HomeViewModel viewModelBuilder(BuildContext context) {
+    getProBottomSheetController.stream.listen(
+      (event) async {
+        log.w('getProBottomSheetController $event');
+        if (!context.mounted) return;
+        showGetProBottomSheet(context);
+      },
+    );
     return HomeViewModel(context: context);
   }
 

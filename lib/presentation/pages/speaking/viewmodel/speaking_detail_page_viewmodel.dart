@@ -1,5 +1,6 @@
-import 'package:flutter_tts/flutter_tts.dart';
 import 'package:jbaza/jbaza.dart';
+import 'package:wisdom/core/di/app_locator.dart';
+import 'package:wisdom/core/utils/text_reader.dart';
 import 'package:wisdom/data/viewmodel/local_viewmodel.dart';
 import 'package:wisdom/domain/repositories/home_repository.dart';
 
@@ -16,6 +17,7 @@ class SpeakingDetailPageViewModel extends BaseViewModel {
   final LocalViewModel localViewModel;
   final CategoryRepository categoryRepository;
   final String getSpeakingListTag = 'getSpeakingDetails';
+  TextReader textReader = locator.get();
 
   String? getSpeaking() {
     return homeRepository.timelineModel.speaking!.word;
@@ -26,10 +28,16 @@ class SpeakingDetailPageViewModel extends BaseViewModel {
       if (homeRepository.timelineModel.speaking != null) {
         if (searchText != null && searchText.trim().isNotEmpty) {
           await categoryRepository.getSpeakingWordsList(
-              homeRepository.timelineModel.speaking!.id.toString(), null, searchText.trim(), true);
+              homeRepository.timelineModel.speaking!.id.toString(),
+              null,
+              searchText.trim(),
+              true);
         } else {
           await categoryRepository.getSpeakingWordsList(
-              homeRepository.timelineModel.speaking!.id.toString(), null, null, true);
+              homeRepository.timelineModel.speaking!.id.toString(),
+              null,
+              null,
+              true);
         }
         if (categoryRepository.speakingWordsList.isNotEmpty) {
           setSuccess(tag: getSpeakingListTag);
@@ -47,9 +55,10 @@ class SpeakingDetailPageViewModel extends BaseViewModel {
   }
 
   tts(String? word) async {
-    FlutterTts tts = FlutterTts();
-    await tts.setSharedInstance(true); // For IOS
-    tts.setLanguage('en-US');
-    tts.speak(word ?? "");
+    // FlutterTts tts = FlutterTts();
+    // await tts.setSharedInstance(true); // For IOS
+    // tts.setLanguage('en-US');
+    // tts.speak(word ?? "");
+    await textReader.readText(word ?? '');
   }
 }

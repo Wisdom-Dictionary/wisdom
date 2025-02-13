@@ -29,6 +29,8 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 final StreamController<ReceivedNotification> didReceiveLocalNotificationStream =
     StreamController<ReceivedNotification>.broadcast();
 
+StreamController<bool> getProBottomSheetController = StreamController.broadcast();
+
 final StreamController<String?> selectNotificationStream = StreamController<String?>.broadcast();
 String? selectedNotificationPayload;
 const String navigationActionId = 'id_3';
@@ -173,21 +175,21 @@ Future setupNotifications() async {
     requestAlertPermission: false,
     requestBadgePermission: false,
     requestSoundPermission: false,
-    onDidReceiveLocalNotification: (
-      int id,
-      String? title,
-      String? body,
-      String? payload,
-    ) async {
-      didReceiveLocalNotificationStream.add(
-        ReceivedNotification(
-          id: id,
-          title: title,
-          body: body,
-          payload: payload,
-        ),
-      );
-    },
+    // onDidReceiveLocalNotification: (
+    //   int id,
+    //   String? title,
+    //   String? body,
+    //   String? payload,
+    // ) async {
+    //   didReceiveLocalNotificationStream.add(
+    //     ReceivedNotification(
+    //       id: id,
+    //       title: title,
+    //       body: body,
+    //       payload: payload,
+    //     ),
+    //   );
+    // },
     notificationCategories: darwinNotificationCategories,
   );
   final InitializationSettings initializationSettings = InitializationSettings(

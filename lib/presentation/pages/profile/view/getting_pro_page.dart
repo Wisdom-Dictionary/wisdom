@@ -2,12 +2,15 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:gap/gap.dart';
 import 'package:jbaza/jbaza.dart';
 import 'package:wisdom/config/constants/app_colors.dart';
 import 'package:wisdom/config/constants/app_decoration.dart';
 import 'package:wisdom/config/constants/app_text_style.dart';
 import 'package:wisdom/config/constants/assets.dart';
 import 'package:wisdom/core/di/app_locator.dart';
+import 'package:wisdom/core/extensions/num_extension.dart';
+import 'package:wisdom/data/model/tariffs_model.dart';
 import 'package:wisdom/presentation/components/pro_info.dart';
 import 'package:wisdom/presentation/pages/profile/viewmodel/getting_pro_page_viewmodel.dart';
 import 'package:wisdom/presentation/widgets/custom_app_bar.dart';
@@ -95,25 +98,7 @@ class GettingProPage extends ViewModelBuilderWidget<GettingProPageViewModel> {
                               physics: const NeverScrollableScrollPhysics(),
                               itemBuilder: (context, index) {
                                 var item = viewModel.profileRepository.tariffsModel[index];
-                                return RadioListTile(
-                                  title: Text(
-                                    ((context.locale.toString() == "en_US"
-                                                ? item.name!.en
-                                                : item.name!.uz) ??
-                                            "Contact with developers")
-                                        .toUpperCase(),
-                                    style: AppTextStyle.font15W500Normal.copyWith(
-                                        color:
-                                            isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
-                                  ),
-                                  contentPadding: EdgeInsets.zero,
-                                  value: item.id.toString(),
-                                  groupValue: viewModel.tariffsValue,
-                                  onChanged: (value) {
-                                    viewModel.tariffsValue = value.toString();
-                                    viewModel.notifyListeners();
-                                  },
-                                );
+                                return buildRadioListTile(context, item, viewModel);
                               },
                             )
                           : const SizedBox.shrink(),
@@ -138,19 +123,24 @@ class GettingProPage extends ViewModelBuilderWidget<GettingProPageViewModel> {
                       ),
                       // ignore: prefer_const_literals_to_create_immutables
                       Visibility(
-                        visible: viewModel.haveAccount(),
+                        visible: !viewModel.haveAccount(),
                         child: InkWell(
                           onTap: () => viewModel.onBuyPremiumPressed(),
                           child: RichText(
                             text: TextSpan(
                               style: AppTextStyle.font13W500Normal.copyWith(
-                                  color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
+                                color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray,
+                                fontSize: 13.sp,
+                              ),
                               text: 'haveAccount'.tr(),
                               children: [
                                 TextSpan(
                                   text: 'getAccount'.tr(),
                                   style: AppTextStyle.font13W500Normal.copyWith(
-                                      color: AppColors.blue, decoration: TextDecoration.underline),
+                                    color: AppColors.blue,
+                                    decoration: TextDecoration.underline,
+                                    fontSize: 13.sp,
+                                  ),
                                 ),
                               ],
                             ),
@@ -187,6 +177,42 @@ class GettingProPage extends ViewModelBuilderWidget<GettingProPageViewModel> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget buildRadioListTile(
+    BuildContext context,
+    TariffsModel item,
+    GettingProPageViewModel viewModel,
+  ) {
+    return RadioListTile(
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            ((context.locale.toString() == "en_US" ? item.name!.en : item.name!.uz) ??
+                    "Contact with developers")
+                .toUpperCase(),
+            style: AppTextStyle.font15W500Normal
+                .copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
+          ),
+          const Gap(12),
+          if(item.price!=null)
+          Text(
+            '${item.price.toMoneyFormat} UZS',
+            style: AppTextStyle.font15W500Normal.copyWith(
+              color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray,
+            ),
+          ),
+        ],
+      ),
+      contentPadding: EdgeInsets.zero,
+      value: item.id.toString(),
+      groupValue: viewModel.tariffsValue,
+      onChanged: (value) {
+        viewModel.tariffsValue = value.toString();
+        viewModel.notifyListeners();
+      },
     );
   }
 

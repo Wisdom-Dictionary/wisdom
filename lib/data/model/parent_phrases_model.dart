@@ -1,13 +1,12 @@
 class ParentPhrasesModel {
   ParentPhrasesModel({
-    this.id,
-    this.phraseId,
-    this.word,
-    this.star,
-    this.symonyms,
-    this.wordClassComment,
-    this.parentPhrase,
-  });
+      this.id, 
+      this.phraseId, 
+      this.word, 
+      this.star, 
+      this.symonyms, 
+      this.wordClassComment, 
+      this.parentPhrase,});
 
   ParentPhrasesModel.fromJson(dynamic json) {
     id = json['id'];
@@ -37,4 +36,5 @@ class ParentPhrasesModel {
     map['parent_phrase'] = parentPhrase;
     return map;
   }
+
 }

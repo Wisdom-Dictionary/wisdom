@@ -96,7 +96,7 @@ class WordEntityModel {
     _moreExamples = json['more_examples'];
     _wordClass = json['word_class'] != null ? WordClass.fromJson(json['word_class']) : null;
     _wordClassBody = json['word_class_body'];
-    _wordClassBodyMeaning = json['word_class_body_meaning'];
+    _wordClassBodyMeaning = json  ['word_class_body_meaning'];
     _image = json['image'];
     if (json['words_uz'] != null) {
       _wordsUz = [];
@@ -236,7 +236,7 @@ class WordEntityModel {
 
   String? get word => _word;
 
-  int? get star => _star;
+  int ? get star => _star;
 
   String? get body => _body;
 

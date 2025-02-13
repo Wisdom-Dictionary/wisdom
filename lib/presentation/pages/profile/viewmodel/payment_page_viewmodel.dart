@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:jbaza/jbaza.dart';
@@ -45,7 +46,7 @@ class PaymentPageViewModel extends BaseViewModel {
   SubscribeModel subscribeModel = SubscribeModel();
   Future? dialog;
 
-  void init() {
+  Future init() async {
     safeBlock(
       () async {
         if (await locator<NetWorkChecker>().isNetworkAvailable()) {
@@ -54,11 +55,9 @@ class PaymentPageViewModel extends BaseViewModel {
           sharedPreferenceHelper.putString(Constants.KEY_SUBSCRIBE, jsonEncode(subscribeModel));
           tariffsList = TariffsModel.fromJson(
               jsonDecode(sharedPreferenceHelper.getString(Constants.KEY_TARIFFS, "")));
-          verifyModel ??= VerifyModel.fromJson(
-              jsonDecode(sharedPreferenceHelper.getString(Constants.KEY_VERIFY, "")));
-          await PurchasesObserver().callGetProfile();
+          // verifyModel ??= VerifyModel.fromJson(
+          //     jsonDecode(sharedPreferenceHelper.getString(Constants.KEY_VERIFY, "")));
           setSuccess(tag: subscribeSuccessfulTag);
-          // if (PurchasesObserver().isPro()) Future.delayed(const Duration(milliseconds: 200), () => goToProfile());
         } else {
           callBackError('Connection lost');
         }
@@ -71,99 +70,29 @@ class PaymentPageViewModel extends BaseViewModel {
   Future<void> restore() async {
     setBusy(true, tag: restoreTag);
     try {
-      await PurchasesObserver().callRestorePurchases();
+      await Future.delayed(const Duration(milliseconds: 200));
       setSuccess(tag: restoreTag);
-      if (PurchasesObserver().isPro())
-        Future.delayed(const Duration(milliseconds: 100), () => goToProfile());
+      if (PurchasesObserver().isPro()) {
+        await Future.delayed(const Duration(milliseconds: 100), () => goToProfile());
+      }
     } catch (e) {
       setError(VMException(e.toString()), tag: restoreTag);
     }
   }
 
-  onPayPressed() async {
+ Future onPayPressed() async {
     switch (radioValue) {
       case "click":
-        openClick();
+       await openClick();
         break;
       case "payme":
-        openPayme();
+        await openPayme();
         break;
       case "applePay":
-        applePay();
+        await applePay();
         break;
-      // case "paynet":
-      //   showCustomDialog(
-      //     context: context!,
-      //     icon: Assets.icons.inform,
-      //     iconColor: AppColors.accentLight,
-      //     iconBackgroundColor: AppColors.error,
-      //     title: "payment".tr(),
-      //     positive: "Ok",
-      //     onPositiveTap: () {
-      //       Navigator.of(context!).pop();
-      //     },
-      //     contentText: Column(
-      //       mainAxisSize: MainAxisSize.min,
-      //       children: [
-      //         Padding(
-      //           padding: EdgeInsets.only(top: 20.h),
-      //           child: SvgPicture.asset(
-      //             isDarkTheme ? Assets.icons.logoWhiteText : Assets.icons.logoBlueText,
-      //             height: 32.h,
-      //             fit: BoxFit.scaleDown,
-      //           ),
-      //         ),
-      //         Padding(
-      //           padding: EdgeInsets.only(top: 20.h),
-      //           child: Text(
-      //             'payment_full_descr'.tr(),
-      //             style: AppTextStyle.font13W500Normal
-      //                 .copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
-      //             textAlign: TextAlign.center,
-      //           ),
-      //         ),
-      //         Padding(
-      //           padding: EdgeInsets.only(top: 20.h),
-      //           child: RichText(
-      //             text: TextSpan(
-      //                 text: 'order_id'.tr(),
-      //                 style: AppTextStyle.font13W500Normal
-      //                     .copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
-      //                 children: [
-      //                   TextSpan(
-      //                     text: subscribeModel.billingId.toString(),
-      //                     style: AppTextStyle.font17W600Normal.copyWith(
-      //                       color: AppColors.blue,
-      //                     ),
-      //                   ),
-      //                 ]),
-      //             textAlign: TextAlign.center,
-      //           ),
-      //         ),
-      //         Padding(
-      //           padding: EdgeInsets.only(top: 20.h),
-      //           child: RichText(
-      //             text: TextSpan(
-      //                 text: 'selected_subs'.tr(),
-      //                 style: AppTextStyle.font13W500Normal
-      //                     .copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
-      //                 children: [
-      //                   TextSpan(
-      //                     text: (tariffsList.name!.en ?? "Contact with developers").toUpperCase(),
-      //                     style: AppTextStyle.font15W700Normal.copyWith(
-      //                       color: AppColors.blue,
-      //                     ),
-      //                   ),
-      //                 ]),
-      //             textAlign: TextAlign.center,
-      //           ),
-      //         ),
-      //       ],
-      //     ),
-      //   );
-      //   break;
     }
-    resetLocator();
+    await resetLocator();
   }
 
   @override
@@ -185,6 +114,10 @@ class PaymentPageViewModel extends BaseViewModel {
 
   @override
   callBackError(String text) {
+    if (dialog != null) {
+      pop();
+      dialog = null;
+    }
     showTopSnackBar(
       Overlay.of(context!),
       CustomSnackBar.error(
@@ -194,45 +127,24 @@ class PaymentPageViewModel extends BaseViewModel {
   }
 
   goToProfile() {
-    navigateTo(Routes.profilePage, isRemoveStack: true);
+    Navigator.canPop(context!) ? pop() : navigateTo(Routes.mainPage, isRemoveStack: true);
   }
 
-  void openClick() async {
-    // var isInstalled = await LaunchApp.isAppInstalled(
-    //   androidPackageName: 'air.com.ssdsoftwaresolutions.clickuz',
-    //   // iosUrlScheme: 'pulsesecure://',
-    // );
-    // if (isInstalled) {
-    //   LaunchApp.openApp(
-    //     androidPackageName: 'air.com.ssdsoftwaresolutions.clickuz',
-    //
-    //     // iosUrlScheme: 'pulsesecure://',
-    //   );
-    // } else {
-    launchUrl(Uri.parse('${subscribeModel.click}'), mode: LaunchMode.externalApplication);
-    // }
+  Future<void> openClick() async {
+    await launchUrl(Uri.parse('${subscribeModel.click}'), mode: LaunchMode.externalApplication);
   }
 
-  void openPayme() async {
-    // var isInstalled = await LaunchApp.isAppInstalled(
-    //   androidPackageName: 'uz.dida.payme',
-    //   // iosUrlScheme: 'pulsesecure://',
-    // );
-    // if (isInstalled) {
-    //   LaunchApp.openApp(
-    //     androidPackageName: 'uz.dida.payme',
-    //     // iosUrlScheme: 'pulsesecure://',
-    //   );
-    // } else {
-    launchUrl(Uri.parse('${subscribeModel.payme}'));
-    // }
+  Future<void> openPayme() async {
+    log(subscribeModel.payme.toString());
+   await launchUrl(Uri.parse('${subscribeModel.payme}'), mode: LaunchMode.externalApplication);
   }
 
   Future<void> applePay() async {
     setBusy(true, tag: applePayTag);
     try {
-      final product = await PurchasesObserver().callGetLastProduct('pay_once');
-      await PurchasesObserver().callMakePurchase(product!);
+      await Future.delayed(const Duration(milliseconds: 100));
+      // final product = await PurchasesObserver().callGetLastProduct('pay_once');
+      // await PurchasesObserver().callMakePurchase(product!);
       if (PurchasesObserver().isPro()) {
         MyApp.restartApp(context!);
       } else {

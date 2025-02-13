@@ -2,10 +2,8 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 import 'package:jbaza/jbaza.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
@@ -14,8 +12,11 @@ import 'package:translator/translator.dart';
 import 'package:wisdom/config/constants/app_text_style.dart';
 import 'package:wisdom/config/constants/assets.dart';
 import 'package:wisdom/config/constants/constants.dart';
+import 'package:wisdom/core/di/app_locator.dart';
+import 'package:wisdom/core/utils/text_reader.dart';
 import 'package:wisdom/data/viewmodel/local_viewmodel.dart';
 import 'package:wisdom/domain/repositories/word_entity_repository.dart';
+
 import '../../../../config/constants/app_colors.dart';
 import '../../../../core/services/purchase_observer.dart';
 import '../../../../data/model/word_bank_model.dart';
@@ -33,7 +34,7 @@ class GoogleTranslatorPageViewModel extends BaseViewModel {
   final translator = GoogleTranslator();
   final LocalViewModel localViewModel;
   final WordEntityRepository wordEntityRepository;
-  FlutterTts flutterTts = FlutterTts();
+  TextReader flutterTts = locator.get();
   bool isSpeaking = false;
   bool isListening = false;
   bool topUzbek = true;
@@ -49,8 +50,10 @@ class GoogleTranslatorPageViewModel extends BaseViewModel {
 
   translate(String text, TextEditingController controller) async {
     if (text.isNotEmpty) {
-      int count = localViewModel.preferenceHelper.getInt(Constants.KEY_TRANSLATE_COUNT, 0);
-      String dateString = localViewModel.preferenceHelper.getString(Constants.KEY_DATE, "");
+      int count = localViewModel.preferenceHelper
+          .getInt(Constants.KEY_TRANSLATE_COUNT, 0);
+      String dateString =
+          localViewModel.preferenceHelper.getString(Constants.KEY_DATE, "");
       DateTime dateTime = DateTime.now();
       bool isNextDay = false;
       if (dateString.isNotEmpty) {
@@ -65,15 +68,18 @@ class GoogleTranslatorPageViewModel extends BaseViewModel {
             var translated = "";
             if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
               translated = await translator
-                  .translate(text, from: topUzbek ? "uz" : "en", to: topUzbek ? "en" : "uz")
+                  .translate(text,
+                      from: topUzbek ? "uz" : "en", to: topUzbek ? "en" : "uz")
                   .then((value) => value.text);
               controller.text = translated;
               localViewModel.preferenceHelper
                   .putString(Constants.KEY_DATE, DateTime.now().toString());
               if (!PurchasesObserver().isPro()) {
-                localViewModel.preferenceHelper.putInt(Constants.KEY_TRANSLATE_COUNT, 1);
+                localViewModel.preferenceHelper
+                    .putInt(Constants.KEY_TRANSLATE_COUNT, 1);
               } else {
-                localViewModel.preferenceHelper.putInt(Constants.KEY_TRANSLATE_COUNT, 0);
+                localViewModel.preferenceHelper
+                    .putInt(Constants.KEY_TRANSLATE_COUNT, 0);
               }
               setSuccess();
             } else {
@@ -95,8 +101,9 @@ class GoogleTranslatorPageViewModel extends BaseViewModel {
             child: Text(
               'translate_inform'.tr(),
               textAlign: TextAlign.center,
-              style: AppTextStyle.font15W600Normal
-                  .copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
+              style: AppTextStyle.font15W600Normal.copyWith(
+                  color:
+                      isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
             ),
           ),
           positive: "buy_pro".tr(),
@@ -107,7 +114,8 @@ class GoogleTranslatorPageViewModel extends BaseViewModel {
           onNegativeTap: () async {
             if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
               localViewModel.showInterstitialAd();
-              localViewModel.preferenceHelper.putInt(Constants.KEY_TRANSLATE_COUNT, 0);
+              localViewModel.preferenceHelper
+                  .putInt(Constants.KEY_TRANSLATE_COUNT, 0);
               pop();
             } else {
               callBackError('no_internet'.tr());
@@ -127,8 +135,10 @@ class GoogleTranslatorPageViewModel extends BaseViewModel {
     if (isSpeaking) {
       flutterTts.stop();
     } else {
-      await flutterTts.setLanguage("en-US");
-      await flutterTts.speak(text);
+      // await flutterTts.setPitch(100);
+      // await flutterTts.setSpeechRate(0.4);
+      // await flutterTts.setLanguage("en-US");
+      await flutterTts.readText(text);
     }
   }
 
@@ -163,7 +173,7 @@ class GoogleTranslatorPageViewModel extends BaseViewModel {
 
   funAddToWordBank(String wordEng, String wordUz, GlobalKey? key) async {
     safeBlock(() async {
-      int dbCount = await wordEntityRepository.getWordBankCount();
+      int dbCount = await wordEntityRepository.allWordBanksCount;
       if (dbCount > 29 && !PurchasesObserver().isPro()) {
         showCountOutOfBound();
         return;
@@ -174,7 +184,8 @@ class GoogleTranslatorPageViewModel extends BaseViewModel {
           iconBackgroundColor: AppColors.borderWhite,
           context: context!,
           contentWidget: StatefulBuilder(
-            builder: (BuildContext context, void Function(void Function()) setState) {
+            builder: (BuildContext context,
+                void Function(void Function()) setState) {
               changer.addListener(() {
                 setState(() {});
               });
@@ -186,24 +197,29 @@ class GoogleTranslatorPageViewModel extends BaseViewModel {
                     shrinkWrap: true,
                     itemCount: wordEntityRepository.wordBankFoldersList.length,
                     itemBuilder: (context, index) {
-                      var item = wordEntityRepository.wordBankFoldersList[index];
+                      var item =
+                          wordEntityRepository.wordBankFoldersList[index];
                       if (item.id != 2) {
                         return Container(
                           decoration: const BoxDecoration(
-                              border: Border(bottom: BorderSide(color: AppColors.borderWhite))),
+                              border: Border(
+                                  bottom: BorderSide(
+                                      color: AppColors.borderWhite))),
                           child: ListTile(
-                            title: Text(item.folderName,
-                                style:
-                                    AppTextStyle.font15W600Normal.copyWith(color: AppColors.blue)),
+                            title: Text(item.folderName.tr(),
+                                style: AppTextStyle.font15W600Normal
+                                    .copyWith(color: AppColors.blue)),
                             onTap: () async {
                               var bankModel = WordBankModel(
-                                  word: wordEng, translation: wordUz, folderId: item.id);
-
-                              await wordEntityRepository.saveWordBank(bankModel);
+                                  word: wordEng,
+                                  translation: wordUz,
+                                  folderId: item.id);
+                              await wordEntityRepository
+                                  .saveWordBank(bankModel);
                               if (key != null) {
                                 localViewModel.runAddToCartAnimation(key);
                               }
-                              localViewModel.changeBadgeCount(1);
+                              await localViewModel.changeBadgeCount(1);
 
                               notifyListeners();
                               pop();
@@ -223,7 +239,7 @@ class GoogleTranslatorPageViewModel extends BaseViewModel {
                 wordEntityRepository.wordBankFoldersList.length >= 3) {
               showFolderCountOutOfBound();
             } else {
-              addNewFolder();
+              await addNewFolder();
             }
           },
         );
@@ -231,7 +247,7 @@ class GoogleTranslatorPageViewModel extends BaseViewModel {
     }, callFuncName: 'funAddToWordBank', inProgress: false);
   }
 
-  void addNewFolder() {
+  Future addNewFolder() async {
     showCustomDialog(
       context: context!,
       icon: Assets.icons.addFolder,
@@ -250,8 +266,12 @@ class GoogleTranslatorPageViewModel extends BaseViewModel {
       ),
       positive: "add".tr(),
       onPositiveTap: () async {
+        if (!(await localViewModel.canAddWordBank(context!))) {
+          return;
+        }
         if (folderTextController.text.isNotEmpty) {
-          await wordEntityRepository.addNewWordBankFolder(folderTextController.text);
+          await wordEntityRepository
+              .addNewWordBankFolder(folderTextController.text);
           changer.value++;
           pop();
         }
@@ -274,8 +294,8 @@ class GoogleTranslatorPageViewModel extends BaseViewModel {
         child: Text(
           'new_folder_bound_info'.tr(),
           textAlign: TextAlign.center,
-          style: AppTextStyle.font15W600Normal
-              .copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
+          style: AppTextStyle.font15W600Normal.copyWith(
+              color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
         ),
       ),
       positive: "buy_pro".tr(),
@@ -307,8 +327,8 @@ class GoogleTranslatorPageViewModel extends BaseViewModel {
         child: Text(
           'word_bank_add_info'.tr(),
           textAlign: TextAlign.center,
-          style: AppTextStyle.font15W600Normal
-              .copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
+          style: AppTextStyle.font15W600Normal.copyWith(
+              color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
         ),
       ),
       positive: "buy_pro".tr(),

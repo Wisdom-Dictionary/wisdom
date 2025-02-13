@@ -24,6 +24,9 @@ import 'package:wisdom/domain/repositories/roadmap_repository.dart';
 import 'package:wisdom/domain/repositories/search_repository.dart';
 import 'package:wisdom/domain/repositories/user_live_repository.dart';
 import 'package:wisdom/domain/repositories/word_entity_repository.dart';
+import 'dart:developer';
+
+
 
 final locator = JbazaLocator.instance;
 
@@ -38,9 +41,9 @@ void setupLocator() {
   locator.registerSingleton<LocalViewModel>(LocalViewModel(
       context: null, preferenceHelper: locator.get(), netWorkChecker: locator.get()));
   locator.registerLazySingleton<WordEntityRepository>(
-      () => WordEntityRepositoryImpl(client: locator.get(), dbHelper: locator.get()));
+      () => WordEntityRepositoryImpl(client: locator.get(), dbHelper: locator.get(), wordBankApiRepository: locator.get()));
   locator.registerLazySingleton<HomeRepository>(
-      () => HomeRepositoryImpl(locator.get(), locator.get()));
+      () => HomeRepositoryImpl(locator.get(), locator.get(), locator.get()));
   locator.registerLazySingleton<CategoryRepository>(() => CategoryRepositoryImpl(locator.get()));
   locator.registerLazySingleton<RoadmapRepository>(
       () => RoadmapRepositoryImpl(locator.get(), locator.get()));
@@ -51,10 +54,11 @@ void setupLocator() {
       () => LevelTestRepositoryImpl(locator.get(), locator.get()));
   locator.registerLazySingleton<SearchRepository>(
       () => SearchRepositoryImpl(locator.get(), locator.get()));
-  locator.registerLazySingleton<ProfileRepository>(() => ProfileRepositoryImpl(locator.get()));
+  locator.registerLazySingleton<ProfileRepository>(() => ProfileRepositoryImpl(locator.get(), locator.get(), locator.get()));
 }
 
 Future resetLocator() async {
+  log('reset locator');
   await locator.reset();
   setupLocator();
   await locator<AdState>().init();

@@ -53,8 +53,7 @@ class _CustomExpandableWidgetState extends State<CustomExpandableWidget> {
         ? Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15.r),
-              color: widget.containerColor ??
-                  (isDarkTheme ? AppColors.blue : AppColors.lightBackground),
+              color: widget.containerColor ?? (isDarkTheme ? AppColors.blue : AppColors.lightBackground),
             ),
             margin: EdgeInsets.only(top: 5.h, bottom: 5.h),
             padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 8.h),

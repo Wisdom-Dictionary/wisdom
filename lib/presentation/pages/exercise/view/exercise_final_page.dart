@@ -55,8 +55,7 @@ class ExerciseFinalPage extends ViewModelBuilderWidget<ExerciseFinalPageViewMode
                       ),
                     ),
                     Container(
-                      decoration:
-                          isDarkTheme ? AppDecoration.bannerDarkDecor : AppDecoration.bannerDecor,
+                      decoration: isDarkTheme ? AppDecoration.bannerDarkDecor : AppDecoration.bannerDecor,
                       padding: EdgeInsets.symmetric(vertical: 10.h),
                       child: ExpandablePanel(
                         controller: ExpandableController(initialExpanded: true),
@@ -70,8 +69,8 @@ class ExerciseFinalPage extends ViewModelBuilderWidget<ExerciseFinalPageViewMode
                         header: Center(
                           child: Text(
                             "correct_anwers".tr(),
-                            style: AppTextStyle.font17W600Normal.copyWith(
-                                color: isDarkTheme ? AppColors.borderWhite : AppColors.darkGray),
+                            style: AppTextStyle.font17W600Normal
+                                .copyWith(color: isDarkTheme ? AppColors.borderWhite : AppColors.darkGray),
                           ),
                         ),
                         expanded: ListView.builder(
@@ -98,8 +97,7 @@ class ExerciseFinalPage extends ViewModelBuilderWidget<ExerciseFinalPageViewMode
                       ),
                     ),
                     Container(
-                      decoration:
-                          isDarkTheme ? AppDecoration.bannerDarkDecor : AppDecoration.bannerDecor,
+                      decoration: isDarkTheme ? AppDecoration.bannerDarkDecor : AppDecoration.bannerDecor,
                       padding: EdgeInsets.symmetric(vertical: 10.h),
                       child: ExpandablePanel(
                         controller: ExpandableController(initialExpanded: true),
@@ -113,8 +111,8 @@ class ExerciseFinalPage extends ViewModelBuilderWidget<ExerciseFinalPageViewMode
                         header: Center(
                           child: Text(
                             "wrong_anwers".tr(),
-                            style: AppTextStyle.font17W600Normal.copyWith(
-                                color: isDarkTheme ? AppColors.borderWhite : AppColors.darkGray),
+                            style: AppTextStyle.font17W600Normal
+                                .copyWith(color: isDarkTheme ? AppColors.borderWhite : AppColors.darkGray),
                           ),
                         ),
                         expanded: ListView.builder(

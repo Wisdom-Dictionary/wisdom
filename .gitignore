@@ -27,7 +27,8 @@ build/
 .packages
 .pub-cache/
 .pub/
-/lib/generated/l10n.dart
+/build/
+
 # Web related
 lib/generated_plugin_registrant.dart
 

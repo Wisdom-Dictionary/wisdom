@@ -6,8 +6,7 @@ import 'dart:convert';
 /// star : 0
 /// same : ["",""]
 
-SearchResultUzModel searchResultUzModelFromJson(String str) =>
-    SearchResultUzModel.fromJson(json.decode(str));
+SearchResultUzModel searchResultUzModelFromJson(String str) => SearchResultUzModel.fromJson(json.decode(str));
 
 String searchResultUzModelToJson(SearchResultUzModel data) => json.encode(data.toJson());
 

@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:jbaza/jbaza.dart';
+import 'package:selectable/selectable.dart';
 import 'package:wisdom/config/constants/app_text_style.dart';
 import 'package:wisdom/config/constants/constants.dart';
 import 'package:wisdom/core/di/app_locator.dart';
 import 'package:wisdom/presentation/components/parent_widget.dart';
 import 'package:wisdom/presentation/pages/word_detail/viewmodel/word_detail_page_viewmodel.dart';
-import 'package:selectable/selectable.dart';
+import 'package:wisdom/presentation/widgets/banner_ad_widget.dart';
 
 import '../../../../config/constants/app_colors.dart';
 import '../../../../config/constants/app_decoration.dart';
@@ -21,6 +21,7 @@ import '../../../components/phrases_widget.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/loading_widget.dart';
 
+// ignore: must_be_immutable
 class WordDetailPage extends ViewModelBuilderWidget<WordDetailPageViewModel> {
   WordDetailPage({super.key});
 
@@ -213,22 +214,7 @@ class WordDetailPage extends ViewModelBuilderWidget<WordDetailPageViewModel> {
                             ],
                           ),
                         ),
-                        ValueListenableBuilder(
-                          valueListenable: viewModel.localViewModel.isNetworkAvailable,
-                          builder: (BuildContext context, value, Widget? child) {
-                            return viewModel.localViewModel.banner != null && value as bool
-                                ? Container(
-                                    margin: EdgeInsets.only(top: 16.h),
-                                    decoration: isDarkTheme
-                                        ? AppDecoration.bannerDarkDecor
-                                        : AppDecoration.bannerDecor,
-                                    height: viewModel.localViewModel.banner!.size.height * 1.0,
-                                    child: AdWidget(
-                                      ad: viewModel.localViewModel.banner!..load(),
-                                    ))
-                                : const SizedBox.shrink();
-                          },
-                        ),
+                        const BannerAdWidget(),
                       ],
                     )
                   // for regular words
@@ -272,6 +258,7 @@ class WordDetailPage extends ViewModelBuilderWidget<WordDetailPageViewModel> {
                                       padding: EdgeInsets.all(14.w),
                                       child: SvgPicture.asset(
                                         Assets.icons.sound,
+                                        // ignore: deprecated_member_use
                                         color: AppColors.blue,
                                       ),
                                     ),
@@ -346,9 +333,9 @@ class WordDetailPage extends ViewModelBuilderWidget<WordDetailPageViewModel> {
                                       child: InkWell(
                                         onTap: () => viewModel.showPhotoView(),
                                         child: Container(
-                                          height: 66.h,
+                                          height: 66.w,
                                           padding: EdgeInsets.all(2.r),
-                                          width: 66.h,
+                                          width: 66.w,
                                           decoration: BoxDecoration(
                                             borderRadius: BorderRadius.circular(9.r),
                                             // color: AppColors.lightBlue,
@@ -482,22 +469,7 @@ class WordDetailPage extends ViewModelBuilderWidget<WordDetailPageViewModel> {
                             ],
                           ),
                         ),
-                        ValueListenableBuilder(
-                          valueListenable: viewModel.localViewModel.isNetworkAvailable,
-                          builder: (BuildContext context, value, Widget? child) {
-                            return viewModel.localViewModel.banner != null && value as bool
-                                ? Container(
-                                    margin: EdgeInsets.only(top: 16.h),
-                                    decoration: isDarkTheme
-                                        ? AppDecoration.bannerDarkDecor
-                                        : AppDecoration.bannerDecor,
-                                    height: viewModel.localViewModel.banner!.size.height * 1.0,
-                                    child: AdWidget(
-                                      ad: viewModel.localViewModel.banner!..load(),
-                                    ))
-                                : const SizedBox.shrink();
-                          },
-                        ),
+                        const BannerAdWidget(),
                       ],
                     )
               : const Center(

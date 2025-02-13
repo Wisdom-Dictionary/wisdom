@@ -1,12 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:jbaza/jbaza.dart';
 import 'package:wisdom/presentation/components/custom_oval_button.dart';
 import 'package:wisdom/presentation/pages/exercise/viewmodel/exercise_page_viewmodel.dart';
-import 'package:wisdom/presentation/widgets/flip_back.dart';
 
 import '../../../../config/constants/app_colors.dart';
 import '../../../../config/constants/app_text_style.dart';
@@ -14,7 +12,6 @@ import '../../../../config/constants/assets.dart';
 import '../../../../config/constants/constants.dart';
 import '../../../../core/di/app_locator.dart';
 import '../../../widgets/custom_app_bar.dart';
-import '../../../widgets/flip_front.dart';
 import '../../../widgets/loading_widget.dart';
 
 // ignore: must_be_immutable

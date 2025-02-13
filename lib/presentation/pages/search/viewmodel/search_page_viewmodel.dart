@@ -67,8 +67,7 @@ class SearchPageViewModel extends BaseViewModel {
           } else {
             resultUz = await searchRepository.searchByUzWord(searchText.toString());
           }
-          if ((result.isNotEmpty && searchLangMode == 'en') ||
-              (resultUz.isNotEmpty && searchLangMode == 'uz')) {
+          if ((result.isNotEmpty && searchLangMode == 'en') || (resultUz.isNotEmpty && searchLangMode == 'uz')) {
             setSuccess(tag: searchTag);
           } else {
             notifyListeners();

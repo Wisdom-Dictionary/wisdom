@@ -4,5 +4,12 @@
 <dict>
 	<key>aps-environment</key>
 	<string>development</string>
+<<<<<<< HEAD
+=======
+	<key>com.apple.developer.applesignin</key>
+	<array>
+		<string>Default</string>
+	</array>
+>>>>>>> 048de01 (last changes from Github)
 </dict>
 </plist>

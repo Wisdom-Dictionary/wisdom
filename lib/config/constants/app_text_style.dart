@@ -8,11 +8,11 @@ abstract class AppTextStyle {
 
   static const String fontFamily = "Montserrat";
 
-  static TextStyle font15W500Normal = TextStyle(
+  static TextStyle font15W500Normal = const TextStyle(
     fontFamily: fontFamily,
     fontWeight: FontWeight.w500,
     fontStyle: FontStyle.normal,
-    fontSize: 15.sp,
+    fontSize: 15,
     color: AppColors.white,
   );
 
@@ -87,6 +87,20 @@ abstract class AppTextStyle {
     fontSize: 13.sp,
     color: AppColors.white,
   );
+  static TextStyle font12W400Normal = TextStyle(
+    fontFamily: fontFamily,
+    fontWeight: FontWeight.w400,
+    fontStyle: FontStyle.normal,
+    fontSize: 12.sp,
+    color: AppColors.darkGray,
+  );
+  static TextStyle font12W600Normal = TextStyle(
+    fontFamily: fontFamily,
+    fontWeight: FontWeight.w600,
+    fontStyle: FontStyle.normal,
+    fontSize: 12.sp,
+    color: AppColors.darkGray,
+  );
 
   static TextStyle font13W500Normal = TextStyle(
     fontFamily: fontFamily,
@@ -149,5 +163,10 @@ abstract class AppTextStyle {
     fontStyle: FontStyle.italic,
     fontSize: 13.sp,
     color: AppColors.darkGray,
+  );
+  static TextStyle font8W400Normal = TextStyle(
+    fontWeight: FontWeight.w400,
+    fontSize: 8.sp,
+    color: AppColors.white,
   );
 }

@@ -23,16 +23,16 @@ Future<T?> showLoadingDialog<T>(BuildContext context) {
     context: context,
     barrierDismissible: false,
     builder: (_) {
-      return Dialog(
+      return const Dialog(
         backgroundColor: Colors.transparent,
         elevation: 0,
         child: Wrap(
           alignment: WrapAlignment.center,
-          children: const [
+          children: [
             LoadingWidget(
               color: AppColors.blue,
               width: 3,
-            )
+            ),
           ],
         ),
       );

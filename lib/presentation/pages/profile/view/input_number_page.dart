@@ -46,7 +46,8 @@ class InputNumberPage extends ViewModelBuilderWidget<InputNumberPageViewModel> {
     Widget? child,
   ) {
     return Scaffold(
-      backgroundColor: isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
+      backgroundColor:
+          isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
       appBar: CustomAppBar(
         title: 'getAccount'.tr(),
         onTap: () => viewModel.pop(),
@@ -61,7 +62,9 @@ class InputNumberPage extends ViewModelBuilderWidget<InputNumberPageViewModel> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SvgPicture.asset(
-                  isDarkTheme ? Assets.icons.logoWhiteText : Assets.icons.logoBlueText,
+                  isDarkTheme
+                      ? Assets.icons.logoWhiteText
+                      : Assets.icons.logoBlueText,
                   height: 52.h,
                   fit: BoxFit.scaleDown,
                 ),
@@ -70,21 +73,26 @@ class InputNumberPage extends ViewModelBuilderWidget<InputNumberPageViewModel> {
                   child: Text(
                     'enter_phone'.tr(),
                     textAlign: TextAlign.center,
-                    style: AppTextStyle.font13W400Normal
-                        .copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
+                    style: AppTextStyle.font13W400Normal.copyWith(
+                        color: isDarkTheme
+                            ? AppColors.lightGray
+                            : AppColors.darkGray),
                   ),
                 ),
                 Container(
-                  decoration:
-                      isDarkTheme ? AppDecoration.bannerDarkDecor : AppDecoration.bannerDecor,
-                  padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 18.h),
+                  decoration: isDarkTheme
+                      ? AppDecoration.bannerDarkDecor
+                      : AppDecoration.bannerDecor,
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 20.w, vertical: 18.h),
                   child: Column(
                     children: [
                       Container(
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(40.r),
-                            color:
-                                isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground),
+                            color: isDarkTheme
+                                ? AppColors.darkBackground
+                                : AppColors.lightBackground),
                         height: 45.h,
                         margin: EdgeInsets.only(top: 24.h, bottom: 12.h),
                         padding: EdgeInsets.only(left: 22.w),
@@ -96,20 +104,23 @@ class InputNumberPage extends ViewModelBuilderWidget<InputNumberPageViewModel> {
                             showCursor: true,
                             controller: editingController,
                             keyboardType: TextInputType.number,
-                            style: AppTextStyle.font17W400Normal.copyWith(color: AppColors.blue),
+                            style: AppTextStyle.font17W400Normal
+                                .copyWith(color: AppColors.blue),
                             inputFormatters: [maskFormatter],
                             decoration: InputDecoration(
                               hintText: '(--) --- -- --',
-                              hintStyle:
-                                  AppTextStyle.font17W400Normal.copyWith(color: AppColors.blue),
+                              hintStyle: AppTextStyle.font17W400Normal
+                                  .copyWith(color: AppColors.blue),
                               border: InputBorder.none,
                               prefixText: "+998",
                             ),
                             onSubmitted: (value) {
                               if (editingController.text.length == 14) {
-                                viewModel.onNextPressed("+998${editingController.text}");
+                                viewModel.onNextPressed(
+                                    "+998${editingController.text}");
                               } else {
-                                viewModel.callBackError('invalid_phone_nuber'.tr());
+                                viewModel
+                                    .callBackError('invalid_phone_nuber'.tr());
                               }
                             },
                           ),
@@ -117,7 +128,8 @@ class InputNumberPage extends ViewModelBuilderWidget<InputNumberPageViewModel> {
                       ),
                       Container(
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(40.r), color: AppColors.blue),
+                            borderRadius: BorderRadius.circular(40.r),
+                            color: AppColors.blue),
                         height: 45.h,
                         margin: EdgeInsets.only(top: 20.h, bottom: 12.h),
                         child: Material(
@@ -125,9 +137,11 @@ class InputNumberPage extends ViewModelBuilderWidget<InputNumberPageViewModel> {
                           child: InkWell(
                             onTap: (() {
                               if (editingController.text.length == 14) {
-                                viewModel.onNextPressed("+998${editingController.text}");
+                                viewModel.onNextPressed(
+                                    "+998${editingController.text}");
                               } else {
-                                viewModel.callBackError('invalid_phone_nuber'.tr());
+                                viewModel
+                                    .callBackError('invalid_phone_nuber'.tr());
                               }
                             }),
                             borderRadius: BorderRadius.circular(40.r),

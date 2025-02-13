@@ -190,6 +190,16 @@ class _Icons extends _AssetsHolder {
   String get tick => '$basePath/tick.svg';
 
   String get cross => '$basePath/cros.svg';
+
+  String get googleIc => '$basePath/google_ic.svg';
+
+  String get facebookIc => '$basePath/facebook_ic.svg';
+
+  String get appleIc => '$basePath/apple_ic.svg';
+
+  String get exitIc => '$basePath/exit_ic.svg';
+
+  String get proIc => '$basePath/pro_icon.svg';
 }
 
 class _Images extends _AssetsHolder {

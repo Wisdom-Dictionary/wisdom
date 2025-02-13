@@ -1,18 +1,16 @@
 import 'package:add_to_cart_animation/add_to_cart_animation.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:jbaza/jbaza.dart';
 import 'package:lottie/lottie.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:swipe_refresh/swipe_refresh.dart';
 import 'package:wisdom/config/constants/constants.dart';
 import 'package:wisdom/config/constants/urls.dart';
+import 'package:wisdom/core/localization/locale_keys.g.dart';
 import 'package:wisdom/data/model/recent_model.dart';
-import 'package:wisdom/main.dart';
 import 'package:wisdom/presentation/pages/catalogs/view/catalogs_page.dart';
 import 'package:wisdom/presentation/pages/collocation/view/collocation_details_page.dart';
 import 'package:wisdom/presentation/pages/collocation/view/collocation_page.dart';
@@ -38,6 +36,7 @@ import 'package:wisdom/presentation/pages/thesaurus/view/thesaurus_page.dart';
 import 'package:wisdom/presentation/pages/word_bank/view/wordbank_folder_page.dart';
 import 'package:wisdom/presentation/pages/word_bank/view/wordbank_page.dart';
 import 'package:wisdom/presentation/pages/word_detail/view/word_detail_page.dart';
+import 'package:wisdom/presentation/widgets/banner_ad_widget.dart';
 import 'package:wisdom/presentation/widgets/loading_widget.dart';
 
 import '../../../../config/constants/app_colors.dart';
@@ -132,7 +131,7 @@ class HomeScreen extends ViewModelWidget<HomeViewModel> {
                   child: Center(
                     child: Showcase(
                       key: viewModel.globalKeyCentre,
-                      description: "Endi hamma so'zlar kaftingizda!",
+                      description: LocaleKeys.all_words_your_hand.tr(),
                       descTextStyle: AppTextStyle.font15W500Normal.copyWith(color: AppColors.blue),
                       descriptionAlignment: Alignment.center,
                       disableDefaultTargetGestures: false,
@@ -145,7 +144,7 @@ class HomeScreen extends ViewModelWidget<HomeViewModel> {
                             borderRadius: BorderRadius.circular(50.r), color: AppColors.white),
                         alignment: Alignment.center,
                         child: Text(
-                          "GO!",
+                          LocaleKeys.go.tr(),
                           style: AppTextStyle.font17W600Normal.copyWith(color: AppColors.blue),
                         ),
                       ),
@@ -179,11 +178,22 @@ class Home extends ViewModelWidget<HomeViewModel> {
       child: Scaffold(
         drawerEnableOpenDragGesture: false,
         backgroundColor: isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerTop,
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: () async {
+        //     Navigator.push(
+        //       context,
+        //       MaterialPageRoute(
+        //         builder: (context) => TestPage(),
+        //       ),
+        //     );
+        //   },
+        // ),
         appBar: CustomAppBar(
           leadingIcon: Assets.icons.menu,
           onTap: () => ZoomDrawer.of(context)!.toggle(),
           isSearch: false,
-          title: "app_name".tr(),
+          title: LocaleKeys.app_name.tr(),
           actions: [
             ValueListenableBuilder<bool>(
               valueListenable: viewModel.isDownloadingShow,
@@ -199,7 +209,7 @@ class Home extends ViewModelWidget<HomeViewModel> {
         ),
         body: SwipeRefresh.adaptive(
           stateStream: viewModel.stream,
-          onRefresh: () => viewModel.getRandomDailyWords(),
+          onRefresh: () async => await viewModel.getRandomDailyWords(),
           shrinkWrap: true,
           physics: const BouncingScrollPhysics(),
           children: [
@@ -207,7 +217,12 @@ class Home extends ViewModelWidget<HomeViewModel> {
               builder: (context) {
                 return viewModel.isSuccess(tag: viewModel.getDailyWordsTag)
                     ? ListView(
-                        padding: EdgeInsets.only(left: 15.w, right: 15.w, top: 16.h, bottom: 75.h),
+                        padding: EdgeInsets.only(
+                          left: 15.w,
+                          right: 15.w,
+                          top: 16.h,
+                          bottom: 75.h,
+                        ),
                         physics: const BouncingScrollPhysics(),
                         shrinkWrap: true,
                         children: [
@@ -272,9 +287,9 @@ class Home extends ViewModelWidget<HomeViewModel> {
                             },
                           ),
                           CustomBanner(
-                            title: 'grammar'.tr(),
+                            title: LocaleKeys.grammar.tr(),
                             isInkWellEnable: true,
-                            contentPadding: EdgeInsets.symmetric(vertical: 25.h, horizontal: 15.w),
+                            contentPadding: EdgeInsets.symmetric(vertical: 25.w, horizontal: 15.w),
                             onTap: () {
                               viewModel.localViewModel.isFromMain = true;
                               viewModel.localViewModel.changePageIndex(5);
@@ -284,30 +299,19 @@ class Home extends ViewModelWidget<HomeViewModel> {
                                 viewModel.homeRepository.timelineModel.grammar!.worden!.word!,
                                 style: AppTextStyle.font17W500Normal.copyWith(
                                   color: isDarkTheme ? AppColors.white : AppColors.darkGray,
+                                  fontSize: 17.sp,
                                 ),
                                 textAlign: TextAlign.center,
                               ),
                             ),
                           ),
-                          // Google ads banner
-                          ValueListenableBuilder(
-                            valueListenable: viewModel.localViewModel.isNetworkAvailable,
-                            builder: (BuildContext context, value, Widget? child) {
-                              return viewModel.localViewModel.banner != null && value as bool
-                                  ? Container(
-                                      margin: EdgeInsets.only(top: 16.h),
-                                      decoration: isDarkTheme
-                                          ? AppDecoration.bannerDarkDecor
-                                          : AppDecoration.bannerDecor,
-                                      height: viewModel.localViewModel.banner!.size.height * 1.0,
-                                      child: AdWidget(
-                                        ad: viewModel.localViewModel.banner!..load(),
-                                      ))
-                                  : const SizedBox.shrink();
-                            },
-                          ),
+                          Builder(builder: (context) {
+                            return viewModel.isSuccess(tag: viewModel.getRefreshAd)
+                                ? const BannerAdWidget()
+                                : const SizedBox.shrink();
+                          }),
                           CustomBanner(
-                            title: 'differences'.tr(),
+                            title: LocaleKeys.differences.tr(),
                             isInkWellEnable: true,
                             contentPadding: EdgeInsets.symmetric(vertical: 25.h, horizontal: 15.w),
                             onTap: () {
@@ -319,19 +323,24 @@ class Home extends ViewModelWidget<HomeViewModel> {
                                 text: TextSpan(
                                   style: AppTextStyle.font17W500Normal.copyWith(
                                     color: isDarkTheme ? AppColors.white : AppColors.darkGray,
+                                    fontSize: 17.sp,
                                   ),
                                   text: viewModel.separateDifference(true,
                                       viewModel.homeRepository.timelineModel.difference!.word!),
                                   children: [
                                     TextSpan(
-                                        text: ' or ',
-                                        style: AppTextStyle.font17W500Italic
-                                            .copyWith(color: AppColors.paleGray)),
+                                      text: ' or ',
+                                      style: AppTextStyle.font17W500Italic.copyWith(
+                                        color: AppColors.paleGray,
+                                        fontSize: 17.sp,
+                                      ),
+                                    ),
                                     TextSpan(
-                                        text: viewModel.separateDifference(
-                                            false,
-                                            viewModel
-                                                .homeRepository.timelineModel.difference!.word)),
+                                      text: viewModel.separateDifference(
+                                        false,
+                                        viewModel.homeRepository.timelineModel.difference!.word,
+                                      ),
+                                    ),
                                   ],
                                 ),
                                 textAlign: TextAlign.center,
@@ -341,7 +350,7 @@ class Home extends ViewModelWidget<HomeViewModel> {
                           CustomBanner(
                             contentPadding:
                                 const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-                            title: "do_you_know".tr(),
+                            title: LocaleKeys.do_you_know.tr(),
                             onTap: () {
                               viewModel.localViewModel.wordDetailModel = RecentModel(
                                   id: viewModel.homeRepository.timelineModel.image!.id!,
@@ -384,7 +393,7 @@ class Home extends ViewModelWidget<HomeViewModel> {
                             ),
                           ),
                           CustomBanner(
-                            title: 'thesaurus'.tr(),
+                            title: LocaleKeys.thesaurus.tr(),
                             isInkWellEnable: true,
                             contentPadding: EdgeInsets.symmetric(vertical: 25.h, horizontal: 15.w),
                             onTap: () {
@@ -395,12 +404,14 @@ class Home extends ViewModelWidget<HomeViewModel> {
                               child: Text(
                                 viewModel.homeRepository.timelineModel.thesaurus!.worden!.word!,
                                 style: AppTextStyle.font17W500Normal.copyWith(
-                                    color: isDarkTheme ? AppColors.white : AppColors.darkGray),
+                                  color: isDarkTheme ? AppColors.white : AppColors.darkGray,
+                                  fontSize: 17.sp,
+                                ),
                               ),
                             ),
                           ),
                           CustomBanner(
-                            title: 'collocations'.tr(),
+                            title: LocaleKeys.collocations.tr(),
                             isInkWellEnable: true,
                             contentPadding: EdgeInsets.symmetric(vertical: 25.h, horizontal: 15.w),
                             onTap: () {
@@ -411,12 +422,14 @@ class Home extends ViewModelWidget<HomeViewModel> {
                               child: Text(
                                 viewModel.homeRepository.timelineModel.collocation!.worden!.word!,
                                 style: AppTextStyle.font17W500Normal.copyWith(
-                                    color: isDarkTheme ? AppColors.white : AppColors.darkGray),
+                                  fontSize: 17.sp,
+                                  color: isDarkTheme ? AppColors.white : AppColors.darkGray,
+                                ),
                               ),
                             ),
                           ),
                           CustomBanner(
-                            title: 'metaphor'.tr(),
+                            title: LocaleKeys.metaphor.tr(),
                             isInkWellEnable: true,
                             contentPadding: EdgeInsets.symmetric(vertical: 25.h, horizontal: 15.w),
                             onTap: () {
@@ -427,12 +440,14 @@ class Home extends ViewModelWidget<HomeViewModel> {
                               child: Text(
                                 viewModel.homeRepository.timelineModel.metaphor!.worden!.word!,
                                 style: AppTextStyle.font17W500Normal.copyWith(
-                                    color: isDarkTheme ? AppColors.white : AppColors.darkGray),
+                                  fontSize: 17.sp,
+                                  color: isDarkTheme ? AppColors.white : AppColors.darkGray,
+                                ),
                               ),
                             ),
                           ),
                           CustomBanner(
-                            title: 'speaking'.tr(),
+                            title: LocaleKeys.speaking.tr(),
                             isInkWellEnable: true,
                             contentPadding: EdgeInsets.symmetric(vertical: 25.h, horizontal: 15.w),
                             onTap: () {
@@ -443,7 +458,9 @@ class Home extends ViewModelWidget<HomeViewModel> {
                               child: Text(
                                 viewModel.homeRepository.timelineModel.speaking!.word!,
                                 style: AppTextStyle.font17W500Normal.copyWith(
-                                    color: isDarkTheme ? AppColors.white : AppColors.darkGray),
+                                  fontSize: 17.sp,
+                                  color: isDarkTheme ? AppColors.white : AppColors.darkGray,
+                                ),
                                 textAlign: TextAlign.center,
                               ),
                             ),
@@ -453,7 +470,12 @@ class Home extends ViewModelWidget<HomeViewModel> {
                     : SizedBox(
                         height: MediaQuery.of(context).size.height - 75,
                         child: const Center(
-                            child: LoadingWidget(color: AppColors.paleBlue, width: 3)));
+                          child: LoadingWidget(
+                            color: AppColors.paleBlue,
+                            width: 3,
+                          ),
+                        ),
+                      );
               },
             )
           ],
