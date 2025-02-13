@@ -33,12 +33,14 @@ class DrawerMenuItem extends StatelessWidget {
                       width: 24.w,
                       fit: BoxFit.scaleDown,
                       color: isDarkTheme ? AppColors.white : AppColors.blue),
-                  Padding(
-                    padding: EdgeInsets.only(left: 12.w),
-                    child: Text(
-                      title,
-                      style: AppTextStyle.font15W500Normal
-                          .copyWith(color: isDarkTheme ? AppColors.white : AppColors.blue),
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 12.w),
+                      child: Text(
+                        title,
+                        style: AppTextStyle.font15W500Normal
+                            .copyWith(color: isDarkTheme ? AppColors.white : AppColors.blue),
+                      ),
                     ),
                   )
                 ],

@@ -15,6 +15,28 @@ abstract class _AssetsHolder {
 class _Icons extends _AssetsHolder {
   const _Icons() : super("assets/icons");
 
+  String get calendarOutlined => '$basePath/calendar-outlined.svg';
+
+  String get wifi => '$basePath/wifi.svg';
+
+  String get note => '$basePath/note.svg';
+
+  String get check1 => '$basePath/check-1.png';
+
+  String get check1Big => '$basePath/check-1-big.png';
+
+  String get people => '$basePath/people.svg';
+
+  String get calendar => '$basePath/calendar.svg';
+
+  String get logOut => '$basePath/log-out.svg';
+
+  String get edit3 => '$basePath/edit-3.svg';
+
+  String get popupMenu => '$basePath/popup-menu.svg';
+
+  String get documentCopy => '$basePath/document-copy.svg';
+
   String get wifiOff => '$basePath/wifi-off.svg';
 
   String get clock => '$basePath/clock.svg';

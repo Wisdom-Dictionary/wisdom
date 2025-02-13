@@ -59,7 +59,7 @@ class WButton extends StatelessWidget {
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(borderRadius ?? 40.r),
           color: isDisable ? AppColors.gray80 : color ?? AppColors.blue),
-      height: 45.h,
+      height: height ?? 45.h,
       margin: margin,
       child: Material(
         color: Colors.transparent,

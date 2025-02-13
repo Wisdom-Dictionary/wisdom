@@ -21,9 +21,11 @@ class DrawerScreen extends ViewModelWidget<HomeViewModel> {
   @override
   Widget build(BuildContext context, HomeViewModel viewModel) {
     return Scaffold(
-      backgroundColor: isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
+      backgroundColor:
+          isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
       appBar: AppBar(
-        backgroundColor: isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
+        backgroundColor:
+            isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
         elevation: 0,
         leading: Padding(
           padding: const EdgeInsets.all(5),
@@ -47,38 +49,48 @@ class DrawerScreen extends ViewModelWidget<HomeViewModel> {
             Padding(
               padding: EdgeInsets.only(left: 0, top: 40.h, bottom: 50.h),
               child: SvgPicture.asset(
-                isDarkTheme ? Assets.icons.logoWhiteText : Assets.icons.logoBlueText,
+                isDarkTheme
+                    ? Assets.icons.logoWhiteText
+                    : Assets.icons.logoBlueText,
                 fit: BoxFit.scaleDown,
                 height: 45.h,
                 width: 152.w,
               ),
             ),
             Visibility(
-              visible: viewModel.sharedPref.getString(Constants.KEY_SUBSCRIBE, "") == "",
+              visible:
+                  viewModel.sharedPref.getString(Constants.KEY_SUBSCRIBE, "") ==
+                      "",
               child: DrawerMenuItem(
                 title: 'subscribe'.tr(),
                 imgAssets: Assets.icons.proVersion,
                 onTap: () {
-                  var phone =
-                      viewModel.localViewModel.preferenceHelper.getString(Constants.KEY_PHONE, "");
+                  var phone = viewModel.localViewModel.preferenceHelper
+                      .getString(Constants.KEY_PHONE, "");
                   if (phone.isNotEmpty) {
-                    Navigator.of(context)
-                        .pushNamed(Routes.verifyPage, arguments: {'number': phone});
+                    Navigator.of(context).pushNamed(Routes.verifyPage,
+                        arguments: {'number': phone});
                   } else {
                     Navigator.of(context).pushNamed(Routes.gettingProPage);
                   }
                 },
               ),
             ),
+            DrawerMenuItem(
+              title: 'personal_cabinet'.tr(),
+              imgAssets: Assets.icons.person,
+              onTap: () =>
+                  Navigator.of(context).pushNamed(Routes.userCabinetPage),
+            ),
             Visibility(
-              visible: viewModel.sharedPref.getString(Constants.KEY_SUBSCRIBE, "") != "",
+              visible: viewModel.localViewModel.preferenceHelper
+                  .getString(Constants.KEY_PHONE, "")
+                  .isNotEmpty,
               child: DrawerMenuItem(
-                title: 'personal_cabinet'.tr(),
-                imgAssets: Assets.icons.person,
+                title: 'my_contacts'.tr(),
+                imgAssets: Assets.icons.people,
                 onTap: () =>
-                    locator.get<SharedPreferenceHelper>().getString(Constants.KEY_TARIFFS, '') != ''
-                        ? Navigator.of(context).pushNamed(Routes.profilePage)
-                        : Navigator.of(context).pushNamed(Routes.registrationPage),
+                    Navigator.of(context).pushNamed(Routes.myContactsPage),
               ),
             ),
             DrawerMenuItem(
@@ -89,9 +101,10 @@ class DrawerScreen extends ViewModelWidget<HomeViewModel> {
             DrawerMenuItem(
               title: 'settings'.tr(),
               imgAssets: Assets.icons.setting,
-              onTap: () => Navigator.of(context).pushNamed(Routes.settingPage).then(
-                    (value) => viewModel.notifyListeners(),
-                  ),
+              onTap: () =>
+                  Navigator.of(context).pushNamed(Routes.settingPage).then(
+                        (value) => viewModel.notifyListeners(),
+                      ),
             ),
             DrawerMenuItem(
               title: 'for_desk'.tr(),
@@ -101,7 +114,8 @@ class DrawerScreen extends ViewModelWidget<HomeViewModel> {
             DrawerMenuItem(
               title: 'abbreviations'.tr(),
               imgAssets: Assets.icons.abbreviations,
-              onTap: () => Navigator.of(context).pushNamed(Routes.abbreviationPage),
+              onTap: () =>
+                  Navigator.of(context).pushNamed(Routes.abbreviationPage),
             ),
             DrawerMenuItem(
               title: 'rate_app'.tr(),

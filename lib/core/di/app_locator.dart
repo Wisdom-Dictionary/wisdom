@@ -8,6 +8,7 @@ import 'package:wisdom/core/utils/word_mapper.dart';
 import 'package:wisdom/data/repositories/category_repository_impl.dart';
 import 'package:wisdom/data/repositories/home_repository_impl.dart';
 import 'package:wisdom/data/repositories/level_test_repository_impl.dart';
+import 'package:wisdom/data/repositories/my_contacts_repository_impl.dart';
 import 'package:wisdom/data/repositories/profile_repository_impl.dart';
 import 'package:wisdom/data/repositories/roadmap_repository_impl.dart';
 import 'package:wisdom/data/repositories/search_repository_impl.dart';
@@ -17,6 +18,7 @@ import 'package:wisdom/data/viewmodel/local_viewmodel.dart';
 import 'package:wisdom/domain/repositories/category_repository.dart';
 import 'package:wisdom/domain/repositories/home_repository.dart';
 import 'package:wisdom/domain/repositories/level_test_repository.dart';
+import 'package:wisdom/domain/repositories/my_contacts_repository.dart';
 import 'package:wisdom/domain/repositories/profile_repository.dart';
 import 'package:wisdom/domain/repositories/roadmap_repository.dart';
 import 'package:wisdom/domain/repositories/search_repository.dart';
@@ -42,6 +44,8 @@ void setupLocator() {
   locator.registerLazySingleton<CategoryRepository>(() => CategoryRepositoryImpl(locator.get()));
   locator.registerLazySingleton<RoadmapRepository>(
       () => RoadmapRepositoryImpl(locator.get(), locator.get()));
+  locator.registerLazySingleton<MyContactsRepository>(
+      () => MyContactsRepositoryImpl(locator.get()));
   locator.registerLazySingleton<UserLiveRepository>(() => UserLiveRepositoryImpl(locator.get()));
   locator.registerLazySingleton<LevelTestRepository>(
       () => LevelTestRepositoryImpl(locator.get(), locator.get()));

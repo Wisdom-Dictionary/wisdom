@@ -17,8 +17,6 @@ import 'package:wisdom/core/db/db_helper.dart';
 import 'package:wisdom/core/db/preference_helper.dart';
 import 'package:wisdom/core/services/purchase_observer.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/life_countdown_provider.dart';
-import 'package:wisdom/presentation/pages/setting/viewmodel/setting_page_viewmodel.dart';
-import 'package:workmanager/workmanager.dart';
 
 import 'app.dart';
 import 'core/di/app_locator.dart';
