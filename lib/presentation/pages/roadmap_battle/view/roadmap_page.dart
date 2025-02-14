@@ -23,7 +23,8 @@ class RoadmapPage extends ViewModelBuilderWidget<RoadMapViewModel> {
   }
 
   @override
-  Widget builder(BuildContext context, RoadMapViewModel viewModel, Widget? child) {
+  Widget builder(
+      BuildContext context, RoadMapViewModel viewModel, Widget? child) {
     return Scaffold(
         body: Stack(
       children: [
@@ -35,6 +36,8 @@ class RoadmapPage extends ViewModelBuilderWidget<RoadMapViewModel> {
           left: 0,
           right: 0,
           child: NewCustomAppBar(
+            height: 63.h,
+            hasLeading: false,
             child: const RoadmapAppBarContent(),
           ),
         ),
@@ -55,14 +58,17 @@ class RoadmapAppBarContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        scoreInfo("1200", SvgPicture.asset(Assets.icons.star)),
-        scoreInfo("500", SvgPicture.asset(Assets.icons.verify)),
-        LifeStatusBar()
-      ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 32),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          scoreInfo("1200", SvgPicture.asset(Assets.icons.star)),
+          scoreInfo("500", SvgPicture.asset(Assets.icons.verify)),
+          LifeStatusBar()
+        ],
+      ),
     );
   }
 
@@ -72,7 +78,8 @@ class RoadmapAppBarContent extends StatelessWidget {
       children: [
         Text(
           title,
-          style: AppTextStyle.font13W400Normal.copyWith(color: AppColors.yellow),
+          style:
+              AppTextStyle.font13W400Normal.copyWith(color: AppColors.yellow),
         ),
         const SizedBox(
           width: 12,

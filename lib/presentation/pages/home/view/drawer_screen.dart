@@ -24,8 +24,10 @@ class DrawerScreen extends ViewModelWidget<HomeViewModel> {
 
   @override
   Widget build(BuildContext context, HomeViewModel viewModel) {
-    final bool isLoggedIn =
-        locator.get<SharedPreferenceHelper>().getString(Constants.KEY_TOKEN, '') != '';
+    final bool isLoggedIn = locator
+            .get<SharedPreferenceHelper>()
+            .getString(Constants.KEY_TOKEN, '') !=
+        '';
     log('isLoggedIn: $isLoggedIn');
     return Scaffold(
       backgroundColor:
@@ -80,16 +82,14 @@ class DrawerScreen extends ViewModelWidget<HomeViewModel> {
                 },
               ),
             ),
-            DrawerMenuItem(
-              title: 'personal_cabinet'.tr(),
-              imgAssets: Assets.icons.person,
-              onTap: () =>
-                  Navigator.of(context).pushNamed(Routes.userCabinetPage),
-            ),
+            // DrawerMenuItem(
+            //   title: 'personal_cabinet'.tr(),
+            //   imgAssets: Assets.icons.person,
+            //   onTap: () =>
+            //       Navigator.of(context).pushNamed(Routes.userCabinetPage),
+            // ),
             Visibility(
-              visible: viewModel.localViewModel.preferenceHelper
-                  .getString(Constants.KEY_PHONE, "")
-                  .isNotEmpty,
+              visible: isLoggedIn,
               child: DrawerMenuItem(
                 title: 'my_contacts'.tr(),
                 imgAssets: Assets.icons.people,
@@ -97,12 +97,14 @@ class DrawerScreen extends ViewModelWidget<HomeViewModel> {
                     Navigator.of(context).pushNamed(Routes.myContactsPage),
               ),
             ),
-               DrawerMenuItem(
-              title: isLoggedIn ? LocaleKeys.personal_cabinet.tr() : LocaleKeys.login.tr(),
+            DrawerMenuItem(
+              title: isLoggedIn
+                  ? LocaleKeys.personal_cabinet.tr()
+                  : LocaleKeys.login.tr(),
               imgAssets: Assets.icons.person,
               onTap: () {
                 isLoggedIn
-                    ? Navigator.of(context).pushNamed(Routes.profilePage)
+                    ? Navigator.of(context).pushNamed(Routes.userCabinetPage)
                     : viewModel.navigateTo(Routes.loginPage);
                 ZoomDrawer.of(context)!.toggle();
               },

@@ -36,12 +36,18 @@ class UserModel {
       name: json['name'],
       email: json['email'],
       image: json['image'],
-      phone: json['phone'] != null ? (json['phone'] as num).toInt().toString() : null,
-      birthDate: json['birthdate'] != null ? DateTime.parse(json['birthdate']) : null,
-      gender: json['gender'] != null
-          ? Gender.values.firstWhere((element) => element.name == json['gender'])
+      phone: json['phone'] != null
+          ? (json['phone'] as num).toInt().toString()
           : null,
-      expiryDate: json['expiry_date'] != null ? DateTime.parse(json['expiry_date']) : null,
+      birthDate:
+          json['birthdate'] != null ? DateTime.parse(json['birthdate']) : null,
+      gender: json['gender'] != null
+          ? Gender.values
+              .firstWhere((element) => element.name == json['gender'])
+          : null,
+      expiryDate: json['expiry_date'] != null
+          ? DateTime.parse(json['expiry_date'])
+          : null,
       providerId: json['provider_id'],
       providerName: json['provider_name'],
       tariffId: json['tariff_id'] as int?,
@@ -55,7 +61,8 @@ class UserModel {
     data['name'] = name;
     data['email'] = email;
     data['image'] = image;
-    data['phone'] = phone != null && phone!.isNotEmpty ? int.parse(phone!) : null;
+    data['phone'] =
+        phone != null && phone!.isNotEmpty ? int.parse(phone!) : null;
     data['birthdate'] = birthDate?.toString();
     data['gender'] = gender?.name;
     data['expiry_date'] = expiryDate?.toString();
@@ -66,7 +73,9 @@ class UserModel {
     return data;
   }
 
-  String get birthDateString => birthDate != null ? DateFormat('y/MM/dd').format(birthDate!) : '';
+  String get birthDateString => birthDate != null
+      ? DateFormat('dd.MM.yyyy').format(birthDate!)
+      : "kk.oo.yyyy";
 
   String get userFullName => name ?? '';
 

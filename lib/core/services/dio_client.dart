@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:wisdom/config/constants/urls.dart';
 import 'package:wisdom/core/services/custom_client.dart';
 
 import '../session/manager/session_manager.dart';
@@ -13,8 +14,8 @@ extension ResponseExt on Response {
 class DioClient {
   final SessionManager _sessionManager;
   final NetWorkChecker _netWorkChecker;
-  final String _debugUrl = "http://wisdev.uz";
-  final String _prodUrl = "http://api.wisdomedu.uz";
+  final String _debugUrl = Urls.baseUrl;
+  final String _prodUrl = Urls.baseUrl;
   // final String _prodUrl = "https://api.wisdomedu.usoftdevs.uz";
   final bool _isDebug = false;
   late Dio _dio;

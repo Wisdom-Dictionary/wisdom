@@ -75,15 +75,17 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
     return List.generate(repository.levelsList.length, (index) {
       double? left = (positions[index]["left"] as int?)?.toDouble();
       double? right = (positions[index]["right"] as int?)?.toDouble();
-      double? bottom = ((positions[index]["bottom"] ?? 1) * pathCornerRad * 2).toDouble();
-      bool activeLevel = repository.userCurrentLevel == index;
+      double? bottom =
+          ((positions[index]["bottom"] ?? 1) * pathCornerRad * 2).toDouble();
+      bool activeLevel = repository.levelsList[index].userCurrentLevel ?? false;
 
       return Positioned(
           left: left,
           right: right,
           bottom: activeLevel && bottom != null ? bottom - 80 : (bottom! - 50),
           child: GestureDetector(
-            onTap: () => widget.viewModel.selectLevel(repository.levelsList[index]),
+            onTap: () =>
+                widget.viewModel.selectLevel(repository.levelsList[index]),
             child: InactiveLevelIndicator(
               activeLevel: activeLevel,
               item: repository.levelsList[index],
@@ -96,7 +98,8 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        if (!widget.viewModel.isSuccess(tag: widget.viewModel.getLevelsTag)) RoadmapShimmerWidget(),
+        if (!widget.viewModel.isSuccess(tag: widget.viewModel.getLevelsTag))
+          RoadmapShimmerWidget(),
         if (widget.viewModel.isSuccess(tag: widget.viewModel.getLevelsTag))
           Center(
             child: SingleChildScrollView(
@@ -128,8 +131,12 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
                   CustomPaint(
                     painter: DashedPathPainter(
                       originalPath: (size) {
-                        return _customPath(size, pathCornerRad, iconSize,
-                                widget.viewModel.roadMapRepository.levelsList.length)
+                        return _customPath(
+                                size,
+                                pathCornerRad,
+                                iconSize,
+                                widget.viewModel.roadMapRepository.levelsList
+                                    .length)
                             .reversed
                             .toList();
                       },
@@ -144,8 +151,12 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
                   CustomPaint(
                     painter: DashedPathPainter(
                       originalPath: (size) {
-                        return _customPath(size, pathCornerRad, iconSize,
-                            widget.viewModel.roadMapRepository.levelsList.length);
+                        return _customPath(
+                            size,
+                            pathCornerRad,
+                            iconSize,
+                            widget
+                                .viewModel.roadMapRepository.levelsList.length);
                       },
                       pathColors: [],
                       pathColor: AppColors.blue,
@@ -156,10 +167,15 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
                     child: SizedBox(
                         width: iconSize * 70,
                         height: (pathCornerRad * 2) *
-                            (widget.viewModel.roadMapRepository.levelsList.length < 6
+                            (widget.viewModel.roadMapRepository.levelsList
+                                        .length <
+                                    6
                                 ? 6
-                                : widget.viewModel.roadMapRepository.levelsList.length),
-                        child: Stack(children: levelItems(widget.viewModel.roadMapRepository))),
+                                : widget.viewModel.roadMapRepository.levelsList
+                                    .length),
+                        child: Stack(
+                            children: levelItems(
+                                widget.viewModel.roadMapRepository))),
                   ),
                 ],
               ),
@@ -175,7 +191,8 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
     );
   }
 
-  List<Path> _customPath(Size size, double painterCornerRad, double iconSize, int iconCount) {
+  List<Path> _customPath(
+      Size size, double painterCornerRad, double iconSize, int iconCount) {
     final width = size.width;
 
     List<Path> paths = [];

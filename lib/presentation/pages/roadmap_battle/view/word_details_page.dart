@@ -20,6 +20,7 @@ import 'package:wisdom/presentation/components/w_button.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/word_details_page_viewmodel.dart';
 import 'package:wisdom/presentation/pages/word_detail/viewmodel/word_detail_page_viewmodel.dart';
 import 'package:wisdom/presentation/routes/routes.dart';
+import 'package:wisdom/presentation/widgets/banner_ad_widget.dart';
 import 'package:wisdom/presentation/widgets/custom_app_bar.dart';
 
 import '../../../../config/constants/app_colors.dart';
@@ -230,23 +231,7 @@ class WordDetailsPage extends ViewModelBuilderWidget<WordDetailPageViewModel> {
                                   ],
                                 ),
                               ),
-                              ValueListenableBuilder(
-                                valueListenable: viewModel.localViewModel.isNetworkAvailable,
-                                builder: (BuildContext context, value, Widget? child) {
-                                  return viewModel.localViewModel.banner != null && value as bool
-                                      ? Container(
-                                          margin: EdgeInsets.only(top: 16.h),
-                                          decoration: isDarkTheme
-                                              ? AppDecoration.bannerDarkDecor
-                                              : AppDecoration.bannerDecor,
-                                          height:
-                                              viewModel.localViewModel.banner!.size.height * 1.0,
-                                          child: AdWidget(
-                                            ad: viewModel.localViewModel.banner!..load(),
-                                          ))
-                                      : const SizedBox.shrink();
-                                },
-                              ),
+                              BannerAdWidget(),
                             ],
                           )
                         // for regular words
@@ -519,23 +504,7 @@ class WordDetailsPage extends ViewModelBuilderWidget<WordDetailPageViewModel> {
                                   ],
                                 ),
                               ),
-                              ValueListenableBuilder(
-                                valueListenable: viewModel.localViewModel.isNetworkAvailable,
-                                builder: (BuildContext context, value, Widget? child) {
-                                  return viewModel.localViewModel.banner != null && value as bool
-                                      ? Container(
-                                          margin: EdgeInsets.only(top: 16.h),
-                                          decoration: isDarkTheme
-                                              ? AppDecoration.bannerDarkDecor
-                                              : AppDecoration.bannerDecor,
-                                          height:
-                                              viewModel.localViewModel.banner!.size.height * 1.0,
-                                          child: AdWidget(
-                                            ad: viewModel.localViewModel.banner!..load(),
-                                          ))
-                                      : const SizedBox.shrink();
-                                },
-                              ),
+                              BannerAdWidget(),
                             ],
                           ),
                     Positioned(

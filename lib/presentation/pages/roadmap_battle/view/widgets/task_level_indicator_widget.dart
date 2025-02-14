@@ -26,7 +26,8 @@ class FlagIndicatorWidget extends StatelessWidget {
           ),
           Text(
             "$userLevel",
-            style: AppTextStyle.font15W500Normal.copyWith(fontSize: 14, color: AppColors.white),
+            style: AppTextStyle.font15W500Normal
+                .copyWith(fontSize: 14, color: AppColors.white),
           ),
         ],
       ),
@@ -35,7 +36,8 @@ class FlagIndicatorWidget extends StatelessWidget {
 }
 
 class InactiveLevelIndicator extends StatelessWidget {
-  const InactiveLevelIndicator({super.key, required this.item, required this.activeLevel});
+  const InactiveLevelIndicator(
+      {super.key, required this.item, required this.activeLevel});
 
   final LevelModel item;
   final bool activeLevel;
@@ -68,7 +70,8 @@ class InactiveLevelIndicator extends StatelessWidget {
                   borderRadius: BorderRadius.circular(1000)),
               child: Text(
                 item.name!,
-                style: AppTextStyle.font13W500Normal.copyWith(fontSize: 14, color: AppColors.white),
+                style: AppTextStyle.font13W500Normal
+                    .copyWith(fontSize: 14, color: AppColors.white),
               ),
             ),
           )
@@ -76,15 +79,18 @@ class InactiveLevelIndicator extends StatelessWidget {
       );
 
   Container inactiveItemContent() {
-    final userLevel = item.userCurrentLevel ?? false;
+    final completedLevel = (item.star ?? 0) != 0;
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 18.5.w, vertical: 4.h),
       decoration: BoxDecoration(
           boxShadow: [
             const BoxShadow(
-                color: Color(0x33163757), offset: Offset(0, 8), blurRadius: 20, spreadRadius: 0)
+                color: Color(0x33163757),
+                offset: Offset(0, 8),
+                blurRadius: 20,
+                spreadRadius: 0)
           ],
-          color: userLevel ? AppColors.bgAccent : AppColors.bgGray,
+          color: completedLevel ? AppColors.bgAccent : AppColors.bgGray,
           border: Border.all(color: AppColors.lightBackground, width: 2),
           borderRadius: BorderRadius.circular(64)),
       child: Column(
@@ -92,15 +98,17 @@ class InactiveLevelIndicator extends StatelessWidget {
           Text(
             item.name!,
             style: AppTextStyle.font13W500Normal.copyWith(
-                fontSize: 14, color: userLevel ? AppColors.white : AppColors.textDisabled),
+                fontSize: 14,
+                color: completedLevel ? AppColors.white : AppColors.textDisabled),
           ),
           const SizedBox(
             height: 4,
           ),
-          userLevel
+          completedLevel
               ? SvgPicture.asset(
                   Assets.icons.verify,
-                  colorFilter: const ColorFilter.mode(AppColors.white, BlendMode.srcIn),
+                  colorFilter:
+                      const ColorFilter.mode(AppColors.white, BlendMode.srcIn),
                 )
               : SvgPicture.asset(Assets.icons.lock),
         ],
@@ -114,7 +122,7 @@ class TaskLevelStarsIndicator extends StatelessWidget {
   final int star;
 
   String iconPath(int position) {
-    if (position >= star) {
+    if (position > star) {
       return Assets.icons.starInactive;
     }
     return Assets.icons.starActive;
@@ -125,9 +133,11 @@ class TaskLevelStarsIndicator extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Transform.translate(offset: const Offset(1, 4), child: SvgPicture.asset(iconPath(1))),
+        Transform.translate(
+            offset: const Offset(1, 4), child: SvgPicture.asset(iconPath(1))),
         SvgPicture.asset(iconPath(2)),
-        Transform.translate(offset: const Offset(-1, 4), child: SvgPicture.asset(iconPath(3))),
+        Transform.translate(
+            offset: const Offset(-1, 4), child: SvgPicture.asset(iconPath(3))),
       ],
     );
   }

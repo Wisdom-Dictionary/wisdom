@@ -11,13 +11,14 @@ import '../../config/constants/assets.dart';
 class NewCustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   NewCustomAppBar({
     super.key,
+    this.height,
     this.title,
     this.child,
     this.bottom,
     this.onTap,
     this.focusNode,
     this.isSearch = false,
-    this.isLeading = true,
+    this.hasLeading = true,
     this.isTitle = true,
     this.leading,
     this.onChange,
@@ -25,6 +26,7 @@ class NewCustomAppBar extends StatefulWidget implements PreferredSizeWidget {
     this.actions = const [],
   });
 
+  final double? height;
   final String? title;
   final Widget? child;
   final PreferredSizeWidget? bottom;
@@ -33,7 +35,7 @@ class NewCustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   final Widget? leading;
   FocusNode? focusNode;
   bool isSearch;
-  bool isLeading;
+  bool hasLeading;
   bool isTitle;
   bool focus;
   final List<Widget>? actions;
@@ -42,11 +44,12 @@ class NewCustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   State<NewCustomAppBar> createState() => _NewCustomAppBarState();
 
   @override
-  Size get preferredSize => Size.fromHeight(isTitle
-      ? isSearch
-          ? 111.h
-          : 75.h
-      : 75.h);
+  Size get preferredSize => Size.fromHeight(height ??
+      (isTitle
+          ? isSearch
+              ? 111.h
+              : 75.h
+          : 75.h));
 }
 
 class _NewCustomAppBarState extends State<NewCustomAppBar> {
@@ -69,33 +72,36 @@ class _NewCustomAppBarState extends State<NewCustomAppBar> {
       ),
       actions: widget.actions,
       leading: widget.leading ??
-          InkResponse(
-            onTap: () {
-              if (widget.onTap != null) {
-                widget.onTap!();
-              }
-            },
-            child: Padding(
-              padding: EdgeInsets.only(
-                left: 5.w,
-                right: 5.w,
-                top: 15.h,
-              ),
-              child: SvgPicture.asset(
-                Assets.icons.arrowLeft,
-                height: 24.h,
-                width: 24.h,
-                fit: BoxFit.scaleDown,
-              ),
-            ),
-          ),
+          (widget.hasLeading
+              ? InkResponse(
+                  onTap: () {
+                    if (widget.onTap != null) {
+                      widget.onTap!();
+                    }
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      left: 5.w,
+                      right: 5.w,
+                      top: 15.h,
+                    ),
+                    child: SvgPicture.asset(
+                      Assets.icons.arrowLeft,
+                      height: 24.h,
+                      width: 24.h,
+                      fit: BoxFit.scaleDown,
+                    ),
+                  ),
+                )
+              : null),
       centerTitle: true,
-      title: Padding(
-        padding: EdgeInsets.only(top: 12.h),
-        child: widget.isTitle && widget.title != null
-            ? Text(widget.title!, style: AppTextStyle.font15W500Normal)
-            : widget.child,
-      ),
+      title: widget.isTitle && widget.title != null
+          ? Padding(
+              padding: EdgeInsets.only(top: 12.h),
+              child: Text(widget.title!, style: AppTextStyle.font15W500Normal),
+            )
+          : widget.child,
+      toolbarHeight: widget.height,
       bottom: widget.isSearch
           ? PreferredSize(
               preferredSize: Size.fromHeight(50.h),

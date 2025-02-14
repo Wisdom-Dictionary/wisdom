@@ -133,7 +133,7 @@ class HomeScreen extends ViewModelWidget<HomeViewModel> {
                       key: viewModel.globalKeyCentre,
                       description: LocaleKeys.all_words_your_hand.tr(),
                       descTextStyle: AppTextStyle.font15W500Normal.copyWith(color: AppColors.blue),
-                      descriptionAlignment: Alignment.center,
+                      descriptionAlignment: TextAlign.center,
                       disableDefaultTargetGestures: false,
                       showArrow: true,
                       targetBorderRadius: BorderRadius.circular(50.r),

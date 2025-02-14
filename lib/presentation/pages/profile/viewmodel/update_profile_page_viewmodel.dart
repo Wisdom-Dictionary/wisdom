@@ -24,8 +24,8 @@ import 'package:wisdom/presentation/widgets/loading_widget.dart';
 
 import '../../../routes/routes.dart';
 
-class ProfilePageViewModel extends BaseViewModel {
-  ProfilePageViewModel({
+class UpdateProfilePageViewModel extends BaseViewModel {
+  UpdateProfilePageViewModel({
     required super.context,
     required this.profileRepository,
     required this.localViewModel,

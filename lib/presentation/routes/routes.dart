@@ -18,6 +18,7 @@ import 'package:wisdom/presentation/pages/profile/view/getting_pro_page.dart';
 import 'package:wisdom/presentation/pages/profile/view/input_number_page.dart';
 import 'package:wisdom/presentation/pages/profile/view/payment_page.dart';
 import 'package:wisdom/presentation/pages/profile/view/profile_page.dart';
+import 'package:wisdom/presentation/pages/profile/view/update_profile_page.dart';
 import 'package:wisdom/presentation/pages/profile/view/user_cabinet_page.dart';
 import 'package:wisdom/presentation/pages/profile/view/verify_page.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/battle_result_page.dart';
@@ -35,6 +36,7 @@ class Routes {
   static const grammarPageabout = '/unit/grammar/about';
   static const gettingProPage = '/profile';
   static const profilePage = '/profile2';
+  static const updateProfilePage = '/update_profile';
   static const registrationPage = '/profile/registration';
   static const verifyPage = '/profile/registration/verify';
   static const paymentPage = '/profile/payment';
@@ -85,6 +87,11 @@ class Routes {
           _showRouteName(profilePage);
           return MaterialPageRoute(
             builder: (_) => ProfilePage(),
+          );
+        case updateProfilePage:
+          _showRouteName(updateProfilePage);
+          return MaterialPageRoute(
+            builder: (_) => UpdateProfilePage(),
           );
         case registrationPage:
           return MaterialPageRoute(

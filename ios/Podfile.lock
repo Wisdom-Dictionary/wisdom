@@ -1,10 +1,8 @@
 PODS:
-<<<<<<< HEAD
   - Adapty (2.10.3)
   - adapty_flutter (2.10.3):
     - Adapty (= 2.10.3)
     - Flutter
-=======
   - AppAuth (1.7.5):
     - AppAuth/Core (= 1.7.5)
     - AppAuth/ExternalUserAgent (= 1.7.5)
@@ -83,13 +81,11 @@ PODS:
     - AppMetricaLog (= 5.9.0)
   - AppMetricaSynchronization (5.9.0):
     - AppMetricaLogSwift (= 5.9.0)
->>>>>>> 048de01 (last changes from Github)
   - audio_session (0.0.1):
     - Flutter
   - awesome_notifications (0.9.3):
     - Flutter
     - IosAwnCore (~> 0.9.3)
-<<<<<<< HEAD
   - connectivity_plus (0.0.1):
     - Flutter
     - ReachabilitySwift
@@ -128,7 +124,6 @@ PODS:
     - GoogleUtilities/UserDefaults (~> 7.8)
     - nanopb (< 2.30911.0, >= 2.30908.0)
   - Flutter (1.0.0)
-=======
   - BigoADS (4.2.3)
   - BigoADSYandexMobileAdsAdapters (4.2.3.12):
     - BigoADS (~> 4.2.3)
@@ -201,7 +196,6 @@ PODS:
   - flutter_facebook_auth (6.0.4):
     - FBSDKLoginKit (~> 16.3.1)
     - Flutter
->>>>>>> 048de01 (last changes from Github)
   - flutter_keyboard_visibility (0.0.1):
     - Flutter
   - flutter_local_notifications (0.0.1):
@@ -212,41 +206,6 @@ PODS:
     - Flutter
   - flutter_tts (0.0.1):
     - Flutter
-<<<<<<< HEAD
-  - Google-Mobile-Ads-SDK (10.11.0):
-    - GoogleAppMeasurement (< 11.0, >= 7.0)
-    - GoogleUserMessagingPlatform (>= 1.1)
-  - google_mobile_ads (1.0.0):
-    - Flutter
-    - Google-Mobile-Ads-SDK (~> 10.11.0)
-    - webview_flutter_wkwebview
-  - GoogleAppMeasurement (10.29.0):
-    - GoogleAppMeasurement/AdIdSupport (= 10.29.0)
-    - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
-    - GoogleUtilities/MethodSwizzler (~> 7.11)
-    - GoogleUtilities/Network (~> 7.11)
-    - "GoogleUtilities/NSData+zlib (~> 7.11)"
-    - nanopb (< 2.30911.0, >= 2.30908.0)
-  - GoogleAppMeasurement/AdIdSupport (10.29.0):
-    - GoogleAppMeasurement/WithoutAdIdSupport (= 10.29.0)
-    - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
-    - GoogleUtilities/MethodSwizzler (~> 7.11)
-    - GoogleUtilities/Network (~> 7.11)
-    - "GoogleUtilities/NSData+zlib (~> 7.11)"
-    - nanopb (< 2.30911.0, >= 2.30908.0)
-  - GoogleAppMeasurement/WithoutAdIdSupport (10.29.0):
-    - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
-    - GoogleUtilities/MethodSwizzler (~> 7.11)
-    - GoogleUtilities/Network (~> 7.11)
-    - "GoogleUtilities/NSData+zlib (~> 7.11)"
-    - nanopb (< 2.30911.0, >= 2.30908.0)
-  - GoogleDataTransport (9.4.1):
-    - GoogleUtilities/Environment (~> 7.7)
-    - nanopb (< 2.30911.0, >= 2.30908.0)
-    - PromisesObjC (< 3.0, >= 1.2)
-  - GoogleUserMessagingPlatform (2.7.0)
-  - GoogleUtilities/AppDelegateSwizzler (7.13.3):
-=======
   - Google-Mobile-Ads-SDK (11.10.0):
     - GoogleUserMessagingPlatform (>= 1.1)
   - google_mobile_ads (5.2.0):
@@ -268,53 +227,20 @@ PODS:
     - GTMSessionFetcher/Core (~> 3.3)
   - GoogleUserMessagingPlatform (2.7.0)
   - GoogleUtilities/AppDelegateSwizzler (8.0.2):
->>>>>>> 048de01 (last changes from Github)
     - GoogleUtilities/Environment
     - GoogleUtilities/Logger
     - GoogleUtilities/Network
     - GoogleUtilities/Privacy
-<<<<<<< HEAD
-  - GoogleUtilities/Environment (7.13.3):
-    - GoogleUtilities/Privacy
-    - PromisesObjC (< 3.0, >= 1.2)
-  - GoogleUtilities/Logger (7.13.3):
-    - GoogleUtilities/Environment
-    - GoogleUtilities/Privacy
-  - GoogleUtilities/MethodSwizzler (7.13.3):
-    - GoogleUtilities/Logger
-    - GoogleUtilities/Privacy
-  - GoogleUtilities/Network (7.13.3):
-=======
   - GoogleUtilities/Environment (8.0.2):
     - GoogleUtilities/Privacy
   - GoogleUtilities/Logger (8.0.2):
     - GoogleUtilities/Environment
     - GoogleUtilities/Privacy
   - GoogleUtilities/Network (8.0.2):
->>>>>>> 048de01 (last changes from Github)
     - GoogleUtilities/Logger
     - "GoogleUtilities/NSData+zlib"
     - GoogleUtilities/Privacy
     - GoogleUtilities/Reachability
-<<<<<<< HEAD
-  - "GoogleUtilities/NSData+zlib (7.13.3)":
-    - GoogleUtilities/Privacy
-  - GoogleUtilities/Privacy (7.13.3)
-  - GoogleUtilities/Reachability (7.13.3):
-    - GoogleUtilities/Logger
-    - GoogleUtilities/Privacy
-  - GoogleUtilities/UserDefaults (7.13.3):
-    - GoogleUtilities/Logger
-    - GoogleUtilities/Privacy
-  - IosAwnCore (0.9.3)
-  - just_audio (0.0.1):
-    - Flutter
-  - nanopb (2.30910.0):
-    - nanopb/decode (= 2.30910.0)
-    - nanopb/encode (= 2.30910.0)
-  - nanopb/decode (2.30910.0)
-  - nanopb/encode (2.30910.0)
-=======
   - "GoogleUtilities/NSData+zlib (8.0.2)":
     - GoogleUtilities/Privacy
   - GoogleUtilities/Privacy (8.0.2)
@@ -402,7 +328,6 @@ PODS:
     - nanopb/encode (= 3.30910.0)
   - nanopb/decode (3.30910.0)
   - nanopb/encode (3.30910.0)
->>>>>>> 048de01 (last changes from Github)
   - package_info_plus (0.4.5):
     - Flutter
   - path_provider_foundation (0.0.1):
@@ -410,15 +335,6 @@ PODS:
     - FlutterMacOS
   - permission_handler_apple (9.3.0):
     - Flutter
-<<<<<<< HEAD
-  - PromisesObjC (2.4.0)
-  - ReachabilitySwift (5.2.4)
-  - Sentry/HybridSDK (8.25.0)
-  - sentry_flutter (7.20.2):
-    - Flutter
-    - FlutterMacOS
-    - Sentry/HybridSDK (= 8.25.0)
-=======
   - platform_device_id (0.0.1):
     - Flutter
   - PromisesObjC (2.4.0)
@@ -428,32 +344,19 @@ PODS:
     - Flutter
     - FlutterMacOS
     - Sentry/HybridSDK (= 8.40.1)
->>>>>>> 048de01 (last changes from Github)
   - share_plus (0.0.1):
     - Flutter
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
-<<<<<<< HEAD
-=======
   - sign_in_with_apple (0.0.1):
     - Flutter
->>>>>>> 048de01 (last changes from Github)
   - speech_to_text (0.0.1):
     - Flutter
     - Try
   - sqflite_darwin (0.0.4):
     - Flutter
     - FlutterMacOS
-<<<<<<< HEAD
-  - Try (2.1.1)
-  - url_launcher_ios (0.0.1):
-    - Flutter
-  - video_player_avfoundation (0.0.1):
-    - Flutter
-    - FlutterMacOS
-  - wakelock_plus (0.0.1):
-=======
   - StartAppSDK (4.10.5)
   - StartAppYandexMobileAdsAdapters (4.10.4.6):
     - StartAppSDK (~> 4.10.4)
@@ -483,21 +386,12 @@ PODS:
     - VungleAds (= 7.4.1)
     - YandexMobileAds (= 7.7.0)
   - wakelock (0.0.1):
->>>>>>> 048de01 (last changes from Github)
     - Flutter
   - webview_flutter_wkwebview (0.0.1):
     - Flutter
     - FlutterMacOS
   - workmanager (0.0.1):
     - Flutter
-<<<<<<< HEAD
-
-DEPENDENCIES:
-  - adapty_flutter (from `.symlinks/plugins/adapty_flutter/ios`)
-  - audio_session (from `.symlinks/plugins/audio_session/ios`)
-  - awesome_notifications (from `.symlinks/plugins/awesome_notifications/ios`)
-  - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
-=======
   - yandex_mobileads (7.6.0):
     - Flutter
     - YandexMobileAds (~> 7.7.0)
@@ -525,54 +419,32 @@ DEPENDENCIES:
   - awesome_notifications (from `.symlinks/plugins/awesome_notifications/ios`)
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - device_info (from `.symlinks/plugins/device_info/ios`)
->>>>>>> 048de01 (last changes from Github)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - Flutter (from `Flutter`)
-<<<<<<< HEAD
-=======
   - flutter_facebook_auth (from `.symlinks/plugins/flutter_facebook_auth/ios`)
->>>>>>> 048de01 (last changes from Github)
   - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_native_splash (from `.symlinks/plugins/flutter_native_splash/ios`)
   - flutter_timezone (from `.symlinks/plugins/flutter_timezone/ios`)
   - flutter_tts (from `.symlinks/plugins/flutter_tts/ios`)
   - google_mobile_ads (from `.symlinks/plugins/google_mobile_ads/ios`)
-<<<<<<< HEAD
-=======
   - google_sign_in_ios (from `.symlinks/plugins/google_sign_in_ios/darwin`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
->>>>>>> 048de01 (last changes from Github)
   - just_audio (from `.symlinks/plugins/just_audio/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
-<<<<<<< HEAD
-  - sentry_flutter (from `.symlinks/plugins/sentry_flutter/ios`)
-  - share_plus (from `.symlinks/plugins/share_plus/ios`)
-  - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
-=======
   - platform_device_id (from `.symlinks/plugins/platform_device_id/ios`)
   - sentry_flutter (from `.symlinks/plugins/sentry_flutter/ios`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - sign_in_with_apple (from `.symlinks/plugins/sign_in_with_apple/ios`)
->>>>>>> 048de01 (last changes from Github)
   - speech_to_text (from `.symlinks/plugins/speech_to_text/ios`)
   - sqflite_darwin (from `.symlinks/plugins/sqflite_darwin/darwin`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
   - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/darwin`)
-<<<<<<< HEAD
-  - wakelock_plus (from `.symlinks/plugins/wakelock_plus/ios`)
-  - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/darwin`)
-  - workmanager (from `.symlinks/plugins/workmanager/ios`)
-
-SPEC REPOS:
-  trunk:
-    - Adapty
-=======
   - wakelock (from `.symlinks/plugins/wakelock/ios`)
   - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/darwin`)
   - workmanager (from `.symlinks/plugins/workmanager/ios`)
@@ -615,20 +487,12 @@ SPEC REPOS:
     - FBSDKCoreKit
     - FBSDKCoreKit_Basics
     - FBSDKLoginKit
->>>>>>> 048de01 (last changes from Github)
     - Firebase
     - FirebaseCore
     - FirebaseCoreInternal
     - FirebaseInstallations
     - FirebaseMessaging
     - Google-Mobile-Ads-SDK
-<<<<<<< HEAD
-    - GoogleAppMeasurement
-    - GoogleDataTransport
-    - GoogleUserMessagingPlatform
-    - GoogleUtilities
-    - IosAwnCore
-=======
     - GoogleDataTransport
     - GoogleSignIn
     - GoogleUserMessagingPlatform
@@ -647,18 +511,10 @@ SPEC REPOS:
     - myTargetSDK
     - MyTargetYandexMobileAdsAdapters
     - myTrackerSDK
->>>>>>> 048de01 (last changes from Github)
     - nanopb
     - PromisesObjC
     - ReachabilitySwift
     - Sentry
-<<<<<<< HEAD
-    - Try
-
-EXTERNAL SOURCES:
-  adapty_flutter:
-    :path: ".symlinks/plugins/adapty_flutter/ios"
-=======
     - StartAppSDK
     - StartAppYandexMobileAdsAdapters
     - Try
@@ -674,18 +530,14 @@ EXTERNAL SOURCES:
     - YandexMobileAdsMediation
 
 EXTERNAL SOURCES:
->>>>>>> 048de01 (last changes from Github)
   audio_session:
     :path: ".symlinks/plugins/audio_session/ios"
   awesome_notifications:
     :path: ".symlinks/plugins/awesome_notifications/ios"
   connectivity_plus:
     :path: ".symlinks/plugins/connectivity_plus/ios"
-<<<<<<< HEAD
-=======
   device_info:
     :path: ".symlinks/plugins/device_info/ios"
->>>>>>> 048de01 (last changes from Github)
   device_info_plus:
     :path: ".symlinks/plugins/device_info_plus/ios"
   firebase_core:
@@ -694,11 +546,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_messaging/ios"
   Flutter:
     :path: Flutter
-<<<<<<< HEAD
-=======
   flutter_facebook_auth:
     :path: ".symlinks/plugins/flutter_facebook_auth/ios"
->>>>>>> 048de01 (last changes from Github)
   flutter_keyboard_visibility:
     :path: ".symlinks/plugins/flutter_keyboard_visibility/ios"
   flutter_local_notifications:
@@ -711,13 +560,10 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_tts/ios"
   google_mobile_ads:
     :path: ".symlinks/plugins/google_mobile_ads/ios"
-<<<<<<< HEAD
-=======
   google_sign_in_ios:
     :path: ".symlinks/plugins/google_sign_in_ios/darwin"
   image_picker_ios:
     :path: ".symlinks/plugins/image_picker_ios/ios"
->>>>>>> 048de01 (last changes from Github)
   just_audio:
     :path: ".symlinks/plugins/just_audio/ios"
   package_info_plus:
@@ -726,22 +572,16 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
   permission_handler_apple:
     :path: ".symlinks/plugins/permission_handler_apple/ios"
-<<<<<<< HEAD
-=======
   platform_device_id:
     :path: ".symlinks/plugins/platform_device_id/ios"
->>>>>>> 048de01 (last changes from Github)
   sentry_flutter:
     :path: ".symlinks/plugins/sentry_flutter/ios"
   share_plus:
     :path: ".symlinks/plugins/share_plus/ios"
   shared_preferences_foundation:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
-<<<<<<< HEAD
-=======
   sign_in_with_apple:
     :path: ".symlinks/plugins/sign_in_with_apple/ios"
->>>>>>> 048de01 (last changes from Github)
   speech_to_text:
     :path: ".symlinks/plugins/speech_to_text/ios"
   sqflite_darwin:
@@ -750,68 +590,12 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
   video_player_avfoundation:
     :path: ".symlinks/plugins/video_player_avfoundation/darwin"
-<<<<<<< HEAD
-  wakelock_plus:
-    :path: ".symlinks/plugins/wakelock_plus/ios"
-=======
   wakelock:
     :path: ".symlinks/plugins/wakelock/ios"
->>>>>>> 048de01 (last changes from Github)
   webview_flutter_wkwebview:
     :path: ".symlinks/plugins/webview_flutter_wkwebview/darwin"
   workmanager:
     :path: ".symlinks/plugins/workmanager/ios"
-<<<<<<< HEAD
-
-SPEC CHECKSUMS:
-  Adapty: adb16d30139d66297c70190f22b3e9a169e5130f
-  adapty_flutter: 2ac61a29d3913b7b3bb8186d3a854172afd6857c
-  audio_session: f08db0697111ac84ba46191b55488c0563bb29c6
-  awesome_notifications: ad14ba38749441a7d193d08875fa18b4484917ae
-  connectivity_plus: 481668c94744c30c53b8895afb39159d1e619bdf
-  device_info_plus: d668d0dcad87727e865495c472b911b15d7ee26a
-  Firebase: 0312a2352584f782ea56f66d91606891d4607f06
-  firebase_core: 3b49a055ff54114cae400581c13671fe53936c36
-  firebase_messaging: 394589dcda43e42ec9807558a409a975e285c45b
-  FirebaseCore: 7ec4d0484817f12c3373955bc87762d96842d483
-  FirebaseCoreInternal: df84dd300b561c27d5571684f389bf60b0a5c934
-  FirebaseInstallations: 913cf60d0400ebd5d6b63a28b290372ab44590dd
-  FirebaseMessaging: 88950ba9485052891ebe26f6c43a52bb62248952
-  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_keyboard_visibility: 4625131e43015dbbe759d9b20daaf77e0e3f6619
-  flutter_local_notifications: ad39620c743ea4c15127860f4b5641649a988100
-  flutter_native_splash: 6cad9122ea0fad137d23137dd14b937f3e90b145
-  flutter_timezone: ee50ce7786b5fde27e2fe5375bbc8c9661ffc13f
-  flutter_tts: b88dbc8655d3dc961bc4a796e4e16a4cc1795833
-  Google-Mobile-Ads-SDK: 58b4fda3f9758fc1ed210aa5cf7777b5eb55d47e
-  google_mobile_ads: c49bca7ce6656c411965e56b4e24893466fef840
-  GoogleAppMeasurement: f9de05ee17401e3355f68e8fc8b5064d429f5918
-  GoogleDataTransport: 6c09b596d841063d76d4288cc2d2f42cc36e1e2a
-  GoogleUserMessagingPlatform: a8b56893477f67212fbc8411c139e61d463349f5
-  GoogleUtilities: ea963c370a38a8069cc5f7ba4ca849a60b6d7d15
-  IosAwnCore: b8601fbb37f7b3560f31b84ebf55a72f65812e05
-  just_audio: 6c031bb61297cf218b4462be616638e81c058e97
-  nanopb: 438bc412db1928dac798aa6fd75726007be04262
-  package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499
-  path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
-  permission_handler_apple: 4ed2196e43d0651e8ff7ca3483a069d469701f2d
-  PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
-  ReachabilitySwift: 32793e867593cfc1177f5d16491e3a197d2fccda
-  Sentry: cd86fc55628f5b7c572cabe66cc8f95a9d2f165a
-  sentry_flutter: 99aff87df84da27d0c73bc58b8f9399ef73811bc
-  share_plus: 4dfe6f47fc3248e89b3eea0be59a95d0433ebe1a
-  shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
-  speech_to_text: ae2abc312e619ff1c53e675a9fc4d785a15c03bb
-  sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
-  Try: 5ef669ae832617b3cee58cb2c6f99fb767a4ff96
-  url_launcher_ios: 694010445543906933d732453a59da0a173ae33d
-  video_player_avfoundation: 2cef49524dd1f16c5300b9cd6efd9611ce03639b
-  wakelock_plus: 04623e3f525556020ebd4034310f20fe7fda8b49
-  webview_flutter_wkwebview: 44d4dee7d7056d5ad185d25b38404436d56c547c
-  workmanager: 01be2de7f184bd15de93a1812936a2b7f42ef07e
-
-PODFILE CHECKSUM: b1e13c39bf84fd211c66a7e2e8c0197cfbbd152c
-=======
   yandex_mobileads:
     :path: ".symlinks/plugins/yandex_mobileads/ios"
 
@@ -927,6 +711,5 @@ SPEC CHECKSUMS:
   YandexMobileAdsMediation: 0a20efaba83ea23091f2c1eabf7ad270a88f7ecd
 
 PODFILE CHECKSUM: 543e757e7a31fe4710f60cfb965404ab6cd8377e
->>>>>>> 048de01 (last changes from Github)
 
 COCOAPODS: 1.16.2

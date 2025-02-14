@@ -346,18 +346,18 @@ packages:
     dependency: "direct overridden"
     description:
       name: device_info_plus
-      sha256: f545ffbadee826f26f2e1a0f0cbd667ae9a6011cc0f77c0f8f00a969655e6e95
+      sha256: "72d146c6d7098689ff5c5f66bcf593ac11efc530095385356e131070333e64da"
       url: "https://pub.dev"
     source: hosted
-    version: "11.1.1"
+    version: "11.3.0"
   device_info_plus_platform_interface:
     dependency: transitive
     description:
       name: device_info_plus_platform_interface
-      sha256: "282d3cf731045a2feb66abfe61bbc40870ae50a3ed10a4d3d217556c35c8c2ba"
+      sha256: "0b04e02b30791224b31969eb1b50d723498f402971bff3630bca2ba839bd1ed2"
       url: "https://pub.dev"
     source: hosted
-    version: "7.0.1"
+    version: "7.0.2"
   dio:
     dependency: "direct main"
     description:
@@ -374,6 +374,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0"
+  dotted_border:
+    dependency: "direct main"
+    description:
+      name: dotted_border
+      sha256: "108837e11848ca776c53b30bc870086f84b62ed6e01c503ed976e8f8c7df9c04"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
   easy_localization:
     dependency: "direct main"
     description:
@@ -742,18 +750,18 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_widget_from_html
-      sha256: "22c911b6ccf82b83e0c457d987bac4e703440fea0fc88dab24f4dfe995a5f33f"
+      sha256: f3967a5b42896662efdd420b5adaf8a7d3692b0f44462a07c80e3b4c173b1a02
       url: "https://pub.dev"
     source: hosted
-    version: "0.14.11"
+    version: "0.15.3"
   flutter_widget_from_html_core:
     dependency: transitive
     description:
       name: flutter_widget_from_html_core
-      sha256: cc1d9be3d187ce668ee02091cd5442dfb050cdaf98e0ab9a4d12ad008f966979
+      sha256: b1048fd119a14762e2361bd057da608148a895477846d6149109b2151d2f7abf
       url: "https://pub.dev"
     source: hosted
-    version: "0.14.12"
+    version: "0.15.2"
   flutter_zoom_drawer:
     dependency: "direct main"
     description:
@@ -790,10 +798,10 @@ packages:
     dependency: transitive
     description:
       name: fwfh_just_audio
-      sha256: "209cf9644599e37b0edb6961c4f30ce80d156f5a53a50355f75fb4a22f9fdb0a"
+      sha256: "38dc2c55803bd3cef33042c473e0c40b891ad4548078424641a32032f6a1245f"
       url: "https://pub.dev"
     source: hosted
-    version: "0.14.3"
+    version: "0.15.2"
   fwfh_svg:
     dependency: transitive
     description:
@@ -814,10 +822,10 @@ packages:
     dependency: transitive
     description:
       name: fwfh_webview
-      sha256: b828bb5ddd4361a866cdb8f1b0de4f3348f332915ecf2f4215ba17e46c656adc
+      sha256: c0a8b664b642f40f4c252a0ab4e72c22dcd97c7fb3a7e50a6b4bdb6f63afca19
       url: "https://pub.dev"
     source: hosted
-    version: "0.14.8"
+    version: "0.15.3"
   gap:
     dependency: "direct main"
     description:
@@ -1075,6 +1083,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.9.0"
+  json_serializable:
+    dependency: "direct dev"
+    description:
+      name: json_serializable
+      sha256: "81f04dee10969f89f604e1249382d46b97a1ccad53872875369622b5bfc9e58a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.9.4"
   just_audio:
     dependency: transitive
     description:
@@ -1244,21 +1260,21 @@ packages:
     source: hosted
     version: "2.1.0"
   package_info_plus:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: package_info_plus
-      sha256: "10259b111176fba5c505b102e3a5b022b51dd97e30522e906d6922c745584745"
+      sha256: "67eae327b1b0faf761964a1d2e5d323c797f3799db0e85aa232db8d9e922bc35"
       url: "https://pub.dev"
     source: hosted
-    version: "3.1.2"
+    version: "8.2.1"
   package_info_plus_platform_interface:
     dependency: transitive
     description:
       name: package_info_plus_platform_interface
-      sha256: "9bc8ba46813a4cc42c66ab781470711781940780fd8beddd0c3da62506d3a6c6"
+      sha256: "205ec83335c2ab9107bbba3f8997f9356d72ca3c715d2f038fc773d0366b4c76"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.1"
+    version: "3.1.0"
   path:
     dependency: transitive
     description:
@@ -1267,6 +1283,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.9.0"
+  path_drawing:
+    dependency: transitive
+    description:
+      name: path_drawing
+      sha256: bbb1934c0cbb03091af082a6389ca2080345291ef07a5fa6d6e078ba8682f977
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
   path_parsing:
     dependency: transitive
     description:
@@ -1331,6 +1355,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.11.1"
+  percent_indicator:
+    dependency: "direct main"
+    description:
+      name: percent_indicator
+      sha256: "0d77d5c6fa9b7f60202cedf748b568ba9ba38d3f30405d6ceae4da76f5185462"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.2.4"
   permission_handler:
     dependency: "direct main"
     description:
@@ -1406,10 +1438,11 @@ packages:
   platform_device_id:
     dependency: "direct main"
     description:
-      name: platform_device_id
-      sha256: "7a12ec84de4a823bb10eba2f0e1ad29e2365abba17790489a0d78029904f562e"
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: master
+      resolved-ref: "74f66c517d652bdf15af729c5253bcd96781883d"
+      url: "https://github.com/faridfedora/platform_device_id_kotlin_updated.git"
+    source: git
     version: "1.0.1"
   platform_device_id_linux:
     dependency: transitive
@@ -1611,6 +1644,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0"
+  shimmer:
+    dependency: "direct main"
+    description:
+      name: shimmer
+      sha256: "5f88c883a22e9f9f299e5ba0e4f7e6054857224976a5d9f839d4ebdc94a14ac9"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
   showcaseview:
     dependency: "direct main"
     description:
@@ -1656,6 +1697,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.4"
+  source_gen:
+    dependency: transitive
+    description:
+      name: source_gen
+      sha256: "35c8150ece9e8c8d263337a265153c3329667640850b9304861faea59fc98f6b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
+  source_helper:
+    dependency: transitive
+    description:
+      name: source_helper
+      sha256: "86d247119aedce8e63f4751bd9626fc9613255935558447569ad42f9f5b48b3c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.3.5"
   source_span:
     dependency: transitive
     description:
@@ -2185,5 +2242,5 @@ packages:
     source: hosted
     version: "7.6.0"
 sdks:
-  dart: ">=3.5.0 <3.7.8"
+  dart: ">=3.6.0 <3.7.8"
   flutter: ">=3.24.0"

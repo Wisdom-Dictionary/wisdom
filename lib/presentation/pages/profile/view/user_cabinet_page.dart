@@ -19,6 +19,9 @@ class UserCabinetPage extends StatelessWidget {
       backgroundColor:
           isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
       appBar: NewCustomAppBar(
+        onTap: () {
+          Navigator.pop(context);
+        },
         title: "Cabinet",
         actions: [
           Padding(
@@ -35,7 +38,7 @@ class UserCabinetPage extends StatelessWidget {
                 return <PopupMenuEntry>[
                   PopupMenuItem(
                       onTap: () {
-                        Navigator.pushNamed(context, Routes.editUserPage);
+                        Navigator.pushNamed(context, Routes.updateProfilePage);
                       },
                       padding: EdgeInsets.zero,
                       child: Row(

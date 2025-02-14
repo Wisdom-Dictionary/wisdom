@@ -25,17 +25,18 @@ class HomeBottomNavBar extends ViewModelWidget<HomeViewModel> {
       valueListenable: viewModel.localViewModel.currentIndex,
       builder: (context, value, child) {
         return Positioned(
-          bottom: 0,
-          left: 0,
-          right: 0,
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(topLeft: Radius.circular(30.r), topRight: Radius.circular(30.r)),
-              color: (isDarkTheme ? AppColors.darkBottomBar : AppColors.blue).withOpacity(0.95),
-            ),
-            padding: EdgeInsets.only(top: 8.h),
-            child: SafeArea(
-              top: false,
+          bottom: 6,
+          left: 6,
+          right: 6,
+          child: SafeArea(
+            top: false,
+            child: Container(
+              height: 60.h,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(256.r),
+                color: (isDarkTheme ? AppColors.darkBottomBar : AppColors.blue)
+                    .withOpacity(0.95),
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -44,9 +45,11 @@ class HomeBottomNavBar extends ViewModelWidget<HomeViewModel> {
                       key: viewModel.globalKeyHome,
                       title: 'Home',
                       description: LocaleKeys.main_page.tr(),
-                      titleAlignment: Alignment.centerRight,
-                      titleTextStyle: AppTextStyle.font17W600Normal.copyWith(color: AppColors.blue),
-                      descTextStyle: AppTextStyle.font15W500Normal.copyWith(color: AppColors.blue),
+                      titleAlignment: TextAlign.end,
+                      titleTextStyle: AppTextStyle.font17W600Normal
+                          .copyWith(color: AppColors.blue),
+                      descTextStyle: AppTextStyle.font15W500Normal
+                          .copyWith(color: AppColors.blue),
                       disableDefaultTargetGestures: true,
                       showArrow: true,
                       child: BottomNavButton(
@@ -65,19 +68,26 @@ class HomeBottomNavBar extends ViewModelWidget<HomeViewModel> {
                         onTap(1);
                       },
                       child: Material(
-                        color: (isDarkTheme ? AppColors.darkBottomBar : AppColors.blue).withOpacity(0.1),
+                        color: (isDarkTheme
+                                ? AppColors.darkBottomBar
+                                : AppColors.blue)
+                            .withOpacity(0.1),
                         child: ValueListenableBuilder(
-                          valueListenable: viewModel.localViewModel.badgeCount,
-                          builder: (BuildContext context, int valueBadge, Widget? child) {
+                          valueListenable:
+                              viewModel.localViewModel.badgeCount,
+                          builder: (BuildContext context, int valueBadge,
+                              Widget? child) {
                             return Center(
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   badges.Badge(
-                                    position: badges.BadgePosition.topEnd(top: -5),
+                                    position:
+                                        badges.BadgePosition.topEnd(top: -5),
                                     badgeContent: Text(
                                       valueBadge.toString(),
-                                      style: AppTextStyle.font13W500Normal.copyWith(fontSize: 12.sp),
+                                      style: AppTextStyle.font13W500Normal
+                                          .copyWith(fontSize: 12.sp),
                                     ),
                                     badgeStyle: badges.BadgeStyle(
                                       shape: badges.BadgeShape.circle,
@@ -91,25 +101,33 @@ class HomeBottomNavBar extends ViewModelWidget<HomeViewModel> {
                                           active: false,
                                           fontSize: 12,
                                           width: 40,
-                                          backgroundColor: AppColors.accentLight,
+                                          backgroundColor:
+                                              AppColors.accentLight,
                                           foregroundColor: AppColors.white),
                                       key: viewModel.localViewModel.cartKey,
                                       icon: Showcase(
                                         key: viewModel.globalKeyWordBank,
                                         title: 'NoteBook',
-                                        description: LocaleKeys.saved_words.tr(),
-                                        titleAlignment: Alignment.center,
-                                        titleTextStyle: AppTextStyle.font17W600Normal.copyWith(color: AppColors.blue),
-                                        descTextStyle: AppTextStyle.font15W500Normal.copyWith(color: AppColors.blue),
+                                        description:
+                                            LocaleKeys.saved_words.tr(),
+                                        titleAlignment: TextAlign.center,
+                                        titleTextStyle: AppTextStyle
+                                            .font17W600Normal
+                                            .copyWith(color: AppColors.blue),
+                                        descTextStyle: AppTextStyle
+                                            .font15W500Normal
+                                            .copyWith(color: AppColors.blue),
                                         disableDefaultTargetGestures: true,
                                         showArrow: true,
                                         child: BottomNavButton(
                                             isTabSelected: value == 1,
                                             defIcon: Assets.icons.bookOutline,
-                                            filledIcon: Assets.icons.bookFilled,
+                                            filledIcon:
+                                                Assets.icons.bookFilled,
                                             callBack: () {
                                               onTap(1);
-                                              viewModel.localViewModel.changePageIndex(23);
+                                              viewModel.localViewModel
+                                                  .changePageIndex(23);
                                             }),
                                       ),
                                     ),
@@ -127,9 +145,11 @@ class HomeBottomNavBar extends ViewModelWidget<HomeViewModel> {
                       key: viewModel.globalKeySearch,
                       title: 'Search',
                       description: LocaleKeys.search_words.tr(),
-                      titleAlignment: Alignment.center,
-                      titleTextStyle: AppTextStyle.font17W600Normal.copyWith(color: AppColors.blue),
-                      descTextStyle: AppTextStyle.font15W500Normal.copyWith(color: AppColors.blue),
+                      titleAlignment: TextAlign.center,
+                      titleTextStyle: AppTextStyle.font17W600Normal
+                          .copyWith(color: AppColors.blue),
+                      descTextStyle: AppTextStyle.font15W500Normal
+                          .copyWith(color: AppColors.blue),
                       disableDefaultTargetGestures: false,
                       showArrow: true,
                       child: BottomNavButton(
@@ -147,9 +167,11 @@ class HomeBottomNavBar extends ViewModelWidget<HomeViewModel> {
                       key: viewModel.globalKeyRoadmapBattle,
                       title: 'Roadmap Battle',
                       description: "Battle",
-                      titleAlignment: Alignment.center,
-                      titleTextStyle: AppTextStyle.font17W600Normal.copyWith(color: AppColors.blue),
-                      descTextStyle: AppTextStyle.font15W500Normal.copyWith(color: AppColors.blue),
+                      titleAlignment: TextAlign.center,
+                      titleTextStyle: AppTextStyle.font17W600Normal
+                          .copyWith(color: AppColors.blue),
+                      descTextStyle: AppTextStyle.font15W500Normal
+                          .copyWith(color: AppColors.blue),
                       disableDefaultTargetGestures: false,
                       showArrow: true,
                       child: BottomNavButton(
@@ -171,9 +193,11 @@ class HomeBottomNavBar extends ViewModelWidget<HomeViewModel> {
                       key: viewModel.globalKeyTranslation,
                       description: LocaleKeys.translate.tr(),
                       title: 'Translate',
-                      titleAlignment: Alignment.center,
-                      titleTextStyle: AppTextStyle.font17W600Normal.copyWith(color: AppColors.blue),
-                      descTextStyle: AppTextStyle.font15W500Normal.copyWith(color: AppColors.blue),
+                      titleAlignment: TextAlign.center,
+                      titleTextStyle: AppTextStyle.font17W600Normal
+                          .copyWith(color: AppColors.blue),
+                      descTextStyle: AppTextStyle.font15W500Normal
+                          .copyWith(color: AppColors.blue),
                       disableDefaultTargetGestures: false,
                       showArrow: true,
                       onTargetClick: () {
