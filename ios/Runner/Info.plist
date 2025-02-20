@@ -24,16 +24,6 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
-<<<<<<< HEAD
-	<key>CFBundleVersion</key>
-	<string>$(CURRENT_PROJECT_VERSION)</string>
-	<key>GADApplicationIdentifier</key>
-	<string>ca-app-pub-6651367008928070~6223978134</string>
-	<key>LSRequiresIPhoneOS</key>
-	<true/>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Need microphone access for uploading audio</string>
-=======
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -64,7 +54,6 @@
 	<string>Need microphone access for uploading audio</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This app requires access to the photo library.</string>
->>>>>>> 048de01 (last changes from Github)
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>recognize speech</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
@@ -90,10 +79,7 @@
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
-<<<<<<< HEAD
-=======
 		<string>UIInterfaceOrientationPortrait</string>
->>>>>>> 048de01 (last changes from Github)
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>

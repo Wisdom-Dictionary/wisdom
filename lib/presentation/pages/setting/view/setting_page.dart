@@ -34,11 +34,9 @@ class SettingPage extends ViewModelBuilderWidget<SettingPageViewModel> {
   }
 
   @override
-  Widget builder(
-      BuildContext context, SettingPageViewModel viewModel, Widget? child) {
+  Widget builder(BuildContext context, SettingPageViewModel viewModel, Widget? child) {
     return Scaffold(
-      backgroundColor:
-          isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
+      backgroundColor: isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
       appBar: CustomAppBar(
         title: 'settings'.tr(),
         onTap: () => Navigator.of(context).pop(),
@@ -51,9 +49,7 @@ class SettingPage extends ViewModelBuilderWidget<SettingPageViewModel> {
         children: [
           // Changing language
           Container(
-            decoration: isDarkTheme
-                ? AppDecoration.bannerDarkDecor
-                : AppDecoration.bannerDecor,
+            decoration: isDarkTheme ? AppDecoration.bannerDarkDecor : AppDecoration.bannerDecor,
             padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -103,14 +99,12 @@ class SettingPage extends ViewModelBuilderWidget<SettingPageViewModel> {
             ),
           ),
           const SizedBox(height: 20),
-           VoiceSlider(),
+          VoiceSlider(),
           // Select theme
           Stack(
             children: [
               Container(
-                decoration: isDarkTheme
-                    ? AppDecoration.bannerDarkDecor
-                    : AppDecoration.bannerDecor,
+                decoration: isDarkTheme ? AppDecoration.bannerDarkDecor : AppDecoration.bannerDecor,
                 padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
                 margin: EdgeInsets.only(top: 16.h),
                 child: Column(
@@ -136,8 +130,7 @@ class SettingPage extends ViewModelBuilderWidget<SettingPageViewModel> {
                               label: "light".tr(),
                               onTap: () {
                                 // viewModel.currentTheme = ThemeOption.day;
-                                Provider.of<MainProvider>(context,
-                                        listen: false)
+                                Provider.of<MainProvider>(context, listen: false)
                                     .changeToLightTheme();
                                 viewModel.notifyListeners();
                               },
@@ -158,8 +151,7 @@ class SettingPage extends ViewModelBuilderWidget<SettingPageViewModel> {
                               imgAssets: Assets.icons.moon,
                               onTap: () {
                                 // viewModel.currentTheme = ThemeOption.night;
-                                Provider.of<MainProvider>(context,
-                                        listen: false)
+                                Provider.of<MainProvider>(context, listen: false)
                                     .changeToDarkTheme();
                                 viewModel.notifyListeners();
                               },
@@ -182,9 +174,7 @@ class SettingPage extends ViewModelBuilderWidget<SettingPageViewModel> {
           Stack(
             children: [
               Container(
-                decoration: isDarkTheme
-                    ? AppDecoration.bannerDarkDecor
-                    : AppDecoration.bannerDecor,
+                decoration: isDarkTheme ? AppDecoration.bannerDarkDecor : AppDecoration.bannerDecor,
                 padding: EdgeInsets.symmetric(vertical: 20.h),
                 margin: EdgeInsets.only(top: 16.h),
                 child: Column(
@@ -196,15 +186,13 @@ class SettingPage extends ViewModelBuilderWidget<SettingPageViewModel> {
                       child: Text(
                         "change_font_size".tr(),
                         style: AppTextStyle.font17W600Normal.copyWith(
-                          color:
-                              isDarkTheme ? AppColors.white : AppColors.black,
+                          color: isDarkTheme ? AppColors.white : AppColors.black,
                           fontSize: 17.sp,
                         ),
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(
-                          top: 40.h, left: 20.w, right: 20.w, bottom: 10.h),
+                      padding: EdgeInsets.only(top: 40.h, left: 20.w, right: 20.w, bottom: 10.h),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -228,15 +216,12 @@ class SettingPage extends ViewModelBuilderWidget<SettingPageViewModel> {
                       inactiveColor: AppColors.seekerBack.withOpacity(0.2),
                     ),
                     Padding(
-                      padding:
-                          EdgeInsets.only(left: 20.w, right: 16.w, top: 10.h),
+                      padding: EdgeInsets.only(left: 20.w, right: 16.w, top: 10.h),
                       child: Text(
                         "lorem_text".tr(),
                         style: AppTextStyle.font15W500Normal.copyWith(
                           fontSize: viewModel.fontSizeValue,
-                          color: isDarkTheme
-                              ? AppColors.white
-                              : AppColors.darkGray,
+                          color: isDarkTheme ? AppColors.white : AppColors.darkGray,
                         ),
                       ),
                     )
@@ -253,9 +238,7 @@ class SettingPage extends ViewModelBuilderWidget<SettingPageViewModel> {
           Stack(
             children: [
               Container(
-                decoration: isDarkTheme
-                    ? AppDecoration.bannerDarkDecor
-                    : AppDecoration.bannerDecor,
+                decoration: isDarkTheme ? AppDecoration.bannerDarkDecor : AppDecoration.bannerDecor,
                 padding: EdgeInsets.symmetric(vertical: 20.h),
                 margin: EdgeInsets.only(top: 16.h),
                 child: Column(
@@ -267,22 +250,18 @@ class SettingPage extends ViewModelBuilderWidget<SettingPageViewModel> {
                       child: Text(
                         "word_reminder".tr(),
                         style: AppTextStyle.font17W600Normal.copyWith(
-                          color:
-                              isDarkTheme ? AppColors.white : AppColors.black,
+                          color: isDarkTheme ? AppColors.white : AppColors.black,
                           fontSize: 17.sp,
                         ),
                         textAlign: TextAlign.left,
                       ),
                     ),
                     Padding(
-                      padding:
-                          EdgeInsets.only(top: 16.h, left: 16.w, right: 16.w),
+                      padding: EdgeInsets.only(top: 16.h, left: 16.w, right: 16.w),
                       child: Text(
                         "remind_new_words".tr(),
                         style: AppTextStyle.font15W500Normal.copyWith(
-                          color: isDarkTheme
-                              ? AppColors.lightGray
-                              : AppColors.darkGray,
+                          color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray,
                           fontSize: 15.sp,
                         ),
                         textAlign: TextAlign.left,
@@ -298,9 +277,7 @@ class SettingPage extends ViewModelBuilderWidget<SettingPageViewModel> {
                               title: Text(
                                 "selected_time".tr(),
                                 style: AppTextStyle.font13W500Normal.copyWith(
-                                  color: isDarkTheme
-                                      ? AppColors.white
-                                      : AppColors.black,
+                                  color: isDarkTheme ? AppColors.white : AppColors.black,
                                   fontSize: 13.sp,
                                 ),
                               ),
@@ -318,9 +295,7 @@ class SettingPage extends ViewModelBuilderWidget<SettingPageViewModel> {
                               title: Text(
                                 "automatic_time".tr(),
                                 style: AppTextStyle.font13W500Normal.copyWith(
-                                  color: isDarkTheme
-                                      ? AppColors.white
-                                      : AppColors.black,
+                                  color: isDarkTheme ? AppColors.white : AppColors.black,
                                   fontSize: 13.sp,
                                 ),
                               ),
@@ -339,8 +314,7 @@ class SettingPage extends ViewModelBuilderWidget<SettingPageViewModel> {
                     Visibility(
                       visible: viewModel.currentRemind == RemindOption.manual,
                       child: Padding(
-                        padding: EdgeInsets.only(
-                            top: 20.h, bottom: 30.h, left: 16.w),
+                        padding: EdgeInsets.only(top: 20.h, bottom: 30.h, left: 16.w),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -360,9 +334,7 @@ class SettingPage extends ViewModelBuilderWidget<SettingPageViewModel> {
                               child: Text(
                                 ":",
                                 style: AppTextStyle.font17W500Normal.copyWith(
-                                  color: isDarkTheme
-                                      ? AppColors.white
-                                      : AppColors.black,
+                                  color: isDarkTheme ? AppColors.white : AppColors.black,
                                 ),
                               ),
                             ),
@@ -385,9 +357,7 @@ class SettingPage extends ViewModelBuilderWidget<SettingPageViewModel> {
                               child: Text(
                                 'da'.tr(),
                                 style: AppTextStyle.font17W500Normal.copyWith(
-                                  color: isDarkTheme
-                                      ? AppColors.white
-                                      : AppColors.black,
+                                  color: isDarkTheme ? AppColors.white : AppColors.black,
                                 ),
                               ),
                             ),
@@ -398,8 +368,7 @@ class SettingPage extends ViewModelBuilderWidget<SettingPageViewModel> {
                     Visibility(
                       visible: viewModel.currentRemind == RemindOption.auto,
                       child: Padding(
-                        padding: EdgeInsets.only(
-                            top: 20.h, bottom: 30.h, left: 16.w),
+                        padding: EdgeInsets.only(top: 20.h, bottom: 30.h, left: 16.w),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -407,9 +376,7 @@ class SettingPage extends ViewModelBuilderWidget<SettingPageViewModel> {
                             Text(
                               "every".tr(),
                               style: AppTextStyle.font17W500Normal.copyWith(
-                                color: isDarkTheme
-                                    ? AppColors.white
-                                    : AppColors.black,
+                                color: isDarkTheme ? AppColors.white : AppColors.black,
                               ),
                             ),
                             Padding(
@@ -428,9 +395,7 @@ class SettingPage extends ViewModelBuilderWidget<SettingPageViewModel> {
                             Text(
                               'hour'.tr(),
                               style: AppTextStyle.font17W500Normal.copyWith(
-                                color: isDarkTheme
-                                    ? AppColors.white
-                                    : AppColors.black,
+                                color: isDarkTheme ? AppColors.white : AppColors.black,
                               ),
                             ),
                           ],
@@ -443,11 +408,10 @@ class SettingPage extends ViewModelBuilderWidget<SettingPageViewModel> {
                         label: "save".tr(),
                         onTap: () async {
                           if (viewModel.currentRemind == RemindOption.manual) {
-                            await viewModel
-                                .scheduleDailyNotification(timeOfDay!);
+                            await viewModel.scheduleDailyNotification(timeOfDay!);
                           } else {
-                            await viewModel.scheduleHourlyNotification(
-                                viewModel.currentRepeatHourValue);
+                            await viewModel
+                                .scheduleHourlyNotification(viewModel.currentRepeatHourValue);
                           }
                         },
                         textStyle: AppTextStyle.font17W500Normal,

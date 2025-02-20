@@ -25,39 +25,25 @@ class SpeakingPageViewModel extends BaseViewModel {
       if (localViewModel.isSubSub) {
         if (searchText != null && searchText.trim().isNotEmpty) {
           await categoryRepository.getSpeakingWordsList(
-              localViewModel.speakingCatalogModel.id.toString(),
-              null,
-              searchText.trim(),
-              true);
+              localViewModel.speakingCatalogModel.id.toString(), null, searchText.trim(), true);
         } else {
           await categoryRepository.getSpeakingWordsList(
-              localViewModel.speakingCatalogModel.id.toString(),
-              null,
-              null,
-              true);
+              localViewModel.speakingCatalogModel.id.toString(), null, null, true);
         }
       } else if (localViewModel.isTitle) {
         localViewModel.subId = localViewModel.speakingCatalogModel.id ?? 0;
         if (searchText != null && searchText.trim().isNotEmpty) {
           await categoryRepository.getSpeakingWordsList(
-              localViewModel.speakingCatalogModel.id.toString(),
-              searchText.trim(),
-              null,
-              false);
+              localViewModel.speakingCatalogModel.id.toString(), searchText.trim(), null, false);
         } else {
           await categoryRepository.getSpeakingWordsList(
-              localViewModel.speakingCatalogModel.id.toString(),
-              null,
-              null,
-              false);
+              localViewModel.speakingCatalogModel.id.toString(), null, null, false);
         }
       } else {
         if (searchText != null && searchText.trim().isNotEmpty) {
-          await categoryRepository.getSpeakingWordsList(
-              null, searchText.trim(), null, false);
+          await categoryRepository.getSpeakingWordsList(null, searchText.trim(), null, false);
         } else {
-          await categoryRepository.getSpeakingWordsList(
-              null, null, null, false);
+          await categoryRepository.getSpeakingWordsList(null, null, null, false);
         }
       }
       if (categoryRepository.speakingWordsList.isNotEmpty) {
@@ -72,13 +58,11 @@ class SpeakingPageViewModel extends BaseViewModel {
     if (localViewModel.isSubSub) {
       localViewModel.speakingCatalogModel.id = localViewModel.subId;
       localViewModel.isSubSub = false;
-      getSpeakingWordsList(
-          null); // opening this page again but with another value
+      getSpeakingWordsList(null); // opening this page again but with another value
       localViewModel.notifyListeners();
     } else if (localViewModel.isTitle) {
       localViewModel.isTitle = false;
-      getSpeakingWordsList(
-          null); // opening this page again but with another value
+      getSpeakingWordsList(null); // opening this page again but with another value
       localViewModel.notifyListeners();
     } else {
       localViewModel.changePageIndex(3);
@@ -89,13 +73,11 @@ class SpeakingPageViewModel extends BaseViewModel {
     localViewModel.speakingCatalogModel = catalogModel;
     if (!localViewModel.isTitle) {
       localViewModel.isTitle = true;
-      getSpeakingWordsList(
-          null); // opening this page again but with another value
+      getSpeakingWordsList(null); // opening this page again but with another value
       localViewModel.notifyListeners();
     } else if (!localViewModel.isSubSub) {
       localViewModel.isSubSub = true;
-      getSpeakingWordsList(
-          null); // opening this page again but with another value
+      getSpeakingWordsList(null); // opening this page again but with another value
       localViewModel.notifyListeners();
     } else {
       // FlutterTts tts = FlutterTts();

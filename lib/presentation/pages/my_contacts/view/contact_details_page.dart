@@ -1,42 +1,47 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:jbaza/jbaza.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:wisdom/config/constants/app_colors.dart';
 import 'package:wisdom/config/constants/app_decoration.dart';
 import 'package:wisdom/config/constants/app_text_style.dart';
 import 'package:wisdom/config/constants/assets.dart';
 import 'package:wisdom/config/constants/constants.dart';
-import 'package:wisdom/data/model/my_contacts/contact_model.dart';
+import 'package:wisdom/data/model/my_contacts/user_details_model.dart';
 import 'package:wisdom/presentation/components/w_button.dart';
-import 'package:wisdom/presentation/pages/profile/view/edit_user_page.dart';
+import 'package:wisdom/presentation/pages/my_contacts/viewmodel/contact_details_viewmodel.dart';
 import 'package:wisdom/presentation/widgets/new_custom_app_bar.dart';
 
-class ContactDetailsPage extends StatelessWidget {
+class ContactDetailsPage extends ViewModelBuilderWidget<ContactDetailsViewModel> {
   ContactDetailsPage({super.key, Object? data})
       : contactItemData = (data is Map<String, dynamic>)
-            ? ContactModel.fromJson(data)
+            ? UserDetailsModel.fromJson(data)
             : throw ArgumentError("Invalid data format");
-  final ContactModel contactItemData;
+  final UserDetailsModel contactItemData;
   @override
-  Widget build(BuildContext context) {
+  void onViewModelReady(ContactDetailsViewModel viewModel) {
+    super.onViewModelReady(viewModel);
+    viewModel.setFollowStatus(contactItemData.followed ?? false);
+  }
+
+  @override
+  Widget builder(BuildContext context, ContactDetailsViewModel viewModel, Widget? child) {
     return Scaffold(
-      backgroundColor:
-          isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
+      backgroundColor: isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
       appBar: NewCustomAppBar(
         onTap: () {
           Navigator.pop(context);
         },
-        title: "Cabinet",
+        title: "cabinet".tr(),
       ),
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 18),
         children: [
           Container(
             padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-            decoration: AppDecoration.bannerDecor.copyWith(
-                color: AppColors.bgLightBlue.withValues(alpha: 0.1),
-                boxShadow: []),
+            decoration: AppDecoration.bannerDecor
+                .copyWith(color: AppColors.bgLightBlue.withValues(alpha: 0.1), boxShadow: []),
             child: Column(
               children: [
                 ContactDetailsBar(
@@ -58,8 +63,13 @@ class ContactDetailsPage extends StatelessWidget {
                   height: 24,
                 ),
                 WButton(
-                  title: "follow".tr(),
-                  onTap: () {},
+                  isLoading: viewModel.isBusy(tag: viewModel.getMyContactFollowTag),
+                  title: viewModel.isFollowed ? "unfollow".tr() : "follow".tr(),
+                  onTap: () {
+                    viewModel.postFollowAction(
+                      contactItemData.user?.id ?? 0,
+                    );
+                  },
                 )
               ],
             ),
@@ -68,11 +78,16 @@ class ContactDetailsPage extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  ContactDetailsViewModel viewModelBuilder(BuildContext context) {
+    return ContactDetailsViewModel(context: context);
+  }
 }
 
 class ContactDetailsBar extends StatelessWidget {
   const ContactDetailsBar({super.key, required this.contactItemData});
-  final ContactModel contactItemData;
+  final UserDetailsModel contactItemData;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -87,38 +102,34 @@ class ContactDetailsBar extends StatelessWidget {
             children: [
               Text(
                 contactItemData.user?.name ?? "",
-                style: AppTextStyle.font17W600Normal
-                    .copyWith(color: AppColors.blue, fontSize: 18),
+                style: AppTextStyle.font17W600Normal.copyWith(color: AppColors.blue, fontSize: 18),
               ),
               const SizedBox(
                 height: 2,
               ),
               Text(
                 "Rank: Major",
-                style: AppTextStyle.font13W500Normal
-                    .copyWith(color: AppColors.blue, fontSize: 12),
+                style: AppTextStyle.font13W500Normal.copyWith(color: AppColors.blue, fontSize: 12),
               ),
             ],
           ),
         ),
         Container(
           padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: BoxDecoration(
-              color: AppColors.blue, borderRadius: BorderRadius.circular(37)),
+          decoration: BoxDecoration(color: AppColors.blue, borderRadius: BorderRadius.circular(37)),
           child: Row(
             children: [
               Text(
-                (contactItemData.userCurrentLevel??0).toString(),
-                style: AppTextStyle.font13W500Normal
-                    .copyWith(color: AppColors.yellow, fontSize: 14),
+                (contactItemData.userCurrentLevel ?? 0).toString(),
+                style:
+                    AppTextStyle.font13W500Normal.copyWith(color: AppColors.yellow, fontSize: 14),
               ),
               const SizedBox(
                 width: 8,
               ),
               SvgPicture.asset(
                 Assets.icons.verify,
-                colorFilter:
-                    const ColorFilter.mode(AppColors.yellow, BlendMode.srcIn),
+                colorFilter: const ColorFilter.mode(AppColors.yellow, BlendMode.srcIn),
               )
             ],
           ),
@@ -129,22 +140,17 @@ class ContactDetailsBar extends StatelessWidget {
 }
 
 class UserStatisticsWithPersentage extends StatelessWidget {
-  const UserStatisticsWithPersentage(
-      {super.key, required this.contactItemData});
+  const UserStatisticsWithPersentage({super.key, required this.contactItemData});
 
-  final ContactModel contactItemData;
+  final UserDetailsModel contactItemData;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        item(
-            percent: contactItemData.statistics?.winRate ?? 0,
-            title: "win_rate".tr()),
-        item(
-            percent: contactItemData.statistics?.gameAccuracy ?? 0,
-            title: "game_accuracy".tr()),
+        item(percent: contactItemData.statistics?.winRate ?? 0, title: "win_rate".tr()),
+        item(percent: contactItemData.statistics?.gameAccuracy ?? 0, title: "game_accuracy".tr()),
         item(
             percent: contactItemData.statistics?.averageTime ?? 0,
             percentSign: " s",
@@ -157,8 +163,7 @@ class UserStatisticsWithPersentage extends StatelessWidget {
     );
   }
 
-  CircularPercentIndicator item(
-      {String? title, String? percentSign, int? percent}) {
+  CircularPercentIndicator item({String? title, String? percentSign, int? percent}) {
     return CircularPercentIndicator(
       circularStrokeCap: CircularStrokeCap.round,
       progressColor: AppColors.blue,
@@ -167,112 +172,22 @@ class UserStatisticsWithPersentage extends StatelessWidget {
       percent: (percent ?? 0) / 100,
       center: Text(
         percent != null ? "$percent${percentSign ?? "%"}" : "",
-        style: AppTextStyle.font15W600Normal
-            .copyWith(color: AppColors.blue, fontSize: 16),
+        style: AppTextStyle.font15W600Normal.copyWith(color: AppColors.blue, fontSize: 16),
       ),
       footer: Padding(
         padding: const EdgeInsets.only(top: 3),
         child: Text(
           title ?? "",
-          style: AppTextStyle.font13W500Normal
-              .copyWith(color: AppColors.blue, fontSize: 11),
+          style: AppTextStyle.font13W500Normal.copyWith(color: AppColors.blue, fontSize: 11),
         ),
       ),
-    );
-  }
-}
-
-class UserDetailsBar extends StatelessWidget {
-  const UserDetailsBar({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        SvgPicture.asset(Assets.icons.userAvatar),
-        const SizedBox(
-          width: 12,
-        ),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                "Ali Kamilov",
-                style: AppTextStyle.font17W600Normal
-                    .copyWith(color: AppColors.blue, fontSize: 18),
-              ),
-              const SizedBox(
-                height: 4,
-              ),
-              Row(
-                children: [
-                  Text(
-                    "ID: 37905234",
-                    style: AppTextStyle.font13W500Normal
-                        .copyWith(color: AppColors.blue, fontSize: 12),
-                  ),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                  SvgPicture.asset(Assets.icons.documentCopy)
-                ],
-              ),
-            ],
-          ),
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Row(
-              children: [
-                Text(
-                  "12460",
-                  style: AppTextStyle.font13W500Normal
-                      .copyWith(color: AppColors.blue, fontSize: 14),
-                ),
-                const SizedBox(
-                  width: 9,
-                ),
-                SvgPicture.asset(
-                  Assets.icons.verify,
-                  colorFilter:
-                      const ColorFilter.mode(AppColors.blue, BlendMode.srcIn),
-                )
-              ],
-            ),
-            const SizedBox(
-              height: 6,
-            ),
-            Row(
-              children: [
-                Text(
-                  "2301",
-                  style: AppTextStyle.font13W500Normal
-                      .copyWith(color: AppColors.blue, fontSize: 14),
-                ),
-                const SizedBox(
-                  width: 9,
-                ),
-                SvgPicture.asset(
-                  Assets.icons.star,
-                  colorFilter:
-                      const ColorFilter.mode(AppColors.blue, BlendMode.srcIn),
-                )
-              ],
-            )
-          ],
-        )
-      ],
     );
   }
 }
 
 class UserStatisticsWithNumbers extends StatelessWidget {
   const UserStatisticsWithNumbers({super.key, required this.contactItemData});
-  final ContactModel contactItemData;
+  final UserDetailsModel contactItemData;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -317,14 +232,13 @@ class UserStatisticsWithNumbers extends StatelessWidget {
           Text(
             "${value ?? 0}",
             textAlign: TextAlign.center,
-            style: AppTextStyle.font28W600Normal
-                .copyWith(color: AppColors.blue, fontSize: 24),
+            style: AppTextStyle.font28W600Normal.copyWith(color: AppColors.blue, fontSize: 24),
           ),
           Text(
             subtitle ?? "",
             textAlign: TextAlign.center,
-            style: AppTextStyle.font13W500Normal
-                .copyWith(fontSize: 8, color: AppColors.textDisabled),
+            style:
+                AppTextStyle.font13W500Normal.copyWith(fontSize: 8, color: AppColors.textDisabled),
           ),
           const SizedBox(
             height: 8,
@@ -332,8 +246,7 @@ class UserStatisticsWithNumbers extends StatelessWidget {
           Text(
             itemName ?? "",
             textAlign: TextAlign.center,
-            style: AppTextStyle.font13W500Normal
-                .copyWith(color: AppColors.blue, fontSize: 11),
+            style: AppTextStyle.font13W500Normal.copyWith(color: AppColors.blue, fontSize: 11),
           )
         ],
       ),

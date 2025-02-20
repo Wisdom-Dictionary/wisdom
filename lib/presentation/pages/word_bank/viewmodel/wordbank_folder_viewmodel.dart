@@ -117,7 +117,7 @@ class WordBankFolderViewModel extends BaseViewModel {
     }
   }
 
-  Future addNewFolder() async{
+  Future addNewFolder() async {
     if (!PurchasesObserver().isPro() && wordEntityRepository.wordBankFoldersList.length >= 3) {
       showFolderCountOutOfBound();
     } else {
@@ -190,7 +190,7 @@ class WordBankFolderViewModel extends BaseViewModel {
     );
   }
 
-  void addNewWord()async {
+  void addNewWord() async {
     if (!(await localViewModel.canAddWordBank(context!))) {
       return;
     }

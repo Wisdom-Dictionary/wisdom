@@ -23,8 +23,7 @@ class RoadmapPage extends ViewModelBuilderWidget<RoadMapViewModel> {
   }
 
   @override
-  Widget builder(
-      BuildContext context, RoadMapViewModel viewModel, Widget? child) {
+  Widget builder(BuildContext context, RoadMapViewModel viewModel, Widget? child) {
     return Scaffold(
         body: Stack(
       children: [
@@ -78,8 +77,7 @@ class RoadmapAppBarContent extends StatelessWidget {
       children: [
         Text(
           title,
-          style:
-              AppTextStyle.font13W400Normal.copyWith(color: AppColors.yellow),
+          style: AppTextStyle.font13W400Normal.copyWith(color: AppColors.yellow),
         ),
         const SizedBox(
           width: 12,

@@ -40,7 +40,7 @@ class _TestPageState extends State<TestPage> {
               title: 'ShowInterstitial',
             ),
             AppButtonWidget(
-              onTap: () async{
+              onTap: () async {
                 await MobileAds.showDebugPanel();
               },
               title: 'Initialize',

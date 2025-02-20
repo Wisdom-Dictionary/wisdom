@@ -52,14 +52,12 @@ class ProfilePage extends ViewModelBuilderWidget<ProfilePageViewModel> {
         // viewModel.goBackToMenu();
       },
       child: Scaffold(
-          backgroundColor: isDarkTheme
-              ? AppColors.darkBackground
-              : AppColors.lightBackground,
+          backgroundColor: isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
           appBar: ProfileAppBar(
             actions: [
               buildMenu(viewModel),
             ],
-            bottomWidget: viewModel.isSuccess(tag: viewModel.getGetUser)
+            bottomWidget: viewModel.isSuccess(tag: viewModel.getGetUserTag)
                 ? Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -95,7 +93,7 @@ class ProfilePage extends ViewModelBuilderWidget<ProfilePageViewModel> {
                   ).paddingOnly(bottom: 30, left: 50)
                 : const SizedBox(),
           ),
-          body: viewModel.isSuccess(tag: viewModel.getGetUser)
+          body: viewModel.isSuccess(tag: viewModel.getGetUserTag)
               ? SingleChildScrollView(
                   padding: EdgeInsets.only(top: 30.h, left: 18.w, right: 18.w),
                   child: SizedBox(
@@ -131,13 +129,11 @@ class ProfilePage extends ViewModelBuilderWidget<ProfilePageViewModel> {
                               ),
                               RichText(
                                 text: myUrl('Privacy', Constants.PRIVACY_URL,
-                                    textColor: AppColors.blue,
-                                    underline: false),
+                                    textColor: AppColors.blue, underline: false),
                               ),
                               RichText(
                                 text: myUrl('Terms', Constants.TERMS_URL,
-                                    textColor: AppColors.blue,
-                                    underline: false),
+                                    textColor: AppColors.blue, underline: false),
                               ),
                             ],
                           ),
@@ -150,8 +146,7 @@ class ProfilePage extends ViewModelBuilderWidget<ProfilePageViewModel> {
     );
   }
 
-  Widget buildProVersionButton(
-      BuildContext context, ProfilePageViewModel viewModel) {
+  Widget buildProVersionButton(BuildContext context, ProfilePageViewModel viewModel) {
     return ProVersionButton(
       onTap: () {
         Navigator.of(context).pushNamed(Routes.gettingProPage);
@@ -233,8 +228,7 @@ class ProfilePage extends ViewModelBuilderWidget<ProfilePageViewModel> {
       offset: const Offset(-20, 30),
       itemBuilder: (context) => [
         PopupMenuItem(
-          textStyle:
-              AppTextStyle.font15W500Normal.copyWith(color: AppColors.blue),
+          textStyle: AppTextStyle.font15W500Normal.copyWith(color: AppColors.blue),
           child: Row(
             children: [
               const Icon(
@@ -276,15 +270,12 @@ class ProfilePage extends ViewModelBuilderWidget<ProfilePageViewModel> {
             colorScheme: ColorScheme.dark(
               primary: isDarkTheme ? AppColors.blue : AppColors.blue,
               onPrimary: isDarkTheme ? Colors.white : Colors.blue,
-              background:
-                  isDarkTheme ? AppColors.darkBackground : AppColors.white,
-              surface:
-                  isDarkTheme ? AppColors.darkBackground : AppColors.darkForm,
+              background: isDarkTheme ? AppColors.darkBackground : AppColors.white,
+              surface: isDarkTheme ? AppColors.darkBackground : AppColors.darkForm,
               onSurface: Colors.blue,
               onBackground: Colors.blue,
             ),
-            dialogBackgroundColor:
-                isDarkTheme ? AppColors.darkBackground : AppColors.darkForm,
+            dialogBackgroundColor: isDarkTheme ? AppColors.darkBackground : AppColors.darkForm,
           ),
           child: child!,
         );
@@ -362,9 +353,7 @@ class _UserInputDataWidgetState extends State<UserInputDataWidget> {
         margin: EdgeInsets.symmetric(vertical: 5.h),
         padding: const EdgeInsets.symmetric(horizontal: 10),
         decoration: BoxDecoration(
-          color: (isDarkTheme
-                  ? AppColors.darkBackground
-                  : AppColors.lightBackground)
+          color: (isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground)
               .withOpacity(0.95),
           borderRadius: BorderRadius.circular(20),
         ),

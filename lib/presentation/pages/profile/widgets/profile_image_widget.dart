@@ -25,12 +25,12 @@ class ProfileImageWidget extends StatelessWidget {
         backgroundColor: Colors.white,
         child: ClipOval(
           child: CachedNetworkImage(
-            imageUrl:imageUrl,
+            imageUrl: imageUrl,
             fit: BoxFit.cover,
             width: radius * 2,
             height: radius * 2,
             errorWidget: (context, url, error) => const Icon(Icons.error),
-            placeholder: (BuildContext context,String s) => const CircularProgressIndicator(),
+            placeholder: (BuildContext context, String s) => const CircularProgressIndicator(),
           ),
         ),
       ),

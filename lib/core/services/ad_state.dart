@@ -44,7 +44,6 @@ class AdState extends ChangeNotifier {
     onAdFailedToLoad: (ad, error) {
       ad.dispose();
       log.e("Ad failed to load: $error");
-
     },
     onAdOpened: (Ad ad) => log.i("Ad opened"),
     onAdClosed: (Ad ad) => log.i("Ad closed"),

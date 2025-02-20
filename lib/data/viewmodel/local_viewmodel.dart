@@ -86,7 +86,6 @@ class LocalViewModel extends BaseViewModel {
 
   int? folderId; // to change folder when enter
 
-
   InterstitialAd? interstitialAd;
   // BannerAd? banner;
   bool boundException = false;

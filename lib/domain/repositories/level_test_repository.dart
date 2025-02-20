@@ -16,11 +16,17 @@ abstract class LevelTestRepository {
 
   Future<void> postTestQuestionsCheck(List<AnswerEntity> answers, int timeTaken);
 
+  Future<void> postTestQuestionsResult();
+
   Future<void> getWordQuestions();
 
   Future<void> postWordQuestionsCheck(List<AnswerEntity> answers);
 
+  Future<void> postWordQuestionsResult();
+
   List<TestQuestionModel> get testQuestionsList;
+
+  List<TestQuestionModel> get testQuestionsResultList;
 
   LevelExerciseResultModel? get resultModel;
 

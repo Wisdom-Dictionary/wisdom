@@ -27,6 +27,7 @@ class LevelTestRepositoryImpl extends LevelTestRepository {
 
   //test-question
   List<TestQuestionModel> _testQuestionsList = [];
+  List<TestQuestionModel> _testQuestionsResultList = [];
   LevelExerciseResultModel? _resultModel;
   int _levelExerciseId = 0, _wordTestId = 0, _totalQuestions = 0, _correctAnswers = 0;
   String _startDate = "", _endDate = "";
@@ -142,6 +143,52 @@ class LevelTestRepositoryImpl extends LevelTestRepository {
   }
 
   @override
+  Future<void> postTestQuestionsResult() async {
+    _testQuestionsResultList = [];
+    final requestBody = {
+      'level_exercise_id': _levelExerciseId,
+    };
+    var response = await customClient.post(Urls.testQuestionsResult,
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: jsonEncode(requestBody));
+    if (response.isSuccessful) {
+      final responseData = jsonDecode(response.body);
+
+      for (var item in (responseData['questions'] as List)) {
+        _testQuestionsResultList.add(TestQuestionModel.fromMap(item));
+      }
+    } else {
+      throw VMException(response.body, callFuncName: 'getTestQuestions', response: response);
+    }
+  }
+
+  @override
+  Future<void> postWordQuestionsResult() async {
+    _testQuestionsResultList = [];
+    final requestBody = {
+      'word_test_id': _wordTestId,
+    };
+    var response = await customClient.post(Urls.wordQuestionsResult(selectedLevelWord!.wordId!),
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: jsonEncode(requestBody));
+    if (response.isSuccessful) {
+      final responseData = jsonDecode(response.body);
+
+      for (var item in (responseData['questions'] as List)) {
+        _testQuestionsResultList.add(TestQuestionModel.fromMap(item));
+      }
+    } else {
+      throw VMException(response.body, callFuncName: 'getTestQuestionsResult', response: response);
+    }
+  }
+
+  @override
   List<TestQuestionModel> get testQuestionsList => _testQuestionsList;
 
   @override
@@ -167,4 +214,7 @@ class LevelTestRepositoryImpl extends LevelTestRepository {
 
   @override
   TestExerciseType get exerciseType => _exerciseType;
+
+  @override
+  List<TestQuestionModel> get testQuestionsResultList => _testQuestionsResultList;
 }

@@ -12,6 +12,7 @@ import 'package:wisdom/core/services/custom_client.dart';
 import 'package:wisdom/core/services/dio_client.dart';
 import 'package:wisdom/data/model/contact_model.dart';
 import 'package:wisdom/data/model/contacts_model.dart';
+import 'package:wisdom/data/model/my_contacts/user_details_model.dart';
 import 'package:wisdom/data/model/subscribe_model.dart';
 import 'package:wisdom/data/model/tariffs_model.dart';
 import 'package:wisdom/data/model/user/user_model.dart';
@@ -19,8 +20,7 @@ import 'package:wisdom/data/model/verify_model.dart';
 import 'package:wisdom/domain/repositories/profile_repository.dart';
 
 class ProfileRepositoryImpl extends ProfileRepository {
-  ProfileRepositoryImpl(
-      this._dioClient, this.netWorkChecker, this.preferenceHelper);
+  ProfileRepositoryImpl(this._dioClient, this.netWorkChecker, this.preferenceHelper);
 
   final DioClient _dioClient;
   final NetWorkChecker netWorkChecker;
@@ -28,6 +28,7 @@ class ProfileRepositoryImpl extends ProfileRepository {
 
   final List<TariffsModel> _tariffsModel = [];
   late TariffsModel? _currentTariff;
+  UserDetailsModel? _userDetailsModel;
 
   @override
   Future<void> getTariffs() async {
@@ -37,15 +38,13 @@ class ProfileRepositoryImpl extends ProfileRepository {
       for (var item in jsonDecode(response.data)['tariffs']) {
         _tariffsModel.add(TariffsModel.fromJson(item));
       }
-      preferenceHelper.putString(
-          Constants.KEY_TARIFFS, jsonEncode(_tariffsModel.first));
+      preferenceHelper.putString(Constants.KEY_TARIFFS, jsonEncode(_tariffsModel.first));
     }
   }
 
   @override
   Future<bool> login(String phoneNumber) async {
-    var response =
-        await _dioClient.post(Urls.login.path, data: {'phone': phoneNumber});
+    var response = await _dioClient.post(Urls.login.path, data: {'phone': phoneNumber});
     if (response.isSuccessful) {
       return jsonDecode(response.data)['status'];
     }
@@ -56,8 +55,7 @@ class ProfileRepositoryImpl extends ProfileRepository {
   List<TariffsModel> get tariffsModel => _tariffsModel;
 
   @override
-  Future<VerifyModel?> verify(
-      String phoneNumber, String smsCode, String deviceId) async {
+  Future<VerifyModel?> verify(String phoneNumber, String smsCode, String deviceId) async {
     var response = await _dioClient.post(
       Urls.verify.path,
       data: jsonEncode(
@@ -121,9 +119,7 @@ class ProfileRepositoryImpl extends ProfileRepository {
       if (response.isSuccessful) {
         final data = jsonDecode(response.data);
         final user = UserModel.fromJson(data['user']);
-        _currentTariff = data['tariff'] != null
-            ? TariffsModel.fromJson(data['tariff'])
-            : null;
+        _currentTariff = data['tariff'] != null ? TariffsModel.fromJson(data['tariff']) : null;
         preferenceHelper.putString(
           Constants.KEY_USER,
           jsonEncode(user.toJson()),
@@ -137,6 +133,30 @@ class ProfileRepositoryImpl extends ProfileRepository {
       }
     }
     return const UserModel();
+  }
+
+  @override
+  Future<UserDetailsModel> getUserCabinet() async {
+    if (await netWorkChecker.isNetworkAvailable()) {
+      var response = await _dioClient.get(Urls.showUser.path);
+      if (response.isSuccessful) {
+        final data = jsonDecode(response.data);
+        final user = UserDetailsModel.fromJson(data);
+
+        preferenceHelper.putString(
+          Constants.KEY_USER_CABINET,
+          jsonEncode(user.toMap()),
+        );
+        _userDetailsModel = user;
+        return user;
+      }
+    } else {
+      final userStorage = preferenceHelper.getString(Constants.KEY_USER_CABINET, '');
+      if (userStorage != '') {
+        return UserDetailsModel.fromJson(jsonDecode(userStorage));
+      }
+    }
+    return UserDetailsModel();
   }
 
   @override
@@ -183,8 +203,7 @@ class ProfileRepositoryImpl extends ProfileRepository {
     final response = await _dioClient.get(Urls.contacts.path);
     if (response.isSuccessful) {
       final contacts = AdContactsModel.fromJson(jsonDecode(response.data));
-      preferenceHelper.putString(
-          Constants.KEY_CONTACTS, jsonEncode(contacts.toJson()));
+      preferenceHelper.putString(Constants.KEY_CONTACTS, jsonEncode(contacts.toJson()));
       return contacts;
     }
     return null;
@@ -203,4 +222,7 @@ class ProfileRepositoryImpl extends ProfileRepository {
 
   @override
   TariffsModel? get currentTariff => _currentTariff;
+
+  @override
+  UserDetailsModel? get userCabinet => _userDetailsModel;
 }

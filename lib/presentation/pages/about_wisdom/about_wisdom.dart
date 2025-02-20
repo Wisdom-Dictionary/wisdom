@@ -47,14 +47,15 @@ class AboutWisdomPage extends StatelessWidget {
                 Container(
                   margin: EdgeInsets.only(top: 30.h),
                   padding: EdgeInsets.symmetric(vertical: 32.h, horizontal: 20.w),
-                  decoration: isDarkTheme ? AppDecoration.bannerDarkDecor : AppDecoration.bannerDecor,
+                  decoration:
+                      isDarkTheme ? AppDecoration.bannerDarkDecor : AppDecoration.bannerDecor,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       HtmlWidget(
                         "about_content".tr(),
-                        textStyle:
-                            AppTextStyle.font15W400NormalHtml.copyWith(color: isDarkTheme ? AppColors.white : null),
+                        textStyle: AppTextStyle.font15W400NormalHtml
+                            .copyWith(color: isDarkTheme ? AppColors.white : null),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top: 15),
@@ -62,12 +63,13 @@ class AboutWisdomPage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             RichText(
-                              text: myUrl('Restore Purchase', '', textColor: AppColors.blue, underline: false,
-                                  onTap: () async {
+                              text: myUrl('Restore Purchase', '',
+                                  textColor: AppColors.blue, underline: false, onTap: () async {
                                 try {
                                   // await PurchasesObserver().callRestorePurchases();
                                   if (PurchasesObserver().isPro()) {
-                                    Future.delayed(const Duration(milliseconds: 100), () => MyApp.restartApp(context));
+                                    Future.delayed(const Duration(milliseconds: 100),
+                                        () => MyApp.restartApp(context));
                                   }
                                 } catch (e) {
                                   log(e.toString());
@@ -75,11 +77,12 @@ class AboutWisdomPage extends StatelessWidget {
                               }),
                             ),
                             RichText(
-                              text:
-                                  myUrl('Privacy', Constants.PRIVACY_URL, textColor: AppColors.blue, underline: false),
+                              text: myUrl('Privacy', Constants.PRIVACY_URL,
+                                  textColor: AppColors.blue, underline: false),
                             ),
                             RichText(
-                              text: myUrl('Terms', Constants.TERMS_URL, textColor: AppColors.blue, underline: false),
+                              text: myUrl('Terms', Constants.TERMS_URL,
+                                  textColor: AppColors.blue, underline: false),
                             ),
                           ],
                         ),

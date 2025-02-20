@@ -40,8 +40,8 @@ class CategoryRepositoryImpl extends CategoryRepository {
   Future<void> getGrammarDetail(int gId) async {
     var response = await dbHelper.getTimeLineGrammar1(gId.toString());
     if (response != null) {
-      _grammarModel =
-          WordWithGrammarModel(id: response.id, word: response.word, gBody: response.gBody, gId: response.gId);
+      _grammarModel = WordWithGrammarModel(
+          id: response.id, word: response.word, gBody: response.gBody, gId: response.gId);
     }
   }
 
@@ -49,7 +49,8 @@ class CategoryRepositoryImpl extends CategoryRepository {
   Future<void> getDifferenceDetail(int dId) async {
     var response = await dbHelper.getTimeLineDifference(dId.toString());
     if (response != null) {
-      _differenceModel = WordWithDifferenceModel(dId: response.dId, dBody: response.dBody, dWord: response.dWord);
+      _differenceModel =
+          WordWithDifferenceModel(dId: response.dId, dBody: response.dBody, dWord: response.dWord);
     }
   }
 
@@ -57,8 +58,8 @@ class CategoryRepositoryImpl extends CategoryRepository {
   Future<void> getThesaurusDetail(int thId) async {
     var response = await dbHelper.getTimeLineThesaurus(thId.toString());
     if (response != null) {
-      _theasurusModel =
-          WordWithTheasurusModel(id: response.id, tId: response.tId, word: response.word, tBody: response.tBody);
+      _theasurusModel = WordWithTheasurusModel(
+          id: response.id, tId: response.tId, word: response.word, tBody: response.tBody);
     }
   }
 
@@ -66,8 +67,8 @@ class CategoryRepositoryImpl extends CategoryRepository {
   Future<void> getCollocationDetail(int cId) async {
     var response = await dbHelper.getTimeLineCollocation(cId.toString());
     if (response != null) {
-      _collocationModel =
-          WordWithCollocationModel(id: response.id, cId: response.cId, word: response.word, cBody: response.cBody);
+      _collocationModel = WordWithCollocationModel(
+          id: response.id, cId: response.cId, word: response.word, cBody: response.cBody);
     }
   }
 
@@ -75,8 +76,8 @@ class CategoryRepositoryImpl extends CategoryRepository {
   Future<void> getMetaphorDetail(int cId) async {
     var response = await dbHelper.getTimeLineMetaphor(cId.toString());
     if (response != null) {
-      _metaphorModel =
-          WordWithMetaphorModel(id: response.id, mId: response.mId, word: response.word, mBody: response.mBody);
+      _metaphorModel = WordWithMetaphorModel(
+          id: response.id, mId: response.mId, word: response.word, mBody: response.mBody);
     }
   }
 
@@ -84,8 +85,8 @@ class CategoryRepositoryImpl extends CategoryRepository {
   Future<void> getCultureDetail(int id) async {
     var response = await dbHelper.getTimeLineCulture(id.toString());
     if (response != null) {
-      _cultureDetailModel =
-          WordWithCultureModel(id: response.id, cId: response.cId, word: response.word, cBody: response.cBody);
+      _cultureDetailModel = WordWithCultureModel(
+          id: response.id, cId: response.cId, word: response.word, cBody: response.cBody);
     }
   }
 
@@ -174,7 +175,8 @@ class CategoryRepositoryImpl extends CategoryRepository {
   }
 
   @override
-  Future<void> getSpeakingWordsList(String? categoryId, String? title, String? word, bool isInside) async {
+  Future<void> getSpeakingWordsList(
+      String? categoryId, String? title, String? word, bool isInside) async {
     List<CatalogModel>? response = [];
     if (categoryId == null) {
       if (title != null) {
@@ -206,7 +208,8 @@ class CategoryRepositoryImpl extends CategoryRepository {
 
   Future<List<CatalogModel>> findSpeakingInsideWords(
       List<CatalogModel> response, String parentId, String? query) async {
-    List<CatalogModel>? localData = await dbHelper.getSpeakingViewList(int.parse(parentId), query ?? "");
+    List<CatalogModel>? localData =
+        await dbHelper.getSpeakingViewList(int.parse(parentId), query ?? "");
     if (localData != null && localData.isNotEmpty) {
       return localData;
     } else {

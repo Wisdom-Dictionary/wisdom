@@ -32,7 +32,7 @@ class ProfileAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: actions,
       leading: InkResponse(
-        onTap: ()  {
+        onTap: () {
           Navigator.pop(context);
         },
         child: Padding(

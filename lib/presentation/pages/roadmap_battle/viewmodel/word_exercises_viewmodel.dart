@@ -24,6 +24,7 @@ class WordExercisesViewModel extends BaseViewModel {
 
   final String getWordExercisesTag = "getWordExercisesTag";
   final String postWordExercisesCheckTag = "postWordExercisesCheckTag";
+  final String postWordExercisesResultTag = "postWordExercisesResultTag";
   int page = 0;
   List<AnswerEntity> answers = [];
 
@@ -91,7 +92,7 @@ class WordExercisesViewModel extends BaseViewModel {
     }
   }
 
-  void postTestQuestionsCheck() {
+  void postTestQuestionsResult() {
     setBusy(true, tag: postWordExercisesCheckTag);
     safeBlock(() async {
       if (await localViewModel.netWorkChecker.isNetworkAvailable()) {

@@ -1,19 +1,23 @@
 import 'dart:convert';
+
 /// d_id : 1
 /// d_word : ""
 /// d_body : ""
 
-WordWithDifferenceModel wordWithDifferenceFromJson(String str) => WordWithDifferenceModel.fromJson(json.decode(str));
+WordWithDifferenceModel wordWithDifferenceFromJson(String str) =>
+    WordWithDifferenceModel.fromJson(json.decode(str));
 String wordWithDifferenceToJson(WordWithDifferenceModel data) => json.encode(data.toJson());
+
 class WordWithDifferenceModel {
   WordWithDifferenceModel({
-      int? dId, 
-      String? dWord, 
-      String? dBody,}){
+    int? dId,
+    String? dWord,
+    String? dBody,
+  }) {
     _dId = dId;
     _dWord = dWord;
     _dBody = dBody;
-}
+  }
 
   WordWithDifferenceModel.fromJson(dynamic json) {
     _dId = json['d_id'];
@@ -23,13 +27,16 @@ class WordWithDifferenceModel {
   int? _dId;
   String? _dWord;
   String? _dBody;
-WordWithDifferenceModel copyWith({  int? dId,
-  String? dWord,
-  String? dBody,
-}) => WordWithDifferenceModel(  dId: dId ?? _dId,
-  dWord: dWord ?? _dWord,
-  dBody: dBody ?? _dBody,
-);
+  WordWithDifferenceModel copyWith({
+    int? dId,
+    String? dWord,
+    String? dBody,
+  }) =>
+      WordWithDifferenceModel(
+        dId: dId ?? _dId,
+        dWord: dWord ?? _dWord,
+        dBody: dBody ?? _dBody,
+      );
   int? get dId => _dId;
   String? get dWord => _dWord;
   String? get dBody => _dBody;
@@ -41,5 +48,4 @@ WordWithDifferenceModel copyWith({  int? dId,
     map['d_body'] = _dBody;
     return map;
   }
-
 }

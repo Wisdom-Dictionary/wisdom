@@ -1,18 +1,15 @@
-import 'dart:ui' as ui;
 import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
+
 import 'package:wisdom/config/constants/app_colors.dart';
 import 'package:wisdom/config/constants/assets.dart';
-import 'package:wisdom/core/di/app_locator.dart';
 import 'package:wisdom/data/model/roadmap/level_model.dart';
-import 'package:wisdom/data/viewmodel/local_viewmodel.dart';
 import 'package:wisdom/domain/repositories/roadmap_repository.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/widgets/roadmap_shimmer_widget.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/widgets/task_level_indicator_widget.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/roadmap_viewmodel.dart';
-import 'package:wisdom/presentation/widgets/loading_widget.dart';
 
 class ExampleRoadMap extends StatefulWidget {
   const ExampleRoadMap({super.key, required this.viewModel});
@@ -75,8 +72,7 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
     return List.generate(repository.levelsList.length, (index) {
       double? left = (positions[index]["left"] as int?)?.toDouble();
       double? right = (positions[index]["right"] as int?)?.toDouble();
-      double? bottom =
-          ((positions[index]["bottom"] ?? 1) * pathCornerRad * 2).toDouble();
+      double? bottom = ((positions[index]["bottom"] ?? 1) * pathCornerRad * 2).toDouble();
       bool activeLevel = repository.levelsList[index].userCurrentLevel ?? false;
 
       return Positioned(
@@ -84,13 +80,14 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
           right: right,
           bottom: activeLevel && bottom != null ? bottom - 80 : (bottom! - 50),
           child: GestureDetector(
-            onTap: () =>
-                widget.viewModel.selectLevel(repository.levelsList[index]),
-            child: InactiveLevelIndicator(
-              activeLevel: activeLevel,
-              item: repository.levelsList[index],
-            ),
-          ));
+              onTap: () => widget.viewModel.selectLevel(repository.levelsList[index]),
+              child: repository.levelsList[index].itemWidget
+
+              // InactiveLevelIndicator(
+              //   activeLevel: activeLevel,
+              //   item: repository.levelsList[index],
+              // ),
+              ));
     });
   }
 
@@ -98,101 +95,92 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        if (!widget.viewModel.isSuccess(tag: widget.viewModel.getLevelsTag))
-          RoadmapShimmerWidget(),
+        if (widget.viewModel.isBusy(tag: widget.viewModel.getLevelsTag))
+          const RoadmapShimmerWidget(),
         if (widget.viewModel.isSuccess(tag: widget.viewModel.getLevelsTag))
           Center(
             child: SingleChildScrollView(
+              physics: const ClampingScrollPhysics(),
               reverse: true,
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: Stack(
-                      children: [
-                        Positioned.fill(
-                          child: Image.asset(
-                            Assets.images.roadmapBattleBackground,
-                            alignment: Alignment.bottomCenter,
-                            repeat: ImageRepeat.repeat,
-                            fit: BoxFit.fitWidth,
+              child: SafeArea(
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                            child: Image.asset(
+                              Assets.images.roadmapBattleBackground,
+                              alignment: Alignment.bottomCenter,
+                              repeat: ImageRepeat.repeat,
+                              fit: BoxFit.fitWidth,
+                            ),
                           ),
-                        ),
-                        Positioned.fill(
-                            child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            backgroundGradient(topGradient()),
-                            backgroundGradient(bottomGradient())
-                          ],
-                        ))
-                      ],
+                          Positioned.fill(
+                              child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              backgroundGradient(topGradient()),
+                              backgroundGradient(bottomGradient())
+                            ],
+                          ))
+                        ],
+                      ),
                     ),
-                  ),
-                  CustomPaint(
-                    painter: DashedPathPainter(
-                      originalPath: (size) {
-                        return _customPath(
-                                size,
-                                pathCornerRad,
-                                iconSize,
-                                widget.viewModel.roadMapRepository.levelsList
-                                    .length)
-                            .reversed
-                            .toList();
-                      },
-                      pathColors: [],
-                      pathColor: AppColors.white,
-                      strokeWidth: 40,
-                      dashGapLength: 0.01,
-                      dashLength: 7.0,
+                    CustomPaint(
+                      painter: DashedPathPainter(
+                        originalPath: (size) {
+                          return _customPath(size, pathCornerRad, iconSize,
+                                  widget.viewModel.roadMapRepository.levelsList.length)
+                              .reversed
+                              .toList();
+                        },
+                        pathColors: [],
+                        pathColor: AppColors.white,
+                        strokeWidth: 40,
+                        dashGapLength: 0.01,
+                        dashLength: 7.0,
+                      ),
+                      child: const Center(),
                     ),
-                    child: const Center(),
-                  ),
-                  CustomPaint(
-                    painter: DashedPathPainter(
-                      originalPath: (size) {
-                        return _customPath(
-                            size,
-                            pathCornerRad,
-                            iconSize,
-                            widget
-                                .viewModel.roadMapRepository.levelsList.length);
-                      },
-                      pathColors: [],
-                      pathColor: AppColors.blue,
-                      strokeWidth: 1,
-                      dashGapLength: 10.0,
-                      dashLength: 8.0,
+                    CustomPaint(
+                      painter: DashedPathPainter(
+                        originalPath: (size) {
+                          return _customPath(size, pathCornerRad, iconSize,
+                              widget.viewModel.roadMapRepository.levelsList.length);
+                        },
+                        pathColors: [],
+                        pathColor: AppColors.blue,
+                        strokeWidth: 1,
+                        dashGapLength: 10.0,
+                        dashLength: 8.0,
+                      ),
+                      child: SizedBox(
+                          width: iconSize * 70,
+                          height: (pathCornerRad * 2) *
+                              (widget.viewModel.roadMapRepository.levelsList.length < 6
+                                  ? 6
+                                  : widget.viewModel.roadMapRepository.levelsList.length),
+                          child: Stack(children: levelItems(widget.viewModel.roadMapRepository))),
                     ),
-                    child: SizedBox(
-                        width: iconSize * 70,
-                        height: (pathCornerRad * 2) *
-                            (widget.viewModel.roadMapRepository.levelsList
-                                        .length <
-                                    6
-                                ? 6
-                                : widget.viewModel.roadMapRepository.levelsList
-                                    .length),
-                        child: Stack(
-                            children: levelItems(
-                                widget.viewModel.roadMapRepository))),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
         Positioned(
             top: 90,
             right: 5,
-            child: FlagIndicatorWidget(
-              userLevel: widget.viewModel.roadMapRepository.userCurrentLevel,
+            child: SafeArea(
+              child: FlagIndicatorWidget(
+                userLevel: widget.viewModel.roadMapRepository.userCurrentLevel,
+              ),
             ))
       ],
     );
   }
 
-  List<Path> _customPath(
-      Size size, double painterCornerRad, double iconSize, int iconCount) {
+  List<Path> _customPath(Size size, double painterCornerRad, double iconSize, int iconCount) {
     final width = size.width;
 
     List<Path> paths = [];

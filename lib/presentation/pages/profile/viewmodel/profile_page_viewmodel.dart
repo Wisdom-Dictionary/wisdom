@@ -45,14 +45,13 @@ class ProfilePageViewModel extends BaseViewModel {
   UserModel userModel = const UserModel();
   UserModel editedUser = const UserModel();
   String getTariffsTag = 'getTariffs';
-  String getGetUser = 'getGetUser';
+  String getGetUserTag = 'getGetUser';
   String restoreTag = 'restoreTag';
   String onSaveChangesTag = 'onSaveChangesTag';
   bool saveButtonsActive = false, validate = false;
   Future? dialog;
 
-  String? get imageUrl =>
-      userModel.image != null ? '${Urls.baseUrl}${userModel.image!}' : null;
+  String? get imageUrl => userModel.image != null ? '${Urls.baseUrl}${userModel.image!}' : null;
 
   void saveButtonActive() {
     saveButtonsActive = !saveButtonsActive;
@@ -60,12 +59,25 @@ class ProfilePageViewModel extends BaseViewModel {
   }
 
   getUser() {
+    setBusy(true, tag: getGetUserTag);
     safeBlock(
       () async {
         userModel = await profileRepository.getUser();
         editedUser = UserModel.fromJson(userModel.toJson());
         currentTariff = profileRepository.currentTariff;
-        setSuccess(tag: getGetUser);
+        setSuccess(tag: getGetUserTag);
+      },
+      callFuncName: 'getUser',
+      inProgress: false,
+    );
+  }
+
+  getUserDetails() {
+    setBusy(true, tag: getGetUserTag);
+    safeBlock(
+      () async {
+        await profileRepository.getUserCabinet();
+        setSuccess(tag: getGetUserTag);
       },
       callFuncName: 'getUser',
       inProgress: false,
@@ -80,8 +92,7 @@ class ProfilePageViewModel extends BaseViewModel {
             await profileRepository.getTariffs();
             tariffsModel = profileRepository.tariffsModel.firstOrNull;
           } else {
-            final tariff =
-                sharedPreferenceHelper.getString(Constants.KEY_TARIFFS, '');
+            final tariff = sharedPreferenceHelper.getString(Constants.KEY_TARIFFS, '');
             if (tariff.isNotEmpty) {
               tariffsModel = TariffsModel.fromJson(jsonDecode(tariff));
             }
@@ -95,23 +106,6 @@ class ProfilePageViewModel extends BaseViewModel {
       tag: getTariffsTag,
       inProgress: false,
     );
-  }
-
-  @override
-  callBackBusy(bool value, String? tag) {
-    if (dialog == null && isBusy(tag: tag)) {
-      Future.delayed(Duration.zero, () {
-        dialog = showLoadingDialog(context!);
-      });
-    }
-  }
-
-  @override
-  callBackSuccess(value, String? tag) {
-    if (dialog != null) {
-      pop();
-      dialog = null;
-    }
   }
 
   @override
@@ -132,8 +126,7 @@ class ProfilePageViewModel extends BaseViewModel {
     setBusy(true, tag: restoreTag);
     try {
       await Future.delayed(const Duration(milliseconds: 100));
-      await Future.delayed(
-          const Duration(milliseconds: 100), () => MyApp.restartApp(context!));
+      await Future.delayed(const Duration(milliseconds: 100), () => MyApp.restartApp(context!));
       // if (PurchasesObserver().isPro()) {}
       setSuccess(tag: restoreTag);
     } catch (e) {
@@ -142,8 +135,7 @@ class ProfilePageViewModel extends BaseViewModel {
   }
 
   onPaymentPressed() {
-    navigateTo(Routes.paymentPage,
-        arg: {'verifyModel': null, 'phoneNumber': null});
+    navigateTo(Routes.paymentPage, arg: {'verifyModel': null, 'phoneNumber': null});
   }
 
   goBackToMenu() {
@@ -177,12 +169,10 @@ class ProfilePageViewModel extends BaseViewModel {
   }
 
   Future onSaveChanges() async {
-
     safeBlock(
       () async {
         final user = await profileRepository.updateUser(editedUser);
-        sharedPreferenceHelper.putString(
-            Constants.KEY_USER, jsonEncode(user.toJson()));
+        sharedPreferenceHelper.putString(Constants.KEY_USER, jsonEncode(user.toJson()));
         setSuccess(tag: onSaveChangesTag);
         showTopSnackBar(
           Overlay.of(context!),
@@ -238,8 +228,7 @@ class ProfilePageViewModel extends BaseViewModel {
       }
       setSuccess(tag: 'onEditImage');
     } catch (e) {
-      setError(VMException(LocaleKeys.something_went_wrong.tr()),
-          tag: 'onEditImage');
+      setError(VMException(LocaleKeys.something_went_wrong.tr()), tag: 'onEditImage');
     }
   }
 }

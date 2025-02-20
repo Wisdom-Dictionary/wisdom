@@ -10,7 +10,8 @@ import '../base_table_model.dart';
 /// p_word_class_comment : ""
 /// p_parent_phrase : ""
 
-PhrasesTableModel phrasesTableModelFromJson(String str) => PhrasesTableModel.fromJson(json.decode(str));
+PhrasesTableModel phrasesTableModelFromJson(String str) =>
+    PhrasesTableModel.fromJson(json.decode(str));
 
 String phrasesTableModelToJson(PhrasesTableModel data) => json.encode(data.toJson());
 

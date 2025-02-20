@@ -73,13 +73,16 @@ class WordBankViewModel extends BaseViewModel {
                       var item = wordEntityRepository.wordBankFoldersList[index];
                       if (item.id != 2) {
                         return Container(
-                          decoration:
-                              const BoxDecoration(border: Border(bottom: BorderSide(color: AppColors.borderWhite))),
+                          decoration: const BoxDecoration(
+                              border: Border(bottom: BorderSide(color: AppColors.borderWhite))),
                           child: ListTile(
                             title: Text(item.folderName.tr(),
-                                style: AppTextStyle.font15W600Normal.copyWith(color: AppColors.blue)),
-                            onTap: () async{
-                             await wordEntityRepository.moveToFolder(item.id, model.tableId!, model.id).then((value) {
+                                style:
+                                    AppTextStyle.font15W600Normal.copyWith(color: AppColors.blue)),
+                            onTap: () async {
+                              await wordEntityRepository
+                                  .moveToFolder(item.id, model.tableId!, model.id)
+                                  .then((value) {
                                 if (value) {
                                   wordEntityRepository.wordBankList
                                       .removeWhere((element) => element.tableId == model.tableId);
@@ -131,7 +134,8 @@ class WordBankViewModel extends BaseViewModel {
         child: Text(
           'new_folder_bound_info'.tr(),
           textAlign: TextAlign.center,
-          style: AppTextStyle.font15W600Normal.copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
+          style: AppTextStyle.font15W600Normal
+              .copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
         ),
       ),
       positive: "buy_pro".tr(),
@@ -176,7 +180,8 @@ class WordBankViewModel extends BaseViewModel {
   goToExercisePage() {
     if (wordEntityRepository.wordBankList.isNotEmpty) {
       var tryCount = localViewModel.preferenceHelper.getInt(Constants.EXERCISE_COUNT, 3);
-      String dateString = localViewModel.preferenceHelper.getString(Constants.EXERCISE_DATE, DateTime.now().toString());
+      String dateString = localViewModel.preferenceHelper
+          .getString(Constants.EXERCISE_DATE, DateTime.now().toString());
       DateTime dateTime = DateTime.now();
       bool isToday = true;
       if (dateString.isNotEmpty) {
@@ -189,7 +194,8 @@ class WordBankViewModel extends BaseViewModel {
       if (tryCount != 0 || PurchasesObserver().isPro()) {
         tryCount--;
         localViewModel.preferenceHelper.putInt(Constants.EXERCISE_COUNT, tryCount);
-        localViewModel.preferenceHelper.putString(Constants.EXERCISE_DATE, DateTime.now().toString());
+        localViewModel.preferenceHelper
+            .putString(Constants.EXERCISE_DATE, DateTime.now().toString());
         showExerciseOption();
       } else {
         showCustomDialog(
@@ -202,8 +208,8 @@ class WordBankViewModel extends BaseViewModel {
             child: Text(
               'exercise_info'.tr(),
               textAlign: TextAlign.center,
-              style:
-                  AppTextStyle.font15W600Normal.copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
+              style: AppTextStyle.font15W600Normal
+                  .copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
             ),
           ),
           positive: "buy_pro".tr(),
@@ -216,7 +222,8 @@ class WordBankViewModel extends BaseViewModel {
               localViewModel.showInterstitialAd();
               tryCount++;
               localViewModel.preferenceHelper.putInt(Constants.EXERCISE_COUNT, tryCount);
-              localViewModel.preferenceHelper.putString(Constants.EXERCISE_DATE, DateTime.now().toString());
+              localViewModel.preferenceHelper
+                  .putString(Constants.EXERCISE_DATE, DateTime.now().toString());
               pop();
               showExerciseOption();
             } else {
@@ -246,7 +253,8 @@ class WordBankViewModel extends BaseViewModel {
         child: Text(
           'exercise_option'.tr(),
           textAlign: TextAlign.center,
-          style: AppTextStyle.font15W600Normal.copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
+          style: AppTextStyle.font15W600Normal
+              .copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
         ),
       ),
       positive: "flashcard".tr(),
@@ -276,7 +284,8 @@ class WordBankViewModel extends BaseViewModel {
         child: Text(
           'exercise_language_option'.tr(),
           textAlign: TextAlign.center,
-          style: AppTextStyle.font15W600Normal.copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
+          style: AppTextStyle.font15W600Normal
+              .copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
         ),
       ),
       positive: "EN->UZ",
@@ -305,7 +314,8 @@ class WordBankViewModel extends BaseViewModel {
         child: Text(
           'delete_word_info'.tr(),
           textAlign: TextAlign.center,
-          style: AppTextStyle.font15W600Normal.copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
+          style: AppTextStyle.font15W600Normal
+              .copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
         ),
       ),
       positive: "delete".tr(),
@@ -362,8 +372,12 @@ class WordBankViewModel extends BaseViewModel {
     localViewModel.isFromMain = false;
     localViewModel.detailToFromBank = true;
     RecentModel recentModel = RecentModel();
-    recentModel =
-        RecentModel(id: model.parentId, word: model.word, wordClass: model.translation, type: model.type, same: "");
+    recentModel = RecentModel(
+        id: model.parentId,
+        word: model.word,
+        wordClass: model.translation,
+        type: model.type,
+        same: "");
     localViewModel.isSearchByUz = true;
     localViewModel.wordDetailModel = recentModel;
     localViewModel.changePageIndex(18);

@@ -7,7 +7,7 @@ import 'package:wisdom/config/constants/app_colors.dart';
 import 'package:wisdom/config/constants/app_text_style.dart';
 import 'package:wisdom/config/constants/assets.dart';
 import 'package:wisdom/config/constants/constants.dart';
-import 'package:wisdom/data/model/my_contacts/contact_model.dart';
+import 'package:wisdom/data/model/my_contacts/user_details_model.dart';
 import 'package:wisdom/domain/repositories/my_contacts_repository.dart';
 import 'package:wisdom/presentation/pages/my_contacts/view/my_contacts_app_bar.dart';
 import 'package:wisdom/presentation/pages/my_contacts/view/my_contacts_empty_widget.dart';
@@ -22,8 +22,7 @@ class MyContactsPage extends StatefulWidget {
   State<MyContactsPage> createState() => _MyContactsPageState();
 }
 
-class _MyContactsPageState extends State<MyContactsPage>
-    with SingleTickerProviderStateMixin {
+class _MyContactsPageState extends State<MyContactsPage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -38,8 +37,7 @@ class _MyContactsPageState extends State<MyContactsPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:
-          isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
+      backgroundColor: isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
       appBar: MyContactsAppBar(
         title: "my_contacts".tr(),
         actions: [
@@ -51,14 +49,14 @@ class _MyContactsPageState extends State<MyContactsPage>
                 },
                 icon: SvgPicture.asset(
                   Assets.icons.searchText,
-                  colorFilter:
-                      const ColorFilter.mode(AppColors.white, BlendMode.srcIn),
+                  colorFilter: const ColorFilter.mode(AppColors.white, BlendMode.srcIn),
                 )),
           )
         ],
         bottom: PreferredSize(
-          preferredSize: const Size(double.infinity, 69),
+          preferredSize: Size.fromHeight(56.h),
           child: Container(
+            height: 56.h,
             padding: const EdgeInsets.all(8),
             margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
@@ -67,13 +65,12 @@ class _MyContactsPageState extends State<MyContactsPage>
             child: TabBar(
               indicatorColor: AppColors.red,
               dividerColor: Colors.transparent,
-              indicator: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.circular(23.5)),
-              labelStyle: AppTextStyle.font13W400Normal
-                  .copyWith(fontSize: 14, color: AppColors.blue),
-              unselectedLabelStyle: AppTextStyle.font13W400Normal.copyWith(
-                  fontSize: 14, color: AppColors.white.withValues(alpha: 0.5)),
+              indicator:
+                  BoxDecoration(color: AppColors.white, borderRadius: BorderRadius.circular(23.5)),
+              labelStyle:
+                  AppTextStyle.font13W400Normal.copyWith(fontSize: 14, color: AppColors.blue),
+              unselectedLabelStyle: AppTextStyle.font13W400Normal
+                  .copyWith(fontSize: 14, color: AppColors.white.withValues(alpha: 0.5)),
               tabs: [
                 Tab(
                   child: Row(
@@ -134,10 +131,9 @@ class ContactsList extends ViewModelBuilderWidget<MyContactsViewModel> {
   }
 
   @override
-  Widget builder(
-      BuildContext context, MyContactsViewModel viewModel, Widget? child) {
+  Widget builder(BuildContext context, MyContactsViewModel viewModel, Widget? child) {
     return viewModel.isBusy(tag: viewModel.getMyContactsTag)
-        ? MyContcatsShimmerWidget()
+        ? const MyContcatsShimmerWidget()
         : viewModel.isSuccess(tag: viewModel.getMyContactsTag)
             ? viewModel.myContactsRepository.contactsList.isEmpty
                 ? MyContactsEmptyPage(
@@ -146,20 +142,18 @@ class ContactsList extends ViewModelBuilderWidget<MyContactsViewModel> {
                     description: "description_my_contacts_list_empty".tr(),
                   )
                 : ListView.builder(
-                    padding: EdgeInsets.symmetric(horizontal: 18, vertical: 27),
+                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 27),
                     itemCount: 8,
                     itemBuilder: (context, index) => GestureDetector(
                       onTap: () {
                         Navigator.pushNamed(context, Routes.contactDetailsPage);
                       },
                       child: Container(
-                        padding: EdgeInsets.only(
-                            top: 13, bottom: 16, left: 18, right: 18),
-                        margin: EdgeInsets.symmetric(vertical: 4),
+                        padding: const EdgeInsets.only(top: 13, bottom: 16, left: 18, right: 18),
+                        margin: const EdgeInsets.symmetric(vertical: 4),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(32.r),
-                            color:
-                                AppColors.bgLightBlue.withValues(alpha: 0.1)),
+                            color: AppColors.bgLightBlue.withValues(alpha: 0.1)),
                         child: Row(
                           children: [
                             SvgPicture.asset(
@@ -167,7 +161,7 @@ class ContactsList extends ViewModelBuilderWidget<MyContactsViewModel> {
                               height: 35,
                               width: 35,
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 11,
                             ),
                             Expanded(
@@ -177,11 +171,9 @@ class ContactsList extends ViewModelBuilderWidget<MyContactsViewModel> {
                                   Text(
                                     "Farruh Saitov",
                                     style: AppTextStyle.font13W500Normal
-                                        .copyWith(
-                                            fontSize: 14,
-                                            color: AppColors.blue),
+                                        .copyWith(fontSize: 14, color: AppColors.blue),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 4.61,
                                   ),
                                   Row(
@@ -191,13 +183,13 @@ class ContactsList extends ViewModelBuilderWidget<MyContactsViewModel> {
                                         style: AppTextStyle.font13W500Normal
                                             .copyWith(color: AppColors.blue),
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         width: 4,
                                       ),
                                       SvgPicture.asset(
                                         Assets.icons.verify,
-                                        colorFilter: ColorFilter.mode(
-                                            AppColors.blue, BlendMode.srcIn),
+                                        colorFilter:
+                                            const ColorFilter.mode(AppColors.blue, BlendMode.srcIn),
                                       )
                                     ],
                                   ),
@@ -206,16 +198,14 @@ class ContactsList extends ViewModelBuilderWidget<MyContactsViewModel> {
                             ),
                             SvgPicture.asset(
                               Assets.icons.wifi,
-                              colorFilter: ColorFilter.mode(
-                                  AppColors.green, BlendMode.srcIn),
+                              colorFilter: const ColorFilter.mode(AppColors.green, BlendMode.srcIn),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 24,
                             ),
                             SvgPicture.asset(
                               Assets.icons.battle,
-                              colorFilter: ColorFilter.mode(
-                                  AppColors.blue, BlendMode.srcIn),
+                              colorFilter: const ColorFilter.mode(AppColors.blue, BlendMode.srcIn),
                             ),
                           ],
                         ),
@@ -241,10 +231,9 @@ class ContactsFollowedList extends ViewModelBuilderWidget<MyContactsViewModel> {
   }
 
   @override
-  Widget builder(
-      BuildContext context, MyContactsViewModel viewModel, Widget? child) {
+  Widget builder(BuildContext context, MyContactsViewModel viewModel, Widget? child) {
     return viewModel.isBusy(tag: viewModel.getMyContactsTag)
-        ? MyContcatsShimmerWidget()
+        ? const MyContcatsShimmerWidget()
         : viewModel.isSuccess(tag: viewModel.getMyContactsTag)
             ? viewModel.myContactsRepository.contactsList.isEmpty
                 ? MyContactsEmptyPage(
@@ -255,19 +244,15 @@ class ContactsFollowedList extends ViewModelBuilderWidget<MyContactsViewModel> {
                     description: "description_my_followed_list_empty".tr(),
                   )
                 : ListView.builder(
-                    padding: EdgeInsets.symmetric(horizontal: 18, vertical: 27),
-                    itemCount:
-                        viewModel.myContactsRepository.contactsList.length,
+                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 27),
+                    itemCount: viewModel.myContactsRepository.contactsList.length,
                     itemBuilder: (context, index) => GestureDetector(
                       onTap: () {
                         Navigator.pushNamed(context, Routes.contactDetailsPage,
-                            arguments: viewModel
-                                .myContactsRepository.contactsList[index]
-                                .toMap());
+                            arguments: viewModel.myContactsRepository.contactsList[index].toMap());
                       },
                       child: ContactItemWidget(
-                        item:
-                            viewModel.myContactsRepository.contactsList[index],
+                        item: viewModel.myContactsRepository.contactsList[index],
                       ),
                     ),
                   )
@@ -282,12 +267,12 @@ class ContactsFollowedList extends ViewModelBuilderWidget<MyContactsViewModel> {
 
 class ContactItemWidget extends StatelessWidget {
   const ContactItemWidget({super.key, required this.item});
-  final ContactModel item;
+  final UserDetailsModel item;
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(top: 13, bottom: 16, left: 18, right: 18),
-      margin: EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.only(top: 13, bottom: 16, left: 18, right: 18),
+      margin: const EdgeInsets.symmetric(vertical: 4),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(32.r),
           color: AppColors.bgLightBlue.withValues(alpha: 0.1)),
@@ -302,11 +287,11 @@ class ContactItemWidget extends StatelessWidget {
           else
             CircleAvatar(
               radius: 16.r,
-              backgroundImage: NetworkImage(
-                  Uri.encodeFull("${item.user!.profilePhotoUrl!}&format=png")),
+              backgroundImage:
+                  NetworkImage(Uri.encodeFull("${item.user!.profilePhotoUrl!}&format=png")),
               backgroundColor: Colors.transparent,
             ),
-          SizedBox(
+          const SizedBox(
             width: 11,
           ),
           Expanded(
@@ -315,26 +300,24 @@ class ContactItemWidget extends StatelessWidget {
               children: [
                 Text(
                   item.user?.name ?? '',
-                  style: AppTextStyle.font13W500Normal
-                      .copyWith(fontSize: 14, color: AppColors.blue),
+                  style:
+                      AppTextStyle.font13W500Normal.copyWith(fontSize: 14, color: AppColors.blue),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 4.61,
                 ),
                 Row(
                   children: [
                     Text(
                       item.user?.id.toString().padLeft(6, "0") ?? "",
-                      style: AppTextStyle.font13W500Normal
-                          .copyWith(color: AppColors.blue),
+                      style: AppTextStyle.font13W500Normal.copyWith(color: AppColors.blue),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 4,
                     ),
                     SvgPicture.asset(
                       Assets.icons.verify,
-                      colorFilter:
-                          ColorFilter.mode(AppColors.blue, BlendMode.srcIn),
+                      colorFilter: const ColorFilter.mode(AppColors.blue, BlendMode.srcIn),
                     )
                   ],
                 ),
@@ -343,14 +326,14 @@ class ContactItemWidget extends StatelessWidget {
           ),
           SvgPicture.asset(
             Assets.icons.wifi,
-            colorFilter: ColorFilter.mode(AppColors.green, BlendMode.srcIn),
+            colorFilter: const ColorFilter.mode(AppColors.green, BlendMode.srcIn),
           ),
-          SizedBox(
+          const SizedBox(
             width: 24,
           ),
           SvgPicture.asset(
             Assets.icons.battle,
-            colorFilter: ColorFilter.mode(AppColors.blue, BlendMode.srcIn),
+            colorFilter: const ColorFilter.mode(AppColors.blue, BlendMode.srcIn),
           ),
         ],
       ),

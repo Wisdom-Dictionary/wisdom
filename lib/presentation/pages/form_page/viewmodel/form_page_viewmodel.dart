@@ -59,10 +59,9 @@ class FormPageViewModel extends BaseViewModel {
         if (status) {
           setSuccess();
           navigateTo(Routes.verifyPage, arg: {'number': userModel.phone});
-        }else{
+        } else {
           callBackError('Error');
         }
-
       },
       callFuncName: 'submit',
       tag: formSubmit,

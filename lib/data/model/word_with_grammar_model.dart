@@ -5,7 +5,8 @@ import 'dart:convert';
 /// g_id : ""
 /// g_body : ""
 
-WordWithGrammarModel wordWithGrammarFromJson(String str) => WordWithGrammarModel.fromJson(json.decode(str));
+WordWithGrammarModel wordWithGrammarFromJson(String str) =>
+    WordWithGrammarModel.fromJson(json.decode(str));
 
 String wordWithGrammarToJson(WordWithGrammarModel data) => json.encode(data.toJson());
 

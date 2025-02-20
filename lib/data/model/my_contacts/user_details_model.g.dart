@@ -1,13 +1,16 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'contact_model.dart';
+part of 'user_details_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-ContactModel _$ContactModelFromJson(Map<String, dynamic> json) => ContactModel(
+UserDetailsModel _$UserDetailsModelFromJson(Map<String, dynamic> json) =>
+    UserDetailsModel(
       status: json['status'] as bool?,
+      followed: json['followed'] as bool?,
+      following: json['following'] as bool?,
       userCurrentLevel: (json['user_current_level'] as num?)?.toInt(),
       user: json['user'] == null
           ? null
@@ -54,7 +57,14 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       email: json['email'],
       image: json['image'],
       birthdate: json['birthdate'],
-      gender: json['gender'],
+      gender:
+          $enumDecodeNullable(_$GenderEnumMap, json['gender']) ?? Gender.none,
       notification: (json['notification'] as num?)?.toInt(),
       profilePhotoUrl: json['profile_photo_url'] as String?,
     );
+
+const _$GenderEnumMap = {
+  Gender.M: 'M',
+  Gender.F: 'F',
+  Gender.none: 'none',
+};

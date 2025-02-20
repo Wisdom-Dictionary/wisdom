@@ -36,13 +36,11 @@ class PaymentPage extends ViewModelBuilderWidget<PaymentPageViewModel> {
   }
 
   @override
-  Widget builder(
-      BuildContext context, PaymentPageViewModel viewModel, Widget? child) {
+  Widget builder(BuildContext context, PaymentPageViewModel viewModel, Widget? child) {
     return WillPopScope(
       onWillPop: () => viewModel.goToProfile(),
       child: Scaffold(
-        backgroundColor:
-            isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
+        backgroundColor: isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
         appBar: CustomAppBar(
           title: 'payment'.tr(),
           onTap: () => viewModel.goToProfile(),
@@ -59,8 +57,8 @@ class PaymentPage extends ViewModelBuilderWidget<PaymentPageViewModel> {
                       CustomBanner(
                         title: 'choose_payment'.tr(),
                         height: 330.h,
-                        contentPadding: const EdgeInsets.only(
-                            top: 30, left: 20, right: 20, bottom: 20),
+                        contentPadding:
+                            const EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 20),
                         child: Column(
                           children: [
                             RadioListTile(
@@ -123,8 +121,7 @@ class PaymentPage extends ViewModelBuilderWidget<PaymentPageViewModel> {
                               ),
                             Container(
                               decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(40.r),
-                                  color: AppColors.blue),
+                                  borderRadius: BorderRadius.circular(40.r), color: AppColors.blue),
                               height: 45.h,
                               margin: EdgeInsets.only(top: 40.h, bottom: 12.h),
                               child: Material(
@@ -146,8 +143,7 @@ class PaymentPage extends ViewModelBuilderWidget<PaymentPageViewModel> {
                             Padding(
                               padding: const EdgeInsets.only(top: 10),
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
                                 children: [
                                   RichText(
                                     text: myUrl('Restore Purchase', '',
@@ -156,15 +152,12 @@ class PaymentPage extends ViewModelBuilderWidget<PaymentPageViewModel> {
                                         onTap: () => viewModel.restore()),
                                   ),
                                   RichText(
-                                    text: myUrl(
-                                        'Privacy', Constants.PRIVACY_URL,
-                                        textColor: AppColors.blue,
-                                        underline: false),
+                                    text: myUrl('Privacy', Constants.PRIVACY_URL,
+                                        textColor: AppColors.blue, underline: false),
                                   ),
                                   RichText(
                                     text: myUrl('Terms', Constants.TERMS_URL,
-                                        textColor: AppColors.blue,
-                                        underline: false),
+                                        textColor: AppColors.blue, underline: false),
                                   ),
                                 ],
                               ),

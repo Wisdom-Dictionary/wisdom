@@ -30,7 +30,7 @@ class SignInDialog extends StatelessWidget {
           WButton(
             title: "sign_in".tr(),
             onTap: () {
-              Navigator.pushNamed(context, Routes.registrationPage);
+              Navigator.pushNamed(context, Routes.loginPage);
             },
           ),
           const SizedBox(

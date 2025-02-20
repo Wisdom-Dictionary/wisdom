@@ -47,14 +47,10 @@ class SearchHistoryItem extends StatelessWidget {
                         RichText(
                           text: TextSpan(
                             style: AppTextStyle.font15W500Normal.copyWith(
-                              color: isDarkTheme
-                                  ? AppColors.white
-                                  : AppColors.darkGray,
+                              color: isDarkTheme ? AppColors.white : AppColors.darkGray,
                               fontSize: 15.sp,
                             ),
-                            text: firstText.length > 20
-                                ? firstText.substring(0, 20)
-                                : firstText,
+                            text: firstText.length > 20 ? firstText.substring(0, 20) : firstText,
                             children: [
                               TextSpan(
                                 text: '   $secondText',

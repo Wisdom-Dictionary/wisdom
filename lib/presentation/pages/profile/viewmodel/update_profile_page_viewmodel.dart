@@ -51,8 +51,7 @@ class UpdateProfilePageViewModel extends BaseViewModel {
   bool saveButtonsActive = false, validate = false;
   Future? dialog;
 
-  String? get imageUrl =>
-      userModel.image != null ? '${Urls.baseUrl}${userModel.image!}' : null;
+  String? get imageUrl => userModel.image != null ? '${Urls.baseUrl}${userModel.image!}' : null;
 
   void saveButtonActive() {
     saveButtonsActive = !saveButtonsActive;
@@ -80,8 +79,7 @@ class UpdateProfilePageViewModel extends BaseViewModel {
             await profileRepository.getTariffs();
             tariffsModel = profileRepository.tariffsModel.firstOrNull;
           } else {
-            final tariff =
-                sharedPreferenceHelper.getString(Constants.KEY_TARIFFS, '');
+            final tariff = sharedPreferenceHelper.getString(Constants.KEY_TARIFFS, '');
             if (tariff.isNotEmpty) {
               tariffsModel = TariffsModel.fromJson(jsonDecode(tariff));
             }
@@ -132,8 +130,7 @@ class UpdateProfilePageViewModel extends BaseViewModel {
     setBusy(true, tag: restoreTag);
     try {
       await Future.delayed(const Duration(milliseconds: 100));
-      await Future.delayed(
-          const Duration(milliseconds: 100), () => MyApp.restartApp(context!));
+      await Future.delayed(const Duration(milliseconds: 100), () => MyApp.restartApp(context!));
       // if (PurchasesObserver().isPro()) {}
       setSuccess(tag: restoreTag);
     } catch (e) {
@@ -142,8 +139,7 @@ class UpdateProfilePageViewModel extends BaseViewModel {
   }
 
   onPaymentPressed() {
-    navigateTo(Routes.paymentPage,
-        arg: {'verifyModel': null, 'phoneNumber': null});
+    navigateTo(Routes.paymentPage, arg: {'verifyModel': null, 'phoneNumber': null});
   }
 
   goBackToMenu() {
@@ -161,11 +157,6 @@ class UpdateProfilePageViewModel extends BaseViewModel {
     checkUpdate();
   }
 
-  void onLastNameChanged(String value) {
-    editedUser = editedUser.copyWith(name: value);
-    checkUpdate();
-  }
-
   void onFirstNameChanged(String value) {
     editedUser = editedUser.copyWith(name: value);
     checkUpdate();
@@ -177,12 +168,10 @@ class UpdateProfilePageViewModel extends BaseViewModel {
   }
 
   Future onSaveChanges() async {
-
     safeBlock(
       () async {
         final user = await profileRepository.updateUser(editedUser);
-        sharedPreferenceHelper.putString(
-            Constants.KEY_USER, jsonEncode(user.toJson()));
+        sharedPreferenceHelper.putString(Constants.KEY_USER, jsonEncode(user.toJson()));
         setSuccess(tag: onSaveChangesTag);
         showTopSnackBar(
           Overlay.of(context!),
@@ -238,8 +227,7 @@ class UpdateProfilePageViewModel extends BaseViewModel {
       }
       setSuccess(tag: 'onEditImage');
     } catch (e) {
-      setError(VMException(LocaleKeys.something_went_wrong.tr()),
-          tag: 'onEditImage');
+      setError(VMException(LocaleKeys.something_went_wrong.tr()), tag: 'onEditImage');
     }
   }
 }

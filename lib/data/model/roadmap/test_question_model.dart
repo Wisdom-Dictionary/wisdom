@@ -63,16 +63,22 @@ class TestQuestionModel {
 class AnswerModel {
   int? id;
   String? body;
+  bool correct;
+  bool selected;
 
   AnswerModel({
     this.id,
     this.body,
+    this.correct = false,
+    this.selected = false,
   });
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
       'body': body,
+      'correct': correct,
+      'selected': selected,
     };
   }
 
@@ -80,6 +86,8 @@ class AnswerModel {
     return AnswerModel(
       id: map['id'] != null ? map['id'] as int : null,
       body: map['body'] != null ? map['body'] as String : null,
+      selected: map['selected'] != null ? map['selected'] as bool : false,
+      correct: map['correct'] != null ? map['correct'] as bool : false,
     );
   }
 

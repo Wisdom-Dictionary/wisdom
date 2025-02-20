@@ -28,15 +28,15 @@ class EmptyJar extends StatelessWidget {
               padding: EdgeInsets.only(top: 50.h, bottom: 16.h),
               child: Text(
                 "no_entry".tr(),
-                style:
-                    AppTextStyle.font28W600Normal.copyWith(color: isDarkTheme ? AppColors.white : AppColors.darkGray),
+                style: AppTextStyle.font28W600Normal
+                    .copyWith(color: isDarkTheme ? AppColors.white : AppColors.darkGray),
               ),
             ),
             Text(
               "no_entry_def".tr(),
               textAlign: TextAlign.center,
-              style: AppTextStyle.font18W400Normal
-                  .copyWith(color: (isDarkTheme ? AppColors.white : AppColors.paleGray).withOpacity(0.57)),
+              style: AppTextStyle.font18W400Normal.copyWith(
+                  color: (isDarkTheme ? AppColors.white : AppColors.paleGray).withOpacity(0.57)),
             ),
             const BannerAdWidget()
           ],

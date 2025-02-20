@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:wisdom/data/model/base_table_model.dart';
+
 /// id : 1
 /// word_id : 1
 /// word : ""
@@ -20,28 +21,31 @@ import 'package:wisdom/data/model/base_table_model.dart';
 /// word_class_body_meaning : ""
 /// image : ""
 
-ParentsTableModel parentsTableModelFromJson(String str) => ParentsTableModel.fromJson(json.decode(str));
+ParentsTableModel parentsTableModelFromJson(String str) =>
+    ParentsTableModel.fromJson(json.decode(str));
 String parentsTableModelToJson(ParentsTableModel data) => json.encode(data.toJson());
-class ParentsTableModel extends BaseTableModel{
+
+class ParentsTableModel extends BaseTableModel {
   ParentsTableModel({
-      int? id, 
-      int? wordId, 
-      String? word, 
-      String? star, 
-      String? body, 
-      String? synonyms, 
-      String? anthonims, 
-      String? comment, 
-      String? example, 
-      String? linkWord, 
-      String? examples, 
-      String? moreExamples, 
-      int? wordClassid, 
-      int? wordClasswordId, 
-      String? wordClasswordClass, 
-      String? wordClassBody, 
-      String? wordClassBodyMeaning, 
-      String? image,}){
+    int? id,
+    int? wordId,
+    String? word,
+    String? star,
+    String? body,
+    String? synonyms,
+    String? anthonims,
+    String? comment,
+    String? example,
+    String? linkWord,
+    String? examples,
+    String? moreExamples,
+    int? wordClassid,
+    int? wordClasswordId,
+    String? wordClasswordClass,
+    String? wordClassBody,
+    String? wordClassBodyMeaning,
+    String? image,
+  }) {
     _id = id;
     _wordId = wordId;
     _word = word;
@@ -60,7 +64,7 @@ class ParentsTableModel extends BaseTableModel{
     _wordClassBody = wordClassBody;
     _wordClassBodyMeaning = wordClassBodyMeaning;
     _image = image;
-}
+  }
 
   ParentsTableModel.fromJson(dynamic json) {
     _id = json['id'];
@@ -100,43 +104,46 @@ class ParentsTableModel extends BaseTableModel{
   String? _wordClassBody;
   String? _wordClassBodyMeaning;
   String? _image;
-ParentsTableModel copyWith({  int? id,
-  int? wordId,
-  String? word,
-  String? star,
-  String? body,
-  String? synonyms,
-  String? anthonims,
-  String? comment,
-  String? example,
-  String? linkWord,
-  String? examples,
-  String? moreExamples,
-  int? wordClassid,
-  int? wordClasswordId,
-  String? wordClasswordClass,
-  String? wordClassBody,
-  String? wordClassBodyMeaning,
-  String? image,
-}) => ParentsTableModel(  id: id ?? _id,
-  wordId: wordId ?? _wordId,
-  word: word ?? _word,
-  star: star ?? _star,
-  body: body ?? _body,
-  synonyms: synonyms ?? _synonyms,
-  anthonims: anthonims ?? _anthonims,
-  comment: comment ?? _comment,
-  example: example ?? _example,
-  linkWord: linkWord ?? _linkWord,
-  examples: examples ?? _examples,
-  moreExamples: moreExamples ?? _moreExamples,
-  wordClassid: wordClassid ?? _wordClassid,
-  wordClasswordId: wordClasswordId ?? _wordClasswordId,
-  wordClasswordClass: wordClasswordClass ?? _wordClasswordClass,
-  wordClassBody: wordClassBody ?? _wordClassBody,
-  wordClassBodyMeaning: wordClassBodyMeaning ?? _wordClassBodyMeaning,
-  image: image ?? _image,
-);
+  ParentsTableModel copyWith({
+    int? id,
+    int? wordId,
+    String? word,
+    String? star,
+    String? body,
+    String? synonyms,
+    String? anthonims,
+    String? comment,
+    String? example,
+    String? linkWord,
+    String? examples,
+    String? moreExamples,
+    int? wordClassid,
+    int? wordClasswordId,
+    String? wordClasswordClass,
+    String? wordClassBody,
+    String? wordClassBodyMeaning,
+    String? image,
+  }) =>
+      ParentsTableModel(
+        id: id ?? _id,
+        wordId: wordId ?? _wordId,
+        word: word ?? _word,
+        star: star ?? _star,
+        body: body ?? _body,
+        synonyms: synonyms ?? _synonyms,
+        anthonims: anthonims ?? _anthonims,
+        comment: comment ?? _comment,
+        example: example ?? _example,
+        linkWord: linkWord ?? _linkWord,
+        examples: examples ?? _examples,
+        moreExamples: moreExamples ?? _moreExamples,
+        wordClassid: wordClassid ?? _wordClassid,
+        wordClasswordId: wordClasswordId ?? _wordClasswordId,
+        wordClasswordClass: wordClasswordClass ?? _wordClasswordClass,
+        wordClassBody: wordClassBody ?? _wordClassBody,
+        wordClassBodyMeaning: wordClassBodyMeaning ?? _wordClassBodyMeaning,
+        image: image ?? _image,
+      );
   int? get id => _id;
   int? get wordId => _wordId;
   String? get word => _word;
@@ -179,5 +186,4 @@ ParentsTableModel copyWith({  int? id,
     map['image'] = _image;
     return map;
   }
-
 }

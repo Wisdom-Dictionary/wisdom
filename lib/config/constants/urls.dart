@@ -20,14 +20,12 @@ class Urls {
 
   static var claimlives = Uri.parse('${baseUrl}api/lives/claim');
 
-  static var testQuestionsCheck =
-      Uri.parse('${baseUrl}api/levels/test-questions-check');
-  static var myContactsFollowed =
-      Uri.parse('${baseUrl}api/my-contacts/followed');
+  static var testQuestionsCheck = Uri.parse('${baseUrl}api/levels/test-questions-check');
+  static var testQuestionsResult = Uri.parse('${baseUrl}api/levels/get-full-test-result');
+  static var myContactsFollowed = Uri.parse('${baseUrl}api/my-contacts/followed');
   static var myContacts = Uri.parse('${baseUrl}api/my-contacts/contacts');
   static var myContactsFollow = Uri.parse('${baseUrl}api/my-contacts/follow');
-  static var myContactsUnFollow =
-      Uri.parse('${baseUrl}api/my-contacts/unfollow');
+  static var myContactsUnFollow = Uri.parse('${baseUrl}api/my-contacts/unfollow');
   static var myContactsSearch = Uri.parse('${baseUrl}api/my-contacts/search');
 
   static Uri testQuestions(int id) => Uri.https(
@@ -50,6 +48,11 @@ class Urls {
         "/api/word/$wordId/word-questions-check",
       );
 
+  static Uri wordQuestionsResult(int wordId) => Uri.https(
+        Urls.baseAddress,
+        "/api/word/$wordId/get-full-word-questions-result",
+      );
+
   static subscribe(int id) => Uri.parse('${baseUrl}api/subscribe/set/$id');
 
   static getSpeakingView(int id) => Uri.parse("${baseUrl}api/catalogue/speaking/word/view/$id");
@@ -58,7 +61,7 @@ class Urls {
   static var profileImage = Uri.parse('${baseUrl}api/profile/image');
   static var loginSocial = Uri.parse('${baseUrl}api/auth/login/social');
   static var logOut = Uri.parse('${baseUrl}api/auth/logout');
- 
+
   //wordbank
   static var wordBankList = Uri.parse('${baseUrl}api/wordbank/list');
   static var createFolder = Uri.parse('${baseUrl}api/wordbank/folder/create');

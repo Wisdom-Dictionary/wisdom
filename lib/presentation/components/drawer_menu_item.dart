@@ -8,10 +8,7 @@ import 'package:wisdom/config/constants/constants.dart';
 
 class DrawerMenuItem extends StatelessWidget {
   const DrawerMenuItem(
-      {super.key,
-      required this.title,
-      required this.imgAssets,
-      required this.onTap});
+      {super.key, required this.title, required this.imgAssets, required this.onTap});
 
   final String imgAssets;
   final String title;

@@ -16,6 +16,7 @@ class LifeStatusBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         ValueListenableBuilder(
           valueListenable: ValueNotifier<int>(context.watch<CountdownProvider>().userLife),

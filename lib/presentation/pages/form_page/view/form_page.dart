@@ -35,8 +35,7 @@ class FormPage extends ViewModelBuilderWidget<FormPageViewModel> {
     viewModel.setUser(userModel ?? const UserModel());
 
     return Scaffold(
-      backgroundColor:
-          isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
+      backgroundColor: isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
       resizeToAvoidBottomInset: true,
       appBar: CustomAppBar(
         title: "User Information".tr(),
@@ -52,23 +51,21 @@ class FormPage extends ViewModelBuilderWidget<FormPageViewModel> {
                 children: [
                   ProfileImageWidget(
                     imageUrl: userModel?.image,
-                    onEdit: (){},
+                    onEdit: () {},
                   ),
                   AppInputTextField(
                     hint: 'Ism'.tr(),
                     borderRadius: 40,
                     textInputAction: TextInputAction.next,
                     controller: viewModel.firstNameController,
-                    hintStyle: AppTextStyle.font13W400Normal
-                        .copyWith(color: AppColors.gray),
+                    hintStyle: AppTextStyle.font13W400Normal.copyWith(color: AppColors.gray),
                   ).paddingOnly(top: 10),
                   AppInputTextField(
                     hint: 'Familiya'.tr(),
                     borderRadius: 40,
                     textInputAction: TextInputAction.next,
                     controller: viewModel.lastNameController,
-                    hintStyle: AppTextStyle.font17W400Normal
-                        .copyWith(color: AppColors.gray),
+                    hintStyle: AppTextStyle.font17W400Normal.copyWith(color: AppColors.gray),
                   ).paddingOnly(top: 10),
                   AppInputTextField(
                     textInputAction: TextInputAction.next,

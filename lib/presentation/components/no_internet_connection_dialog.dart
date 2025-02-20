@@ -18,13 +18,17 @@ class NoInternetConnectionDialog extends StatelessWidget {
         children: [
           Text(
             "no_internet".tr(),
-            style: AppTextStyle.font17W600Normal.copyWith(fontSize: 18, color: AppColors.green),
+            style: AppTextStyle.font17W600Normal.copyWith(fontSize: 18, color: AppColors.orange),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 32),
             child: SvgPicture.asset(Assets.icons.wifiOff),
           ),
-          Text("no_internet_content".tr()),
+          Text(
+            "no_internet_content".tr(),
+            textAlign: TextAlign.center,
+            style: AppTextStyle.font13W500Normal.copyWith(fontSize: 14, color: AppColors.black),
+          ),
           const SizedBox(
             height: 32,
           ),

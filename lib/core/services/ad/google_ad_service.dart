@@ -9,12 +9,12 @@ class GoogleAdService implements AdService {
   }
 
   @override
-  Future<void> showBannerAd() async{
+  Future<void> showBannerAd() async {
     // TODO: implement showBannerAd
   }
 
   @override
-  Future<void> showInterstitialAd() async{
+  Future<void> showInterstitialAd() async {
     // TODO: implement showInterstitialAd
   }
 

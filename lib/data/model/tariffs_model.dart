@@ -8,8 +8,7 @@ import 'package:flutter/material.dart';
 /// days : 1
 /// price : 1
 
-TariffsModel tariffsModelFromJson(String str) =>
-    TariffsModel.fromJson(json.decode(str));
+TariffsModel tariffsModelFromJson(String str) => TariffsModel.fromJson(json.decode(str));
 
 String tariffsModelToJson(TariffsModel data) => json.encode(data.toJson());
 
@@ -116,10 +115,6 @@ class Name {
   }
 
   String? getLocaleName(BuildContext context) {
-    return switch (context.locale.languageCode) {
-      'uz' => _uz,
-      'en' => _en,
-      _ => ''
-    };
+    return switch (context.locale.languageCode) { 'uz' => _uz, 'en' => _en, _ => '' };
   }
 }

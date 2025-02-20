@@ -38,9 +38,7 @@ class UserSelectorDataWidget extends StatelessWidget {
         margin: EdgeInsets.symmetric(vertical: 5.h),
         padding: const EdgeInsets.symmetric(horizontal: 10),
         decoration: BoxDecoration(
-          color: (isDarkTheme
-                  ? AppColors.darkBackground
-                  : AppColors.lightBackground)
+          color: (isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground)
               .withOpacity(0.95),
           borderRadius: BorderRadius.circular(20),
         ),

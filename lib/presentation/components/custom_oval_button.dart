@@ -51,13 +51,16 @@ class CustomOvalButton extends StatelessWidget {
                       ? Padding(
                           padding: EdgeInsets.only(right: 8.w),
                           child: SvgPicture.asset(imgAssets,
-                              height: 16.h, fit: BoxFit.scaleDown, color: isActive ? AppColors.white : AppColors.black),
+                              height: 16.h,
+                              fit: BoxFit.scaleDown,
+                              color: isActive ? AppColors.white : AppColors.black),
                         )
                       : const SizedBox.shrink(),
                   Flexible(
                     child: Text(
                       label,
-                      style: textStyle.copyWith(color: isActive ? AppColors.white : AppColors.black),
+                      style:
+                          textStyle.copyWith(color: isActive ? AppColors.white : AppColors.black),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),

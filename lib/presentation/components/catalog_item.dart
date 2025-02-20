@@ -50,7 +50,8 @@ class CatalogItem extends StatelessWidget {
                         child: Flexible(
                           child: Text(
                             translateText ?? "",
-                            style: AppTextStyle.font13W400ItalicHtml.copyWith(color: AppColors.lightGray),
+                            style: AppTextStyle.font13W400ItalicHtml
+                                .copyWith(color: AppColors.lightGray),
                           ),
                         ),
                       ),

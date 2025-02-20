@@ -1,5 +1,4 @@
-import 'package:wisdom/data/model/my_contacts/contact_follow_model.dart';
-import 'package:wisdom/data/model/my_contacts/contact_model.dart';
+import 'package:wisdom/data/model/my_contacts/user_details_model.dart';
 
 enum Contacts {
   getMyContacts,
@@ -8,14 +7,14 @@ enum Contacts {
 
 abstract class MyContactsRepository {
   Future<void> getMyContactsFollowed(Contacts contactType);
-  
+
   Future<void> postMyContactsSearch(String searchKeyWord);
 
-  Future<ContactFollowModel> postFollow(int userId);
+  Future<String> postFollow(int userId);
 
-  Future<ContactFollowModel> postUnFollow(int userId);
+  Future<String> postUnFollow(int userId);
 
-  List<ContactModel> get contactsList;
+  List<UserDetailsModel> get contactsList;
 
-  List<ContactModel> get searchResultList;
+  List<UserDetailsModel> get searchResultList;
 }

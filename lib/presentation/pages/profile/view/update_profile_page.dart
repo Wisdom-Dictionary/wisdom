@@ -11,22 +11,26 @@ import 'package:wisdom/config/constants/assets.dart';
 import 'package:wisdom/config/constants/constants.dart';
 import 'package:wisdom/core/di/app_locator.dart';
 import 'package:wisdom/core/services/purchase_observer.dart';
+import 'package:wisdom/data/enums/gender.dart';
 import 'package:wisdom/presentation/components/w_button.dart';
+import 'package:wisdom/presentation/pages/profile/viewmodel/update_profile_page_viewmodel.dart';
 import 'package:wisdom/presentation/widgets/custom_app_bar.dart';
 
 import '../viewmodel/profile_page_viewmodel.dart';
 
 // ignore: must_be_immutable
-class UpdateProfilePage extends ViewModelBuilderWidget<ProfilePageViewModel> {
+class UpdateProfilePage extends ViewModelBuilderWidget<UpdateProfilePageViewModel> {
   UpdateProfilePage({super.key});
 
   final purchaseObserver = PurchasesObserver();
   final _formKey = GlobalKey<FormState>();
 
+  final TextEditingController nameController = TextEditingController(text: "");
+  final TextEditingController emailController = TextEditingController(text: "");
+
   @override
-  void onViewModelReady(ProfilePageViewModel viewModel) {
+  void onViewModelReady(UpdateProfilePageViewModel viewModel) {
     super.onViewModelReady(viewModel);
-    viewModel.getTariffs();
     viewModel.getUser();
     // resetLocator();
   }
@@ -34,7 +38,7 @@ class UpdateProfilePage extends ViewModelBuilderWidget<ProfilePageViewModel> {
   @override
   Widget builder(
     BuildContext context,
-    ProfilePageViewModel viewModel,
+    UpdateProfilePageViewModel viewModel,
     Widget? child,
   ) {
     return PopScope(
@@ -44,9 +48,7 @@ class UpdateProfilePage extends ViewModelBuilderWidget<ProfilePageViewModel> {
         // viewModel.goBackToMenu();
       },
       child: Scaffold(
-          backgroundColor: isDarkTheme
-              ? AppColors.darkBackground
-              : AppColors.lightBackground,
+          backgroundColor: isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
           appBar: CustomAppBar(
               title: "Update Cabinet",
               onTap: () {
@@ -60,44 +62,44 @@ class UpdateProfilePage extends ViewModelBuilderWidget<ProfilePageViewModel> {
   }
 
   bool isEmail(String value) {
-    return RegExp(
-            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+    return RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
         .hasMatch(value);
   }
 
-  Widget _buildUserData(ProfilePageViewModel viewModel, BuildContext context) {
+  Widget _buildUserData(UpdateProfilePageViewModel viewModel, BuildContext context) {
+    nameController.text = viewModel.editedUser.name ?? "";
+    emailController.text = viewModel.editedUser.email ?? "";
     return Column(
       children: [
         Expanded(
           child: Form(
             key: _formKey,
             child: ListView(
+              physics: ClampingScrollPhysics(),
               padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
               children: [
                 Text(
                   "Edit",
-                  style: AppTextStyle.font17W600Normal
-                      .copyWith(color: AppColors.blue, fontSize: 18),
+                  style:
+                      AppTextStyle.font17W600Normal.copyWith(color: AppColors.blue, fontSize: 18),
                 ),
                 const SizedBox(
                   height: 16,
                 ),
                 TextInputBackground(
                   child: TextFormField(
-                    controller:
-                        TextEditingController(text: viewModel.editedUser.name),
+                    controller: nameController,
                     onChanged: (String value) {
                       viewModel.onFirstNameChanged(value);
                     },
                     keyboardType: TextInputType.name,
                     textCapitalization: TextCapitalization.words,
-                    style: AppTextStyle.font13W500Normal
-                        .copyWith(fontSize: 14, color: AppColors.blue),
+                    style:
+                        AppTextStyle.font13W500Normal.copyWith(fontSize: 14, color: AppColors.blue),
                     decoration: InputDecoration(
                         hintText: "Ism",
-                        hintStyle: AppTextStyle.font13W500Normal.copyWith(
-                            fontSize: 14,
-                            color: AppColors.blue.withValues(alpha: 0.5)),
+                        hintStyle: AppTextStyle.font13W500Normal
+                            .copyWith(fontSize: 14, color: AppColors.blue.withValues(alpha: 0.5)),
                         border: InputBorder.none,
                         contentPadding: const EdgeInsets.symmetric(horizontal: 18)),
                   ),
@@ -107,50 +109,26 @@ class UpdateProfilePage extends ViewModelBuilderWidget<ProfilePageViewModel> {
                 ),
                 TextInputBackground(
                   child: TextFormField(
-                    controller:
-                        TextEditingController(text: viewModel.editedUser.name),
-                    onChanged: (String value) {
-                      viewModel.onLastNameChanged(value);
-                    },
-                    keyboardType: TextInputType.name,
-                    textCapitalization: TextCapitalization.words,
-                    style: AppTextStyle.font13W500Normal
-                        .copyWith(fontSize: 14, color: AppColors.blue),
-                    decoration: InputDecoration(
-                        hintText: "Familiya",
-                        hintStyle: AppTextStyle.font13W500Normal.copyWith(
-                            fontSize: 14,
-                            color: AppColors.blue.withValues(alpha: 0.5)),
-                        border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 18)),
-                  ),
-                ),
-                const SizedBox(
-                  height: 8,
-                ),
-                TextInputBackground(
-                  child: TextFormField(
+                    controller: emailController,
                     onChanged: (String value) {
                       viewModel.onEmailChanged(value);
                     },
                     validator: (value) {
-                      if(value==null){
+                      if (value == null || value.isEmpty) {
                         return null;
                       }
-                      if(isEmail(value)){
+                      if (!isEmail(value)) {
                         return "Email manzilni to'g'ri kiriting";
                       }
                     },
-                    textCapitalization: TextCapitalization.words,
                     textInputAction: TextInputAction.done,
                     keyboardType: TextInputType.emailAddress,
-                    style: AppTextStyle.font13W500Normal
-                        .copyWith(fontSize: 14, color: AppColors.blue),
+                    style:
+                        AppTextStyle.font13W500Normal.copyWith(fontSize: 14, color: AppColors.blue),
                     decoration: InputDecoration(
                         hintText: "Email",
-                        hintStyle: AppTextStyle.font13W500Normal.copyWith(
-                            fontSize: 14,
-                            color: AppColors.blue.withValues(alpha: 0.5)),
+                        hintStyle: AppTextStyle.font13W500Normal
+                            .copyWith(fontSize: 14, color: AppColors.blue.withValues(alpha: 0.5)),
                         border: InputBorder.none,
                         contentPadding: const EdgeInsets.symmetric(horizontal: 18)),
                   ),
@@ -195,9 +173,18 @@ class UpdateProfilePage extends ViewModelBuilderWidget<ProfilePageViewModel> {
                   children: [
                     Expanded(
                       child: WButton(
+                        color: viewModel.editedUser.gender == null ||
+                                viewModel.editedUser.gender != Gender.M
+                            ? AppColors.bgLightBlue.withValues(alpha: 0.1)
+                            : AppColors.blue,
+                        titleColor: viewModel.editedUser.gender == Gender.M
+                            ? AppColors.white
+                            : AppColors.blue,
                         height: 41,
                         title: "Male",
-                        onTap: () {},
+                        onTap: () {
+                          viewModel.setGender(Gender.M);
+                        },
                       ),
                     ),
                     const SizedBox(
@@ -207,9 +194,16 @@ class UpdateProfilePage extends ViewModelBuilderWidget<ProfilePageViewModel> {
                       child: WButton(
                         height: 41,
                         title: "Female",
-                        titleColor: AppColors.blue,
-                        color: AppColors.bgLightBlue.withValues(alpha: 0.1),
-                        onTap: () {},
+                        titleColor: viewModel.editedUser.gender == Gender.F
+                            ? AppColors.white
+                            : AppColors.blue,
+                        color: viewModel.editedUser.gender == null ||
+                                viewModel.editedUser.gender != Gender.F
+                            ? AppColors.bgLightBlue.withValues(alpha: 0.1)
+                            : AppColors.blue,
+                        onTap: () {
+                          viewModel.setGender(Gender.F);
+                        },
                       ),
                     )
                   ],
@@ -219,13 +213,12 @@ class UpdateProfilePage extends ViewModelBuilderWidget<ProfilePageViewModel> {
           ),
         ),
         WButton(
+          isDisable: !viewModel.saveButtonsActive,
           margin: const EdgeInsets.all(16),
           title: "save".tr(),
           onTap: () async {
-            if(_formKey.currentState!.validate()) {
+            if (_formKey.currentState!.validate()) {
               await viewModel.onSaveChanges();
-            }else{
-              
             }
           },
         )
@@ -246,15 +239,12 @@ class UpdateProfilePage extends ViewModelBuilderWidget<ProfilePageViewModel> {
             colorScheme: ColorScheme.dark(
               primary: isDarkTheme ? AppColors.blue : AppColors.blue,
               onPrimary: isDarkTheme ? Colors.white : Colors.blue,
-              background:
-                  isDarkTheme ? AppColors.darkBackground : AppColors.white,
-              surface:
-                  isDarkTheme ? AppColors.darkBackground : AppColors.darkForm,
+              background: isDarkTheme ? AppColors.darkBackground : AppColors.white,
+              surface: isDarkTheme ? AppColors.darkBackground : AppColors.darkForm,
               onSurface: Colors.blue,
               onBackground: Colors.blue,
             ),
-            dialogBackgroundColor:
-                isDarkTheme ? AppColors.darkBackground : AppColors.darkForm,
+            dialogBackgroundColor: isDarkTheme ? AppColors.darkBackground : AppColors.darkForm,
           ),
           child: child!,
         );
@@ -264,8 +254,8 @@ class UpdateProfilePage extends ViewModelBuilderWidget<ProfilePageViewModel> {
   }
 
   @override
-  ProfilePageViewModel viewModelBuilder(BuildContext context) {
-    return ProfilePageViewModel(
+  UpdateProfilePageViewModel viewModelBuilder(BuildContext context) {
+    return UpdateProfilePageViewModel(
       context: context,
       profileRepository: locator.get(),
       localViewModel: locator.get(),
@@ -334,9 +324,7 @@ class _UserInputDataWidgetState extends State<UserInputDataWidget> {
         margin: EdgeInsets.symmetric(vertical: 5.h),
         padding: const EdgeInsets.symmetric(horizontal: 10),
         decoration: BoxDecoration(
-          color: (isDarkTheme
-                  ? AppColors.darkBackground
-                  : AppColors.lightBackground)
+          color: (isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground)
               .withOpacity(0.95),
           borderRadius: BorderRadius.circular(20),
         ),

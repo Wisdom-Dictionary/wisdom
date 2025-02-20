@@ -37,8 +37,6 @@ import 'dart:developer';
 
 import 'package:wisdom/domain/repositories/wordbank_api_repository.dart';
 
-
-
 final locator = JbazaLocator.instance;
 
 void setupLocator() {
@@ -70,8 +68,8 @@ void setupLocator() {
   locator.registerSingletonAsync<AdService>(() async => AdServiceFactory.create());
   locator.registerLazySingleton<RoadmapRepository>(
       () => RoadmapRepositoryImpl(locator.get(), locator.get()));
-  locator.registerLazySingleton<MyContactsRepository>(
-      () => MyContactsRepositoryImpl(locator.get()));
+  locator
+      .registerLazySingleton<MyContactsRepository>(() => MyContactsRepositoryImpl(locator.get()));
   locator.registerLazySingleton<UserLiveRepository>(() => UserLiveRepositoryImpl(locator.get()));
   locator.registerLazySingleton<LevelTestRepository>(
       () => LevelTestRepositoryImpl(locator.get(), locator.get()));

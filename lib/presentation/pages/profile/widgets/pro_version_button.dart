@@ -47,7 +47,7 @@ class ProVersionButton extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   SvgPicture.asset(
-                    Assets.icons.proIc ,
+                    Assets.icons.proIc,
                     height: 17,
                     width: 20,
                     fit: BoxFit.scaleDown,

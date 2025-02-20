@@ -1,23 +1,24 @@
 class ParentsModel {
   ParentsModel({
-      this.id, 
-      this.wordId, 
-      this.word, 
-      this.star, 
-      this.body, 
-      this.synonyms, 
-      this.anthonims, 
-      this.comment, 
-      this.example, 
-      this.linkWord, 
-      this.examples, 
-      this.moreExamples, 
-      this.wordClassBody, 
-      this.wordClassBodyMeaning, 
-      this.image, 
-      this.wordClassid, 
-      this.wordClasswordId, 
-      this.wordClasswordClass,});
+    this.id,
+    this.wordId,
+    this.word,
+    this.star,
+    this.body,
+    this.synonyms,
+    this.anthonims,
+    this.comment,
+    this.example,
+    this.linkWord,
+    this.examples,
+    this.moreExamples,
+    this.wordClassBody,
+    this.wordClassBodyMeaning,
+    this.image,
+    this.wordClassid,
+    this.wordClasswordId,
+    this.wordClasswordClass,
+  });
 
   ParentsModel.fromJson(dynamic json) {
     id = json['id'];
@@ -80,5 +81,4 @@ class ParentsModel {
     map['word_classword_class'] = wordClasswordClass;
     return map;
   }
-
 }

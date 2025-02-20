@@ -50,7 +50,8 @@ class CustomOvalButtonExercise extends StatelessWidget {
                   ),
                 ),
                 prefixIcon
-                    ? SvgPicture.asset(imgAssets, fit: BoxFit.scaleDown, color: isActive ? Colors.green : Colors.red)
+                    ? SvgPicture.asset(imgAssets,
+                        fit: BoxFit.scaleDown, color: isActive ? Colors.green : Colors.red)
                     : const SizedBox.shrink(),
               ],
             ),

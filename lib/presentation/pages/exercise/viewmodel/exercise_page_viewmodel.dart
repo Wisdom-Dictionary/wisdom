@@ -171,7 +171,11 @@ class ExercisePageViewModel extends BaseViewModel {
     if (flipIndex < minLength) {
       var item = englishList[0];
       localViewModel.finalList.add(ExerciseFinalModel(
-          id: item.id, word: item.word, translation: item.translation, result: true, tableId: item.tableId));
+          id: item.id,
+          word: item.word,
+          translation: item.translation,
+          result: true,
+          tableId: item.tableId));
       englishList.removeAt(0);
     }
     if (englishList.isEmpty) {
@@ -188,7 +192,11 @@ class ExercisePageViewModel extends BaseViewModel {
     if (flipIndex < minLength) {
       var item = englishList[0];
       localViewModel.finalList.add(ExerciseFinalModel(
-          id: item.id, word: item.word, translation: item.translation, result: false, tableId: item.tableId));
+          id: item.id,
+          word: item.word,
+          translation: item.translation,
+          result: false,
+          tableId: item.tableId));
       englishList.removeAt(0);
       // tryNumber--;
       // if (tryNumber == 0) {
@@ -211,7 +219,11 @@ class ExercisePageViewModel extends BaseViewModel {
       textToSpeech("Correct");
       var item = englishList[listEngIndex];
       localViewModel.finalList.add(ExerciseFinalModel(
-          id: item.id, word: item.word, translation: item.translation, result: true, tableId: item.tableId));
+          id: item.id,
+          word: item.word,
+          translation: item.translation,
+          result: true,
+          tableId: item.tableId));
       showTopSnackBar(
         Overlay.of(context!),
         CustomSnackBar.success(
@@ -236,13 +248,18 @@ class ExercisePageViewModel extends BaseViewModel {
       }
       var item = englishList[listEngIndex];
       localViewModel.finalList.add(ExerciseFinalModel(
-          id: item.id, word: item.word, translation: item.translation, result: false, tableId: item.tableId));
+          id: item.id,
+          word: item.word,
+          translation: item.translation,
+          result: false,
+          tableId: item.tableId));
       textToSpeech("Incorrect \n $tryNumber ${tryNumber != 1 ? "tries" : "try"} left");
 
       showTopSnackBar(
         Overlay.of(context!),
         CustomSnackBar.error(
-          message: "${"inCorrect".tr()}\n${"$tryNumber ${tryNumber != 1 ? "tries" : "try"}".tr()} ${"left".tr()}",
+          message:
+              "${"inCorrect".tr()}\n${"$tryNumber ${tryNumber != 1 ? "tries" : "try"}".tr()} ${"left".tr()}",
         ),
       );
       Future.delayed(
@@ -324,8 +341,8 @@ class ExercisePageViewModel extends BaseViewModel {
           child: Text(
             'finish_text'.tr(),
             textAlign: TextAlign.center,
-            style:
-                AppTextStyle.font15W600Normal.copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
+            style: AppTextStyle.font15W600Normal
+                .copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
           ),
         ),
         positive: "dialogYes".tr(),
@@ -340,7 +357,11 @@ class ExercisePageViewModel extends BaseViewModel {
   void finishTheExercise() {
     for (var item in englishList) {
       localViewModel.finalList.add(ExerciseFinalModel(
-          id: item.id ?? 0, word: item.word, translation: item.translation, result: false, tableId: item.tableId));
+          id: item.id ?? 0,
+          word: item.word,
+          translation: item.translation,
+          result: false,
+          tableId: item.tableId));
     }
     localViewModel.changePageIndex(20);
   }
@@ -357,8 +378,8 @@ class ExercisePageViewModel extends BaseViewModel {
           child: Text(
             'finish_text'.tr(),
             textAlign: TextAlign.center,
-            style:
-                AppTextStyle.font15W600Normal.copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
+            style: AppTextStyle.font15W600Normal
+                .copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
           ),
         ),
         positive: "dialogYes".tr(),
@@ -394,7 +415,11 @@ class ExercisePageViewModel extends BaseViewModel {
       textToSpeech("Correct");
       var item = englishList.first;
       localViewModel.finalList.add(ExerciseFinalModel(
-          id: item.id, word: item.word, translation: item.translation, result: true, tableId: item.tableId));
+          id: item.id,
+          word: item.word,
+          translation: item.translation,
+          result: true,
+          tableId: item.tableId));
       showTopSnackBar(
         Overlay.of(context!),
         CustomSnackBar.success(
@@ -428,11 +453,16 @@ class ExercisePageViewModel extends BaseViewModel {
       textToSpeech("Incorrect");
       var item = englishList.first;
       localViewModel.finalList.add(ExerciseFinalModel(
-          id: item.id, word: item.word, translation: item.translation, result: false, tableId: item.tableId));
+          id: item.id,
+          word: item.word,
+          translation: item.translation,
+          result: false,
+          tableId: item.tableId));
       showTopSnackBar(
         Overlay.of(context!),
         CustomSnackBar.error(
-          message: "${"inCorrect".tr()}\n${"$tryNumber ${(tryNumber != 1 ? "tries" : "try").tr()}"} ${"left".tr()}",
+          message:
+              "${"inCorrect".tr()}\n${"$tryNumber ${(tryNumber != 1 ? "tries" : "try").tr()}"} ${"left".tr()}",
         ),
       );
     }

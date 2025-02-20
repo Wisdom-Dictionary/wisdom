@@ -1,25 +1,30 @@
 import 'dart:convert';
+
 /// id : 1
 /// word_class : ""
 /// star : ""
 /// word : ""
 /// related_word : ""
 
-WordAndParentsAndWordsUzModel wordAndParentsAndWordsUzModelFromJson(String str) => WordAndParentsAndWordsUzModel.fromJson(json.decode(str));
-String wordAndParentsAndWordsUzModelToJson(WordAndParentsAndWordsUzModel data) => json.encode(data.toJson());
+WordAndParentsAndWordsUzModel wordAndParentsAndWordsUzModelFromJson(String str) =>
+    WordAndParentsAndWordsUzModel.fromJson(json.decode(str));
+String wordAndParentsAndWordsUzModelToJson(WordAndParentsAndWordsUzModel data) =>
+    json.encode(data.toJson());
+
 class WordAndParentsAndWordsUzModel {
   WordAndParentsAndWordsUzModel({
-      int? id, 
-      String? wordClass, 
-      String? star, 
-      String? word, 
-      String? relatedWord,}){
+    int? id,
+    String? wordClass,
+    String? star,
+    String? word,
+    String? relatedWord,
+  }) {
     _id = id;
     _wordClass = wordClass;
     _star = star;
     _word = word;
     _relatedWord = relatedWord;
-}
+  }
 
   WordAndParentsAndWordsUzModel.fromJson(dynamic json) {
     _id = json['id'];
@@ -33,17 +38,20 @@ class WordAndParentsAndWordsUzModel {
   String? _star;
   String? _word;
   String? _relatedWord;
-WordAndParentsAndWordsUzModel copyWith({  int? id,
-  String? wordClass,
-  String? star,
-  String? word,
-  String? relatedWord,
-}) => WordAndParentsAndWordsUzModel(  id: id ?? _id,
-  wordClass: wordClass ?? _wordClass,
-  star: star ?? _star,
-  word: word ?? _word,
-  relatedWord: relatedWord ?? _relatedWord,
-);
+  WordAndParentsAndWordsUzModel copyWith({
+    int? id,
+    String? wordClass,
+    String? star,
+    String? word,
+    String? relatedWord,
+  }) =>
+      WordAndParentsAndWordsUzModel(
+        id: id ?? _id,
+        wordClass: wordClass ?? _wordClass,
+        star: star ?? _star,
+        word: word ?? _word,
+        relatedWord: relatedWord ?? _relatedWord,
+      );
   int? get id => _id;
   String? get wordClass => _wordClass;
   String? get star => _star;
@@ -59,5 +67,4 @@ WordAndParentsAndWordsUzModel copyWith({  int? id,
     map['related_word'] = _relatedWord;
     return map;
   }
-
 }

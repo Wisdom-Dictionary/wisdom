@@ -23,7 +23,11 @@ class MyContactsEmptyPage extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.max,
       children: [
-        icon ?? SvgPicture.asset(Assets.icons.wifiOff, height: 93,),
+        icon ??
+            SvgPicture.asset(
+              Assets.icons.wifiOff,
+              height: 93,
+            ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 47, horizontal: 39),
           child: Column(

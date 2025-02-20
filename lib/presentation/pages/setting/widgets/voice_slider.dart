@@ -31,9 +31,7 @@ class _VoiceSliderState extends State<VoiceSlider> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: isDarkTheme
-          ? AppDecoration.bannerDarkDecor
-          : AppDecoration.bannerDecor,
+      decoration: isDarkTheme ? AppDecoration.bannerDarkDecor : AppDecoration.bannerDecor,
       padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 20.h),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -47,9 +45,7 @@ class _VoiceSliderState extends State<VoiceSlider> {
             ),
           ),
           SliderTheme(
-            data: SliderThemeData(
-              trackShape: CustomTrackShape()
-            ),
+            data: SliderThemeData(trackShape: CustomTrackShape()),
             child: Slider(
               min: 0,
               max: 100,
@@ -82,6 +78,7 @@ class _VoiceSliderState extends State<VoiceSlider> {
     });
   }
 }
+
 class CustomTrackShape extends RoundedRectSliderTrackShape {
   @override
   Rect getPreferredRect({

@@ -20,10 +20,7 @@ class MyContactSearchViewModel extends BaseViewModel {
           await myContactsRepository.postMyContactsSearch(searchKeyWord);
           setSuccess(tag: getMyContactSearchTag);
         }
-      },
-          callFuncName: 'getMyContactSearch',
-          tag: getMyContactSearchTag,
-          inProgress: false);
+      }, callFuncName: 'getMyContactSearch', tag: getMyContactSearchTag, inProgress: false);
     }
   }
 }

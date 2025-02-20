@@ -236,5 +236,8 @@
   "translate": "Gap va tekslarni tarjima qilish",
   "go": "OLG'A!",
   "continue_w": "Davom etish",
-  "sum": "{} so'm"
+  "sum": "{} so'm",
+  "follow": "Follow",
+  "unfollow": "Unfollow",
+  "cabinet": "Cabinet"
 }

@@ -47,9 +47,7 @@ class SearchWordItem extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           text: TextSpan(
                             style: AppTextStyle.font15W500Normal.copyWith(
-                              color: isDarkTheme
-                                  ? AppColors.white
-                                  : AppColors.darkGray,
+                              color: isDarkTheme ? AppColors.white : AppColors.darkGray,
                               fontSize: 15.sp,
                             ),
                             text: firstText,
@@ -57,9 +55,7 @@ class SearchWordItem extends StatelessWidget {
                               TextSpan(
                                 text: '   $secondText',
                                 style: AppTextStyle.font15W500Normal.copyWith(
-                                  color: isDarkTheme
-                                      ? AppColors.lightGray
-                                      : AppColors.blue,
+                                  color: isDarkTheme ? AppColors.lightGray : AppColors.blue,
                                   fontSize: 15.sp,
                                 ),
                               ),
@@ -115,9 +111,6 @@ class SearchWordItem extends StatelessWidget {
   }
 
   String replaceSame(String s1, String target) {
-    return s1
-        .replaceAll("$target,", "")
-        .replaceAll(",$target", "")
-        .replaceAll(target, "");
+    return s1.replaceAll("$target,", "").replaceAll(",$target", "").replaceAll(target, "");
   }
 }

@@ -12,6 +12,7 @@ def flutter_root
   unless File.exist?(generated_xcode_build_settings_path)
     raise "#{generated_xcode_build_settings_path} must exist. If you're running pod install manually, make sure flutter pub get is executed first"
   end
+
   File.foreach(generated_xcode_build_settings_path) do |line|
     matches = line.match(/FLUTTER_ROOT\=(.*)/)
     return matches[1].strip if matches
@@ -28,7 +29,8 @@ target 'Runner' do
   use_modular_headers!
   
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
-  pod 'YandexMobileAdsMediation', '~> 7.7.0'
+  # pod 'YandexMobileAdsMediation', '~> 7.7.0'
+  pod 'Sentry', '8.41.0'
 end
 
 post_install do |installer|

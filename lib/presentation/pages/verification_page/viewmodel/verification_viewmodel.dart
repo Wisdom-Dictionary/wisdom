@@ -59,9 +59,8 @@ class VerificationPageViewModel extends BaseViewModel {
       final subscribeModel = await homeRepository.checkSubscription();
 
       if (subscribeModel?.status == true) {
-        if(subscribeModel?.expiryStatus == true){
+        if (subscribeModel?.expiryStatus == true) {
           // var tariffId = preference.getInt(Constants.KEY_TARIFID, 0);
-
         }
       }
     } catch (e) {

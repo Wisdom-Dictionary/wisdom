@@ -36,10 +36,8 @@ class _MyContactsAppBarState extends State<MyContactsAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: (isDarkTheme ? AppColors.darkForm : AppColors.blue)
-          .withValues(alpha: 0.95),
-      shadowColor:
-          isDarkTheme ? null : const Color(0xFF6D8DAD).withValues(alpha: 0.15),
+      backgroundColor: (isDarkTheme ? AppColors.darkForm : AppColors.blue).withValues(alpha: 0.95),
+      shadowColor: isDarkTheme ? null : const Color(0xFF6D8DAD).withValues(alpha: 0.15),
       elevation: 4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(

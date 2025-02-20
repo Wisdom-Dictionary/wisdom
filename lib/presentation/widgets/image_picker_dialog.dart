@@ -21,7 +21,6 @@ class ImagePickerDialog extends StatelessWidget {
           title: const Text('Gallery'),
           onTap: () async {
             await pickImage(ImageSource.gallery).then((value) => Navigator.pop(context));
-
           },
         ),
         ListTile(

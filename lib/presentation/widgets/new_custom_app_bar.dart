@@ -59,10 +59,8 @@ class _NewCustomAppBarState extends State<NewCustomAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: (isDarkTheme ? AppColors.darkForm : AppColors.blue)
-          .withValues(alpha: 0.95),
-      shadowColor:
-          isDarkTheme ? null : const Color(0xFF6D8DAD).withValues(alpha: 0.15),
+      backgroundColor: (isDarkTheme ? AppColors.darkForm : AppColors.blue).withValues(alpha: 0.95),
+      shadowColor: isDarkTheme ? null : const Color(0xFF6D8DAD).withValues(alpha: 0.15),
       elevation: 4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
@@ -109,15 +107,12 @@ class _NewCustomAppBarState extends State<NewCustomAppBar> {
                 height: 47.h,
                 margin: EdgeInsets.all(14.r),
                 decoration: BoxDecoration(
-                    color: (isDarkTheme
-                            ? AppColors.darkBackground
-                            : AppColors.white)
+                    color: (isDarkTheme ? AppColors.darkBackground : AppColors.white)
                         .withValues(alpha: 0.95),
                     borderRadius: BorderRadius.circular(23.5.r)),
                 child: TextField(
                   autofocus: widget.focus,
-                  style: AppTextStyle.font15W400Normal
-                      .copyWith(color: AppColors.blue),
+                  style: AppTextStyle.font15W400Normal.copyWith(color: AppColors.blue),
                   cursorHeight: 19.h,
                   controller: controller,
                   onChanged: (value) {

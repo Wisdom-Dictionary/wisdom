@@ -248,7 +248,7 @@ class _WordExerciseContentState extends State<WordExerciseContent>
             if (validateAnswers != null) {
               _tabController.animateTo(validateAnswers);
             } else {
-              widget.viewModel.postTestQuestionsCheck();
+              widget.viewModel.postTestQuestionsResult();
             }
           },
         )

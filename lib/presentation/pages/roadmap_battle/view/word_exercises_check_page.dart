@@ -11,6 +11,7 @@ import 'package:wisdom/config/constants/constants.dart';
 import 'package:wisdom/data/model/roadmap/test_answer_model.dart';
 import 'package:wisdom/presentation/components/w_button.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/word_exercises_viewmodel.dart';
+import 'package:wisdom/presentation/routes/routes.dart';
 import 'package:wisdom/presentation/widgets/custom_app_bar.dart';
 
 class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewModel> {
@@ -79,7 +80,9 @@ class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewMod
                       ),
                     ),
                     GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.pushNamed(context, Routes.wordExercisesResultPage);
+                        },
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 24),
                           child: Text(

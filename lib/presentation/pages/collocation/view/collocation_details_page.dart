@@ -14,8 +14,8 @@ import '../../../../config/constants/app_decoration.dart';
 import '../../../../config/constants/assets.dart';
 import '../../../../config/constants/constants.dart';
 import '../../../widgets/banner_ad_widget.dart';
-class CollocationDetailPage extends ViewModelBuilderWidget<CollocationDetailPageViewModel> {
 
+class CollocationDetailPage extends ViewModelBuilderWidget<CollocationDetailPageViewModel> {
   SelectableController textSelectionControls = SelectableController();
 
   @override

@@ -55,9 +55,7 @@ class LoginPage extends ViewModelBuilderWidget<LoginViewModel> {
           Column(
             children: [
               SvgPicture.asset(
-                isDarkTheme
-                    ? Assets.icons.logoWhiteText
-                    : Assets.icons.logoBlueText,
+                isDarkTheme ? Assets.icons.logoWhiteText : Assets.icons.logoBlueText,
                 height: 52.h,
                 fit: BoxFit.scaleDown,
               ),
@@ -66,25 +64,25 @@ class LoginPage extends ViewModelBuilderWidget<LoginViewModel> {
           ),
           Column(
             children: [
-              if(!Platform.isWindows)
-              SocialButtonWidget(
-                onTap: () async {
-                  await viewModel.loginWithGoogle();
-                },
-                title: "Google",
-                color: AppColors.lightBackground,
-                textStyle: AppTextStyle.font12W600Normal.copyWith(
-                  color: AppColors.darkForm,
-                  fontSize: 12.sp,
+              if (!Platform.isWindows)
+                SocialButtonWidget(
+                  onTap: () async {
+                    await viewModel.loginWithGoogle();
+                  },
+                  title: "Google",
+                  color: AppColors.lightBackground,
+                  textStyle: AppTextStyle.font12W600Normal.copyWith(
+                    color: AppColors.darkForm,
+                    fontSize: 12.sp,
+                  ),
+                  leftIcon: SvgPicture.asset(
+                    Assets.icons.googleIc,
+                    height: 32,
+                    width: 32,
+                    fit: BoxFit.scaleDown,
+                  ),
+                  margin: EdgeInsets.symmetric(vertical: 3.w),
                 ),
-                leftIcon: SvgPicture.asset(
-                  Assets.icons.googleIc,
-                  height: 32,
-                  width: 32,
-                  fit: BoxFit.scaleDown,
-                ),
-                margin: EdgeInsets.symmetric(vertical: 3.w),
-              ),
               if (Platform.isIOS)
                 SocialButtonWidget(
                   onTap: () async {
@@ -232,9 +230,7 @@ class CardContentWidget extends StatelessWidget {
     return Container(
       margin: margin,
       padding: padding,
-      decoration: isDarkTheme
-          ? AppDecoration.bannerDarkDecor
-          : AppDecoration.bannerDecor,
+      decoration: isDarkTheme ? AppDecoration.bannerDarkDecor : AppDecoration.bannerDecor,
       child: Column(
         children: children,
       ),
@@ -312,8 +308,7 @@ class _AppInputTextFieldState extends State<AppInputTextField> {
 
   @override
   void initState() {
-    controller =
-        widget.controller ?? TextEditingController(text: widget.initialText);
+    controller = widget.controller ?? TextEditingController(text: widget.initialText);
     focusNode = widget.focusNode ?? FocusNode();
     super.initState();
   }
@@ -331,9 +326,7 @@ class _AppInputTextFieldState extends State<AppInputTextField> {
         padding: widget.padding,
         alignment: Alignment.centerLeft,
         decoration: BoxDecoration(
-          color: isDarkTheme
-              ? AppColors.darkBackground
-              : AppColors.lightBackground,
+          color: isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
           borderRadius: BorderRadius.circular(widget.borderRadius),
         ),
         child: Row(
@@ -346,9 +339,7 @@ class _AppInputTextFieldState extends State<AppInputTextField> {
                 autofocus: widget.autoFocus,
                 keyboardType: widget.textInputType,
                 selectionHeightStyle: BoxHeightStyle.max,
-                inputFormatters: widget.inputFormatter != null
-                    ? [widget.inputFormatter!]
-                    : [],
+                inputFormatters: widget.inputFormatter != null ? [widget.inputFormatter!] : [],
                 // cursorWidth: 0.5,
                 cursorHeight: 25,
                 enabled: widget.enabled,

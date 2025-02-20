@@ -69,13 +69,27 @@ class CatalogsPage extends ViewModelBuilderWidget<CatalogsPageViewModel> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  CatalogButton(text: 'grammar'.tr(), onTap: () => locator<LocalViewModel>().changePageIndex(11)),
-                  CatalogButton(text: 'thesaurus'.tr(), onTap: () => locator<LocalViewModel>().changePageIndex(12)),
-                  CatalogButton(text: 'difference'.tr(), onTap: () => locator<LocalViewModel>().changePageIndex(13)),
-                  CatalogButton(text: 'collocations'.tr(), onTap: () => locator<LocalViewModel>().changePageIndex(22)),
-                  CatalogButton(text: 'metaphor'.tr(), onTap: () => locator<LocalViewModel>().changePageIndex(14)),
-                  CatalogButton(text: 'culture'.tr(), onTap: () => locator<LocalViewModel>().changePageIndex(15)),
-                  CatalogButton(text: 'speaking'.tr(), onTap: () => locator<LocalViewModel>().changePageIndex(17)),
+                  CatalogButton(
+                      text: 'grammar'.tr(),
+                      onTap: () => locator<LocalViewModel>().changePageIndex(11)),
+                  CatalogButton(
+                      text: 'thesaurus'.tr(),
+                      onTap: () => locator<LocalViewModel>().changePageIndex(12)),
+                  CatalogButton(
+                      text: 'difference'.tr(),
+                      onTap: () => locator<LocalViewModel>().changePageIndex(13)),
+                  CatalogButton(
+                      text: 'collocations'.tr(),
+                      onTap: () => locator<LocalViewModel>().changePageIndex(22)),
+                  CatalogButton(
+                      text: 'metaphor'.tr(),
+                      onTap: () => locator<LocalViewModel>().changePageIndex(14)),
+                  CatalogButton(
+                      text: 'culture'.tr(),
+                      onTap: () => locator<LocalViewModel>().changePageIndex(15)),
+                  CatalogButton(
+                      text: 'speaking'.tr(),
+                      onTap: () => locator<LocalViewModel>().changePageIndex(17)),
                 ],
               ),
             ),

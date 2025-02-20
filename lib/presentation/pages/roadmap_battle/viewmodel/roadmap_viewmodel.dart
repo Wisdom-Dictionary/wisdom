@@ -34,6 +34,7 @@ class RoadMapViewModel extends BaseViewModel {
     safeBlock(() async {
       try {
         if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
+          setBusy(true, tag: getLevelsTag);
           await roadMapRepository.getLevels(++page);
           setSuccess(tag: getLevelsTag);
         } else {
@@ -62,7 +63,10 @@ class RoadMapViewModel extends BaseViewModel {
   }
 
   void selectLevel(LevelModel item) {
-    if (item.type == "battle") {
+    if (!(item.userCurrentLevel ?? false) && (item.star ?? 0) == 0) {
+      return;
+    }
+    if (item.type == LevelType.battle) {
       Navigator.pushNamed(context!, Routes.battleResultPage);
       return;
     }

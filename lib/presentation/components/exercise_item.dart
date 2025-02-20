@@ -31,7 +31,9 @@ class ExerciseItem extends StatelessWidget {
               : isDarkTheme
                   ? AppColors.darkForm
                   : AppColors.white,
-          border: isSelected ? const Border.fromBorderSide(BorderSide(color: AppColors.accentLight, width: 2)) : null,
+          border: isSelected
+              ? const Border.fromBorderSide(BorderSide(color: AppColors.accentLight, width: 2))
+              : null,
           borderRadius: isSelected ? BorderRadius.circular(5.r) : null),
       child: Material(
         color: Colors.transparent,
@@ -48,8 +50,8 @@ class ExerciseItem extends StatelessWidget {
                 Flexible(
                   child: Text(
                     model.word,
-                    style:
-                        AppTextStyle.font15W600Normal.copyWith(color: isDarkTheme ? AppColors.white : AppColors.darkGray),
+                    style: AppTextStyle.font15W600Normal
+                        .copyWith(color: isDarkTheme ? AppColors.white : AppColors.darkGray),
                   ),
                 )
               ],

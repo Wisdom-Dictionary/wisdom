@@ -15,51 +15,53 @@ class RoadmapShimmerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       reverse: true,
-      child: SizedBox(
-        height: 900,
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: Image.asset(
-                Assets.images.roadmapBattleBackground,
-                repeat: ImageRepeat.repeat,
-                fit: BoxFit.fitWidth,
+      child: SafeArea(
+        child: SizedBox(
+          height: 900,
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: Image.asset(
+                  Assets.images.roadmapBattleBackground,
+                  repeat: ImageRepeat.repeat,
+                  fit: BoxFit.fitWidth,
+                ),
               ),
-            ),
-            Shimmer.fromColors(
-              baseColor: Colors.grey.shade400,
-              highlightColor: Colors.grey.shade300,
-              enabled: true,
-              direction: ShimmerDirection.btt,
-              period: const Duration(seconds: 5),
-              child: CustomPaint(
+              Shimmer.fromColors(
+                baseColor: Colors.grey.shade400,
+                highlightColor: Colors.grey.shade300,
+                enabled: true,
+                direction: ShimmerDirection.btt,
+                period: const Duration(seconds: 5),
+                child: CustomPaint(
+                  painter: DashedPathPainter(
+                    originalPath: (size) {
+                      return _customPath(size, pathCornerRad, iconSize, 6);
+                    },
+                    pathColors: [],
+                    pathColor: AppColors.white,
+                    strokeWidth: 40,
+                    dashGapLength: 0.01,
+                    dashLength: 7.0,
+                  ),
+                  child: Center(),
+                ),
+              ),
+              CustomPaint(
                 painter: DashedPathPainter(
                   originalPath: (size) {
                     return _customPath(size, pathCornerRad, iconSize, 6);
                   },
                   pathColors: [],
-                  pathColor: AppColors.white,
-                  strokeWidth: 40,
-                  dashGapLength: 0.01,
-                  dashLength: 7.0,
+                  pathColor: AppColors.blue,
+                  strokeWidth: 1,
+                  dashGapLength: 10.0,
+                  dashLength: 8.0,
                 ),
                 child: Center(),
               ),
-            ),
-            CustomPaint(
-              painter: DashedPathPainter(
-                originalPath: (size) {
-                  return _customPath(size, pathCornerRad, iconSize, 6);
-                },
-                pathColors: [],
-                pathColor: AppColors.blue,
-                strokeWidth: 1,
-                dashGapLength: 10.0,
-                dashLength: 8.0,
-              ),
-              child: Center(),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

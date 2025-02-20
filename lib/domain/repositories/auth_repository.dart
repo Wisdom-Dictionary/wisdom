@@ -8,9 +8,9 @@ abstract class AuthRepository {
 
   Future<bool> applyFirebase(String token);
 
-  Future<LoginResponse?> loginWithApple(String oAuthToken,String deviceId);
+  Future<LoginResponse?> loginWithApple(String oAuthToken, String deviceId);
 
-  Future<LoginResponse?> loginWithGoogle(String oAuthToken,String deviceId);
+  Future<LoginResponse?> loginWithGoogle(String oAuthToken, String deviceId);
 
-  Future<LoginResponse?> loginWithFacebook(String oAuthToken,String deviceId);
+  Future<LoginResponse?> loginWithFacebook(String oAuthToken, String deviceId);
 }

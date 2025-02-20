@@ -36,7 +36,7 @@ class ExerciseFinalPageViewModel extends BaseViewModel {
       element.result ? correctList.add(element) : incorrect.add(element);
     }
     for (var element in incorrect) {
-    await  wordEntityRepository.moveToFolder(wrongFolderId, element.tableId!, element.id);
+      await wordEntityRepository.moveToFolder(wrongFolderId, element.tableId!, element.id);
     }
     notifyListeners();
   }
@@ -79,8 +79,8 @@ class ExerciseFinalPageViewModel extends BaseViewModel {
                             title: Text(item.folderName.tr(),
                                 style:
                                     AppTextStyle.font15W600Normal.copyWith(color: AppColors.blue)),
-                            onTap: () async{
-                             await wordEntityRepository
+                            onTap: () async {
+                              await wordEntityRepository
                                   .moveToFolder(item.id, model.tableId!, model.id)
                                   .then((value) {
                                 if (value) {
@@ -113,7 +113,7 @@ class ExerciseFinalPageViewModel extends BaseViewModel {
                 wordEntityRepository.wordBankFoldersList.length <= 3) {
               showFolderCountOutOfBound();
             } else {
-             await addNewFolder();
+              await addNewFolder();
             }
           },
         );

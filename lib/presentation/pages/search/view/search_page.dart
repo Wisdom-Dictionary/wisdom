@@ -23,9 +23,9 @@ class SearchPage extends ViewModelBuilderWidget<SearchPageViewModel> {
 
   @override
   void onViewModelReady(SearchPageViewModel viewModel) {
-
     if (viewModel.localViewModel.searchingText.isEmpty ||
-        (viewModel.localViewModel.lastSearchedText.isEmpty && viewModel.localViewModel.goingBackFromDetail)) {
+        (viewModel.localViewModel.lastSearchedText.isEmpty &&
+            viewModel.localViewModel.goingBackFromDetail)) {
       viewModel.init();
     }
     super.onViewModelReady(viewModel);
@@ -71,8 +71,9 @@ class SearchPage extends ViewModelBuilderWidget<SearchPageViewModel> {
             ),
             // Recent searched lists for english words
             Visibility(
-              visible:
-                  viewModel.recentList.isNotEmpty && viewModel.searchText.isEmpty && viewModel.searchLangMode == 'en',
+              visible: viewModel.recentList.isNotEmpty &&
+                  viewModel.searchText.isEmpty &&
+                  viewModel.searchLangMode == 'en',
               child: Expanded(
                 child: ListView.builder(
                   shrinkWrap: true,
@@ -146,8 +147,9 @@ class SearchPage extends ViewModelBuilderWidget<SearchPageViewModel> {
                       firstText: itemRecent.wordClass ?? "unknown",
                       star: itemRecent.star!,
                       secondText: itemRecent.word ?? "",
-                      thirdText:
-                          itemRecent.same != null && itemRecent.same!.isNotEmpty ? itemRecent.same.toString() : "",
+                      thirdText: itemRecent.same != null && itemRecent.same!.isNotEmpty
+                          ? itemRecent.same.toString()
+                          : "",
                       onTap: () => viewModel.goToDetail(itemRecent),
                     );
                   },

@@ -199,10 +199,12 @@ class GoogleTranslatorPage extends ViewModelBuilderWidget<GoogleTranslatorPageVi
                                 Container(
                                   key: globalKey,
                                   child: TranslateCircleButton(
-                                    onTap: () async{
+                                    onTap: () async {
                                       if (topController.text.isNotEmpty &&
                                           bottomController.text.isNotEmpty) {
-                                        if(await locator.get<LocalViewModel>().canAddWordBank(context)){
+                                        if (await locator
+                                            .get<LocalViewModel>()
+                                            .canAddWordBank(context)) {
                                           viewModel.funAddToWordBank(
                                             viewModel.topUzbek
                                                 ? bottomController.text

@@ -28,16 +28,10 @@ class SpeakingDetailPageViewModel extends BaseViewModel {
       if (homeRepository.timelineModel.speaking != null) {
         if (searchText != null && searchText.trim().isNotEmpty) {
           await categoryRepository.getSpeakingWordsList(
-              homeRepository.timelineModel.speaking!.id.toString(),
-              null,
-              searchText.trim(),
-              true);
+              homeRepository.timelineModel.speaking!.id.toString(), null, searchText.trim(), true);
         } else {
           await categoryRepository.getSpeakingWordsList(
-              homeRepository.timelineModel.speaking!.id.toString(),
-              null,
-              null,
-              true);
+              homeRepository.timelineModel.speaking!.id.toString(), null, null, true);
         }
         if (categoryRepository.speakingWordsList.isNotEmpty) {
           setSuccess(tag: getSpeakingListTag);

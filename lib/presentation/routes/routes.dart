@@ -23,6 +23,7 @@ import 'package:wisdom/presentation/pages/profile/view/user_cabinet_page.dart';
 import 'package:wisdom/presentation/pages/profile/view/verify_page.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/battle_result_page.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/searching_opponent_page.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/view/exercises_result/word_exercises_result_page.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/word_details_page.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/word_exercises_check_page.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/word_exercises_page.dart';
@@ -47,6 +48,7 @@ class Routes {
   static const wordDetailsPage = '/wordDetailsPage';
   static const wordExercisesPage = '/wordExercisesPage';
   static const wordExercisesCheckPage = '/wordExercisesCheckPage';
+  static const wordExercisesResultPage = '/wordExercisesResultPage';
   static const searchingOpponentPage = '/searchingOpponentPage';
   static const battleResultPage = '/battleResultPage';
   static const userCabinetPage = '/userCabinetPage';
@@ -64,8 +66,7 @@ class Routes {
 
   static Route<dynamic> generateRoutes(RouteSettings routeSettings) {
     try {
-      final Map<String, dynamic>? args =
-          routeSettings.arguments as Map<String, dynamic>?;
+      final Map<String, dynamic>? args = routeSettings.arguments as Map<String, dynamic>?;
       args ?? <String, dynamic>{};
       switch (routeSettings.name) {
         case mainPage:
@@ -115,9 +116,8 @@ class Routes {
           );
         case paymentPage:
           return MaterialPageRoute(
-            builder: (_) => PaymentPage(
-                verifyModel: args!['verifyModel'],
-                phoneNumber: args['phoneNumber']),
+            builder: (_) =>
+                PaymentPage(verifyModel: args!['verifyModel'], phoneNumber: args['phoneNumber']),
           );
         case grammarPageabout:
           _showRouteName(grammarPageabout);
@@ -140,6 +140,10 @@ class Routes {
           return MaterialPageRoute(
             builder: (_) => WordExercisesCheckPage(),
           );
+        case wordExercisesResultPage:
+          return MaterialPageRoute(
+            builder: (_) => WordExercisesResultPage(),
+          );
         case searchingOpponentPage:
           return MaterialPageRoute(
             builder: (_) => SearchingOpponentPage(),
@@ -150,7 +154,7 @@ class Routes {
           );
         case userCabinetPage:
           return MaterialPageRoute(
-            builder: (_) => const UserCabinetPage(),
+            builder: (_) => UserCabinetPage(),
           );
         case editUserPage:
           return MaterialPageRoute(

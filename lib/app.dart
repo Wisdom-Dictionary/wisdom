@@ -63,8 +63,7 @@ class _MyAppState extends State<MyApp> {
                 ),
                 builder: (context, child) {
                   return MediaQuery(
-                    data: MediaQuery.of(context)
-                        .copyWith(textScaler: const TextScaler.linear(1.0)),
+                    data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
                     child: child!,
                   );
                 },
@@ -80,10 +79,7 @@ class _MyAppState extends State<MyApp> {
 
   String? _getInitialRoute() {
     if (Platform.isWindows || Platform.isMacOS) {
-      if (locator
-          .get<SharedPreferenceHelper>()
-          .getString(Constants.KEY_TOKEN, '')
-          .isEmpty) {
+      if (locator.get<SharedPreferenceHelper>().getString(Constants.KEY_TOKEN, '').isEmpty) {
         return Routes.loginPage;
       }
     }

@@ -197,13 +197,13 @@ class GettingProPage extends ViewModelBuilderWidget<GettingProPageViewModel> {
                 .copyWith(color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray),
           ),
           const Gap(12),
-          if(item.price!=null)
-          Text(
-            '${item.price.toMoneyFormat} UZS',
-            style: AppTextStyle.font15W500Normal.copyWith(
-              color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray,
+          if (item.price != null)
+            Text(
+              '${item.price.toMoneyFormat} UZS',
+              style: AppTextStyle.font15W500Normal.copyWith(
+                color: isDarkTheme ? AppColors.lightGray : AppColors.darkGray,
+              ),
             ),
-          ),
         ],
       ),
       contentPadding: EdgeInsets.zero,

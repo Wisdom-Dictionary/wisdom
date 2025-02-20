@@ -26,11 +26,9 @@ class GivingAdPage extends ViewModelBuilderWidget<GivingAdViewModel> {
   }
 
   @override
-  Widget builder(
-      BuildContext context, GivingAdViewModel viewModel, Widget? child) {
+  Widget builder(BuildContext context, GivingAdViewModel viewModel, Widget? child) {
     return Scaffold(
-      backgroundColor:
-          isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
+      backgroundColor: isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
       appBar: CustomAppBar(
         title: LocaleKeys.contacts.tr(),
         onTap: () => Navigator.of(context).pop(),
@@ -41,8 +39,7 @@ class GivingAdPage extends ViewModelBuilderWidget<GivingAdViewModel> {
           viewModel.getAdContacts();
         },
         child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(
-              parent: AlwaysScrollableScrollPhysics()),
+          physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
           padding: EdgeInsets.only(top: 30.h, left: 18.w, right: 18.w),
           child: SizedBox(
             width: double.infinity,
@@ -52,9 +49,7 @@ class GivingAdPage extends ViewModelBuilderWidget<GivingAdViewModel> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 SvgPicture.asset(
-                  isDarkTheme
-                      ? Assets.icons.logoWhiteText
-                      : Assets.icons.logoBlueText,
+                  isDarkTheme ? Assets.icons.logoWhiteText : Assets.icons.logoBlueText,
                   height: 52.h,
                   fit: BoxFit.scaleDown,
                 ),
@@ -152,9 +147,7 @@ class ContactBodyContent extends StatelessWidget {
     return Container(
       margin: EdgeInsets.only(top: 30.h),
       padding: EdgeInsets.symmetric(vertical: 32.h, horizontal: 20.w),
-      decoration: isDarkTheme
-          ? AppDecoration.bannerDarkDecor
-          : AppDecoration.bannerDecor,
+      decoration: isDarkTheme ? AppDecoration.bannerDarkDecor : AppDecoration.bannerDecor,
       child: child,
     );
   }

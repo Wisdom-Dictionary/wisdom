@@ -35,9 +35,12 @@ class FlipFrontWidget extends ViewModelWidget<ExercisePageViewModel> {
             alignment: Alignment.topCenter,
             child: Padding(
               padding: EdgeInsets.only(top: 15.h),
-              child: Text( viewModel.localViewModel.exerciseLangOption=="en" ? model.word : model.translation,
-                style:
-                    AppTextStyle.font17W700Normal.copyWith(color: isDarkTheme ? AppColors.white : AppColors.darkGray),
+              child: Text(
+                viewModel.localViewModel.exerciseLangOption == "en"
+                    ? model.word
+                    : model.translation,
+                style: AppTextStyle.font17W700Normal
+                    .copyWith(color: isDarkTheme ? AppColors.white : AppColors.darkGray),
                 textAlign: TextAlign.center,
               ),
             ),

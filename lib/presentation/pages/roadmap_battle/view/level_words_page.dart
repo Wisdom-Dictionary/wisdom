@@ -12,6 +12,7 @@ import 'package:wisdom/core/di/app_locator.dart';
 import 'package:wisdom/core/domain/entities/def_enum.dart';
 import 'package:wisdom/data/model/roadmap/level_word_model.dart';
 import 'package:wisdom/presentation/components/w_button.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/view/widgets/life_status_bar.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/level_words_page_viewmodel.dart';
 import 'package:wisdom/presentation/routes/routes.dart';
 import 'package:wisdom/presentation/widgets/custom_app_bar.dart';
@@ -33,8 +34,12 @@ class LevelWordsPage extends ViewModelBuilderWidget<LevelWordsPageViewModel> {
         child: Scaffold(
           backgroundColor: isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
           drawerEnableOpenDragGesture: false,
-          appBar: CustomAppBar(
-              title: "1-20", onTap: () => viewModel.goMain(), leadingIcon: Assets.icons.arrowLeft),
+          appBar: CustomAppBar(actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 15),
+              child: LifeStatusBar(),
+            )
+          ], title: "1-20", onTap: () => viewModel.goMain(), leadingIcon: Assets.icons.arrowLeft),
           body: !viewModel.isSuccess(tag: viewModel.getLevelWordsTag)
               ? ShimmerLevelWords()
               : viewModel.isError(tag: viewModel.getLevelWordsTag)
@@ -43,80 +48,82 @@ class LevelWordsPage extends ViewModelBuilderWidget<LevelWordsPageViewModel> {
                           child: Text(
                               viewModel.getVMError(tag: viewModel.getLevelWordsTag)!.toString())),
                     )
-                  : Stack(
-                      children: [
-                        exercisesList(viewModel),
-                        Positioned(
-                            left: 21,
-                            right: 21,
-                            bottom: 70,
-                            child: SafeArea(
-                              bottom: true,
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: WButton(
-                                      margin: EdgeInsets.only(top: 40.h, bottom: 12.h),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 18),
-                                        child: Row(
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [
-                                            SvgPicture.asset(Assets.icons.medalStar),
-                                            const SizedBox(
-                                              width: 8,
-                                            ),
-                                            Expanded(
-                                              child: Text(
-                                                'exercises'.tr(),
-                                                style: AppTextStyle.font15W500Normal
-                                                    .copyWith(color: AppColors.white, fontSize: 14),
-                                                overflow: TextOverflow.ellipsis,
+                  : SafeArea(
+                      child: Stack(
+                        children: [
+                          exercisesList(viewModel),
+                          Positioned(
+                              left: 21,
+                              right: 21,
+                              bottom: 70,
+                              child: SafeArea(
+                                bottom: true,
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: WButton(
+                                        margin: EdgeInsets.only(top: 40.h, bottom: 12.h),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 18),
+                                          child: Row(
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            children: [
+                                              SvgPicture.asset(Assets.icons.medalStar),
+                                              const SizedBox(
+                                                width: 8,
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      onTap: () {
-                                        viewModel.levelTestRepository
-                                            .setExerciseType(TestExerciseType.levelExercise);
-                                        Navigator.pushNamed(context, Routes.wordExercisesPage);
-                                      },
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 8,
-                                  ),
-                                  Expanded(
-                                    child: WButton(
-                                      margin: EdgeInsets.only(top: 40.h, bottom: 12.h),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 18),
-                                        child: Row(
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [
-                                            SvgPicture.asset(Assets.icons.battle),
-                                            const SizedBox(
-                                              width: 8,
-                                            ),
-                                            Expanded(
-                                              child: Text(
-                                                "${'battle'.tr()} / ${'friend'.tr()}",
-                                                style: AppTextStyle.font15W500Normal
-                                                    .copyWith(color: AppColors.white, fontSize: 14),
-                                                overflow: TextOverflow.ellipsis,
+                                              Expanded(
+                                                child: Text(
+                                                  'exercises'.tr(),
+                                                  style: AppTextStyle.font15W500Normal.copyWith(
+                                                      color: AppColors.white, fontSize: 14),
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
+                                        onTap: () {
+                                          viewModel.levelTestRepository
+                                              .setExerciseType(TestExerciseType.levelExercise);
+                                          Navigator.pushNamed(context, Routes.wordExercisesPage);
+                                        },
                                       ),
-                                      onTap: () {},
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ))
-                      ],
+                                    const SizedBox(
+                                      width: 8,
+                                    ),
+                                    Expanded(
+                                      child: WButton(
+                                        margin: EdgeInsets.only(top: 40.h, bottom: 12.h),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 18),
+                                          child: Row(
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            children: [
+                                              SvgPicture.asset(Assets.icons.battle),
+                                              const SizedBox(
+                                                width: 8,
+                                              ),
+                                              Expanded(
+                                                child: Text(
+                                                  "${'battle'.tr()} / ${'friend'.tr()}",
+                                                  style: AppTextStyle.font15W500Normal.copyWith(
+                                                      color: AppColors.white, fontSize: 14),
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        onTap: () {},
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ))
+                        ],
+                      ),
                     ),
         ));
   }
@@ -220,37 +227,40 @@ class ShimmerLevelWords extends StatelessWidget {
       highlightColor: Colors.grey.shade400,
       enabled: true,
       period: const Duration(seconds: 2),
-      child: Stack(
-        children: [
-          ListView.builder(
-            padding: EdgeInsets.only(left: 18, right: 18, top: 16, bottom: 170),
-            itemCount: 8,
-            itemBuilder: (context, index) => itemExercise(index, LevelWordModel.defaultValues()),
-          ),
-          Positioned(
-              left: 21,
-              right: 21,
-              bottom: 92,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: WButton(
-                      margin: EdgeInsets.only(top: 40.h, bottom: 12.h),
-                      onTap: () {},
+      child: SafeArea(
+        child: Stack(
+          children: [
+            ListView.builder(
+              physics: ClampingScrollPhysics(),
+              padding: EdgeInsets.only(left: 18, right: 18, top: 16, bottom: 170),
+              itemCount: 8,
+              itemBuilder: (context, index) => itemExercise(index, LevelWordModel.defaultValues()),
+            ),
+            Positioned(
+                left: 21,
+                right: 21,
+                bottom: 70,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: WButton(
+                        margin: EdgeInsets.only(top: 40.h, bottom: 12.h),
+                        onTap: () {},
+                      ),
                     ),
-                  ),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                  Expanded(
-                    child: WButton(
-                      margin: EdgeInsets.only(top: 40.h, bottom: 12.h),
-                      onTap: () {},
+                    const SizedBox(
+                      width: 8,
                     ),
-                  ),
-                ],
-              ))
-        ],
+                    Expanded(
+                      child: WButton(
+                        margin: EdgeInsets.only(top: 40.h, bottom: 12.h),
+                        onTap: () {},
+                      ),
+                    ),
+                  ],
+                ))
+          ],
+        ),
       ),
     );
   }

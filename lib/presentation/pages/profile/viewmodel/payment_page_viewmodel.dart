@@ -80,10 +80,10 @@ class PaymentPageViewModel extends BaseViewModel {
     }
   }
 
- Future onPayPressed() async {
+  Future onPayPressed() async {
     switch (radioValue) {
       case "click":
-       await openClick();
+        await openClick();
         break;
       case "payme":
         await openPayme();
@@ -136,7 +136,7 @@ class PaymentPageViewModel extends BaseViewModel {
 
   Future<void> openPayme() async {
     log(subscribeModel.payme.toString());
-   await launchUrl(Uri.parse('${subscribeModel.payme}'), mode: LaunchMode.externalApplication);
+    await launchUrl(Uri.parse('${subscribeModel.payme}'), mode: LaunchMode.externalApplication);
   }
 
   Future<void> applePay() async {

@@ -41,8 +41,8 @@ class MyContcatsShimmerWidget extends StatelessWidget {
                     children: [
                       Text(
                         "Farruh Saitov",
-                        style: AppTextStyle.font13W500Normal.copyWith(
-                            fontSize: 14, backgroundColor: AppColors.blue),
+                        style: AppTextStyle.font13W500Normal
+                            .copyWith(fontSize: 14, backgroundColor: AppColors.blue),
                       ),
                       SizedBox(
                         height: 4.61,
@@ -60,8 +60,7 @@ class MyContcatsShimmerWidget extends StatelessWidget {
                           ),
                           SvgPicture.asset(
                             Assets.icons.verify,
-                            colorFilter: ColorFilter.mode(
-                                AppColors.blue, BlendMode.srcIn),
+                            colorFilter: ColorFilter.mode(AppColors.blue, BlendMode.srcIn),
                           )
                         ],
                       ),
@@ -70,16 +69,14 @@ class MyContcatsShimmerWidget extends StatelessWidget {
                 ),
                 SvgPicture.asset(
                   Assets.icons.wifi,
-                  colorFilter:
-                      ColorFilter.mode(AppColors.green, BlendMode.srcIn),
+                  colorFilter: ColorFilter.mode(AppColors.green, BlendMode.srcIn),
                 ),
                 SizedBox(
                   width: 24,
                 ),
                 SvgPicture.asset(
                   Assets.icons.battle,
-                  colorFilter:
-                      ColorFilter.mode(AppColors.blue, BlendMode.srcIn),
+                  colorFilter: ColorFilter.mode(AppColors.blue, BlendMode.srcIn),
                 ),
               ],
             ),

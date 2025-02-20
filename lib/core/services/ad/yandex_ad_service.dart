@@ -122,9 +122,7 @@ class YandexAdService implements AdService {
       adUnitId: random.nextBool() ? id1 : id2,
       adSize: _getAdSize(),
       adRequest: const AdRequest(),
-      onAdLoaded: () {
-
-      },
+      onAdLoaded: () {},
       onAdFailedToLoad: (error) {
         print('Banner ad failed to load: $error');
         banner == null;

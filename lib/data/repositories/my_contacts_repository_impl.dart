@@ -5,7 +5,7 @@ import 'package:wisdom/config/constants/urls.dart';
 import 'package:wisdom/core/domain/http_is_success.dart';
 import 'package:wisdom/core/services/custom_client.dart';
 import 'package:wisdom/data/model/my_contacts/contact_follow_model.dart';
-import 'package:wisdom/data/model/my_contacts/contact_model.dart';
+import 'package:wisdom/data/model/my_contacts/user_details_model.dart';
 import 'package:wisdom/domain/repositories/my_contacts_repository.dart';
 
 class MyContactsRepositoryImpl extends MyContactsRepository {
@@ -13,11 +13,11 @@ class MyContactsRepositoryImpl extends MyContactsRepository {
 
   final CustomClient customClient;
 
-  List<ContactModel> _contactsList = [];
-  List<ContactModel> _searchResultList = [];
+  List<UserDetailsModel> _contactsList = [];
+  List<UserDetailsModel> _searchResultList = [];
 
   @override
-  List<ContactModel> get contactsList => _contactsList;
+  List<UserDetailsModel> get contactsList => _contactsList;
 
   @override
   Future<void> getMyContactsFollowed(Contacts contactType) async {
@@ -26,23 +26,20 @@ class MyContactsRepositoryImpl extends MyContactsRepository {
       return;
     }
     var response = await customClient.get(
-      contactType == Contacts.getMyContacts
-          ? Urls.myContacts
-          : Urls.myContactsFollowed,
+      contactType == Contacts.getMyContacts ? Urls.myContacts : Urls.myContactsFollowed,
     );
     if (response.isSuccessful) {
       final responseData = jsonDecode(response.body);
       for (var item in responseData['users']) {
-        _contactsList.add(ContactModel.fromJson(item));
+        _contactsList.add(UserDetailsModel.fromJson(item));
       }
     } else {
-      throw VMException(response.body,
-          callFuncName: 'getMyContactsFollowed', response: response);
+      throw VMException(response.body, callFuncName: 'getMyContactsFollowed', response: response);
     }
   }
 
   @override
-  Future<ContactFollowModel> postFollow(int userId) async {
+  Future<String> postFollow(int userId) async {
     final requestBody = {
       'user_id': "$userId",
     };
@@ -56,15 +53,14 @@ class MyContactsRepositoryImpl extends MyContactsRepository {
 
     if (response.isSuccessful) {
       final responseData = jsonDecode(response.body);
-      return ContactFollowModel.fromJson(responseData);
+      return responseData['message'];
     } else {
-      throw VMException(response.body,
-          callFuncName: 'getMyContactsFollowed', response: response);
+      throw VMException(response.body, callFuncName: 'getMyContactsFollowed', response: response);
     }
   }
 
   @override
-  Future<ContactFollowModel> postUnFollow(int userId) async {
+  Future<String> postUnFollow(int userId) async {
     final requestBody = {
       'user_id': "$userId",
     };
@@ -78,10 +74,9 @@ class MyContactsRepositoryImpl extends MyContactsRepository {
 
     if (response.isSuccessful) {
       final responseData = jsonDecode(response.body);
-      return ContactFollowModel.fromJson(responseData);
+      return responseData['message'];
     } else {
-      throw VMException(response.body,
-          callFuncName: 'getMyContactsFollowed', response: response);
+      throw VMException(response.body, callFuncName: 'getMyContactsFollowed', response: response);
     }
   }
 
@@ -101,17 +96,16 @@ class MyContactsRepositoryImpl extends MyContactsRepository {
       final responseData = jsonDecode(response.body);
       if (responseData['users'] != null) {
         for (var item in responseData['users']) {
-          _searchResultList.add(ContactModel.fromJson(item));
+          _searchResultList.add(UserDetailsModel.fromJson(item));
         }
       }
     } else if (response.statusCode == 404) {
       return;
     } else {
-      throw VMException(response.body,
-          callFuncName: 'postMyContactsSearch', response: response);
+      throw VMException(response.body, callFuncName: 'postMyContactsSearch', response: response);
     }
   }
 
   @override
-  List<ContactModel> get searchResultList => _searchResultList;
+  List<UserDetailsModel> get searchResultList => _searchResultList;
 }

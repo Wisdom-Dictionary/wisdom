@@ -8,7 +8,8 @@ import 'dart:convert';
 WordWithDifferenceNewModel wordWithDifferenceNewModelFromJson(String str) =>
     WordWithDifferenceNewModel.fromJson(json.decode(str));
 
-String wordWithDifferenceNewModelToJson(WordWithDifferenceNewModel data) => json.encode(data.toJson());
+String wordWithDifferenceNewModelToJson(WordWithDifferenceNewModel data) =>
+    json.encode(data.toJson());
 
 class WordWithDifferenceNewModel {
   WordWithDifferenceNewModel({

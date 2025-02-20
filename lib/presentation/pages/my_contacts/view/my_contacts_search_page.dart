@@ -9,8 +9,7 @@ import 'package:wisdom/presentation/pages/my_contacts/viewmodel/my_contact_searc
 import 'package:wisdom/presentation/routes/routes.dart';
 import 'package:wisdom/presentation/widgets/new_custom_app_bar.dart';
 
-class MyContactsSearchPage
-    extends ViewModelBuilderWidget<MyContactSearchViewModel> {
+class MyContactsSearchPage extends ViewModelBuilderWidget<MyContactSearchViewModel> {
   MyContactsSearchPage({super.key});
 
   @override
@@ -19,8 +18,7 @@ class MyContactsSearchPage
   }
 
   @override
-  Widget builder(
-      BuildContext context, MyContactSearchViewModel viewModel, Widget? child) {
+  Widget builder(BuildContext context, MyContactSearchViewModel viewModel, Widget? child) {
     return Scaffold(
       appBar: NewCustomAppBar(
         onTap: () {
@@ -44,21 +42,16 @@ class MyContactsSearchPage
                       description: "Kiritilgan ID bo'yicha user topilmadi".tr(),
                     )
                   : ListView.builder(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 18, vertical: 27),
-                      itemCount: viewModel
-                          .myContactsRepository.searchResultList.length,
+                      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 27),
+                      itemCount: viewModel.myContactsRepository.searchResultList.length,
                       itemBuilder: (context, index) => GestureDetector(
                         onTap: () {
-                          Navigator.pushNamed(
-                              context, Routes.contactDetailsPage,
-                              arguments: viewModel
-                                  .myContactsRepository.searchResultList[index]
-                                  .toMap());
+                          Navigator.pushNamed(context, Routes.contactDetailsPage,
+                              arguments:
+                                  viewModel.myContactsRepository.searchResultList[index].toMap());
                         },
                         child: ContactItemWidget(
-                          item: viewModel
-                              .myContactsRepository.searchResultList[index],
+                          item: viewModel.myContactsRepository.searchResultList[index],
                         ),
                       ),
                     )

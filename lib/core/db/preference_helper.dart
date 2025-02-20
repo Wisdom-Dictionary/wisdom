@@ -86,8 +86,8 @@ class SharedPreferenceHelper {
   clear() {
     prefs.clear();
   }
+
   void clearUserData() {
     prefs.clear();
   }
-
 }

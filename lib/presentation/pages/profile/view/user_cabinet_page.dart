@@ -1,23 +1,42 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:jbaza/jbaza.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:wisdom/app.dart';
 import 'package:wisdom/config/constants/app_colors.dart';
 import 'package:wisdom/config/constants/app_decoration.dart';
 import 'package:wisdom/config/constants/app_text_style.dart';
 import 'package:wisdom/config/constants/assets.dart';
 import 'package:wisdom/config/constants/constants.dart';
+import 'package:wisdom/core/di/app_locator.dart';
+import 'package:wisdom/core/extensions/string_extension.dart';
+import 'package:wisdom/presentation/components/shimmer.dart';
+import 'package:wisdom/presentation/pages/profile/viewmodel/profile_page_viewmodel.dart';
 import 'package:wisdom/presentation/routes/routes.dart';
 import 'package:wisdom/presentation/widgets/new_custom_app_bar.dart';
 
-class UserCabinetPage extends StatelessWidget {
-  const UserCabinetPage({super.key});
+class UserCabinetPage extends ViewModelBuilderWidget<ProfilePageViewModel> {
+  UserCabinetPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  void onViewModelReady(ProfilePageViewModel viewModel) {
+    super.onViewModelReady(viewModel);
+    viewModel.getUserDetails();
+  }
+
+  @override
+  Widget builder(
+    BuildContext context,
+    ProfilePageViewModel viewModel,
+    Widget? child,
+  ) {
     return Scaffold(
-      backgroundColor:
-          isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
+      backgroundColor: isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
       appBar: NewCustomAppBar(
         onTap: () {
           Navigator.pop(context);
@@ -48,12 +67,15 @@ class UserCabinetPage extends StatelessWidget {
                             width: 8,
                           ),
                           Text('Edit',
-                              style: AppTextStyle.font13W500Normal.copyWith(
-                                  color: AppColors.darkGray, fontSize: 14)),
+                              style: AppTextStyle.font13W500Normal
+                                  .copyWith(color: AppColors.darkGray, fontSize: 14)),
                         ],
                       )),
                   const PopupMenuDivider(),
                   PopupMenuItem(
+                      onTap: () async {
+                        await viewModel.logOut();
+                      },
                       padding: EdgeInsets.zero,
                       child: Row(
                         children: [
@@ -75,64 +97,66 @@ class UserCabinetPage extends StatelessWidget {
         ],
       ),
       body: ListView(
+        physics: ClampingScrollPhysics(),
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 18),
         children: [
           Container(
             padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-            decoration: AppDecoration.bannerDecor.copyWith(
-                color: AppColors.bgLightBlue.withValues(alpha: 0.1),
-                boxShadow: []),
+            decoration: AppDecoration.bannerDecor
+                .copyWith(color: AppColors.bgLightBlue.withValues(alpha: 0.1), boxShadow: []),
             child: Column(
               children: [
-                const UserDetailsBar(),
-                const SizedBox(
-                  height: 24,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      "Title:",
-                      style: AppTextStyle.font15W600Normal
-                          .copyWith(fontSize: 12, color: AppColors.black),
-                    ),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    const UserStatisticsWithNumbers()
-                  ],
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      "Title:",
-                      style: AppTextStyle.font15W600Normal
-                          .copyWith(fontSize: 12, color: AppColors.black),
-                    ),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    const UserStatisticsWithPersentage()
-                  ],
+                UserDetailsBar(
+                  viewModel: viewModel,
                 ),
                 const SizedBox(
                   height: 24,
                 ),
-                detailItem(title: "Phone", detail: "+998 91 880-95-95"),
+                UserStatisticsWithNumbers(
+                  viewModel: viewModel,
+                ),
+                const SizedBox(
+                  height: 24,
+                ),
+                UserStatisticsWithPersentage(
+                  viewModel: viewModel,
+                ),
+                const SizedBox(
+                  height: 24,
+                ),
+                detailItem(
+                    title: "Phone",
+                    detail: (viewModel.profileRepository.userCabinet?.user?.phone.toString() ?? "")
+                        .phoneFormatter),
                 const SizedBox(
                   height: 8,
                 ),
-                detailItem(title: "Status", detail: "Premium"),
+                detailItem(
+                    title: "Status",
+                    detail: viewModel.profileRepository.userCabinet?.tariff?.name?.en ?? ""),
                 const SizedBox(
                   height: 8,
                 ),
-                detailItem(title: "Gender", detail: "Male"),
+                detailItem(
+                    title: "Gender",
+                    detail: viewModel.profileRepository.userCabinet?.user?.gender.localeName ?? ""),
               ],
             ),
           )
         ],
       ),
+    );
+  }
+
+  @override
+  ProfilePageViewModel viewModelBuilder(BuildContext context) {
+    return ProfilePageViewModel(
+      context: context,
+      profileRepository: locator.get(),
+      localViewModel: locator.get(),
+      sharedPreferenceHelper: locator.get(),
+      wordEntityRepository: locator.get(),
+      netWorkChecker: locator.get(),
     );
   }
 
@@ -147,13 +171,11 @@ class UserCabinetPage extends StatelessWidget {
         children: [
           Text(
             title,
-            style: AppTextStyle.font13W500Normal
-                .copyWith(color: AppColors.charcoal),
+            style: AppTextStyle.font13W500Normal.copyWith(color: AppColors.charcoal),
           ),
           Text(
             detail,
-            style: AppTextStyle.font15W600Normal
-                .copyWith(fontSize: 14, color: AppColors.blue),
+            style: AppTextStyle.font15W600Normal.copyWith(fontSize: 14, color: AppColors.blue),
           )
         ],
       ),
@@ -162,42 +184,56 @@ class UserCabinetPage extends StatelessWidget {
 }
 
 class UserStatisticsWithPersentage extends StatelessWidget {
-  const UserStatisticsWithPersentage({
-    super.key,
-  });
+  const UserStatisticsWithPersentage({super.key, required this.viewModel});
+
+  final ProfilePageViewModel viewModel;
 
   @override
   Widget build(BuildContext context) {
+    return viewModel.isBusy(tag: viewModel.getGetUserTag) ? shimmer() : _buildContent();
+  }
+
+  Widget shimmer() {
+    return ShimmerWidget(child: _buildContent());
+  }
+
+  Row _buildContent() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        item(percent: 67, title: "win rate"),
-        item(percent: 37, title: "game accuracy"),
-        item(percent: 56, percentSign: " s", title: "average time"),
-        item(percent: 40, percentSign: " s", title: "best time"),
+        item(
+            percent: viewModel.profileRepository.userCabinet?.statistics?.winRate ?? 1,
+            title: "win rate"),
+        item(
+            percent: viewModel.profileRepository.userCabinet?.statistics?.gameAccuracy ?? 1,
+            title: "game accuracy"),
+        item(
+            percent: viewModel.profileRepository.userCabinet?.statistics?.averageTime ?? 1,
+            percentSign: " s",
+            title: "average time"),
+        item(
+            percent: viewModel.profileRepository.userCabinet?.statistics?.bestTime ?? 1,
+            percentSign: " s",
+            title: "best time"),
       ],
     );
   }
 
-  CircularPercentIndicator item(
-      {String? title, String? percentSign, int? percent}) {
+  CircularPercentIndicator item({String? title, String? percentSign, int? percent}) {
     return CircularPercentIndicator(
       circularStrokeCap: CircularStrokeCap.round,
       progressColor: AppColors.blue,
       radius: 28,
       backgroundColor: AppColors.vibrantBlue.withValues(alpha: 0.15),
-      percent: (percent ?? 0) / 100,
       center: Text(
         percent != null ? "$percent${percentSign ?? "%"}" : "",
-        style: AppTextStyle.font15W600Normal
-            .copyWith(color: AppColors.blue, fontSize: 16),
+        style: AppTextStyle.font15W600Normal.copyWith(color: AppColors.blue, fontSize: 16),
       ),
       footer: Padding(
         padding: const EdgeInsets.only(top: 3),
         child: Text(
           title ?? "",
-          style: AppTextStyle.font13W500Normal
-              .copyWith(color: AppColors.blue, fontSize: 11),
+          style: AppTextStyle.font13W500Normal.copyWith(color: AppColors.blue, fontSize: 11),
         ),
       ),
     );
@@ -205,15 +241,32 @@ class UserStatisticsWithPersentage extends StatelessWidget {
 }
 
 class UserDetailsBar extends StatelessWidget {
-  const UserDetailsBar({
-    super.key,
-  });
+  const UserDetailsBar({super.key, required this.viewModel});
+
+  final ProfilePageViewModel viewModel;
 
   @override
   Widget build(BuildContext context) {
+    return viewModel.isBusy(tag: viewModel.getGetUserTag) ? shimmer() : _buildContent();
+  }
+
+  Row _buildContent() {
     return Row(
       children: [
-        SvgPicture.asset(Assets.icons.userAvatar),
+        if (viewModel.profileRepository.userCabinet?.user == null ||
+            viewModel.profileRepository.userCabinet?.user?.profilePhotoUrl == null)
+          SvgPicture.asset(
+            Assets.icons.userAvatar,
+            height: 56,
+            width: 56,
+          )
+        else
+          CircleAvatar(
+            radius: 28.r,
+            backgroundImage: NetworkImage(Uri.encodeFull(
+                "${viewModel.profileRepository.userCabinet?.user?.profilePhotoUrl}&format=png")),
+            backgroundColor: Colors.transparent,
+          ),
         const SizedBox(
           width: 12,
         ),
@@ -222,25 +275,36 @@ class UserDetailsBar extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                "Ali Kamilov",
-                style: AppTextStyle.font17W600Normal
-                    .copyWith(color: AppColors.blue, fontSize: 18),
+                viewModel.profileRepository.userCabinet?.user?.name ?? "",
+                style: AppTextStyle.font17W600Normal.copyWith(color: AppColors.blue, fontSize: 18),
               ),
               const SizedBox(
                 height: 4,
               ),
-              Row(
-                children: [
-                  Text(
-                    "ID: 37905234",
-                    style: AppTextStyle.font13W500Normal
-                        .copyWith(color: AppColors.blue, fontSize: 12),
-                  ),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                  SvgPicture.asset(Assets.icons.documentCopy)
-                ],
+              GestureDetector(
+                onTap: () async {
+                  if (viewModel.profileRepository.userCabinet?.user?.id != null) {
+                    await Clipboard.setData(ClipboardData(
+                        text: viewModel.profileRepository.userCabinet!.user!.id!.toString()));
+                    ScaffoldMessenger.of(navigatorKey.currentState!.context)
+                        .showSnackBar(const SnackBar(
+                      content: Text("Value copied to clipboard"),
+                    ));
+                  }
+                },
+                child: Row(
+                  children: [
+                    Text(
+                      "ID: ${viewModel.profileRepository.userCabinet?.user?.id}",
+                      style: AppTextStyle.font13W500Normal
+                          .copyWith(color: AppColors.blue, fontSize: 12),
+                    ),
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    SvgPicture.asset(Assets.icons.documentCopy)
+                  ],
+                ),
               ),
             ],
           ),
@@ -252,16 +316,15 @@ class UserDetailsBar extends StatelessWidget {
               children: [
                 Text(
                   "12460",
-                  style: AppTextStyle.font13W500Normal
-                      .copyWith(color: AppColors.blue, fontSize: 14),
+                  style:
+                      AppTextStyle.font13W500Normal.copyWith(color: AppColors.blue, fontSize: 14),
                 ),
                 const SizedBox(
                   width: 9,
                 ),
                 SvgPicture.asset(
                   Assets.icons.verify,
-                  colorFilter:
-                      const ColorFilter.mode(AppColors.blue, BlendMode.srcIn),
+                  colorFilter: const ColorFilter.mode(AppColors.blue, BlendMode.srcIn),
                 )
               ],
             ),
@@ -271,17 +334,16 @@ class UserDetailsBar extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  "2301",
-                  style: AppTextStyle.font13W500Normal
-                      .copyWith(color: AppColors.blue, fontSize: 14),
+                  (viewModel.profileRepository.userCabinet?.statistics?.userStars ?? 0).toString(),
+                  style:
+                      AppTextStyle.font13W500Normal.copyWith(color: AppColors.blue, fontSize: 14),
                 ),
                 const SizedBox(
                   width: 9,
                 ),
                 SvgPicture.asset(
                   Assets.icons.star,
-                  colorFilter:
-                      const ColorFilter.mode(AppColors.blue, BlendMode.srcIn),
+                  colorFilter: const ColorFilter.mode(AppColors.blue, BlendMode.srcIn),
                 )
               ],
             )
@@ -290,30 +352,56 @@ class UserDetailsBar extends StatelessWidget {
       ],
     );
   }
+
+  Widget shimmer() => ShimmerWidget(child: _buildContent());
 }
 
 class UserStatisticsWithNumbers extends StatelessWidget {
-  const UserStatisticsWithNumbers({
-    super.key,
-  });
+  const UserStatisticsWithNumbers({super.key, required this.viewModel});
+
+  final ProfilePageViewModel viewModel;
 
   @override
   Widget build(BuildContext context) {
+    return viewModel.isBusy(tag: viewModel.getGetUserTag) ? shimmer() : _buildContent();
+  }
+
+  Padding _buildContent() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
       child: Row(
         children: [
-          item(value: 5, subtitle: "games", itemName: "3 star wins"),
+          item(
+              value: viewModel.profileRepository.userCabinet?.statistics!.threeStarWins ?? 0,
+              subtitle: "games",
+              itemName: "3 star wins"),
           divider,
-          item(value: 41, subtitle: "words", itemName: "daily record"),
+          item(
+              value: viewModel.profileRepository.userCabinet?.statistics!.dailyRecord ?? 0,
+              subtitle: "words",
+              itemName: "daily record"),
           divider,
-          item(value: 201, subtitle: "words", itemName: "weekly record"),
+          item(
+              value: viewModel.profileRepository.userCabinet?.statistics!.weeklyRecord ?? 0,
+              subtitle: "words",
+              itemName: "weekly record"),
           divider,
-          item(value: 935, subtitle: "words", itemName: "monthly record"),
+          item(
+              value: viewModel.profileRepository.userCabinet?.statistics!.monthlyRecord ?? 0,
+              subtitle: "words",
+              itemName: "monthly record"),
         ],
       ),
     );
   }
+
+  Widget shimmer() => Shimmer.fromColors(
+        baseColor: AppColors.bgLightBlue.withValues(alpha: 0.3),
+        highlightColor: AppColors.bgLightBlue.withValues(alpha: 0.7),
+        enabled: true,
+        period: const Duration(seconds: 2),
+        child: _buildContent(),
+      );
 
   SizedBox get divider {
     return const SizedBox(
@@ -329,14 +417,13 @@ class UserStatisticsWithNumbers extends StatelessWidget {
           Text(
             "${value ?? 0}",
             textAlign: TextAlign.center,
-            style: AppTextStyle.font28W600Normal
-                .copyWith(color: AppColors.blue, fontSize: 24),
+            style: AppTextStyle.font28W600Normal.copyWith(color: AppColors.blue, fontSize: 24),
           ),
           Text(
             subtitle ?? "",
             textAlign: TextAlign.center,
-            style: AppTextStyle.font13W500Normal
-                .copyWith(fontSize: 8, color: AppColors.textDisabled),
+            style:
+                AppTextStyle.font13W500Normal.copyWith(fontSize: 8, color: AppColors.textDisabled),
           ),
           const SizedBox(
             height: 8,
@@ -344,8 +431,7 @@ class UserStatisticsWithNumbers extends StatelessWidget {
           Text(
             itemName ?? "",
             textAlign: TextAlign.center,
-            style: AppTextStyle.font13W500Normal
-                .copyWith(color: AppColors.blue, fontSize: 11),
+            style: AppTextStyle.font13W500Normal.copyWith(color: AppColors.blue, fontSize: 11),
           )
         ],
       ),

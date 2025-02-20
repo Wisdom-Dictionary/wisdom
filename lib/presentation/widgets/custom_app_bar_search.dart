@@ -67,24 +67,21 @@ class _CustomAppBarSearchState extends State<CustomAppBarSearch> {
   Widget build(BuildContext context) {
     if (localViewModel.searchingText.isNotEmpty) {
       controller.text = localViewModel.searchingText;
-      controller.selection = TextSelection.fromPosition(
-          TextPosition(offset: controller.text.length));
+      controller.selection =
+          TextSelection.fromPosition(TextPosition(offset: controller.text.length));
       onChanged(localViewModel.searchingText);
       localViewModel.searchingText = "";
-    } else if (localViewModel.lastSearchedText.isNotEmpty &&
-        localViewModel.goingBackFromDetail) {
+    } else if (localViewModel.lastSearchedText.isNotEmpty && localViewModel.goingBackFromDetail) {
       controller.text = localViewModel.lastSearchedText;
-      controller.selection = TextSelection.fromPosition(
-          TextPosition(offset: controller.text.length));
+      controller.selection =
+          TextSelection.fromPosition(TextPosition(offset: controller.text.length));
       onChanged(localViewModel.lastSearchedText);
       localViewModel.lastSearchedText = "";
       localViewModel.goingBackFromDetail = false;
     }
     return AppBar(
-      backgroundColor:
-          (isDarkTheme ? AppColors.darkForm : AppColors.blue).withOpacity(0.95),
-      shadowColor:
-          isDarkTheme ? null : const Color(0xFF6D8DAD).withOpacity(0.15),
+      backgroundColor: (isDarkTheme ? AppColors.darkForm : AppColors.blue).withOpacity(0.95),
+      shadowColor: isDarkTheme ? null : const Color(0xFF6D8DAD).withOpacity(0.15),
       elevation: 4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
@@ -140,9 +137,7 @@ class _CustomAppBarSearchState extends State<CustomAppBarSearch> {
                       height: 47.h,
                       margin: EdgeInsets.all(14.r),
                       decoration: BoxDecoration(
-                          color: (isDarkTheme
-                                  ? AppColors.darkBackground
-                                  : AppColors.white)
+                          color: (isDarkTheme ? AppColors.darkBackground : AppColors.white)
                               .withOpacity(0.95),
                           borderRadius: BorderRadius.circular(23.5.r)),
                       child: TextField(

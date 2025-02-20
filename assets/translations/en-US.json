@@ -238,5 +238,8 @@
   "translate": "Translate words and sentences",
   "go": "GO!",
   "continue_w": "Continue",
-  "sum": "{} UZS"
+  "sum": "{} UZS",
+  "follow": "Follow",
+  "unfollow": "Unfollow",
+  "cabinet": "Cabinet"
 }

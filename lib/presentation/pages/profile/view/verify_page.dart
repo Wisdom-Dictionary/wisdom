@@ -197,5 +197,4 @@ class VerifyPage extends ViewModelBuilderWidget<VerifyPageViewModel> {
       wordEntityRepository: locator.get(),
     );
   }
-
 }

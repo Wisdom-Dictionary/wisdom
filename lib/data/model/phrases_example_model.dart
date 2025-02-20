@@ -1,8 +1,9 @@
 class PhrasesExampleModel {
   PhrasesExampleModel({
-      this.id, 
-      this.phraseId, 
-      this.value,});
+    this.id,
+    this.phraseId,
+    this.value,
+  });
 
   PhrasesExampleModel.fromJson(dynamic json) {
     id = json['id'];
@@ -20,5 +21,4 @@ class PhrasesExampleModel {
     map['value'] = value;
     return map;
   }
-
 }

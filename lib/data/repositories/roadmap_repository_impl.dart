@@ -7,6 +7,7 @@ import 'package:wisdom/core/domain/http_is_success.dart';
 import 'package:wisdom/core/services/custom_client.dart';
 import 'package:wisdom/data/model/roadmap/level_model.dart';
 import 'package:wisdom/data/model/roadmap/level_word_model.dart';
+import 'package:wisdom/data/model/roadmap/rank_model.dart';
 import 'package:wisdom/domain/repositories/roadmap_repository.dart';
 
 class RoadmapRepositoryImpl extends RoadmapRepository {
@@ -18,6 +19,7 @@ class RoadmapRepositoryImpl extends RoadmapRepository {
   List<LevelWordModel> _levelWordsList = [];
   List<LevelModel> _levelsList = [];
   int _userCurrentLevel = 0;
+  RankModel? _userRank;
   LevelModel? selectedLevel;
 
   // getting levels from host
@@ -32,7 +34,10 @@ class RoadmapRepositoryImpl extends RoadmapRepository {
       for (var item in responseData['levels']) {
         _levelsList.add(LevelModel.fromMap(item));
       }
-      _userCurrentLevel = responseData['user_current_level'];
+      _userCurrentLevel = responseData['user_current_level'] ?? 0;
+      if (responseData['rank'] != null) {
+        _userRank = RankModel.fromMap(responseData['rank']);
+      }
     } else {
       throw VMException(response.body, callFuncName: 'getLevels', response: response);
     }
@@ -71,4 +76,7 @@ class RoadmapRepositoryImpl extends RoadmapRepository {
 
   @override
   int get userCurrentLevel => _userCurrentLevel;
+
+  @override
+  RankModel? get userRank => _userRank;
 }
