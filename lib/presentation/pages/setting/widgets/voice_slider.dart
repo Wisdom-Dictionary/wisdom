@@ -78,7 +78,6 @@ class _VoiceSliderState extends State<VoiceSlider> {
     });
   }
 }
-
 class CustomTrackShape extends RoundedRectSliderTrackShape {
   @override
   Rect getPreferredRect({

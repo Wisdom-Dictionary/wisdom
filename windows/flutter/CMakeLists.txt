@@ -93,10 +93,14 @@ add_custom_command(
     ${FLUTTER_TOOL_ENVIRONMENT}
     "${FLUTTER_ROOT}/packages/flutter_tools/bin/tool_backend.bat"
 <<<<<<< HEAD
+<<<<<<< HEAD
       windows-x64 $<CONFIG>
 =======
       ${FLUTTER_TARGET_PLATFORM} $<CONFIG>
 >>>>>>> 048de01 (last changes from Github)
+=======
+      ${FLUTTER_TARGET_PLATFORM} $<CONFIG>
+>>>>>>> refs/remotes/origin/latest_code
   VERBATIM
 )
 add_custom_target(flutter_assemble DEPENDS

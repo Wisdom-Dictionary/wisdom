@@ -43,12 +43,10 @@ class NetWorkChecker {
       return false;
     }
   }
-
   //network listener
   Stream<ConnectivityResult> networkListener() {
     return Connectivity().onConnectivityChanged;
   }
-
   //stream has connection
   Stream<bool> hasConnection() {
     return networkListener().map((event) => event != ConnectivityResult.none);

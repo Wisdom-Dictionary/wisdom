@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 /// parentId : 1
 /// wordId : 1
 /// translation : ""
