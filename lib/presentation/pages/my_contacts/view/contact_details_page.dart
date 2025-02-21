@@ -147,14 +147,24 @@ class UserStatisticsWithPersentage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         item(percent: contactItemData.statistics?.winRate ?? 0, title: "win_rate".tr()),
+        SizedBox(
+          width: 12,
+        ),
         item(percent: contactItemData.statistics?.gameAccuracy ?? 0, title: "game_accuracy".tr()),
+        SizedBox(
+          width: 12,
+        ),
         item(
             percent: contactItemData.statistics?.averageTime ?? 0,
             percentSign: " s",
             title: "average_time".tr()),
+        SizedBox(
+          width: 12,
+        ),
         item(
             percent: contactItemData.statistics?.bestTime ?? 0,
             percentSign: " s",
@@ -163,22 +173,25 @@ class UserStatisticsWithPersentage extends StatelessWidget {
     );
   }
 
-  CircularPercentIndicator item({String? title, String? percentSign, int? percent}) {
-    return CircularPercentIndicator(
-      circularStrokeCap: CircularStrokeCap.round,
-      progressColor: AppColors.blue,
-      radius: 28,
-      backgroundColor: AppColors.vibrantBlue.withValues(alpha: 0.15),
-      percent: (percent ?? 0) / 100,
-      center: Text(
-        percent != null ? "$percent${percentSign ?? "%"}" : "",
-        style: AppTextStyle.font15W600Normal.copyWith(color: AppColors.blue, fontSize: 16),
-      ),
-      footer: Padding(
-        padding: const EdgeInsets.only(top: 3),
-        child: Text(
-          title ?? "",
-          style: AppTextStyle.font13W500Normal.copyWith(color: AppColors.blue, fontSize: 11),
+  Widget item({String? title, String? percentSign, int? percent}) {
+    return Expanded(
+      child: CircularPercentIndicator(
+        circularStrokeCap: CircularStrokeCap.round,
+        progressColor: AppColors.blue,
+        radius: 28,
+        backgroundColor: AppColors.vibrantBlue.withValues(alpha: 0.15),
+        percent: (percent ?? 0) / 100,
+        center: Text(
+          percent != null ? "$percent${percentSign ?? "%"}" : "",
+          style: AppTextStyle.font15W600Normal.copyWith(color: AppColors.blue, fontSize: 16),
+        ),
+        footer: Padding(
+          padding: const EdgeInsets.only(top: 3),
+          child: Text(
+            title ?? "",
+            textAlign: TextAlign.center,
+            style: AppTextStyle.font13W500Normal.copyWith(color: AppColors.blue, fontSize: 11),
+          ),
         ),
       ),
     );

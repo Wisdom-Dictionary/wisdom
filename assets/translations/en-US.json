@@ -241,5 +241,7 @@
   "sum": "{} UZS",
   "follow": "Follow",
   "unfollow": "Unfollow",
-  "cabinet": "Cabinet"
-}
+  "cabinet": "Cabinet",
+  "correct_answers": "Correct answers",
+  "edit": "Edit"
+  }

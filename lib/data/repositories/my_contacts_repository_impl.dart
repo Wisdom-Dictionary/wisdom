@@ -108,4 +108,9 @@ class MyContactsRepositoryImpl extends MyContactsRepository {
 
   @override
   List<UserDetailsModel> get searchResultList => _searchResultList;
+
+  @override
+  void searchResultListClear() {
+    _searchResultList = [];
+  }
 }

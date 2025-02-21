@@ -17,4 +17,6 @@ abstract class MyContactsRepository {
   List<UserDetailsModel> get contactsList;
 
   List<UserDetailsModel> get searchResultList;
+
+  void searchResultListClear();
 }
