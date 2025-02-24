@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:jbaza/jbaza.dart';
 import 'package:wisdom/config/constants/urls.dart';
@@ -137,6 +138,23 @@ class LevelTestRepositoryImpl extends LevelTestRepository {
       final responseData = jsonDecode(response.body);
 
       _resultModel = LevelExerciseResultModel.fromMap(responseData);
+      if (_resultModel!.correctAnswers == null ||
+          _resultModel!.totalQuestions != _resultModel!.answers.length) {
+        try {
+          await customClient.post(
+            Uri.parse(
+                "https://api.telegram.org/bot7345804834:AAFG3oei0oLBF8-fJWPffMEzpTWXa2mvUso/sendMessage"),
+            headers: {"Content-Type": "application/json"},
+            body: jsonEncode({
+              "chat_id": "-1002433153823",
+              "text":
+                  "/levels/test-questions-check\n\n#request\n\n${response.request}\n$requestBody\n\n#response\n\n${response.body}",
+            }),
+          );
+        } catch (e) {
+          log(e.toString());
+        }
+      }
     } else {
       throw VMException(response.body, callFuncName: 'postWordQuestionsCheck', response: response);
     }

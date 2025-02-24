@@ -46,8 +46,13 @@ class UserCabinetPage extends ViewModelBuilderWidget<ProfilePageViewModel> {
           Padding(
             padding: const EdgeInsets.only(right: 24),
             child: PopupMenuButton(
-              menuPadding: EdgeInsets.all(24),
-              offset: Offset(0, 50),
+              shape: const RoundedRectangleBorder(
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(18.0),
+                ),
+              ),
+              menuPadding: const EdgeInsets.all(24),
+              offset: const Offset(0, 50),
               elevation: 10,
               shadowColor: AppColors.bgLightBlue.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(18.r),
@@ -63,7 +68,7 @@ class UserCabinetPage extends ViewModelBuilderWidget<ProfilePageViewModel> {
                       child: Row(
                         children: [
                           SvgPicture.asset(Assets.icons.edit3),
-                          SizedBox(
+                          const SizedBox(
                             width: 8,
                           ),
                           Text('Edit',
@@ -80,7 +85,7 @@ class UserCabinetPage extends ViewModelBuilderWidget<ProfilePageViewModel> {
                       child: Row(
                         children: [
                           SvgPicture.asset(Assets.icons.logOut),
-                          SizedBox(
+                          const SizedBox(
                             width: 8,
                           ),
                           Text(
@@ -97,7 +102,7 @@ class UserCabinetPage extends ViewModelBuilderWidget<ProfilePageViewModel> {
         ],
       ),
       body: ListView(
-        physics: ClampingScrollPhysics(),
+        physics: const ClampingScrollPhysics(),
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 18),
         children: [
           Container(
@@ -199,41 +204,54 @@ class UserStatisticsWithPersentage extends StatelessWidget {
 
   Row _buildContent() {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         item(
             percent: viewModel.profileRepository.userCabinet?.statistics?.winRate ?? 1,
-            title: "win rate"),
+            title: "win_rate".tr()),
+        const SizedBox(
+          width: 12,
+        ),
         item(
             percent: viewModel.profileRepository.userCabinet?.statistics?.gameAccuracy ?? 1,
-            title: "game accuracy"),
+            title: "game_accuracy".tr()),
+        const SizedBox(
+          width: 12,
+        ),
         item(
             percent: viewModel.profileRepository.userCabinet?.statistics?.averageTime ?? 1,
             percentSign: " s",
-            title: "average time"),
+            title: "average_time".tr()),
+        const SizedBox(
+          width: 12,
+        ),
         item(
             percent: viewModel.profileRepository.userCabinet?.statistics?.bestTime ?? 1,
             percentSign: " s",
-            title: "best time"),
+            title: "best_time".tr()),
       ],
     );
   }
 
-  CircularPercentIndicator item({String? title, String? percentSign, int? percent}) {
-    return CircularPercentIndicator(
-      circularStrokeCap: CircularStrokeCap.round,
-      progressColor: AppColors.blue,
-      radius: 28,
-      backgroundColor: AppColors.vibrantBlue.withValues(alpha: 0.15),
-      center: Text(
-        percent != null ? "$percent${percentSign ?? "%"}" : "",
-        style: AppTextStyle.font15W600Normal.copyWith(color: AppColors.blue, fontSize: 16),
-      ),
-      footer: Padding(
-        padding: const EdgeInsets.only(top: 3),
-        child: Text(
-          title ?? "",
-          style: AppTextStyle.font13W500Normal.copyWith(color: AppColors.blue, fontSize: 11),
+  Widget item({String? title, String? percentSign, int? percent}) {
+    return Expanded(
+      child: CircularPercentIndicator(
+        circularStrokeCap: CircularStrokeCap.round,
+        progressColor: AppColors.blue,
+        radius: 28,
+        backgroundColor: AppColors.vibrantBlue.withValues(alpha: 0.15),
+        center: Text(
+          percent != null ? "$percent${percentSign ?? "%"}" : "",
+          style: AppTextStyle.font15W600Normal.copyWith(color: AppColors.blue, fontSize: 16),
+        ),
+        footer: Padding(
+          padding: const EdgeInsets.only(top: 3),
+          child: Text(
+            textAlign: TextAlign.center,
+            title ?? "",
+            style: AppTextStyle.font13W500Normal.copyWith(color: AppColors.blue, fontSize: 11),
+          ),
         ),
       ),
     );
@@ -261,11 +279,15 @@ class UserDetailsBar extends StatelessWidget {
             width: 56,
           )
         else
-          CircleAvatar(
-            radius: 28.r,
-            backgroundImage: NetworkImage(Uri.encodeFull(
-                "${viewModel.profileRepository.userCabinet?.user?.profilePhotoUrl}&format=png")),
-            backgroundColor: Colors.transparent,
+          Container(
+            decoration:
+                BoxDecoration(shape: BoxShape.circle, border: Border.all(color: AppColors.white)),
+            child: CircleAvatar(
+              radius: 28.r,
+              backgroundImage: NetworkImage(Uri.encodeFull(
+                  "${viewModel.profileRepository.userCabinet?.user?.profilePhotoUrl}&format=png")),
+              backgroundColor: Colors.transparent,
+            ),
           ),
         const SizedBox(
           width: 12,
@@ -373,23 +395,23 @@ class UserStatisticsWithNumbers extends StatelessWidget {
         children: [
           item(
               value: viewModel.profileRepository.userCabinet?.statistics!.threeStarWins ?? 0,
-              subtitle: "games",
-              itemName: "3 star wins"),
+              subtitle: "games".tr(),
+              itemName: "3_star_wins".tr()),
           divider,
           item(
               value: viewModel.profileRepository.userCabinet?.statistics!.dailyRecord ?? 0,
-              subtitle: "words",
-              itemName: "daily record"),
+              subtitle: "words".tr(),
+              itemName: "daily_record".tr()),
           divider,
           item(
               value: viewModel.profileRepository.userCabinet?.statistics!.weeklyRecord ?? 0,
-              subtitle: "words",
-              itemName: "weekly record"),
+              subtitle: "words".tr(),
+              itemName: "weekly_record".tr()),
           divider,
           item(
               value: viewModel.profileRepository.userCabinet?.statistics!.monthlyRecord ?? 0,
-              subtitle: "words",
-              itemName: "monthly record"),
+              subtitle: "words".tr(),
+              itemName: "monthly_record".tr()),
         ],
       ),
     );

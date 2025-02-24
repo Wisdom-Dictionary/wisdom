@@ -37,6 +37,7 @@ class WordExercisesResultPage extends ViewModelBuilderWidget<WordExercisesResult
               ? const ShimmerExercisesPage()
               : viewModel.isSuccess(tag: viewModel.postWordExercisesResultTag)
                   ? ListView.builder(
+                      padding: EdgeInsets.symmetric(vertical: 16),
                       physics: ClampingScrollPhysics(),
                       itemCount: viewModel.levelTestRepository.testQuestionsList.length,
                       itemBuilder: (context, index) {

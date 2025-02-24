@@ -21,6 +21,9 @@ class MyContactSearchViewModel extends BaseViewModel {
           setSuccess(tag: getMyContactSearchTag);
         }
       }, callFuncName: 'getMyContactSearch', tag: getMyContactSearchTag, inProgress: false);
+    } else {
+      myContactsRepository.searchResultListClear();
+      notifyListeners();
     }
   }
 }

@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:jbaza/jbaza.dart';
@@ -50,7 +51,7 @@ class UpdateProfilePage extends ViewModelBuilderWidget<UpdateProfilePageViewMode
       child: Scaffold(
           backgroundColor: isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
           appBar: CustomAppBar(
-              title: "Update Cabinet",
+              title: "cabinet".tr(),
               onTap: () {
                 Navigator.pop(context);
               },
@@ -79,7 +80,7 @@ class UpdateProfilePage extends ViewModelBuilderWidget<UpdateProfilePageViewMode
               padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
               children: [
                 Text(
-                  "Edit",
+                  "edit".tr(),
                   style:
                       AppTextStyle.font17W600Normal.copyWith(color: AppColors.blue, fontSize: 18),
                 ),
@@ -96,8 +97,10 @@ class UpdateProfilePage extends ViewModelBuilderWidget<UpdateProfilePageViewMode
                     textCapitalization: TextCapitalization.words,
                     style:
                         AppTextStyle.font13W500Normal.copyWith(fontSize: 14, color: AppColors.blue),
+                    maxLength: 20,
                     decoration: InputDecoration(
-                        hintText: "Ism",
+                        counterText: "",
+                        hintText: "name".tr(),
                         hintStyle: AppTextStyle.font13W500Normal
                             .copyWith(fontSize: 14, color: AppColors.blue.withValues(alpha: 0.5)),
                         border: InputBorder.none,
@@ -181,7 +184,7 @@ class UpdateProfilePage extends ViewModelBuilderWidget<UpdateProfilePageViewMode
                             ? AppColors.white
                             : AppColors.blue,
                         height: 41,
-                        title: "Male",
+                        title: Gender.M.localeName,
                         onTap: () {
                           viewModel.setGender(Gender.M);
                         },
@@ -193,7 +196,7 @@ class UpdateProfilePage extends ViewModelBuilderWidget<UpdateProfilePageViewMode
                     Expanded(
                       child: WButton(
                         height: 41,
-                        title: "Female",
+                        title: Gender.F.localeName,
                         titleColor: viewModel.editedUser.gender == Gender.F
                             ? AppColors.white
                             : AppColors.blue,
