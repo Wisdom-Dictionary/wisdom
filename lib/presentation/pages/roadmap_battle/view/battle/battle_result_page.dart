@@ -1,17 +1,27 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:jbaza/jbaza.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:wisdom/config/constants/app_colors.dart';
 import 'package:wisdom/config/constants/app_decoration.dart';
 import 'package:wisdom/config/constants/app_text_style.dart';
 import 'package:wisdom/config/constants/assets.dart';
 import 'package:wisdom/config/constants/constants.dart';
+import 'package:wisdom/data/model/battle/battle_result_model.dart';
+import 'package:wisdom/presentation/components/shimmer.dart';
 import 'package:wisdom/presentation/components/w_button.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/searching_opponent_page.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/battle_result_viewmodel.dart';
+import 'package:wisdom/presentation/routes/routes.dart';
 import 'package:wisdom/presentation/widgets/custom_app_bar.dart';
 
-class BattleResultPage extends StatelessWidget {
+class BattleResultPage extends ViewModelBuilderWidget<BattleResultViewmodel> {
   BattleResultPage({super.key});
+  @override
+  void onViewModelReady(BattleResultViewmodel viewModel) {
+    super.onViewModelReady(viewModel);
+  }
 
   String formatText(String text, int chunkSize) {
     final pattern = RegExp('.{1,$chunkSize}');
@@ -19,7 +29,7 @@ class BattleResultPage extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget builder(BuildContext context, BattleResultViewmodel viewModel, Widget? child) {
     return WillPopScope(
         // onWillPop: () => viewModel.goBack(),
         onWillPop: null,
@@ -36,7 +46,10 @@ class BattleResultPage extends StatelessWidget {
             physics: const ClampingScrollPhysics(),
             padding: const EdgeInsets.symmetric(vertical: 13, horizontal: 18),
             children: [
-              statusIndicatorBar(true, 2),
+              if (!viewModel.hasOpponentData)
+                ShimmerWidget(child: statusIndicatorBar(true, 2))
+              else
+                statusIndicatorBar(viewModel.currentUserWon, viewModel.currentUserGainedStars ?? 0),
               const SizedBox(
                 height: 8,
               ),
@@ -49,84 +62,82 @@ class BattleResultPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Column(
-                          children: [
-                            SvgPicture.asset(Assets.icons.userAvatar),
-                            const SizedBox(
-                              height: 8,
-                            ),
-                            Text(
-                              "you".tr(),
-                              textAlign: TextAlign.center,
-                              style: AppTextStyle.font15W700Normal
-                                  .copyWith(fontSize: 14, color: AppColors.black),
-                            )
-                          ],
+                        UserDetailsWithName(
+                          rank: viewModel.currentUser!.rank,
+                          isPremium: viewModel.currentUser!.isPremium,
+                          name: "you".tr(),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 16, left: 24, right: 24),
                           child: Text(
-                            "5:5",
+                            "${viewModel.currentUserCorrectAnswers ?? 0}:${viewModel.opponentUserCorrectAnswers ?? 0}",
                             style: AppTextStyle.font28W600Normal
                                 .copyWith(color: AppColors.blue, fontSize: 24),
                           ),
                         ),
-                        SizedBox(
-                          width: 80,
-                          child: Column(
-                            children: [
-                              SvgPicture.asset(Assets.icons.userAvatar),
-                              const SizedBox(
-                                height: 8,
-                              ),
-                              Text(
-                                "Sevara Fozilova",
-                                textAlign: TextAlign.center,
-                                style: AppTextStyle.font15W700Normal
-                                    .copyWith(fontSize: 14, color: AppColors.black),
-                              )
-                            ],
-                          ),
+                        UserDetailsWithName(
+                          rank: viewModel.opponentUser?.rank,
+                          isPremium: viewModel.opponentUser?.isPremium,
+                          name: viewModel.opponentUser?.name ?? "",
                         ),
                       ],
                     ),
                     const SizedBox(
                       height: 24,
                     ),
-                    Row(
-                      children: [
-                        Expanded(
-                            child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Text(
-                              'You:',
-                              style: AppTextStyle.font15W600Normal
-                                  .copyWith(color: AppColors.black, fontSize: 10),
-                            ),
-                            const SizedBox(
-                              height: 8,
-                            ),
-                            statusResultBar(5, 8, spendTime: 286, givenTime: 420),
-                          ],
-                        )),
-                        divider(),
-                        Expanded(
-                            child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Text(
-                              'Opponent:',
-                              style: AppTextStyle.font15W600Normal
-                                  .copyWith(color: AppColors.black, fontSize: 10),
-                            ),
-                            const SizedBox(
-                              height: 8,
-                            ),
-                            statusResultBar(1, 20, spendTime: 254, givenTime: 420),
-                          ],
-                        )),
-                      ],
+                    SizedBox(
+                      height: 120,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Expanded(
+                              child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Text(
+                                "${"you".tr()}:",
+                                style: AppTextStyle.font15W600Normal
+                                    .copyWith(color: AppColors.black, fontSize: 10),
+                              ),
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              if (viewModel.hasCurrentUserData)
+                                statusResultBar(viewModel.currentUserCorrectAnswers ?? 1,
+                                    viewModel.totalQuestions ?? 0,
+                                    spentTimeInMilliseconds: viewModel.currentUserSpentTime,
+                                    givenTimeInMilliseconds: viewModel.battleDuration),
+                            ],
+                          )),
+                          divider(),
+                          Expanded(
+                              child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Text(
+                                "${'opponent'.tr()}:",
+                                style: AppTextStyle.font15W600Normal
+                                    .copyWith(color: AppColors.black, fontSize: 10),
+                              ),
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              if (!viewModel.hasOpponentData)
+                                ShimmerWidget(
+                                    child: statusResultBar(0, 0,
+                                        spentTimeInMilliseconds: 0, givenTimeInMilliseconds: 0)),
+                              if (viewModel.hasOpponentData)
+                                statusResultBar(viewModel.opponentUserCorrectAnswers ?? 1,
+                                    viewModel.totalQuestions ?? 0,
+                                    spentTimeInMilliseconds: viewModel.opponentUserSpentTime,
+                                    givenTimeInMilliseconds: viewModel.battleDuration),
+                            ],
+                          )),
+                        ],
+                      ),
                     ),
                     const SizedBox(
                       height: 24,
@@ -136,33 +147,20 @@ class BattleResultPage extends StatelessWidget {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(16),
                           color: isDarkTheme ? AppColors.darkBackground : AppColors.white),
-                      child: const Column(
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          QuestionsResultList(items: [
-                            "enough",
-                            "very",
-                            "many",
-                            "too",
-                            "enough",
-                            "many",
-                            "too",
-                            "enough",
-                            "many",
-                            "too",
-                            "enough",
-                            "many",
-                            "too",
-                            "very",
-                            "many",
-                            "too",
-                            "enough",
-                          ]),
+                          QuestionsResultList(
+                            items: viewModel.result.result,
+                            user1IsCurrentUser: viewModel.user1IsCurrentUser,
+                          ),
                         ],
                       ),
                     ),
                     GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.pushNamed(context, Routes.battleExercisesResultPage);
+                        },
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 24),
                           child: Text(
@@ -186,17 +184,31 @@ class BattleResultPage extends StatelessWidget {
         ));
   }
 
-  SizedBox divider() {
-    return const SizedBox(
-        height: 57,
-        child: VerticalDivider(
-          thickness: 1,
-          width: 26,
-          color: AppColors.blue,
-        ));
+  Widget divider() {
+    return const Center(
+      child: SizedBox(
+          height: 57,
+          child: VerticalDivider(
+            thickness: 1,
+            width: 26,
+            color: AppColors.blue,
+          )),
+    );
   }
 
-  Widget statusResultBar(int correctAnswers, int totalQuestions, {int? spendTime, int? givenTime}) {
+  String formatMilliseconds(int milliseconds) {
+    int totalSeconds = (milliseconds / 1000).floor();
+    int minutes = (totalSeconds / 60).floor();
+    int seconds = totalSeconds % 60;
+
+    String minutesStr = minutes.toString().padLeft(2, '0');
+    String secondsStr = seconds.toString().padLeft(2, '0');
+
+    return "$minutesStr:$secondsStr";
+  }
+
+  Widget statusResultBar(int correctAnswers, int totalQuestions,
+      {int? spentTimeInMilliseconds, int? givenTimeInMilliseconds}) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -207,7 +219,9 @@ class BattleResultPage extends StatelessWidget {
           lineWidth: 5.0,
           animation: true,
           backgroundColor: AppColors.vibrantBlue.withValues(alpha: 0.15),
-          percent: correctAnswers / totalQuestions,
+          percent: totalQuestions == 0
+              ? 0.0
+              : double.parse((correctAnswers / totalQuestions).toStringAsFixed(2)),
           center: Text(
             "$correctAnswers/$totalQuestions",
             style: AppTextStyle.font15W600Normal.copyWith(fontSize: 10, color: AppColors.blue),
@@ -229,16 +243,18 @@ class BattleResultPage extends StatelessWidget {
         const SizedBox(
           width: 12,
         ),
-        if (spendTime != null && givenTime != null)
+        if (spentTimeInMilliseconds != null && givenTimeInMilliseconds != null)
           CircularPercentIndicator(
             startAngle: 90,
             radius: 28.0,
             lineWidth: 5.0,
             animation: true,
             backgroundColor: AppColors.vibrantBlue.withValues(alpha: 0.15),
-            percent: spendTime / givenTime,
+            percent: spentTimeInMilliseconds == 0 || givenTimeInMilliseconds == 0
+                ? 0
+                : spentTimeInMilliseconds / givenTimeInMilliseconds,
             center: Text(
-              "$spendTime",
+              formatMilliseconds(spentTimeInMilliseconds),
               style: AppTextStyle.font15W600Normal.copyWith(fontSize: 10, color: AppColors.blue),
             ),
             progressColor: AppColors.blue,
@@ -304,7 +320,7 @@ class BattleResultPage extends StatelessWidget {
                             style: AppTextStyle.font17W700Normal
                                 .copyWith(fontSize: 18, color: AppColors.red),
                           ),
-                    statusIndicatorLivesBar(livesStatusIndicator),
+                    statusIndicatorLivesBar(livesStatusIndicator == 0 ? -1 : livesStatusIndicator),
                   ],
                 ),
               ))
@@ -342,11 +358,19 @@ class BattleResultPage extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  BattleResultViewmodel viewModelBuilder(BuildContext context) {
+    return BattleResultViewmodel(
+      context: context,
+    );
+  }
 }
 
 class QuestionsResultList extends StatefulWidget {
-  const QuestionsResultList({super.key, required this.items});
-  final List<String> items;
+  const QuestionsResultList({super.key, required this.items, required this.user1IsCurrentUser});
+  final List<BattleExerciseResultModel> items;
+  final bool user1IsCurrentUser;
   @override
   State<QuestionsResultList> createState() => _QuestionsResultListState();
 }
@@ -425,6 +449,7 @@ class _QuestionsResultListState extends State<QuestionsResultList> {
           child: Stack(
             children: [
               ListView.separated(
+                physics: const ClampingScrollPhysics(),
                 controller: _scrollController,
                 padding: EdgeInsets.zero,
                 shrinkWrap: true,
@@ -433,19 +458,28 @@ class _QuestionsResultListState extends State<QuestionsResultList> {
                   height: 1,
                   color: AppColors.vibrantBlue.withValues(alpha: 0.15),
                 ),
-                itemBuilder: (context, index) => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SvgPicture.asset(Assets.icons.doubleCheck),
-                      Text(widget.items[index],
-                          style: AppTextStyle.font15W600Normal
-                              .copyWith(fontSize: 14, color: AppColors.blue)),
-                      SvgPicture.asset(Assets.icons.incorrectAnswer)
-                    ],
-                  ),
-                ),
+                itemBuilder: (context, index) {
+                  bool? currentUserAnswer = widget.user1IsCurrentUser
+                      ? widget.items[index].user1IsCorrect
+                      : widget.items[index].user2IsCorrect;
+                  bool? opponentAnswer = !widget.user1IsCurrentUser
+                      ? widget.items[index].user1IsCorrect
+                      : widget.items[index].user2IsCorrect;
+
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        answerStatus(currentUserAnswer),
+                        Text(widget.items[index].word ?? "",
+                            style: AppTextStyle.font15W600Normal
+                                .copyWith(fontSize: 14, color: AppColors.blue)),
+                        answerStatus(opponentAnswer),
+                      ],
+                    ),
+                  );
+                },
               ),
               if (_showGradientTop)
                 Positioned(
@@ -498,5 +532,15 @@ class _QuestionsResultListState extends State<QuestionsResultList> {
         ),
       ],
     );
+  }
+
+  Widget answerStatus(bool? status) {
+    if (status == null) {
+      return ShimmerWidget(child: SvgPicture.asset(Assets.icons.doubleCheck));
+    }
+    if (status) {
+      return SvgPicture.asset(Assets.icons.doubleCheck);
+    }
+    return SvgPicture.asset(Assets.icons.incorrectAnswer);
   }
 }

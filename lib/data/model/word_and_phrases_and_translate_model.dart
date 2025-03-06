@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 /// id : 1
 /// word_class : ""
 /// p_star : 1

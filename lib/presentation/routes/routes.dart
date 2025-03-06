@@ -21,6 +21,8 @@ import 'package:wisdom/presentation/pages/profile/view/profile_page.dart';
 import 'package:wisdom/presentation/pages/profile/view/update_profile_page.dart';
 import 'package:wisdom/presentation/pages/profile/view/user_cabinet_page.dart';
 import 'package:wisdom/presentation/pages/profile/view/verify_page.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/battle_exercises_page.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/battle_exercises_result_page.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/battle_result_page.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/searching_opponent_page.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/exercises_result/word_exercises_result_page.dart';
@@ -50,7 +52,9 @@ class Routes {
   static const wordExercisesCheckPage = '/wordExercisesCheckPage';
   static const wordExercisesResultPage = '/wordExercisesResultPage';
   static const searchingOpponentPage = '/searchingOpponentPage';
+  static const battleExercisesPage = '/battleExercisesPage';
   static const battleResultPage = '/battleResultPage';
+  static const battleExercisesResultPage = '/battleExercisesResultPage';
   static const userCabinetPage = '/userCabinetPage';
   static const editUserPage = '/editUserPage';
   static const myContactsPage = '/myContactsPage';
@@ -148,9 +152,17 @@ class Routes {
           return MaterialPageRoute(
             builder: (_) => SearchingOpponentPage(),
           );
+        case battleExercisesPage:
+          return MaterialPageRoute(
+            builder: (_) => BattleExercisesPage(),
+          );
         case battleResultPage:
           return MaterialPageRoute(
             builder: (_) => BattleResultPage(),
+          );
+        case battleExercisesResultPage:
+          return MaterialPageRoute(
+            builder: (_) => BattleExercisesResultPage(),
           );
         case userCabinetPage:
           return MaterialPageRoute(

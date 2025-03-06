@@ -37,7 +37,9 @@ class RoadmapPage extends ViewModelBuilderWidget<RoadMapViewModel> {
           child: NewCustomAppBar(
             height: 63.h,
             hasLeading: false,
-            child: const RoadmapAppBarContent(),
+            child: RoadmapAppBarContent(
+              viewModel: viewModel,
+            ),
           ),
         ),
       ],
@@ -51,10 +53,8 @@ class RoadmapPage extends ViewModelBuilderWidget<RoadMapViewModel> {
 }
 
 class RoadmapAppBarContent extends StatelessWidget {
-  const RoadmapAppBarContent({
-    super.key,
-  });
-
+  const RoadmapAppBarContent({super.key, required this.viewModel});
+  final RoadMapViewModel viewModel;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -63,9 +63,11 @@ class RoadmapAppBarContent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          scoreInfo("1200", SvgPicture.asset(Assets.icons.star)),
-          scoreInfo("500", SvgPicture.asset(Assets.icons.verify)),
-          LifeStatusBar()
+          scoreInfo((viewModel.userDetailsModel?.statistics?.userStars ?? 0).toString(),
+              SvgPicture.asset(Assets.icons.star)),
+          scoreInfo((viewModel.userDetailsModel?.userCurrentLevel ?? 0).toString(),
+              SvgPicture.asset(Assets.icons.verify)),
+          const LifeStatusBar()
         ],
       ),
     );

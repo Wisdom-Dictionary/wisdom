@@ -47,7 +47,7 @@ class UserCabinetPage extends ViewModelBuilderWidget<ProfilePageViewModel> {
             padding: const EdgeInsets.only(right: 24),
             child: PopupMenuButton(
               shape: const RoundedRectangleBorder(
-                borderRadius: const BorderRadius.all(
+                borderRadius: BorderRadius.all(
                   Radius.circular(18.0),
                 ),
               ),
@@ -61,8 +61,9 @@ class UserCabinetPage extends ViewModelBuilderWidget<ProfilePageViewModel> {
               itemBuilder: (context) {
                 return <PopupMenuEntry>[
                   PopupMenuItem(
-                      onTap: () {
-                        Navigator.pushNamed(context, Routes.updateProfilePage);
+                      onTap: () async {
+                        await Navigator.pushNamed(context, Routes.updateProfilePage);
+                        viewModel.getUserDetails();
                       },
                       padding: EdgeInsets.zero,
                       child: Row(
@@ -71,7 +72,7 @@ class UserCabinetPage extends ViewModelBuilderWidget<ProfilePageViewModel> {
                           const SizedBox(
                             width: 8,
                           ),
-                          Text('Edit',
+                          Text('edit'.tr(),
                               style: AppTextStyle.font13W500Normal
                                   .copyWith(color: AppColors.darkGray, fontSize: 14)),
                         ],
@@ -89,7 +90,7 @@ class UserCabinetPage extends ViewModelBuilderWidget<ProfilePageViewModel> {
                             width: 8,
                           ),
                           Text(
-                            'Logout',
+                            'exit'.tr(),
                             style: AppTextStyle.font13W500Normal
                                 .copyWith(color: AppColors.red, fontSize: 14),
                           ),
@@ -130,20 +131,20 @@ class UserCabinetPage extends ViewModelBuilderWidget<ProfilePageViewModel> {
                   height: 24,
                 ),
                 detailItem(
-                    title: "Phone",
+                    title: "phone".tr(),
                     detail: (viewModel.profileRepository.userCabinet?.user?.phone.toString() ?? "")
                         .phoneFormatter),
                 const SizedBox(
                   height: 8,
                 ),
                 detailItem(
-                    title: "Status",
+                    title: "status".tr(),
                     detail: viewModel.profileRepository.userCabinet?.tariff?.name?.en ?? ""),
                 const SizedBox(
                   height: 8,
                 ),
                 detailItem(
-                    title: "Gender",
+                    title: "gender".tr(),
                     detail: viewModel.profileRepository.userCabinet?.user?.gender.localeName ?? ""),
               ],
             ),
@@ -220,7 +221,9 @@ class UserStatisticsWithPersentage extends StatelessWidget {
           width: 12,
         ),
         item(
-            percent: viewModel.profileRepository.userCabinet?.statistics?.averageTime ?? 1,
+            percent:
+                ((viewModel.profileRepository.userCabinet?.statistics?.averageTime ?? 1) / 1000)
+                    .floor(),
             percentSign: " s",
             title: "average_time".tr()),
         const SizedBox(
@@ -317,7 +320,7 @@ class UserDetailsBar extends StatelessWidget {
                 child: Row(
                   children: [
                     Text(
-                      "ID: ${viewModel.profileRepository.userCabinet?.user?.id}",
+                      "ID: ${viewModel.profileRepository.userCabinet?.user?.id ?? ""}",
                       style: AppTextStyle.font13W500Normal
                           .copyWith(color: AppColors.blue, fontSize: 12),
                     ),
@@ -337,7 +340,7 @@ class UserDetailsBar extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  "12460",
+                  (viewModel.profileRepository.userCabinet?.statistics?.winRate ?? 0).toString(),
                   style:
                       AppTextStyle.font13W500Normal.copyWith(color: AppColors.blue, fontSize: 14),
                 ),

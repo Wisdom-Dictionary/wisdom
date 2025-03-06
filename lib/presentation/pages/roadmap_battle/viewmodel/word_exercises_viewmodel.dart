@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jbaza/jbaza.dart';
+import 'package:provider/provider.dart';
 import 'package:wisdom/core/db/db_helper.dart';
 import 'package:wisdom/core/db/preference_helper.dart';
 import 'package:wisdom/core/domain/entities/def_enum.dart';
@@ -10,6 +11,7 @@ import 'package:wisdom/domain/repositories/level_test_repository.dart';
 import 'package:wisdom/presentation/components/dialog_background.dart';
 import 'package:wisdom/presentation/components/no_internet_connection_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/cancel_level_exercises_dialog.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/life_countdown_provider.dart';
 import 'package:wisdom/presentation/routes/routes.dart';
 
 import '../../../../core/di/app_locator.dart';
@@ -61,6 +63,17 @@ class WordExercisesViewModel extends BaseViewModel {
     return endDate.difference(startDate).inSeconds;
   }
 
+  int get spendTimeForExercises {
+    if (!hasTimer) {
+      return 0;
+    }
+    DateTime startDate = DateTime.parse(levelTestRepository.startDate);
+    DateTime endDate = DateTime.now();
+
+    // Calculate the difference in seconds
+    return endDate.difference(startDate).inSeconds;
+  }
+
   int? get validateAnswers {
     for (int i = 0; i < levelTestRepository.testQuestionsList.length; i++) {
       TestQuestionModel question = levelTestRepository.testQuestionsList[i];
@@ -99,7 +112,10 @@ class WordExercisesViewModel extends BaseViewModel {
         if (levelTestRepository.exerciseType == TestExerciseType.wordExercise) {
           await levelTestRepository.postWordQuestionsCheck(answers);
         } else {
-          await levelTestRepository.postTestQuestionsCheck(answers, 100);
+          await levelTestRepository.postTestQuestionsCheck(answers, spendTimeForExercises);
+          if (!levelTestRepository.pass) {
+            await context!.read<CountdownProvider>().getLives();
+          }
         }
         Navigator.pop(context!);
         Navigator.pushNamed(context!, Routes.wordExercisesCheckPage);

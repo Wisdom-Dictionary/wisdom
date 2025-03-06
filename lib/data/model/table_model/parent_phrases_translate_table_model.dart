@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:wisdom/data/model/base_table_model.dart';
+
 /// id : 1
 /// word : ""
 /// phrase_id : 1

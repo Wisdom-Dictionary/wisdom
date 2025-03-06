@@ -18,9 +18,13 @@ UserDetailsModel _$UserDetailsModelFromJson(Map<String, dynamic> json) =>
       tariff: json['tariff'] == null
           ? null
           : Tariff.fromJson(json['tariff'] as Map<String, dynamic>),
+      isPremium: json['isPremium'] as bool?,
       statistics: json['statistics'] == null
           ? null
           : Statistics.fromJson(json['statistics'] as Map<String, dynamic>),
+      rank: json['rank'] == null
+          ? null
+          : RankModel.fromJson(json['rank'] as Map<String, dynamic>),
     );
 
 Statistics _$StatisticsFromJson(Map<String, dynamic> json) => Statistics(

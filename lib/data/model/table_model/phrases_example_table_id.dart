@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import '../base_table_model.dart';
+
 /// id : 1
 /// value : ""
 /// phrase_id : 1

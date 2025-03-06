@@ -15,6 +15,8 @@ abstract class _AssetsHolder {
 class _Icons extends _AssetsHolder {
   const _Icons() : super("assets/icons");
 
+  String get union => '$basePath/union.svg';
+
   String get battleItem => '$basePath/battle-item.svg';
 
   String get calendarOutlined => '$basePath/calendar-outlined.svg';
@@ -64,6 +66,8 @@ class _Icons extends _AssetsHolder {
   String get doubleCheck => '$basePath/double-check.svg';
 
   String get userAvatar => '$basePath/user-avatar.svg';
+
+  String get profileAvatar => '$basePath/profile-avatar.svg';
 
   String get starActive => '$basePath/star-active.svg';
 

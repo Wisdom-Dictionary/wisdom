@@ -3,7 +3,7 @@ description: A Flutter project.
 
 publish_to: 'none'
 
-version: 3.0.1+1
+version: 3.2.6+2
 
 environment:
   sdk: ">=3.0.5 <4.0.0"
@@ -116,6 +116,7 @@ dependencies:
   percent_indicator: ^4.2.4
   dotted_border: ^2.1.0
   shimmer: ^3.0.0
+  web_socket_channel: ^3.0.2
 
 
 dependency_overrides:

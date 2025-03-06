@@ -35,7 +35,7 @@ class RankModel {
     };
   }
 
-  factory RankModel.fromMap(Map<String, dynamic> map) {
+  factory RankModel.fromJson(Map<String, dynamic> map) {
     return RankModel(
       id: map['id'] != null ? map['id'] as int : null,
       name: map['name'] != null ? map['name'] as String : null,
@@ -44,9 +44,4 @@ class RankModel {
       rangeTo: map['range_to'] != null ? map['range_to'] as String : null,
     );
   }
-
-  String toJson() => json.encode(toMap());
-
-  factory RankModel.fromJson(String source) =>
-      RankModel.fromMap(json.decode(source) as Map<String, dynamic>);
 }

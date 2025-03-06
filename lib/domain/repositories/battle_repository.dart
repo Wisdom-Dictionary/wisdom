@@ -1,0 +1,44 @@
+import 'package:wisdom/data/model/battle/battle_user_model.dart';
+import 'package:wisdom/data/model/roadmap/answer_entity.dart';
+import 'package:wisdom/data/model/roadmap/test_question_model.dart';
+import 'package:wisdom/data/model/user/user_model.dart';
+import 'package:wisdom/data/repositories/battle_repository_impl.dart';
+
+abstract class BattleRepository {
+  Stream<String> get searchingOpponents;
+
+  Future<void> subscribeToChannel({required String channelName});
+
+  Future<void> startSearchingOpponents();
+
+  Future<void> stopSearchingOpponents();
+
+  Future<AuthParams> reverbAuth(String channelName);
+
+  Future<void> startBattle({
+    required int battleId,
+    required String battleChannel,
+    required int user1Id,
+    required int user2Id,
+  });
+
+  Future<void> checkBattleQuestions(List<AnswerEntity> answers, int spentTime);
+
+  Future<void> readyBattle({required int battleId, required String battleChannel});
+
+  List<TestQuestionModel> get battleQuestionsList;
+
+  List<TestQuestionModel> get battleQuestionsResultList;
+
+  int? get startDate;
+
+  int? get endDate;
+
+  Future<void> cancelBattle();
+
+  Future<void> postFullBattleResult();
+
+  void searchingOpponentsChannelClose();
+
+  void connectBattle();
+}

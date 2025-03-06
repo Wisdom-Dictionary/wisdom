@@ -158,6 +158,7 @@ class ActiveLevelItem extends StatelessWidget {
                         AppTextStyle.font13W500Normal.copyWith(fontSize: 8, color: AppColors.white),
                   )
                 : Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
                         locator<RoadmapRepository>().userRank?.name ?? "",
