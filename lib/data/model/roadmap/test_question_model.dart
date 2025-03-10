@@ -21,13 +21,13 @@ class TestQuestionModel {
   int? id;
   String? body;
   int? position;
-  List<AnswerModel>? answers;
+  List<AnswerModel> answers;
 
   TestQuestionModel({
     this.id,
     this.body,
     this.position,
-    this.answers,
+    this.answers = const [],
   });
 
   Map<String, dynamic> toMap() {
@@ -35,7 +35,7 @@ class TestQuestionModel {
       'id': id,
       'body': body,
       'position': position,
-      'answers': answers?.map((x) => x.toMap()).toList() ?? [],
+      'answers': answers.map((x) => x.toMap()).toList(),
     };
   }
 
@@ -50,7 +50,7 @@ class TestQuestionModel {
                 (x) => AnswerModel.fromMap(x as Map<String, dynamic>),
               ),
             )
-          : null,
+          : [],
     );
   }
 

@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:jbaza/jbaza.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
@@ -65,15 +65,15 @@ class SettingPageViewModel extends BaseViewModel {
   }
 
   Future<void> scheduleDailyNotification(TimeOfDay timeOfDay) async {
-    if (!(await AppNotificationService.to.requestPermissions())) {
-      return;
-    }
-    await AppNotificationService.to.scheduleDailyNotification(
-      body: "Body",
-      title: "Title",
-      hour: timeOfDay.hour,
-      minute: timeOfDay.minute,
-    );
+    // if (!(await AppNotificationService.to.requestPermissions())) {
+    //   return;
+    // }
+    // await AppNotificationService.to.scheduleDailyNotification(
+    //   body: "Body",
+    //   title: "Title",
+    //   hour: timeOfDay.hour,
+    //   minute: timeOfDay.minute,
+    // );
     sharedPreferenceHelper.putInt("hour", timeOfDay.hour);
     sharedPreferenceHelper.putInt("minute", timeOfDay.minute);
     sharedPreferenceHelper.putInt("periodicHour", 0);
@@ -94,12 +94,12 @@ class SettingPageViewModel extends BaseViewModel {
 
   Future<void> scheduleHourlyNotification(int hourInterval) async {
     try {
-      if (!(await AppNotificationService.to.requestNotificationPermission())) {
-        return;
-      }
-      await AppNotificationService.to.scheduleHourlyNotification(
-        hour: hourInterval,
-      );
+      // if (!(await AppNotificationService.to.requestNotificationPermission())) {
+      //   return;
+      // }
+      // await AppNotificationService.to.scheduleHourlyNotification(
+      //   hour: hourInterval,
+      // );
       sharedPreferenceHelper.putInt("periodicHour", hourInterval);
       sharedPreferenceHelper.putInt("hour", 0);
       sharedPreferenceHelper.putInt("minute", 0);
@@ -139,23 +139,23 @@ class SettingPageViewModel extends BaseViewModel {
 const fetchBackground = "fetchBackground";
 
 void callbackDispatcher() {
-  Workmanager().executeTask((task, inputData) async {
-    switch (task) {
-      case fetchBackground:
-        {
-          print('${task} ${inputData}');
-          await AppNotificationService.to.showNotification(
-            const RemoteMessage(
-              notification: RemoteNotification(
-                title: "Wisdom dictionary",
-                body: "It is time to review new words",
-              ),
-            ),
-            '/setting',
-          );
-        }
-        break;
-    }
-    return Future.value(true);
-  });
+  // Workmanager().executeTask((task, inputData) async {
+  //   switch (task) {
+  //     case fetchBackground:
+  //       {
+  //         print('${task} ${inputData}');
+  //         await AppNotificationService.to.showNotification(
+  //           const RemoteMessage(
+  //             notification: RemoteNotification(
+  //               title: "Wisdom dictionary",
+  //               body: "It is time to review new words",
+  //             ),
+  //           ),
+  //           '/setting',
+  //         );
+  //       }
+  //       break;
+  //   }
+  //   return Future.value(true);
+  // });
 }

@@ -134,7 +134,7 @@
   "folder_move": "Daftarga ko'chirish",
   "move": "Ko'chirish",
   "for_desk": "Kompyuter uchun",
-  "delete" : "O'chirish",
+  "delete": "O'chirish",
   "delete_folder": "Guruhni o'chirish",
   "delete_folder_info": "Ushbu guruhni o'chirmoqchimisiz ?",
   "delete_word": "So'zni o'chirish",
@@ -239,7 +239,10 @@
   "sum": "{} so'm",
   "follow": "Follow",
   "unfollow": "Unfollow",
-  "cabinet": "Cabinet",
+  "cabinet": "Kabinet",
   "correct_answers": "To'g'ri javoblar",
-  "edit": "Tahrirlash"
+  "edit": "Tahrirlash",
+  "stop": "To'xtatish",
+  "searching_opponent": "Raqibni qidirish...",
+  "status": "Holat"
 }

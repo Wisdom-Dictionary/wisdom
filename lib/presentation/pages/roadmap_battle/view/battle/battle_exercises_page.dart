@@ -13,19 +13,18 @@ import 'package:wisdom/data/model/roadmap/test_question_model.dart';
 import 'package:wisdom/presentation/components/count_down_timer.dart';
 import 'package:wisdom/presentation/components/w_button.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/widgets/life_status_bar.dart';
-import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/word_exercises_viewmodel.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/battle_exercises_viewmodel.dart';
 import 'package:wisdom/presentation/widgets/custom_app_bar.dart';
 
-class WordExercisesPage extends ViewModelBuilderWidget<WordExercisesViewModel> {
-  WordExercisesPage({super.key});
+class BattleExercisesPage extends ViewModelBuilderWidget<BattleExercisesViewModel> {
+  BattleExercisesPage({super.key});
   @override
-  void onViewModelReady(WordExercisesViewModel viewModel) {
-    viewModel.getTestQuestions();
+  void onViewModelReady(BattleExercisesViewModel viewModel) {
     super.onViewModelReady(viewModel);
   }
 
   @override
-  Widget builder(BuildContext context, WordExercisesViewModel viewModel, Widget? child) {
+  Widget builder(BuildContext context, BattleExercisesViewModel viewModel, Widget? child) {
     return WillPopScope(
         onWillPop: () => viewModel.goBack(),
         child: Scaffold(
@@ -48,38 +47,36 @@ class WordExercisesPage extends ViewModelBuilderWidget<WordExercisesViewModel> {
               )
             ],
           ),
-          body: viewModel.isBusy(tag: viewModel.getWordExercisesTag)
-              ? const ShimmerExercisesPage()
-              : viewModel.isSuccess(tag: viewModel.getWordExercisesTag)
-                  ? Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      child: Column(
-                        children: [
-                          if (viewModel.hasTimer)
-                            Padding(
-                              padding: const EdgeInsets.only(left: 18, right: 18, bottom: 16),
-                              child: CountDownTimer(
-                                secondsRemaining: viewModel.givenTimeForExercise,
-                                whenTimeExpires: () {},
-                                countDownTimerStyle: AppTextStyle.font13W500Normal
-                                    .copyWith(color: AppColors.blue, fontSize: 12),
-                              ),
-                            ),
-                          Expanded(
-                            child: WordExerciseContent(
-                              viewModel: viewModel,
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  : const Center(),
+          body: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Column(
+              children: [
+                if (viewModel.hasTimer)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 18, right: 18, bottom: 16),
+                    child: CountDownTimer(
+                      secondsRemaining: viewModel.givenTimeForExercise,
+                      whenTimeExpires: () {
+                        viewModel.postTestQuestionsResult();
+                      },
+                      countDownTimerStyle: AppTextStyle.font13W500Normal
+                          .copyWith(color: AppColors.blue, fontSize: 12),
+                    ),
+                  ),
+                Expanded(
+                  child: BattleExerciseContent(
+                    viewModel: viewModel,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ));
   }
 
   @override
-  WordExercisesViewModel viewModelBuilder(BuildContext context) {
-    return WordExercisesViewModel(
+  BattleExercisesViewModel viewModelBuilder(BuildContext context) {
+    return BattleExercisesViewModel(
       context: context,
     );
   }
@@ -143,21 +140,21 @@ class ShimmerExercisesPage extends StatelessWidget {
   }
 }
 
-class WordExerciseContent extends StatefulWidget {
-  const WordExerciseContent({super.key, required this.viewModel});
-  final WordExercisesViewModel viewModel;
+class BattleExerciseContent extends StatefulWidget {
+  const BattleExerciseContent({super.key, required this.viewModel});
+  final BattleExercisesViewModel viewModel;
   @override
-  State<WordExerciseContent> createState() => _WordExerciseContentState();
+  State<BattleExerciseContent> createState() => _BattleExerciseContentState();
 }
 
-class _WordExerciseContentState extends State<WordExerciseContent>
+class _BattleExerciseContentState extends State<BattleExerciseContent>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
 
   @override
   void initState() {
     _tabController = TabController(
-        length: widget.viewModel.levelTestRepository.testQuestionsList.length,
+        length: widget.viewModel.battleRepository.battleQuestionsList.length,
         vsync: this,
         initialIndex: 0)
       ..addListener(
@@ -195,7 +192,7 @@ class _WordExerciseContentState extends State<WordExerciseContent>
           child: TabBarView(
               controller: _tabController,
               children: mapIndexed(
-                widget.viewModel.levelTestRepository.testQuestionsList,
+                widget.viewModel.battleRepository.battleQuestionsList,
                 (index, item) => Column(
                   children: [
                     Container(
@@ -209,7 +206,7 @@ class _WordExerciseContentState extends State<WordExerciseContent>
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 18),
                             child: Text(
-                              "${index + 1}. ${widget.viewModel.levelTestRepository.testQuestionsList[index].body!}",
+                              "${index + 1}. ${widget.viewModel.battleRepository.battleQuestionsList[index].body!}",
                               style: AppTextStyle.font15W500Normal
                                   .copyWith(fontSize: 14, color: AppColors.darkGray),
                             ),
@@ -222,14 +219,14 @@ class _WordExerciseContentState extends State<WordExerciseContent>
                             separatorBuilder: (context, index) => const SizedBox(
                               height: 8,
                             ),
-                            itemCount: widget.viewModel.levelTestRepository.testQuestionsList[index]
-                                .answers!.length,
+                            itemCount: widget.viewModel.battleRepository.battleQuestionsList[index]
+                                .answers.length,
                             primary: false,
                             shrinkWrap: true,
                             itemBuilder: (context, i) {
                               bool itemSelected = false;
                               final questionItemModel =
-                                  widget.viewModel.levelTestRepository.testQuestionsList[index];
+                                  widget.viewModel.battleRepository.battleQuestionsList[index];
 
                               int? selectedAnswerId = getSelectedAnswerId(
                                   widget.viewModel.answers, questionItemModel.id);
@@ -266,7 +263,7 @@ class _WordExerciseContentState extends State<WordExerciseContent>
           isDisable: !widget.viewModel.submitButtonStatus(_tabController.index),
           margin: EdgeInsets.only(left: 16, right: 16, top: 24.h, bottom: 12.h),
           title: 'submit'.tr(),
-          isLoading: widget.viewModel.isBusy(tag: widget.viewModel.postWordExercisesCheckTag),
+          isLoading: widget.viewModel.isBusy(tag: widget.viewModel.postExercisesCheckTag),
           onTap: () {
             int? validateAnswers = widget.viewModel.validateAnswers;
             if (validateAnswers != null) {

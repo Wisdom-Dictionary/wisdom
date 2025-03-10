@@ -12,6 +12,7 @@ import 'package:wisdom/core/session/manager/session_manager_impl.dart';
 import 'package:wisdom/core/utils/text_reader.dart';
 import 'package:wisdom/core/utils/word_mapper.dart';
 import 'package:wisdom/data/repositories/auth_repository_impl.dart';
+import 'package:wisdom/data/repositories/battle_repository_impl.dart';
 import 'package:wisdom/data/repositories/category_repository_impl.dart';
 import 'package:wisdom/data/repositories/home_repository_impl.dart';
 import 'package:wisdom/data/repositories/level_test_repository_impl.dart';
@@ -24,6 +25,7 @@ import 'package:wisdom/data/repositories/word_entity_repository_impl.dart';
 import 'package:wisdom/data/repositories/wordbank_api_repository_impl.dart';
 import 'package:wisdom/data/viewmodel/local_viewmodel.dart';
 import 'package:wisdom/domain/repositories/auth_repository.dart';
+import 'package:wisdom/domain/repositories/battle_repository.dart';
 import 'package:wisdom/domain/repositories/category_repository.dart';
 import 'package:wisdom/domain/repositories/home_repository.dart';
 import 'package:wisdom/domain/repositories/level_test_repository.dart';
@@ -73,6 +75,8 @@ void setupLocator() {
   locator.registerLazySingleton<UserLiveRepository>(() => UserLiveRepositoryImpl(locator.get()));
   locator.registerLazySingleton<LevelTestRepository>(
       () => LevelTestRepositoryImpl(locator.get(), locator.get()));
+  locator.registerLazySingleton<BattleRepository>(
+      () => BattleRepositoryImpl(locator.get(), locator.get()));
 }
 
 Future resetLocator() async {

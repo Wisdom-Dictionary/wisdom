@@ -67,12 +67,46 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
       {"left": null, "right": 50, "bottom": 5},
       {"left": 82, "right": null, "bottom": 5.1},
       {"left": 20, "right": null, "bottom": 5.8},
+      {"left": null, "right": 100, "bottom": 6},
+      {"left": null, "right": 14, "bottom": 6.6},
+      {"left": 120, "right": null, "bottom": 7},
+      {"left": 14, "right": null, "bottom": 7.5},
+      {"left": 150, "right": null, "bottom": 8},
+      {"left": null, "right": 30, "bottom": 8.3},
+      {"left": null, "right": 20, "bottom": 9},
+      {"left": 80, "right": null, "bottom": 9.05},
+      {"left": 20, "right": null, "bottom": 9.8},
+      {"left": null, "right": 110, "bottom": 10},
+      {"left": null, "right": 20, "bottom": 10.6},
+      {"left": null, "right": 100, "bottom": 11},
+      {"left": 60, "right": null, "bottom": 11.1},
+      {"left": 14, "right": null, "bottom": 11.8},
+      {"left": 0, "right": 0, "bottom": 12},
+      {"left": null, "right": 20, "bottom": 12.3},
+      {"left": null, "right": 50, "bottom": 13},
+      {"left": 80, "right": null, "bottom": 13},
+      {"left": 20, "right": null, "bottom": 13.7},
+      {"left": 115, "right": null, "bottom": 14},
+      {"left": null, "right": 30, "bottom": 14.3},
+      {"left": null, "right": 30, "bottom": 15},
+      {"left": 0, "right": 0, "bottom": 15.1},
+      {"left": 10, "right": null, "bottom": 15.3},
+      {"left": 50, "right": null, "bottom": 16},
+      {"left": null, "right": 100, "bottom": 16.1},
+      {"left": null, "right": 20, "bottom": 16.7},
+      {"left": null, "right": 130, "bottom": 17},
+      {"left": 10, "right": null, "bottom": 17.3},
       // Backenddan kelgan ma'lumotlar soni o'zgaradi
     ];
     return List.generate(repository.levelsList.length, (index) {
-      double? left = (positions[index]["left"] as int?)?.toDouble();
-      double? right = (positions[index]["right"] as int?)?.toDouble();
-      double? bottom = ((positions[index]["bottom"] ?? 1) * pathCornerRad * 2).toDouble();
+      int positionIndex = index;
+      if (index >= positions.length) {
+        positionIndex = positions.length - 1;
+      }
+
+      double? left = (positions[positionIndex]["left"] as int?)?.toDouble();
+      double? right = (positions[positionIndex]["right"] as int?)?.toDouble();
+      double? bottom = ((positions[positionIndex]["bottom"] ?? 1) * pathCornerRad * 2).toDouble();
       bool activeLevel = repository.levelsList[index].userCurrentLevel ?? false;
 
       return Positioned(

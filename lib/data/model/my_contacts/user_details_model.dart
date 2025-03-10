@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wisdom/data/enums/gender.dart';
+import 'package:wisdom/data/model/roadmap/rank_model.dart';
 
 part 'user_details_model.g.dart';
 // {
@@ -51,7 +52,9 @@ class UserDetailsModel {
     this.userCurrentLevel,
     this.user,
     this.tariff,
+    this.isPremium,
     this.statistics,
+    this.rank,
   });
 
   final bool? status;
@@ -73,10 +76,18 @@ class UserDetailsModel {
   final Tariff? tariff;
   static const String tariffKey = "tariff";
 
+  final bool? isPremium;
+  static const String isPremiumKey = "is_premium";
+
   final Statistics? statistics;
   static const String statisticsKey = "statistics";
 
+  final RankModel? rank;
+  static const String rankKey = "rank";
+
   factory UserDetailsModel.fromJson(Map<String, dynamic> json) => _$UserDetailsModelFromJson(json);
+
+  bool get isPremuimStatus => isPremium ?? false;
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -86,7 +97,9 @@ class UserDetailsModel {
       'userCurrentLevel': userCurrentLevel,
       'user': user?.toMap(),
       'tariff': tariff?.toMap(),
+      'is_premium': isPremium,
       'statistics': statistics?.toMap(),
+      'rank': rank?.toMap(),
     };
   }
 }

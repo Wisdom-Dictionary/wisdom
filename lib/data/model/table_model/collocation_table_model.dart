@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import '../base_table_model.dart';
+
 /// id : 1
 /// word_id : 1
 /// body : ""

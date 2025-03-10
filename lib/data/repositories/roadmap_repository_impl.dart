@@ -36,7 +36,7 @@ class RoadmapRepositoryImpl extends RoadmapRepository {
       }
       _userCurrentLevel = responseData['user_current_level'] ?? 0;
       if (responseData['rank'] != null) {
-        _userRank = RankModel.fromMap(responseData['rank']);
+        _userRank = RankModel.fromJson(responseData['rank']);
       }
     } else {
       throw VMException(response.body, callFuncName: 'getLevels', response: response);

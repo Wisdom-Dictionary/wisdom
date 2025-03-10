@@ -19,6 +19,15 @@ class Urls {
   static var lives = Uri.parse('${baseUrl}api/lives');
 
   static var claimlives = Uri.parse('${baseUrl}api/lives/claim');
+  // battle apis
+  static var battle = '${baseUrl}api/battle';
+  static var reverbAuth = Uri.parse('${baseUrl}api/reverb/auth');
+  static var stopSearchingOpponents = Uri.parse('$battle/stop-searching-opponents');
+  static var startBattle = Uri.parse('$battle/start-battle');
+  static var checkBattleQuestions = Uri.parse('$battle/check-questions');
+  static var ready = Uri.parse('$battle/ready');
+  static var cancelBattle = Uri.parse('$battle/cancel-battle');
+  static var getFullBattleResult = Uri.parse('$battle/get-full-battle-result');
 
   static var testQuestionsCheck = Uri.parse('${baseUrl}api/levels/test-questions-check');
   static var testQuestionsResult = Uri.parse('${baseUrl}api/levels/get-full-test-result');
@@ -27,6 +36,11 @@ class Urls {
   static var myContactsFollow = Uri.parse('${baseUrl}api/my-contacts/follow');
   static var myContactsUnFollow = Uri.parse('${baseUrl}api/my-contacts/unfollow');
   static var myContactsSearch = Uri.parse('${baseUrl}api/my-contacts/search');
+
+  static Uri startSearchingOpponents(int levelId) => Uri.https(
+        Urls.baseAddress,
+        "/api/battle/$levelId/start-searching-opponents",
+      );
 
   static Uri testQuestions(int id) => Uri.https(
         Urls.baseAddress,
