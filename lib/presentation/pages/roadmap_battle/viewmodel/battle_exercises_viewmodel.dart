@@ -98,8 +98,10 @@ class BattleExercisesViewModel extends BaseViewModel {
       if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
         await battleRepository.checkBattleQuestions(answers, spendTimeForExercises);
 
-        Navigator.pushNamedAndRemoveUntil(
-            context!, Routes.battleResultPage, (Route<dynamic> route) => false);
+        Navigator.popAndPushNamed(
+          context!,
+          Routes.battleResultPage,
+        );
 
         setSuccess(tag: postExercisesCheckTag);
       } else {

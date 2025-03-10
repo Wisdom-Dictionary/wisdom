@@ -139,7 +139,8 @@ class SearchingOpponentViewmodel extends BaseViewModel {
   }
 
   battleStarted(String message) {
-    Navigator.pushNamed(context!, Routes.battleExercisesPage);
+    //Search opponent page
+    Navigator.popAndPushNamed(context!, Routes.battleExercisesPage);
   }
 
   void connectBattle() {

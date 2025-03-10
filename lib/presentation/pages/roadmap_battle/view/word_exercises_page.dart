@@ -174,6 +174,19 @@ class _WordExerciseContentState extends State<WordExerciseContent>
     super.dispose();
   }
 
+// User tanlagan javobni topish funksiyasi
+  int? getSelectedAnswerId(List<AnswerEntity> selectedAnswers, int? questionId) {
+    if (questionId == null) {
+      return -1;
+    }
+    return selectedAnswers
+        .firstWhere(
+          (selected) => selected.questionId == questionId,
+          orElse: () => AnswerEntity(questionId: -1, answerId: -1),
+        )
+        .answerId;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -213,8 +226,19 @@ class _WordExerciseContentState extends State<WordExerciseContent>
                                 .answers!.length,
                             primary: false,
                             shrinkWrap: true,
-                            itemBuilder: (context, i) => questionItem(
-                                i, widget.viewModel.levelTestRepository.testQuestionsList[index]),
+                            itemBuilder: (context, i) {
+                              bool itemSelected = false;
+                              final questionItemModel =
+                                  widget.viewModel.levelTestRepository.testQuestionsList[index];
+
+                              int? selectedAnswerId = getSelectedAnswerId(
+                                  widget.viewModel.answers, questionItemModel.id);
+
+                              if (selectedAnswerId != null) {
+                                itemSelected = questionItemModel.answers[i].id == selectedAnswerId;
+                              }
+                              return questionItem(i, questionItemModel, itemSelected);
+                            },
                           )
                         ],
                       ),
@@ -268,15 +292,11 @@ class _WordExerciseContentState extends State<WordExerciseContent>
         _ => "",
       };
 
-  Widget questionItem(
-    int index,
-    TestQuestionModel item,
-  ) =>
-      WButton(
+  Widget questionItem(int index, TestQuestionModel item, bool itemSelected) => WButton(
         borderRadius: 32,
         splashColor: AppColors.bgLightBlue.withValues(alpha: 0.6),
         highlightColor: AppColors.bgLightBlue.withValues(alpha: 0.6),
-        color: AppColors.bgLightBlue.withValues(alpha: 0.1),
+        color: itemSelected ? AppColors.blue : AppColors.bgLightBlue.withValues(alpha: 0.1),
         child: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: 18,
@@ -285,15 +305,18 @@ class _WordExerciseContentState extends State<WordExerciseContent>
             children: [
               Text(
                 letter(index),
-                style: AppTextStyle.font15W500Normal
-                    .copyWith(fontSize: 14, color: AppColors.vibrantBlue.withValues(alpha: 0.4)),
+                style: AppTextStyle.font15W500Normal.copyWith(
+                    fontSize: 14,
+                    color: itemSelected
+                        ? AppColors.white
+                        : AppColors.vibrantBlue.withValues(alpha: 0.4)),
               ),
               const SizedBox(
                 width: 15,
               ),
-              Text(item.answers![index].body ?? "",
-                  style:
-                      AppTextStyle.font15W500Normal.copyWith(fontSize: 14, color: AppColors.blue)),
+              Text(item.answers[index].body ?? "",
+                  style: AppTextStyle.font15W500Normal.copyWith(
+                      fontSize: 14, color: itemSelected ? AppColors.white : AppColors.blue)),
             ],
           ),
         ),

@@ -6,25 +6,16 @@ part of 'user_details_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-UserDetailsModel _$UserDetailsModelFromJson(Map<String, dynamic> json) =>
-    UserDetailsModel(
+UserDetailsModel _$UserDetailsModelFromJson(Map<String, dynamic> json) => UserDetailsModel(
       status: json['status'] as bool?,
       followed: json['followed'] as bool?,
       following: json['following'] as bool?,
       userCurrentLevel: (json['user_current_level'] as num?)?.toInt(),
-      user: json['user'] == null
-          ? null
-          : User.fromJson(json['user'] as Map<String, dynamic>),
-      tariff: json['tariff'] == null
-          ? null
-          : Tariff.fromJson(json['tariff'] as Map<String, dynamic>),
-      isPremium: json['isPremium'] as bool?,
-      statistics: json['statistics'] == null
-          ? null
-          : Statistics.fromJson(json['statistics'] as Map<String, dynamic>),
-      rank: json['rank'] == null
-          ? null
-          : RankModel.fromJson(json['rank'] as Map<String, dynamic>),
+      user: json['user'] == null ? null : User.fromJson(json['user'] as Map<String, dynamic>),
+      tariff: json['tariff'] == null ? null : Tariff.fromJson(json['tariff'] as Map<String, dynamic>),
+      isPremium: json['is_premium'] as bool?,
+      statistics: json['statistics'] == null ? null : Statistics.fromJson(json['statistics'] as Map<String, dynamic>),
+      rank: json['rank'] == null ? null : RankModel.fromJson(json['rank'] as Map<String, dynamic>),
     );
 
 Statistics _$StatisticsFromJson(Map<String, dynamic> json) => Statistics(
@@ -41,9 +32,7 @@ Statistics _$StatisticsFromJson(Map<String, dynamic> json) => Statistics(
 
 Tariff _$TariffFromJson(Map<String, dynamic> json) => Tariff(
       id: (json['id'] as num?)?.toInt(),
-      name: json['name'] == null
-          ? null
-          : Name.fromJson(json['name'] as Map<String, dynamic>),
+      name: json['name'] == null ? null : Name.fromJson(json['name'] as Map<String, dynamic>),
       days: (json['days'] as num?)?.toInt(),
       price: (json['price'] as num?)?.toInt(),
       deletedAt: json['deleted_at'],
@@ -61,8 +50,7 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       email: json['email'],
       image: json['image'],
       birthdate: json['birthdate'],
-      gender:
-          $enumDecodeNullable(_$GenderEnumMap, json['gender']) ?? Gender.none,
+      gender: $enumDecodeNullable(_$GenderEnumMap, json['gender']) ?? Gender.none,
       notification: (json['notification'] as num?)?.toInt(),
       profilePhotoUrl: json['profile_photo_url'] as String?,
     );

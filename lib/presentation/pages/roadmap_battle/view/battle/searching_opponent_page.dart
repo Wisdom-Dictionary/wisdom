@@ -48,6 +48,7 @@ class SearchingOpponentPage extends ViewModelBuilderWidget<SearchingOpponentView
                 child: Row(
                   children: [
                     UserDetails(
+                      isPremium: viewModel.userDetailsModel.isPremuimStatus,
                       rank: viewModel.userDetailsModel.rank,
                     ),
                     const SizedBox(

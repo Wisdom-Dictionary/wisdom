@@ -37,8 +37,8 @@ class BattleResultViewmodel extends BaseViewModel {
       opponentUserCorrectAnswers,
       currentUserSpentTime,
       opponentUserSpentTime,
-      battleDuration,
-      draw;
+      battleDuration;
+  bool? draw;
 
   bool user1IsCurrentUser = false;
 
@@ -56,27 +56,6 @@ class BattleResultViewmodel extends BaseViewModel {
       currentUserCorrectAnswers != null &&
       currentUserGainedStars != null &&
       currentUserSpentTime != null;
-  // BattleUserModel? get opponentUser {
-  //   if (userId == result?.user1?.id) {
-  //     currentUserGainedStars = result?.user2GainedStars;
-  //     currentUserCorrectAnswers = result?.user2CorrectAnswers;
-  //     currentUserSpentTime = result?.user2SpentTime;
-  //     opponentUserGainedStars = result?.user1GainedStars;
-  //     opponentUserCorrectAnswers = result?.user1CorrectAnswers;
-  //     opponentUserSpentTime = result?.user1SpentTime;
-  //     return result?.user2;
-  //   } else {
-  //     opponentUserGainedStars = result?.user2GainedStars;
-  //     opponentUserCorrectAnswers = result?.user2CorrectAnswers;
-  //     opponentUserSpentTime = result?.user2SpentTime;
-  //     currentUserGainedStars = result?.user1GainedStars;
-  //     currentUserCorrectAnswers = result?.user1CorrectAnswers;
-  //     currentUserSpentTime = result?.user1SpentTime;
-  //     return result?.user1;
-  //   }
-  // }
-
-  // BattleUserModel? get currentUser => userId == result?.user1?.id ? result!.user1 : result!.user2;
 
   goBack() async {
     Navigator.pop(context!);
@@ -108,7 +87,7 @@ class BattleResultViewmodel extends BaseViewModel {
             !user1IsCurrentUser ? result.user1CorrectAnswers : result.user2CorrectAnswers;
         currentUserSpentTime = user1IsCurrentUser ? result.user1SpentTime : result.user2SpentTime;
         opponentUserSpentTime = !user1IsCurrentUser ? result.user1SpentTime : result.user2SpentTime;
-        draw;
+        draw = result.draw;
         notifyListeners(); // UI-ni yangilash
       }
     }, cancelOnError: true, onDone: () {}, onError: (error) {});
