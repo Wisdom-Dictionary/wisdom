@@ -81,6 +81,8 @@ PODS:
   - connectivity_plus (0.0.1):
     - Flutter
     - ReachabilitySwift
+  - contacts_service (0.2.2):
+    - Flutter
   - device_info (0.0.1):
     - Flutter
   - device_info_plus (0.0.1):
@@ -288,6 +290,7 @@ DEPENDENCIES:
   - audio_session (from `.symlinks/plugins/audio_session/ios`)
   - awesome_notifications (from `.symlinks/plugins/awesome_notifications/ios`)
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
+  - contacts_service (from `.symlinks/plugins/contacts_service/ios`)
   - device_info (from `.symlinks/plugins/device_info/ios`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
@@ -383,6 +386,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/awesome_notifications/ios"
   connectivity_plus:
     :path: ".symlinks/plugins/connectivity_plus/ios"
+  contacts_service:
+    :path: ".symlinks/plugins/contacts_service/ios"
   device_info:
     :path: ".symlinks/plugins/device_info/ios"
   device_info_plus:
@@ -469,6 +474,7 @@ SPEC CHECKSUMS:
   audio_session: 9bb7f6c970f21241b19f5a3658097ae459681ba0
   awesome_notifications: ad14ba38749441a7d193d08875fa18b4484917ae
   connectivity_plus: 481668c94744c30c53b8895afb39159d1e619bdf
+  contacts_service: 7c2ed10147f55891576c6a582f431e385d8de92d
   device_info: 52e8c0c9c61def8d0a92bf175f5f500abbea04bc
   device_info_plus: d668d0dcad87727e865495c472b911b15d7ee26a
   DivKit: 5b176400aa1667fddc9fb30530f1c5a5ef93a7e5

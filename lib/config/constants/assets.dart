@@ -15,6 +15,10 @@ abstract class _AssetsHolder {
 class _Icons extends _AssetsHolder {
   const _Icons() : super("assets/icons");
 
+  String get global => '$basePath/global.svg';
+
+  String get contacts => '$basePath/contacts.svg';
+
   String get union => '$basePath/union.svg';
 
   String get battleItem => '$basePath/battle-item.svg';
@@ -212,6 +216,8 @@ class _Icons extends _AssetsHolder {
 
 class _Images extends _AssetsHolder {
   const _Images() : super("assets/images");
+
+  String get goldMedal => '$basePath/003-gold medal.png';
 
   String get profile => '$basePath/profile_img.svg';
 
