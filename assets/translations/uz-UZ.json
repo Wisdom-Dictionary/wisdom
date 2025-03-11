@@ -244,5 +244,7 @@
   "edit": "Tahrirlash",
   "stop": "To'xtatish",
   "searching_opponent": "Raqibni qidirish...",
-  "status": "Holat"
+  "status": "Holat",
+  "exercises_result": "Mashq natijalari",
+  "global": "Global"
 }

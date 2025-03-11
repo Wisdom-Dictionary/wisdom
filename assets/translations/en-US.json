@@ -246,5 +246,7 @@
   "edit": "Edit",
   "stop": "Stop",
   "searching_opponent": "Searching Opponent...",
-  "status": "Status"
+  "status": "Status",
+  "exercises_result": "Exercises Result",
+  "global": "Global"
 }

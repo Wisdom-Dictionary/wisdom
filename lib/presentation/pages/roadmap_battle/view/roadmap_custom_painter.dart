@@ -10,6 +10,7 @@ import 'package:wisdom/domain/repositories/roadmap_repository.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/widgets/roadmap_shimmer_widget.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/widgets/task_level_indicator_widget.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/roadmap_viewmodel.dart';
+import 'package:wisdom/presentation/routes/routes.dart';
 
 class ExampleRoadMap extends StatefulWidget {
   const ExampleRoadMap({super.key, required this.viewModel});
@@ -206,8 +207,13 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
             top: 90,
             right: 5,
             child: SafeArea(
-              child: FlagIndicatorWidget(
-                userLevel: widget.viewModel.roadMapRepository.userCurrentLevel,
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, Routes.resultsSectionPage);
+                },
+                child: FlagIndicatorWidget(
+                  userLevel: widget.viewModel.roadMapRepository.userCurrentLevel,
+                ),
               ),
             ))
       ],

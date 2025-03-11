@@ -18,6 +18,7 @@ import 'package:wisdom/data/repositories/home_repository_impl.dart';
 import 'package:wisdom/data/repositories/level_test_repository_impl.dart';
 import 'package:wisdom/data/repositories/my_contacts_repository_impl.dart';
 import 'package:wisdom/data/repositories/profile_repository_impl.dart';
+import 'package:wisdom/data/repositories/ranking_repository_impl.dart';
 import 'package:wisdom/data/repositories/roadmap_repository_impl.dart';
 import 'package:wisdom/data/repositories/search_repository_impl.dart';
 import 'package:wisdom/data/repositories/user_live_repository_impl.dart';
@@ -31,6 +32,7 @@ import 'package:wisdom/domain/repositories/home_repository.dart';
 import 'package:wisdom/domain/repositories/level_test_repository.dart';
 import 'package:wisdom/domain/repositories/my_contacts_repository.dart';
 import 'package:wisdom/domain/repositories/profile_repository.dart';
+import 'package:wisdom/domain/repositories/ranking_repository.dart';
 import 'package:wisdom/domain/repositories/roadmap_repository.dart';
 import 'package:wisdom/domain/repositories/search_repository.dart';
 import 'package:wisdom/domain/repositories/user_live_repository.dart';
@@ -70,6 +72,7 @@ void setupLocator() {
   locator.registerSingletonAsync<AdService>(() async => AdServiceFactory.create());
   locator.registerLazySingleton<RoadmapRepository>(
       () => RoadmapRepositoryImpl(locator.get(), locator.get()));
+  locator.registerLazySingleton<RankingRepository>(() => RankingRepositoryImpl(locator.get()));
   locator
       .registerLazySingleton<MyContactsRepository>(() => MyContactsRepositoryImpl(locator.get()));
   locator.registerLazySingleton<UserLiveRepository>(() => UserLiveRepositoryImpl(locator.get()));

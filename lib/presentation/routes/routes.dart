@@ -26,6 +26,7 @@ import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/battle_exer
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/battle_result_page.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/searching_opponent_page.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/exercises_result/word_exercises_result_page.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/view/results_section/results_section_page.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/word_details_page.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/word_exercises_check_page.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/word_exercises_page.dart';
@@ -63,6 +64,7 @@ class Routes {
   static const loginPage = '/loginPage';
   static const loginWithPhonePage = '/loginWithPhonePage';
   static const formPage = '/formPage';
+  static const resultsSectionPage = '/resultsSectionPage';
 
   static _showRouteName(String routeName) {
     log(routeName);
@@ -199,6 +201,10 @@ class Routes {
         case loginWithPhonePage:
           return MaterialPageRoute(
             builder: (_) => LoginWithPhonePage(),
+          );
+        case resultsSectionPage:
+          return MaterialPageRoute(
+            builder: (_) => ResultsSectionPage(),
           );
         default:
           _showRouteName(mainPage);

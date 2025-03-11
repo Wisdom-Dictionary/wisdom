@@ -7,6 +7,7 @@ abstract class AppColors {
 
   static const Color orange = Color(0xFFFF9110);
   static const Color yellow = Color(0xFFFFCC00);
+  static const Color blanchedAlmond = Color(0xFFFFEBCD);
   static const Color pink = Color(0xFFD77070);
   static const Color red = Color(0xFFFF0000);
   static const Color textDisabled = Color(0xFFB3B7BC);
