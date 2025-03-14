@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:jbaza/jbaza.dart';
+import 'package:wisdom/config/constants/app_colors.dart';
 import 'package:wisdom/config/constants/assets.dart';
 import 'package:wisdom/presentation/pages/my_contacts/view/my_contacts_empty_widget.dart';
 import 'package:wisdom/presentation/pages/my_contacts/view/my_contacts_page.dart';
@@ -35,11 +37,15 @@ class MyContactsSearchPage extends ViewModelBuilderWidget<MyContactSearchViewMod
           : viewModel.isSuccess(tag: viewModel.getMyContactSearchTag)
               ? viewModel.myContactsRepository.searchResultList.isEmpty
                   ? MyContactsEmptyPage(
-                      icon: Image.asset(
-                        Assets.icons.check1Big,
+                      icon: SvgPicture.asset(
+                        height: 113,
+                        width: 133,
+                        Assets.icons.followed,
+                        colorFilter: ColorFilter.mode(
+                            AppColors.blue.withValues(alpha: 0.12), BlendMode.srcIn),
                       ),
-                      title: "User not found".tr(),
-                      description: "Kiritilgan ID bo'yicha user topilmadi".tr(),
+                      title: "no_user_found".tr(),
+                      description: "no_user_found_with_entered_id".tr(),
                     )
                   : ListView.builder(
                       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 27),

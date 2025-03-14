@@ -22,7 +22,7 @@ class LevelTestRepositoryImpl extends LevelTestRepository {
   final DBHelper dbHelper;
   final CustomClient customClient;
 
-  LevelModel? selectedLevel;
+  LevelModel? _selectedLevel;
   LevelWordModel? selectedLevelWord;
   TestExerciseType _exerciseType;
 
@@ -46,7 +46,7 @@ class LevelTestRepositoryImpl extends LevelTestRepository {
 
   @override
   void setSelectedLevel(LevelModel item) {
-    selectedLevel = item;
+    _selectedLevel = item;
   }
 
   @override
@@ -54,7 +54,7 @@ class LevelTestRepositoryImpl extends LevelTestRepository {
     _startDate = "";
     _endDate = "";
     _testQuestionsList = [];
-    var response = await customClient.get(Urls.testQuestions(selectedLevel!.id!));
+    var response = await customClient.get(Urls.testQuestions(_selectedLevel!.id!));
     if (response.isSuccessful) {
       final responseData = jsonDecode(response.body);
 
@@ -235,4 +235,7 @@ class LevelTestRepositoryImpl extends LevelTestRepository {
 
   @override
   List<TestQuestionModel> get testQuestionsResultList => _testQuestionsResultList;
+
+  @override
+  LevelModel get selectedLevelItem => _selectedLevel!;
 }

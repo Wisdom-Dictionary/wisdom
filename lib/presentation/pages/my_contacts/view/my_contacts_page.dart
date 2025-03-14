@@ -93,11 +93,13 @@ class _MyContactsPageState extends State<MyContactsPage> with SingleTickerProvid
                 Tab(
                   icon: Row(
                     children: [
-                      Image.asset(
-                        Assets.icons.check1,
-                        color: _tabController.index == 1
-                            ? AppColors.blue
-                            : AppColors.white.withValues(alpha: 0.5),
+                      SvgPicture.asset(
+                        Assets.icons.followed,
+                        colorFilter: ColorFilter.mode(
+                            _tabController.index == 1
+                                ? AppColors.blue
+                                : AppColors.white.withValues(alpha: 0.5),
+                            BlendMode.srcIn),
                       ),
                       const SizedBox(
                         width: 8,
@@ -237,22 +239,30 @@ class ContactsFollowedList extends ViewModelBuilderWidget<MyContactsViewModel> {
         : viewModel.isSuccess(tag: viewModel.getMyContactsTag)
             ? viewModel.myContactsRepository.contactsList.isEmpty
                 ? MyContactsEmptyPage(
-                    icon: Image.asset(
-                      Assets.icons.check1Big,
+                    icon: SvgPicture.asset(
+                      height: 113,
+                      width: 133,
+                      Assets.icons.followed,
+                      colorFilter:
+                          ColorFilter.mode(AppColors.blue.withValues(alpha: 0.12), BlendMode.srcIn),
                     ),
                     title: "title_my_followed_list_empty".tr(),
                     description: "description_my_followed_list_empty".tr(),
                   )
-                : ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 27),
-                    itemCount: viewModel.myContactsRepository.contactsList.length,
-                    itemBuilder: (context, index) => GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(context, Routes.contactDetailsPage,
-                            arguments: viewModel.myContactsRepository.contactsList[index].toMap());
-                      },
-                      child: ContactItemWidget(
-                        item: viewModel.myContactsRepository.contactsList[index],
+                : RefreshIndicator(
+                    onRefresh: () async => viewModel.getMyContacts(Contacts.getMyContactsFollowed),
+                    child: ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 27),
+                      itemCount: viewModel.myContactsRepository.contactsList.length,
+                      itemBuilder: (context, index) => GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(context, Routes.contactDetailsPage,
+                              arguments:
+                                  viewModel.myContactsRepository.contactsList[index].toMap());
+                        },
+                        child: ContactItemWidget(
+                          item: viewModel.myContactsRepository.contactsList[index],
+                        ),
                       ),
                     ),
                   )

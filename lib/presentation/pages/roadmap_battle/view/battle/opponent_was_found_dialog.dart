@@ -21,6 +21,7 @@ class OpponentWasFoundDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(18.0))),
       child: ValueListenableBuilder(
         valueListenable: viewmodel.matchCancelledTag,
         builder: (_, value, child) {
@@ -70,7 +71,7 @@ class OpponentWasFoundDialog extends StatelessWidget {
                 valueListenable: viewmodel.readyBattleTagLoading,
                 builder: (context, value, child) => WButton(
                   isLoading: value,
-                  isDisable: viewmodel.isSuccess(tag: viewmodel.readyBattleTag),
+                  // isDisable: viewmodel.isSuccess(tag: viewmodel.readyBattleTag),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

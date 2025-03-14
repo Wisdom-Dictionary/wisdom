@@ -14,6 +14,7 @@ class StartBattleDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(18.0))),
       backgroundColor: isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
       content: SingleChildScrollView(
         child: Column(

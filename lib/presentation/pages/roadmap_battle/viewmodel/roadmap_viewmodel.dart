@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:jbaza/jbaza.dart';
+import 'package:provider/provider.dart';
+import 'package:wisdom/config/constants/constants.dart';
 import 'package:wisdom/core/db/db_helper.dart';
 import 'package:wisdom/core/db/preference_helper.dart';
 import 'package:wisdom/data/model/my_contacts/user_details_model.dart';
 import 'package:wisdom/data/model/roadmap/level_model.dart';
 import 'package:wisdom/data/viewmodel/local_viewmodel.dart';
+import 'package:wisdom/domain/repositories/battle_repository.dart';
 import 'package:wisdom/domain/repositories/level_test_repository.dart';
 import 'package:wisdom/domain/repositories/profile_repository.dart';
 import 'package:wisdom/domain/repositories/roadmap_repository.dart';
 import 'package:wisdom/presentation/components/dialog_background.dart';
 import 'package:wisdom/presentation/components/no_internet_connection_dialog.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/out_of_lives_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/start_battle_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/sign_in_dialog.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/life_countdown_provider.dart';
 
 import '../../../../core/di/app_locator.dart';
 
@@ -21,6 +27,7 @@ class RoadMapViewModel extends BaseViewModel {
   final profileRepository = locator<ProfileRepository>();
   final roadMapRepository = locator<RoadmapRepository>();
   final levelTestRepository = locator<LevelTestRepository>();
+  final battleRepository = locator<BattleRepository>();
   final dbHelper = locator<DBHelper>();
   final sharedPref = locator<SharedPreferenceHelper>();
   final localViewModel = locator<LocalViewModel>();
@@ -28,6 +35,13 @@ class RoadMapViewModel extends BaseViewModel {
   final String getLevelsTag = "getLevelsTag", getUserDetailsTag = "getUserDetailsTag";
   int page = 0;
   UserDetailsModel? userDetailsModel;
+
+  int get pathSize => (listCountCeil * 0.5).floor();
+
+  // int get listCountCeil => (roadMapRepository.levelsList.length % 10).isOdd
+  //     ? roadMapRepository.levelsList.length + 1
+  //     : roadMapRepository.levelsList.length;
+  int get listCountCeil => roadMapRepository.levelsList.length;
 
   void userData() {
     safeBlock(() async {
@@ -90,16 +104,36 @@ class RoadMapViewModel extends BaseViewModel {
     }, callFuncName: 'getLevels', tag: getLevelsTag, inProgress: false);
   }
 
-  void selectLevel(LevelModel item) {
+  void selectLevel(LevelModel item) async {
     // if (!(item.userCurrentLevel ?? false) && (item.star ?? 0) == 0) {
     //   return;
     // }
+    final noUserLives = !context!.read<CountdownProvider>().hasUserLifes;
+    if (noUserLives) {
+      showDialog(
+        context: context!,
+        builder: (context) => OutOfLivesDialog(),
+      );
+      return;
+    }
     if (item.type == LevelType.battle) {
+      int battleEndDate = sharedPref.getInt(Constants.KEY_USER_BATTLE_END_TIME, 0);
+
+      if (battleEndDate != 0) {
+        final dateTimeNowInMillisecont = DateTime.now().millisecondsSinceEpoch;
+        battleEndDate = battleEndDate * 1000;
+        if (dateTimeNowInMillisecont < battleEndDate) {
+          await battleRepository.getBattleData();
+          return;
+        } else {
+          await sharedPref.prefs.remove(Constants.KEY_USER_BATTLE_END_TIME);
+        }
+      }
+      battleRepository.setSelectedLevelItem(item);
       showDialog(
         context: context!,
         builder: (context) => StartBattleDialog(),
       );
-      // Navigator.pushNamed(context!, Routes.battleResultPage);
       return;
     }
     roadMapRepository.setSelectedLevel(item);

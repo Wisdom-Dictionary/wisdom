@@ -38,7 +38,9 @@ class LifeStatusBar extends StatelessWidget {
         ValueListenableBuilder<int>(
           valueListenable: ValueNotifier<int>(context.watch<CountdownProvider>().remainingSeconds),
           builder: (_, value, child) {
-            if (value == 0) {
+            if (value <= 0 &&
+                context.watch<CountdownProvider>().recoveryTimeDatetime != null &&
+                context.watch<CountdownProvider>().fullUserLives) {
               return Padding(
                 padding: EdgeInsets.only(left: 2.w, right: 2.w, top: 4.h),
                 child: FutureBuilder(
@@ -79,11 +81,12 @@ class LifeStatusBar extends StatelessWidget {
                     }),
               );
             }
-            if (value.isNegative) {
+            if (value.isNegative ||
+                context.watch<CountdownProvider>().recoveryTimeDatetime == null) {
               return const Center();
             }
             return Text(
-              "${value ~/ 60}:${(value % 60).toString().padLeft(2, '0')}",
+              CountdownProvider.timerString(value),
               style: AppTextStyle.font13W500Normal.copyWith(color: AppColors.white, fontSize: 12),
             );
           },

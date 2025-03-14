@@ -54,8 +54,8 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
   static const pathCornerRad = 80.0;
   static const layoutSize = 370.0;
 
-  List<Positioned> levelItems(RoadmapRepository repository) {
-    List positions = [
+  List<Map<String, dynamic>> generatePositions(int count) {
+    final List<Map<String, dynamic>> basePositions = [
       {"left": null, "right": 83, "bottom": 1},
       {"left": 82, "right": null, "bottom": 1.05},
       {"left": 20, "right": null, "bottom": 1.7},
@@ -73,32 +73,104 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
       {"left": 120, "right": null, "bottom": 7},
       {"left": 14, "right": null, "bottom": 7.5},
       {"left": 150, "right": null, "bottom": 8},
-      {"left": null, "right": 30, "bottom": 8.3},
-      {"left": null, "right": 20, "bottom": 9},
-      {"left": 80, "right": null, "bottom": 9.05},
-      {"left": 20, "right": null, "bottom": 9.8},
-      {"left": null, "right": 110, "bottom": 10},
-      {"left": null, "right": 20, "bottom": 10.6},
-      {"left": null, "right": 100, "bottom": 11},
-      {"left": 60, "right": null, "bottom": 11.1},
-      {"left": 14, "right": null, "bottom": 11.8},
-      {"left": 0, "right": 0, "bottom": 12},
-      {"left": null, "right": 20, "bottom": 12.3},
-      {"left": null, "right": 50, "bottom": 13},
-      {"left": 80, "right": null, "bottom": 13},
-      {"left": 20, "right": null, "bottom": 13.7},
-      {"left": 115, "right": null, "bottom": 14},
-      {"left": null, "right": 30, "bottom": 14.3},
-      {"left": null, "right": 30, "bottom": 15},
-      {"left": 0, "right": 0, "bottom": 15.1},
-      {"left": 10, "right": null, "bottom": 15.3},
-      {"left": 50, "right": null, "bottom": 16},
-      {"left": null, "right": 100, "bottom": 16.1},
-      {"left": null, "right": 20, "bottom": 16.7},
-      {"left": null, "right": 130, "bottom": 17},
-      {"left": 10, "right": null, "bottom": 17.3},
-      // Backenddan kelgan ma'lumotlar soni o'zgaradi
+      // {"left": null, "right": 30, "bottom": 8.3},
+      // {"left": null, "right": 20, "bottom": 9},
+      // {"left": 80, "right": null, "bottom": 9.05},
+      // {"left": 20, "right": null, "bottom": 9.8},
+      // {"left": null, "right": 110, "bottom": 10},
+      // {"left": null, "right": 20, "bottom": 10.6},
+      // {"left": null, "right": 100, "bottom": 11},
+      // {"left": 60, "right": null, "bottom": 11.1},
+      // {"left": 14, "right": null, "bottom": 11.8},
+      // {"left": 0, "right": 0, "bottom": 12},
+      // {"left": null, "right": 20, "bottom": 12.3},
+      // {"left": null, "right": 50, "bottom": 13},
+      // {"left": 80, "right": null, "bottom": 13},
+      // {"left": 20, "right": null, "bottom": 13.7},
+      // {"left": 115, "right": null, "bottom": 14},
+      // {"left": null, "right": 30, "bottom": 14.3},
+      // {"left": null, "right": 30, "bottom": 15},
+      // {"left": 0, "right": 0, "bottom": 15.1},
+      // {"left": 10, "right": null, "bottom": 15.3},
+      // {"left": 50, "right": null, "bottom": 16},
+      // {"left": null, "right": 100, "bottom": 16.1},
+      // {"left": null, "right": 20, "bottom": 16.7},
+      // {"left": null, "right": 130, "bottom": 17},
+      // {"left": 10, "right": null, "bottom": 17.3},
     ];
+
+    final List<Map<String, dynamic>> result = [];
+
+    final double bottomStart = (basePositions.first['bottom'] as num).toDouble();
+    final double bottomEnd = (basePositions.last['bottom'] as num).toDouble();
+
+    // Real shift — har bir loop'da necha "bottom" birlik bilan suriladi
+    final double bottomShift = bottomEnd - bottomStart + 1;
+
+    for (int i = 0; i < count; i++) {
+      final pattern = basePositions[i % basePositions.length];
+      final int loop = i ~/ basePositions.length;
+
+      // final double newBottom = (pattern['bottom'] as num).toDouble() + (loop * bottomShift);
+      final double newBottom = (pattern['bottom'] as num).toDouble() + (loop * bottomShift);
+
+      result.add({
+        'left': pattern['left'],
+        'right': pattern['right'],
+        'bottom': newBottom,
+      });
+    }
+
+    return result;
+  }
+
+  List<Positioned> levelItems(RoadmapRepository repository) {
+    // List positions = [
+    //   {"left": null, "right": 83, "bottom": 1},
+    //   {"left": 82, "right": null, "bottom": 1.05},
+    //   {"left": 20, "right": null, "bottom": 1.7},
+    //   {"left": null, "right": 126, "bottom": 2},
+    //   {"left": null, "right": 14, "bottom": 2.8},
+    //   {"left": 120, "right": null, "bottom": 3},
+    //   {"left": 10, "right": null, "bottom": 3.5},
+    //   {"left": 100, "right": null, "bottom": 4},
+    //   {"left": null, "right": 14, "bottom": 4.2},
+    //   {"left": null, "right": 50, "bottom": 5},
+    //   {"left": 82, "right": null, "bottom": 5.1},
+    //   {"left": 20, "right": null, "bottom": 5.8},
+    //   {"left": null, "right": 100, "bottom": 6},
+    //   {"left": null, "right": 14, "bottom": 6.6},
+    //   {"left": 120, "right": null, "bottom": 7},
+    //   {"left": 14, "right": null, "bottom": 7.5},
+    //   {"left": 150, "right": null, "bottom": 8},
+    //   {"left": null, "right": 30, "bottom": 8.3},
+    //   {"left": null, "right": 20, "bottom": 9},
+    //   {"left": 80, "right": null, "bottom": 9.05},
+    //   {"left": 20, "right": null, "bottom": 9.8},
+    //   {"left": null, "right": 110, "bottom": 10},
+    //   {"left": null, "right": 20, "bottom": 10.6},
+    //   {"left": null, "right": 100, "bottom": 11},
+    //   {"left": 60, "right": null, "bottom": 11.1},
+    //   {"left": 14, "right": null, "bottom": 11.8},
+    //   {"left": 0, "right": 0, "bottom": 12},
+    //   {"left": null, "right": 20, "bottom": 12.3},
+    //   {"left": null, "right": 50, "bottom": 13},
+    //   {"left": 80, "right": null, "bottom": 13},
+    //   {"left": 20, "right": null, "bottom": 13.7},
+    //   {"left": 115, "right": null, "bottom": 14},
+    //   {"left": null, "right": 30, "bottom": 14.3},
+    //   {"left": null, "right": 30, "bottom": 15},
+    //   {"left": 0, "right": 0, "bottom": 15.1},
+    //   {"left": 10, "right": null, "bottom": 15.3},
+    //   {"left": 50, "right": null, "bottom": 16},
+    //   {"left": null, "right": 100, "bottom": 16.1},
+    //   {"left": null, "right": 20, "bottom": 16.7},
+    //   {"left": null, "right": 130, "bottom": 17},
+    //   {"left": 10, "right": null, "bottom": 17.3},
+    //   // Backenddan kelgan ma'lumotlar soni o'zgaradi
+    // ];
+    List positions = generatePositions(repository.levelsList.length);
+
     return List.generate(repository.levelsList.length, (index) {
       int positionIndex = index;
       if (index >= positions.length) {
@@ -165,7 +237,7 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
                     CustomPaint(
                       painter: DashedPathPainter(
                         originalPath: (size) {
-                          return _customPath(size, pathCornerRad, iconSize,
+                          return _customPathFromBottomToTop(size, pathCornerRad, iconSize,
                                   widget.viewModel.roadMapRepository.levelsList.length)
                               .reversed
                               .toList();
@@ -181,7 +253,7 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
                     CustomPaint(
                       painter: DashedPathPainter(
                         originalPath: (size) {
-                          return _customPath(size, pathCornerRad, iconSize,
+                          return _customPathFromBottomToTop(size, pathCornerRad, iconSize,
                               widget.viewModel.roadMapRepository.levelsList.length);
                         },
                         pathColors: [],
@@ -218,6 +290,84 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
             ))
       ],
     );
+  }
+
+  List<Path> _customPathFromBottomToTop(
+    Size size,
+    double painterCornerRad,
+    double iconSize,
+    int iconCount,
+  ) {
+    final width = size.width;
+    final List<Path> paths = [];
+    iconCount = iconCount - 2;
+    final totalHeight = (iconCount * painterCornerRad * 2) + iconSize;
+
+    // Ajralib turadigan birinchi path (pastdagi maxsus path)
+    // final startX = iconSize / 2;
+    // final startY = iconSize; // pastdan 1-chi qatordagi start
+
+    final path = Path();
+
+    final startX = iconSize / 2;
+    final startY = ((iconCount) * painterCornerRad * 2) + (iconSize);
+    path.moveTo(startX, startY);
+    path
+      ..arcToPoint(
+        Offset(startX + painterCornerRad, startY + painterCornerRad),
+        clockwise: false,
+        radius: Radius.circular(painterCornerRad),
+      )
+      ..relativeLineTo(width - (painterCornerRad * 2) - iconSize, 0)
+      ..relativeArcToPoint(
+        Offset(painterCornerRad + iconSize / 2, 0),
+        clockwise: true,
+        radius: const Radius.circular(0),
+      );
+
+    paths.add(path);
+
+    // Qolgan path'lar
+    for (int i = 1; i < iconCount; i++) {
+      final path = Path();
+      final startY = (i * painterCornerRad * 2) + iconSize;
+
+      if (i % 2 == 0) {
+        final startX = iconSize / 2;
+        path.moveTo(startX, startY);
+        path
+          ..arcToPoint(
+            Offset(startX + painterCornerRad, startY + painterCornerRad),
+            clockwise: false,
+            radius: Radius.circular(painterCornerRad),
+          )
+          ..relativeLineTo(width - (painterCornerRad * 2) - iconSize, 0)
+          ..relativeArcToPoint(
+            Offset(painterCornerRad, painterCornerRad),
+            clockwise: true,
+            radius: Radius.circular(painterCornerRad),
+          );
+      } else {
+        final startX = width - iconSize / 2;
+        path.moveTo(startX, startY);
+        path
+          ..arcToPoint(
+            Offset(startX - painterCornerRad, startY + painterCornerRad),
+            clockwise: true,
+            radius: Radius.circular(painterCornerRad),
+          )
+          ..relativeLineTo(-width + (painterCornerRad * 2) + iconSize, 0)
+          ..relativeArcToPoint(
+            Offset(-painterCornerRad, painterCornerRad),
+            clockwise: false,
+            radius: Radius.circular(painterCornerRad),
+          );
+      }
+
+      paths.add(path);
+    }
+
+    return paths;
   }
 
   List<Path> _customPath(Size size, double painterCornerRad, double iconSize, int iconCount) {

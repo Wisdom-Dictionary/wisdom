@@ -204,12 +204,12 @@ class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewMod
                   alignment: Alignment.centerLeft,
                   child: pass
                       ? Text(
-                          "Success",
+                          "success".tr(),
                           style: AppTextStyle.font17W700Normal
                               .copyWith(fontSize: 18, color: AppColors.blue),
                         )
                       : Text(
-                          "Failure",
+                          "failure".tr(),
                           style: AppTextStyle.font17W700Normal
                               .copyWith(fontSize: 18, color: AppColors.red),
                         ),

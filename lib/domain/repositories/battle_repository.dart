@@ -1,5 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:wisdom/data/model/battle/battle_user_model.dart';
 import 'package:wisdom/data/model/roadmap/answer_entity.dart';
+import 'package:wisdom/data/model/roadmap/level_model.dart';
 import 'package:wisdom/data/model/roadmap/test_question_model.dart';
 import 'package:wisdom/data/model/user/user_model.dart';
 import 'package:wisdom/data/repositories/battle_repository_impl.dart';
@@ -12,6 +14,8 @@ abstract class BattleRepository {
   Future<void> startSearchingOpponents();
 
   Future<void> stopSearchingOpponents();
+
+  void setSelectedLevelItem(LevelModel levelItem);
 
   Future<AuthParams> reverbAuth(String channelName);
 
@@ -26,7 +30,13 @@ abstract class BattleRepository {
 
   Future<void> readyBattle({required int battleId, required String battleChannel});
 
-  List<TestQuestionModel> get battleQuestionsList;
+  Future<void> getBattleData();
+
+  Future<void> rematchRequest({required int opponentId});
+
+  Future<void> rematchUpdateStatus({required int battleId, required String status});
+
+  ValueNotifier<List<TestQuestionModel>> get battleQuestionsList;
 
   List<TestQuestionModel> get battleQuestionsResultList;
 
@@ -41,4 +51,6 @@ abstract class BattleRepository {
   void searchingOpponentsChannelClose();
 
   void connectBattle();
+
+  // void connectContinueBattle();
 }

@@ -12,6 +12,15 @@ class CountdownProvider with ChangeNotifier {
     getLives();
   }
 
+  static String timerString(int value) =>
+      "${value ~/ 60}:${(value % 60).toString().padLeft(2, '0')}";
+
+  bool get hasUserLifes => userLife != 0;
+
+  String? get recoveryTimeDatetime => _userLiveRepository.userLifesModel?.recoveryTimeDatetime;
+
+  bool get fullUserLives => userLife == maxUserLife;
+
   int get userLife => _userLiveRepository.userLifesModel?.lives ?? 0;
 
   int get maxUserLife => _userLiveRepository.userLifesModel?.maxLives ?? 3;

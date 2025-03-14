@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:jbaza/jbaza.dart';
+import 'package:wisdom/app.dart';
 import 'package:wisdom/core/db/db_helper.dart';
 import 'package:wisdom/core/db/preference_helper.dart';
 import 'package:wisdom/data/model/battle/battle_user_model.dart';
@@ -92,7 +93,7 @@ class SearchingOpponentViewmodel extends BaseViewModel {
             userMatched(messageData);
             _stopTimer();
           } else if (messageData['event'] == 'battle-started') {
-            battleStarted(message);
+            battleStarted();
           } else if (messageData['event'] == 'ready-for-battle') {
             statusMessage = "Ready users for battle";
             final data = jsonDecode(messageData["data"]);
@@ -131,14 +132,14 @@ class SearchingOpponentViewmodel extends BaseViewModel {
 
     return showDialog(
       barrierDismissible: false,
-      context: context!,
+      context: navigatorKey.currentState!.context,
       builder: (context) => OpponentWasFoundDialog(
         viewmodel: this,
       ),
     );
   }
 
-  battleStarted(String message) {
+  battleStarted() {
     //Search opponent page
     Navigator.popAndPushNamed(context!, Routes.battleExercisesPage);
   }

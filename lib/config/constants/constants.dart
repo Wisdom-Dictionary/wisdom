@@ -1,4 +1,5 @@
 class Constants {
+  static const KEY_USER_BATTLE_END_TIME = "user_battle_end_time";
   static const KEY_USER_CABINET = "user_cabinet";
   static const KEY_USER = "user";
   static const KEY_CONTACTS = "contacts";

@@ -34,12 +34,16 @@ class LevelWordsPage extends ViewModelBuilderWidget<LevelWordsPageViewModel> {
         child: Scaffold(
           backgroundColor: isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
           drawerEnableOpenDragGesture: false,
-          appBar: CustomAppBar(actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 15),
-              child: LifeStatusBar(),
-            )
-          ], title: "1-20", onTap: () => viewModel.goMain(), leadingIcon: Assets.icons.arrowLeft),
+          appBar: CustomAppBar(
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 15),
+                  child: LifeStatusBar(),
+                )
+              ],
+              title: viewModel.levelTestRepository.selectedLevelItem.name ?? "",
+              onTap: () => viewModel.goMain(),
+              leadingIcon: Assets.icons.arrowLeft),
           body: !viewModel.isSuccess(tag: viewModel.getLevelWordsTag)
               ? ShimmerLevelWords()
               : viewModel.isError(tag: viewModel.getLevelWordsTag)

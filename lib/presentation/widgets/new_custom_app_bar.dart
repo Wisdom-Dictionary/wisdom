@@ -118,6 +118,9 @@ class _NewCustomAppBarState extends State<NewCustomAppBar> {
                   onChanged: (value) {
                     onChanged(value);
                   },
+                  onTapOutside: (event) {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                  },
                   decoration: InputDecoration(
                     prefixIcon: Padding(
                       padding: EdgeInsets.only(left: 8.0.w),

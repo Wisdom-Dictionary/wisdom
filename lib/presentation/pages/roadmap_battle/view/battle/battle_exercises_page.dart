@@ -32,7 +32,7 @@ class BattleExercisesPage extends ViewModelBuilderWidget<BattleExercisesViewMode
           drawerEnableOpenDragGesture: false,
           appBar: CustomAppBar(
             isSearch: false,
-            title: "word_exercises".tr(),
+            title: "battle_exercises".tr(),
             onTap: () => viewModel.goBack(),
             leadingIcon: Assets.icons.arrowLeft,
             actions: const [
@@ -47,29 +47,37 @@ class BattleExercisesPage extends ViewModelBuilderWidget<BattleExercisesViewMode
               )
             ],
           ),
-          body: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: Column(
-              children: [
-                if (viewModel.hasTimer)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 18, right: 18, bottom: 16),
-                    child: CountDownTimer(
-                      secondsRemaining: viewModel.givenTimeForExercise,
-                      whenTimeExpires: () {
-                        viewModel.postTestQuestionsResult();
-                      },
-                      countDownTimerStyle: AppTextStyle.font13W500Normal
-                          .copyWith(color: AppColors.blue, fontSize: 12),
+          body: ValueListenableBuilder(
+            valueListenable: viewModel.battleRepository.battleQuestionsList,
+            builder: (context, value, child) {
+              if (value.isEmpty) {
+                return ShimmerExercisesPage();
+              }
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                child: Column(
+                  children: [
+                    if (viewModel.hasTimer)
+                      Padding(
+                        padding: const EdgeInsets.only(left: 18, right: 18, bottom: 16),
+                        child: CountDownTimer(
+                          secondsRemaining: viewModel.givenTimeForExercise,
+                          whenTimeExpires: () {
+                            viewModel.postTestQuestionsResult();
+                          },
+                          countDownTimerStyle: AppTextStyle.font13W500Normal
+                              .copyWith(color: AppColors.blue, fontSize: 12),
+                        ),
+                      ),
+                    Expanded(
+                      child: BattleExerciseContent(
+                        viewModel: viewModel,
+                      ),
                     ),
-                  ),
-                Expanded(
-                  child: BattleExerciseContent(
-                    viewModel: viewModel,
-                  ),
+                  ],
                 ),
-              ],
-            ),
+              );
+            },
           ),
         ));
   }
@@ -154,7 +162,7 @@ class _BattleExerciseContentState extends State<BattleExerciseContent>
   @override
   void initState() {
     _tabController = TabController(
-        length: widget.viewModel.battleRepository.battleQuestionsList.length,
+        length: widget.viewModel.battleRepository.battleQuestionsList.value.length,
         vsync: this,
         initialIndex: 0)
       ..addListener(
@@ -192,7 +200,7 @@ class _BattleExerciseContentState extends State<BattleExerciseContent>
           child: TabBarView(
               controller: _tabController,
               children: mapIndexed(
-                widget.viewModel.battleRepository.battleQuestionsList,
+                widget.viewModel.battleRepository.battleQuestionsList.value,
                 (index, item) => Column(
                   children: [
                     Container(
@@ -206,7 +214,7 @@ class _BattleExerciseContentState extends State<BattleExerciseContent>
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 18),
                             child: Text(
-                              "${index + 1}. ${widget.viewModel.battleRepository.battleQuestionsList[index].body!}",
+                              "${index + 1}. ${widget.viewModel.battleRepository.battleQuestionsList.value[index].body!}",
                               style: AppTextStyle.font15W500Normal
                                   .copyWith(fontSize: 14, color: AppColors.darkGray),
                             ),
@@ -219,14 +227,14 @@ class _BattleExerciseContentState extends State<BattleExerciseContent>
                             separatorBuilder: (context, index) => const SizedBox(
                               height: 8,
                             ),
-                            itemCount: widget.viewModel.battleRepository.battleQuestionsList[index]
-                                .answers.length,
+                            itemCount: widget.viewModel.battleRepository.battleQuestionsList
+                                .value[index].answers.length,
                             primary: false,
                             shrinkWrap: true,
                             itemBuilder: (context, i) {
                               bool itemSelected = false;
-                              final questionItemModel =
-                                  widget.viewModel.battleRepository.battleQuestionsList[index];
+                              final questionItemModel = widget
+                                  .viewModel.battleRepository.battleQuestionsList.value[index];
 
                               int? selectedAnswerId = getSelectedAnswerId(
                                   widget.viewModel.answers, questionItemModel.id);

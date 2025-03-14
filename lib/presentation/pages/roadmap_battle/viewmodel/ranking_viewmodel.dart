@@ -13,14 +13,16 @@ class RankingViewModel extends BaseViewModel {
   final roadMapRepository = locator<RankingRepository>();
   final localViewModel = locator<LocalViewModel>();
 
-  final String getRankingGlobalTag = "getRankingGlobalTag";
-  int page = 0;
+  final String getRankingGlobalTag = "getRankingGlobalTag",
+      getRankingGlobalMoreTag = "getRankingGlobalMoreTag";
+  int page = 1;
 
   void getRankingGlobal() {
     safeBlock(() async {
       if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
+        page = 1;
         setBusy(true, tag: getRankingGlobalTag);
-        await roadMapRepository.getRankingGlobal();
+        await roadMapRepository.getRankingGlobal(page);
         setSuccess(tag: getRankingGlobalTag);
       } else {
         showDialog(
@@ -31,5 +33,25 @@ class RankingViewModel extends BaseViewModel {
         );
       }
     }, callFuncName: 'getRankingGlobal', tag: getRankingGlobalTag, inProgress: false);
+  }
+
+  void getRankingGlobalMore() {
+    if (roadMapRepository.hasMoreData) {
+      page++;
+      safeBlock(() async {
+        if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
+          setBusy(true, tag: getRankingGlobalMoreTag);
+          await roadMapRepository.getRankingGlobal(page);
+          setSuccess(tag: getRankingGlobalMoreTag);
+        } else {
+          showDialog(
+            context: context!,
+            builder: (context) => const DialogBackground(
+              child: NoInternetConnectionDialog(),
+            ),
+          );
+        }
+      }, callFuncName: 'getRankingGlobalMore', tag: getRankingGlobalMoreTag, inProgress: false);
+    }
   }
 }

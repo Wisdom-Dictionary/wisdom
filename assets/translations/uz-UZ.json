@@ -246,5 +246,18 @@
   "searching_opponent": "Raqibni qidirish...",
   "status": "Holat",
   "exercises_result": "Mashq natijalari",
-  "global": "Global"
+  "global": "Global",
+  "no_user_found": "Foydalanuvchi topilmadi",
+  "no_user_found_with_entered_id": "Kiritilgan Id bo'yicha foydalanuvchi topilmadi",
+  "rematch": "Rematch",
+  "do_you_want_to_rematch": "Rematch qilishni hohlaysizmi?",
+  "friendly_match": "Do'stona match",
+  "rejection": "Rad etish",
+  "accept": "Qabul qilish",
+  "battle_exercises": "Battle mashqlari",
+  "waiting_for_your_opponent": "Raqibni kutish",
+  "waiting_for_your_opponent_content": "Ajoyib! Siz mashqlarni yakunladingiz. Raqibingiz battleni yakunlashini kuting... ⏳",
+  "you_won": "Siz yutdingiz",
+  "failure": "Yutqazdingiz",
+  "success": "Muvaffaqiyatli"
 }

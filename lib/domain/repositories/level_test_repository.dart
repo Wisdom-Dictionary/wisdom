@@ -43,4 +43,6 @@ abstract class LevelTestRepository {
   bool get pass;
 
   TestExerciseType get exerciseType;
+
+  LevelModel get selectedLevelItem;
 }

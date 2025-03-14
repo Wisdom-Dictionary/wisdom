@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:jbaza/jbaza.dart';
 import 'package:wisdom/config/constants/urls.dart';
@@ -17,12 +18,16 @@ class UserLiveRepositoryImpl extends UserLiveRepository {
   @override
   Future<void> getLives() async {
     _userLifesModel = null;
-    var response = await customClient.get(Urls.lives);
-    if (response.isSuccessful) {
-      final responseData = jsonDecode(response.body);
-      _userLifesModel = UserLifeModel.fromMap(responseData);
-    } else {
-      throw VMException(response.body, callFuncName: 'getLives', response: response);
+    try {
+      var response = await customClient.get(Urls.lives);
+      if (response.isSuccessful) {
+        final responseData = jsonDecode(response.body);
+        _userLifesModel = UserLifeModel.fromMap(responseData);
+      } else {
+        throw VMException(response.body, callFuncName: 'getLives', response: response);
+      }
+    } catch (e) {
+      log(e.toString());
     }
   }
 

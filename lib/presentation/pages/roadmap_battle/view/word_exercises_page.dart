@@ -322,7 +322,7 @@ class _WordExerciseContentState extends State<WordExerciseContent>
         ),
         onTap: () {
           widget.viewModel
-              .setAnswer(AnswerEntity(answerId: item.answers![index].id!, questionId: item.id!));
+              .setAnswer(AnswerEntity(answerId: item.answers[index].id!, questionId: item.id!));
 
           int? nextQuestion = widget.viewModel.validateAnswers;
           if (nextQuestion != null) {

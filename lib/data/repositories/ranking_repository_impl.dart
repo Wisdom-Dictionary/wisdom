@@ -13,16 +13,20 @@ class RankingRepositoryImpl extends RankingRepository {
   final CustomClient customClient;
 
   List<RankingModel> _rankingGlobalList = [];
+  bool _hasMoreData = true;
 
   // getting levels from host
   @override
-  Future<void> getRankingGlobal() async {
-    _rankingGlobalList = [];
+  Future<void> getRankingGlobal(int page) async {
+    if (page == 1) {
+      _rankingGlobalList = [];
+    }
     var response = await customClient.get(
-      Uri.https(Urls.baseAddress, "/api/rankings/global", {"per_page": "100", "page": "1"}),
+      Uri.https(Urls.baseAddress, "/api/rankings/global", {"per_page": "100", "page": "$page"}),
     );
     if (response.isSuccessful) {
       final responseData = jsonDecode(response.body);
+      _hasMoreData = (responseData['data'] as List).isNotEmpty;
       for (var item in responseData['data']) {
         _rankingGlobalList.add(RankingModel.fromJson(item));
       }
@@ -33,4 +37,7 @@ class RankingRepositoryImpl extends RankingRepository {
 
   @override
   List<RankingModel> get rankingGlobalList => _rankingGlobalList;
+
+  @override
+  bool get hasMoreData => _hasMoreData;
 }

@@ -29,9 +29,7 @@ class _Icons extends _AssetsHolder {
 
   String get note => '$basePath/note.svg';
 
-  String get check1 => '$basePath/check-1.png';
-
-  String get check1Big => '$basePath/check-1-big.png';
+  String get followed => '$basePath/followed.svg';
 
   String get people => '$basePath/people.svg';
 

@@ -4,17 +4,27 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:jbaza/jbaza.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:wisdom/app.dart';
+import 'package:wisdom/config/constants/constants.dart';
 
 import 'package:wisdom/config/constants/urls.dart';
 import 'package:wisdom/core/db/db_helper.dart';
+import 'package:wisdom/core/db/preference_helper.dart';
+import 'package:wisdom/core/di/app_locator.dart';
 import 'package:wisdom/core/domain/http_is_success.dart';
 import 'package:wisdom/core/services/custom_client.dart';
 import 'package:wisdom/data/model/battle/battle_user_model.dart';
+import 'package:wisdom/data/model/my_contacts/user_details_model.dart';
 import 'package:wisdom/data/model/roadmap/answer_entity.dart';
+import 'package:wisdom/data/model/roadmap/level_model.dart';
 import 'package:wisdom/data/model/roadmap/test_question_model.dart';
+import 'package:wisdom/data/model/user/user_model.dart';
 import 'package:wisdom/domain/repositories/battle_repository.dart';
+import 'package:wisdom/domain/repositories/profile_repository.dart';
+import 'package:wisdom/presentation/routes/routes.dart';
 
 class AuthParams {
   final String auth;
@@ -46,24 +56,29 @@ class AuthParams {
 }
 
 class BattleRepositoryImpl extends BattleRepository {
-  BattleRepositoryImpl(this.dbHelper, this.customClient);
+  BattleRepositoryImpl(this.customClient, this.sharedPreferenceHelper);
 
-  final DBHelper dbHelper;
   final CustomClient customClient;
+  final SharedPreferenceHelper sharedPreferenceHelper;
   WebSocketChannel? channel;
   String? socketId;
   AuthParams? params;
+  LevelModel? selectedLevelItem;
 
   int? _battleId, _startTime, _endTime;
   String? _battleChannel;
 
-  final StreamController<String> _streamController = StreamController.broadcast();
+  StreamController<String> _streamController = StreamController.broadcast();
 
-  List<TestQuestionModel> _battleQuestionsList = [];
+  ValueNotifier<List<TestQuestionModel>> _battleQuestionsList =
+      ValueNotifier<List<TestQuestionModel>>([]);
   List<TestQuestionModel> _battleQuestionsResultList = [];
 
   @override
   void connectBattle() async {
+    if (_streamController.isClosed) {
+      _streamController = StreamController.broadcast();
+    }
     print("🔌 WebSocket bog‘lanmoqda...");
     channel = WebSocketChannel.connect(
         Uri.parse("wss://websocket.yangixonsaroy.uz/app/e2d8827c7a35c9043726"));
@@ -74,7 +89,13 @@ class BattleRepositoryImpl extends BattleRepository {
         final Map<String, dynamic> messageData = jsonDecode(message);
 
         if (messageData["event"] == "pusher:connection_established") {
-          subscribeSearchingChannels(messageData);
+          final endDateBattle =
+              sharedPreferenceHelper.getInt(Constants.KEY_USER_BATTLE_END_TIME, 0);
+          if (endDateBattle == 0) {
+            subscribeSearchingChannels(messageData);
+          } else {
+            subscribeContinueBattleChannels(messageData);
+          }
         } else if (messageData['event'] == 'battle-started') {
           final Map<String, dynamic> data = jsonDecode(messageData['data']);
           _battleId = data["data"]["battle_id"];
@@ -82,11 +103,13 @@ class BattleRepositoryImpl extends BattleRepository {
           _startTime = data["start_time"];
           _endTime = data["end_time"];
 
-          _battleQuestionsList = [];
+          List<TestQuestionModel> _list = [];
 
           for (var item in (data['questions'] as List)) {
-            _battleQuestionsList.add(TestQuestionModel.fromMap(item));
+            _list.add(TestQuestionModel.fromMap(item));
           }
+          _battleQuestionsList.value = _list;
+          sharedPreferenceHelper.putInt(Constants.KEY_USER_BATTLE_END_TIME, _endTime!);
           _streamController.add(message);
           return;
         }
@@ -105,11 +128,67 @@ class BattleRepositoryImpl extends BattleRepository {
     intervalSendPing();
   }
 
+  // @override
+  // void connectContinueBattle() async {
+  //   print("🔌 WebSocket bog‘lanmoqda...");
+  //   final continueBattleChannel = WebSocketChannel.connect(
+  //       Uri.parse("wss://websocket.yangixonsaroy.uz/app/e2d8827c7a35c9043726"));
+  //   continueBattleChannel.stream.listen(
+  //     (message) async {
+  //       print("📩 Yangi xabar: $message"); // WebSocket dan kelgan xabarni chiqarish
+
+  //       final Map<String, dynamic> messageData = jsonDecode(message);
+
+  //       if (messageData["event"] == "pusher:connection_established") {
+  //         AuthParams authParams = await reverbAuth(_battleChannel!);
+
+  //         message = {
+  //           "event": "pusher:subscribe",
+  //           "data": {
+  //             "channel": _battleChannel!,
+  //             "auth": authParams.auth,
+  //             "channel_data": authParams.channelData,
+  //           }
+  //         };
+  //         continueBattleChannel.sink.add(jsonEncode(message));
+
+  //         final channelData = jsonDecode(params!.channelData);
+  //         final privateChannelName = "private-user.${channelData["user_id"]}";
+  //         // Subscribe to Private Channel
+
+  //         authParams = await reverbAuth(privateChannelName);
+
+  //         message = {
+  //           "event": "pusher:subscribe",
+  //           "data": {
+  //             "channel": privateChannelName,
+  //             "auth": authParams.auth,
+  //             "channel_data": authParams.channelData,
+  //           }
+  //         };
+  //         continueBattleChannel.sink.add(jsonEncode(message));
+  //         channel = continueBattleChannel;
+  //       }
+  //     },
+  //     onError: (error) {
+  //       print("❌ WebSocket xatosi: $error");
+  //     },
+  //     onDone: () {
+  //       print("🔴 WebSocket yopildi");
+  //     },
+  //     cancelOnError: true,
+  //   );
+
+  //   intervalSendPing();
+  // }
+
   Timer intervalSendPing() {
     // Har 5 soniyada ma'lumot yuborish
     return Timer.periodic(const Duration(seconds: 30), (timer) {
-      channel!.sink.add('Ping from client');
-      print('Ping sent');
+      if (channel != null) {
+        channel!.sink.add('Ping from client');
+        print('Ping sent');
+      }
     });
   }
 
@@ -120,14 +199,27 @@ class BattleRepositoryImpl extends BattleRepository {
     // Subscribe to Presence Channel
     await subscribeToChannel(channelName: presenceChannelName);
 
-    final channleData = jsonDecode(params!.channelData);
+    final channelData = jsonDecode(params!.channelData);
 
-    final privateChannelName = "private-user.${channleData["user_id"]}";
+    final privateChannelName = "private-user.${channelData["user_id"]}";
     // Subscribe to Private Channel
 
     await subscribeToChannel(channelName: privateChannelName);
 
     await startSearchingOpponents();
+  }
+
+  Future<void> subscribeContinueBattleChannels(Map<String, dynamic> messageData) async {
+    final Map<String, dynamic> socketData = jsonDecode(messageData["data"]);
+    socketId = socketData["socket_id"];
+    await subscribeToChannel(channelName: _battleChannel!);
+
+    final channelData = jsonDecode(params!.channelData);
+
+    final privateChannelName = "private-user.${channelData["user_id"]}";
+    // Subscribe to Private Channel
+
+    await subscribeToChannel(channelName: privateChannelName);
   }
 
   Stream<String> get messageStream => _streamController.stream;
@@ -168,7 +260,7 @@ class BattleRepositoryImpl extends BattleRepository {
   @override
   Future<void> checkBattleQuestions(List<AnswerEntity> answers, int spentTime) async {
     final requestBody = {
-      'battle_channel': "private-$_battleChannel!",
+      'battle_channel': _battleChannel,
       'battle_id': _battleId!,
       'spent_time': spentTime,
       'answers': answers
@@ -183,7 +275,7 @@ class BattleRepositoryImpl extends BattleRepository {
           "Accept": "application/json",
         },
         body: jsonEncode(requestBody));
-    print("checkBattleQuestions - ${response.toString()}");
+    print("checkBattleQuestions - ${response.body}");
     if (!response.isSuccessful) {
       throw VMException(response.body, callFuncName: 'postWordQuestionsCheck', response: response);
     }
@@ -299,18 +391,18 @@ class BattleRepositoryImpl extends BattleRepository {
   @override
   Future<bool> startSearchingOpponents() async {
     var response = await customClient.get(
-      Urls.startSearchingOpponents(41),
+      Urls.startSearchingOpponents(selectedLevelItem!.id!),
     );
 
     if (response.isSuccessful) {
       return true;
     } else {
-      throw VMException(response.body, callFuncName: 'getTestQuestions', response: response);
+      throw VMException(response.body, callFuncName: 'startSearchingOpponents', response: response);
     }
   }
 
   @override
-  List<TestQuestionModel> get battleQuestionsList => _battleQuestionsList;
+  ValueNotifier<List<TestQuestionModel>> get battleQuestionsList => _battleQuestionsList;
 
   @override
   int? get endDate => _endTime;
@@ -320,4 +412,73 @@ class BattleRepositoryImpl extends BattleRepository {
 
   @override
   List<TestQuestionModel> get battleQuestionsResultList => _battleQuestionsResultList;
+
+  @override
+  Future<void> rematchRequest({required int opponentId}) async {
+    final requestBody = {
+      "opponent_id": opponentId,
+    };
+    var response = await customClient.post(Urls.rematchRequest,
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: jsonEncode(requestBody));
+
+    if (!response.isSuccessful) {
+      throw VMException(response.body, callFuncName: 'getTestQuestions', response: response);
+    }
+  }
+
+  @override
+  Future<void> rematchUpdateStatus({required int battleId, required String status}) async {
+    final requestBody = {
+      "battle_id": battleId,
+      "status": status,
+    };
+    var response = await customClient.post(Urls.rematchUpdateStatus,
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: jsonEncode(requestBody));
+
+    if (!response.isSuccessful) {
+      throw VMException(response.body, callFuncName: 'getTestQuestions', response: response);
+    }
+  }
+
+  @override
+  Future<void> getBattleData() async {
+    Navigator.pushNamed(navigatorKey.currentState!.context, Routes.battleExercisesPage);
+    var response = await customClient.post(
+      Urls.getBattleData,
+    );
+
+    if (response.isSuccessful) {
+      final data = jsonDecode(response.body);
+
+      _battleId = data["data"]["battle_id"];
+      _battleChannel = data["data"]["battleChannel"];
+      _startTime = data["start_time"];
+      _endTime = data["end_time"];
+
+      List<TestQuestionModel> _list = [];
+
+      for (var item in (data['questions'] as List)) {
+        _list.add(TestQuestionModel.fromMap(item));
+      }
+      _battleQuestionsList.value = _list;
+      connectBattle();
+      // connectContinueBattle();
+      sharedPreferenceHelper.putInt(Constants.KEY_USER_BATTLE_END_TIME, _endTime!);
+    } else {
+      throw VMException(response.body, callFuncName: 'getTestQuestions', response: response);
+    }
+  }
+
+  @override
+  void setSelectedLevelItem(LevelModel levelItem) {
+    selectedLevelItem = levelItem;
+  }
 }

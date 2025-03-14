@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jbaza/jbaza.dart';
+import 'package:wisdom/app.dart';
 import 'package:wisdom/data/model/roadmap/answer_entity.dart';
 import 'package:wisdom/data/model/roadmap/test_question_model.dart';
 import 'package:wisdom/data/viewmodel/local_viewmodel.dart';
@@ -13,7 +14,6 @@ import '../../../../core/di/app_locator.dart';
 
 class BattleExercisesViewModel extends BaseViewModel {
   BattleExercisesViewModel({required super.context});
-
   final battleRepository = locator<BattleRepository>();
   final localViewModel = locator<LocalViewModel>();
 
@@ -31,7 +31,7 @@ class BattleExercisesViewModel extends BaseViewModel {
 
     if (value != null) {
       if (!value) {
-        Navigator.pop(context!);
+        Navigator.of(context!).pop();
       }
     }
     return;
@@ -62,8 +62,8 @@ class BattleExercisesViewModel extends BaseViewModel {
   }
 
   int? get validateAnswers {
-    for (int i = 0; i < battleRepository.battleQuestionsList.length; i++) {
-      TestQuestionModel question = battleRepository.battleQuestionsList[i];
+    for (int i = 0; i < battleRepository.battleQuestionsList.value.length; i++) {
+      TestQuestionModel question = battleRepository.battleQuestionsList.value[i];
       if (!answers
           .map(
             (e) => e.questionId,
@@ -77,17 +77,19 @@ class BattleExercisesViewModel extends BaseViewModel {
   }
 
   bool submitButtonStatus(int tabControllerIndex) {
-    if (battleRepository.battleQuestionsList.length == tabControllerIndex + 1) {
+    if (battleRepository.battleQuestionsList.value.length == tabControllerIndex + 1) {
       return true;
     }
-    if (battleRepository.battleQuestionsList.length > answers.length) {
+    if (battleRepository.battleQuestionsList.value.length > answers.length) {
       return false;
     }
     return true;
   }
 
   setAnswer(AnswerEntity answer) {
-    if (!answers.contains(answer)) {
+    if (!answers.any(
+      (element) => element.questionId == answer.questionId,
+    )) {
       answers.add(answer);
     }
   }

@@ -72,7 +72,7 @@ class WordExercisesResultPage extends ViewModelBuilderWidget<WordExercisesResult
                                         height: 8,
                                       ),
                                       itemCount: viewModel.levelTestRepository
-                                          .testQuestionsResultList[index].answers!.length,
+                                          .testQuestionsResultList[index].answers.length,
                                       primary: false,
                                       shrinkWrap: true,
                                       itemBuilder: (context, i) => questionItem(

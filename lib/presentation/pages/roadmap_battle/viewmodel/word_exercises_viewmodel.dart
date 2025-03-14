@@ -100,7 +100,9 @@ class WordExercisesViewModel extends BaseViewModel {
   }
 
   setAnswer(AnswerEntity answer) {
-    if (!answers.contains(answer)) {
+    if (!answers.any(
+      (element) => element.questionId == answer.questionId,
+    )) {
       answers.add(answer);
     }
   }

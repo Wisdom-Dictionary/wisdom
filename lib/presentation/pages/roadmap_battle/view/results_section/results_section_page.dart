@@ -227,6 +227,13 @@ class _ExercisesResultContactsPageState extends State<ExercisesResultContactsPag
     try {
       final List<Contact> contacts = await ContactsService.getContacts();
       if (contacts.isNotEmpty) {
+        Map<String, dynamic> contactsList = {
+          "contactName": [
+            "+998900000000",
+            "+998900000000",
+            "+998900000000",
+          ]
+        };
         String content = "contacts:${contacts.map(
               (e) {
                 return "${e.displayName} - ${e.phones?.map(
@@ -327,26 +334,68 @@ class _ExercisesResultContactsPageState extends State<ExercisesResultContactsPag
       );
 }
 
-class ExercisesResultGlobalPage extends StatelessWidget {
+class ExercisesResultGlobalPage extends StatefulWidget {
   const ExercisesResultGlobalPage({super.key, required this.viewModel});
   final RankingViewModel viewModel;
+
+  @override
+  State<ExercisesResultGlobalPage> createState() => _ExercisesResultGlobalPageState();
+}
+
+class _ExercisesResultGlobalPageState extends State<ExercisesResultGlobalPage> {
+  late ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController()..addListener(_scrollListener);
+  }
+
+  void _scrollListener() {
+    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
+      if (!widget.viewModel.isBusy(tag: widget.viewModel.getRankingGlobalMoreTag)) {
+        widget.viewModel.getRankingGlobalMore();
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return viewModel.isBusy(tag: viewModel.getRankingGlobalTag)
+    return widget.viewModel.isBusy(tag: widget.viewModel.getRankingGlobalTag)
         ? ShimmerExercisesResult()
-        : viewModel.isSuccess(tag: viewModel.getRankingGlobalTag)
-            ? ListView.builder(
-                physics: ClampingScrollPhysics(),
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                itemCount: viewModel.roadMapRepository.rankingGlobalList.length,
-                itemBuilder: (context, index) => RankingItemWidget(
-                  index: index,
-                  item: viewModel.roadMapRepository.rankingGlobalList[index],
+        : widget.viewModel.isSuccess(tag: widget.viewModel.getRankingGlobalTag)
+            ? RefreshIndicator(
+                onRefresh: () async => widget.viewModel.getRankingGlobal(),
+                child: ListView.builder(
+                  controller: _scrollController,
+                  physics: const ClampingScrollPhysics(),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  itemCount: widget.viewModel.roadMapRepository.rankingGlobalList.length +
+                      (widget.viewModel.isBusy(tag: widget.viewModel.getRankingGlobalMoreTag)
+                          ? 1
+                          : 0),
+                  itemBuilder: (context, index) {
+                    if (index < widget.viewModel.roadMapRepository.rankingGlobalList.length) {
+                      return RankingItemWidget(
+                        index: index,
+                        item: widget.viewModel.roadMapRepository.rankingGlobalList[index],
+                      );
+                    } else {
+                      return const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                        child: Center(child: CircularProgressIndicator()),
+                      );
+                    }
+                  },
                 ),
               )
-            : Center(
-                child: Text("Unhandled Exeption"),
-              );
+            : const Center(child: Text("Unhandled Exception"));
   }
 }
 

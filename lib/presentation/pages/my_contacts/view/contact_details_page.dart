@@ -108,7 +108,7 @@ class ContactDetailsBar extends StatelessWidget {
                 height: 2,
               ),
               Text(
-                "Rank: Major",
+                "Rank: ${contactItemData.rank?.name ?? ""}",
                 style: AppTextStyle.font13W500Normal.copyWith(color: AppColors.blue, fontSize: 12),
               ),
             ],
@@ -144,6 +144,13 @@ class UserStatisticsWithPersentage extends StatelessWidget {
 
   final UserDetailsModel contactItemData;
 
+  int averageTime(int? time) {
+    if (time == null) {
+      return 0;
+    }
+    return (time / 1000).toInt();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -159,7 +166,7 @@ class UserStatisticsWithPersentage extends StatelessWidget {
           width: 12,
         ),
         item(
-            percent: contactItemData.statistics?.averageTime ?? 0,
+            percent: averageTime(contactItemData.statistics?.averageTime),
             percentSign: " s",
             title: "average_time".tr()),
         SizedBox(
@@ -173,6 +180,17 @@ class UserStatisticsWithPersentage extends StatelessWidget {
     );
   }
 
+  String formatMilliseconds(int milliseconds) {
+    int totalSeconds = (milliseconds / 1000).floor();
+    int minutes = (totalSeconds / 60).floor();
+    int seconds = totalSeconds % 60;
+
+    String minutesStr = minutes.toString().padLeft(2, '0');
+    String secondsStr = seconds.toString().padLeft(2, '0');
+
+    return "$minutesStr:$secondsStr";
+  }
+
   Widget item({String? title, String? percentSign, int? percent}) {
     return Expanded(
       child: CircularPercentIndicator(
@@ -180,7 +198,8 @@ class UserStatisticsWithPersentage extends StatelessWidget {
         progressColor: AppColors.blue,
         radius: 28,
         backgroundColor: AppColors.vibrantBlue.withValues(alpha: 0.15),
-        percent: (percent ?? 0) / 100,
+        // percent: (percent ?? 0) / 100,
+        percent: 0,
         center: Text(
           percent != null ? "$percent${percentSign ?? "%"}" : "",
           style: AppTextStyle.font15W600Normal.copyWith(color: AppColors.blue, fontSize: 16),

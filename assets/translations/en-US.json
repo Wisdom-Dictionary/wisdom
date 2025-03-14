@@ -248,5 +248,18 @@
   "searching_opponent": "Searching Opponent...",
   "status": "Status",
   "exercises_result": "Exercises Result",
-  "global": "Global"
+  "global": "Global",
+  "no_user_found": "No user found",
+  "no_user_found_with_entered_id": "No user found with the entered ID.",
+  "rematch": "Rematch",
+  "do_you_want_to_rematch": "Do you want to rematch?",
+  "friendly_match": "Friendly match",
+  "rejection": "Rejection",
+  "accept": "Accept",
+  "battle_exercises": "Battle exercises",
+  "waiting_for_your_opponent": "Waiting for your opponent",
+  "waiting_for_your_opponent_content": "Great job! You've completed the challenge. Waiting for your opponent to finish... ⏳",
+  "you_won": "You Won",
+  "failure": "Failure",
+  "success": "Muvaffaqiyatli"
 }

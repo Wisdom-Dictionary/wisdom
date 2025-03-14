@@ -28,6 +28,9 @@ class Urls {
   static var ready = Uri.parse('$battle/ready');
   static var cancelBattle = Uri.parse('$battle/cancel-battle');
   static var getFullBattleResult = Uri.parse('$battle/get-full-battle-result');
+  static var rematchRequest = Uri.parse('$battle/rematch-request');
+  static var rematchUpdateStatus = Uri.parse('$battle/rematch-update-status');
+  static var getBattleData = Uri.parse('$battle/get-battle-data');
 
   static var testQuestionsCheck = Uri.parse('${baseUrl}api/levels/test-questions-check');
   static var testQuestionsResult = Uri.parse('${baseUrl}api/levels/get-full-test-result');

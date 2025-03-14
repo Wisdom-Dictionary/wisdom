@@ -1,8 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:http/http.dart';
 import 'package:jbaza/jbaza.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:provider/provider.dart';
 import 'package:wisdom/config/constants/app_colors.dart';
 import 'package:wisdom/config/constants/app_decoration.dart';
 import 'package:wisdom/config/constants/app_text_style.dart';
@@ -11,8 +13,11 @@ import 'package:wisdom/config/constants/constants.dart';
 import 'package:wisdom/data/model/battle/battle_result_model.dart';
 import 'package:wisdom/presentation/components/shimmer.dart';
 import 'package:wisdom/presentation/components/w_button.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/out_of_lives_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/searching_opponent_page.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/want_to_rematch_battle_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/battle_result_viewmodel.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/life_countdown_provider.dart';
 import 'package:wisdom/presentation/routes/routes.dart';
 import 'package:wisdom/presentation/widgets/custom_app_bar.dart';
 
@@ -103,6 +108,10 @@ class BattleResultPage extends ViewModelBuilderWidget<BattleResultViewmodel> {
                               const SizedBox(
                                 height: 8,
                               ),
+                              if (!viewModel.hasCurrentUserData)
+                                ShimmerWidget(
+                                    child: statusResultBar(0, 0,
+                                        spentTimeInMilliseconds: 0, givenTimeInMilliseconds: 0)),
                               if (viewModel.hasCurrentUserData)
                                 statusResultBar(viewModel.currentUserCorrectAnswers ?? 1,
                                     viewModel.totalQuestions ?? 0,
@@ -173,8 +182,20 @@ class BattleResultPage extends ViewModelBuilderWidget<BattleResultViewmodel> {
                           ),
                         )),
                     WButton(
-                      title: "retry".tr(),
-                      onTap: () {},
+                      isDisable: !viewModel.hasOpponentData,
+                      isLoading: viewModel.isBusy(tag: viewModel.postRematchRequestTag),
+                      title: "rematch".tr(),
+                      onTap: () {
+                        final hasUserLives = context.read<CountdownProvider>().hasUserLifes;
+                        if (hasUserLives) {
+                          viewModel.showRematchDialog();
+                        } else {
+                          showDialog(
+                            context: context,
+                            builder: (context) => OutOfLivesDialog(),
+                          );
+                        }
+                      },
                     )
                   ],
                 ),
@@ -311,12 +332,12 @@ class BattleResultPage extends ViewModelBuilderWidget<BattleResultViewmodel> {
                   children: [
                     pass
                         ? Text(
-                            "You Won",
+                            "you_won".tr(),
                             style: AppTextStyle.font17W700Normal
                                 .copyWith(fontSize: 18, color: AppColors.blue),
                           )
                         : Text(
-                            "Failure",
+                            "failure".tr(),
                             style: AppTextStyle.font17W700Normal
                                 .copyWith(fontSize: 18, color: AppColors.red),
                           ),
