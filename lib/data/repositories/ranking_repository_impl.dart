@@ -14,6 +14,7 @@ class RankingRepositoryImpl extends RankingRepository {
 
   List<RankingModel> _rankingGlobalList = [];
   bool _hasMoreData = true;
+  int _userCurrentLevel = 0, _userRanking = 0;
 
   // getting levels from host
   @override
@@ -30,6 +31,8 @@ class RankingRepositoryImpl extends RankingRepository {
       for (var item in responseData['data']) {
         _rankingGlobalList.add(RankingModel.fromJson(item));
       }
+      _userCurrentLevel = responseData['you']['user_current_level'];
+      _userRanking = responseData['you']['ranking'];
     } else {
       throw VMException(response.body, callFuncName: 'getLevels', response: response);
     }
@@ -40,4 +43,10 @@ class RankingRepositoryImpl extends RankingRepository {
 
   @override
   bool get hasMoreData => _hasMoreData;
+
+  @override
+  int get userCurrentLevel => _userCurrentLevel;
+
+  @override
+  int get userRanking => _userRanking;
 }

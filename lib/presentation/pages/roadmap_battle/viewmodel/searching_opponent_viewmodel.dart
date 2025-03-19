@@ -129,7 +129,6 @@ class SearchingOpponentViewmodel extends BaseViewModel {
     _battleId = data['battleId'];
     user1 = BattleUserModel.fromMap(data['user1']);
     user2 = BattleUserModel.fromMap(data['user2']);
-
     return showDialog(
       barrierDismissible: false,
       context: navigatorKey.currentState!.context,
@@ -141,7 +140,16 @@ class SearchingOpponentViewmodel extends BaseViewModel {
 
   battleStarted() {
     //Search opponent page
-    Navigator.popAndPushNamed(context!, Routes.battleExercisesPage);
+    Navigator.popUntil(
+      navigatorKey.currentState!.context,
+      (route) => route.isFirst ? true : false,
+    );
+    // Navigator.popUntil(
+    //     navigatorKey.currentState!.context, ModalRoute.withName(Routes.mainPage));
+    Navigator.pushNamed(navigatorKey.currentState!.context, Routes.battleExercisesPage);
+
+    // Navigator.pushNamedAndRemoveUntil(navigatorKey.currentState!.context,
+    //     Routes.battleExercisesPage, ModalRoute.withName(Routes.searchingOpponentPage));
   }
 
   void connectBattle() {

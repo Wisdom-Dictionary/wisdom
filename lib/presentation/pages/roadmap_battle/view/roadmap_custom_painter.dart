@@ -52,7 +52,6 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
 
   static const iconSize = 100.0;
   static const pathCornerRad = 80.0;
-  static const layoutSize = 370.0;
 
   List<Map<String, dynamic>> generatePositions(int count) {
     final List<Map<String, dynamic>> basePositions = [
@@ -73,30 +72,6 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
       {"left": 120, "right": null, "bottom": 7},
       {"left": 14, "right": null, "bottom": 7.5},
       {"left": 150, "right": null, "bottom": 8},
-      // {"left": null, "right": 30, "bottom": 8.3},
-      // {"left": null, "right": 20, "bottom": 9},
-      // {"left": 80, "right": null, "bottom": 9.05},
-      // {"left": 20, "right": null, "bottom": 9.8},
-      // {"left": null, "right": 110, "bottom": 10},
-      // {"left": null, "right": 20, "bottom": 10.6},
-      // {"left": null, "right": 100, "bottom": 11},
-      // {"left": 60, "right": null, "bottom": 11.1},
-      // {"left": 14, "right": null, "bottom": 11.8},
-      // {"left": 0, "right": 0, "bottom": 12},
-      // {"left": null, "right": 20, "bottom": 12.3},
-      // {"left": null, "right": 50, "bottom": 13},
-      // {"left": 80, "right": null, "bottom": 13},
-      // {"left": 20, "right": null, "bottom": 13.7},
-      // {"left": 115, "right": null, "bottom": 14},
-      // {"left": null, "right": 30, "bottom": 14.3},
-      // {"left": null, "right": 30, "bottom": 15},
-      // {"left": 0, "right": 0, "bottom": 15.1},
-      // {"left": 10, "right": null, "bottom": 15.3},
-      // {"left": 50, "right": null, "bottom": 16},
-      // {"left": null, "right": 100, "bottom": 16.1},
-      // {"left": null, "right": 20, "bottom": 16.7},
-      // {"left": null, "right": 130, "bottom": 17},
-      // {"left": 10, "right": null, "bottom": 17.3},
     ];
 
     final List<Map<String, dynamic>> result = [];
@@ -111,7 +86,6 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
       final pattern = basePositions[i % basePositions.length];
       final int loop = i ~/ basePositions.length;
 
-      // final double newBottom = (pattern['bottom'] as num).toDouble() + (loop * bottomShift);
       final double newBottom = (pattern['bottom'] as num).toDouble() + (loop * bottomShift);
 
       result.add({
@@ -125,50 +99,6 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
   }
 
   List<Positioned> levelItems(RoadmapRepository repository) {
-    // List positions = [
-    //   {"left": null, "right": 83, "bottom": 1},
-    //   {"left": 82, "right": null, "bottom": 1.05},
-    //   {"left": 20, "right": null, "bottom": 1.7},
-    //   {"left": null, "right": 126, "bottom": 2},
-    //   {"left": null, "right": 14, "bottom": 2.8},
-    //   {"left": 120, "right": null, "bottom": 3},
-    //   {"left": 10, "right": null, "bottom": 3.5},
-    //   {"left": 100, "right": null, "bottom": 4},
-    //   {"left": null, "right": 14, "bottom": 4.2},
-    //   {"left": null, "right": 50, "bottom": 5},
-    //   {"left": 82, "right": null, "bottom": 5.1},
-    //   {"left": 20, "right": null, "bottom": 5.8},
-    //   {"left": null, "right": 100, "bottom": 6},
-    //   {"left": null, "right": 14, "bottom": 6.6},
-    //   {"left": 120, "right": null, "bottom": 7},
-    //   {"left": 14, "right": null, "bottom": 7.5},
-    //   {"left": 150, "right": null, "bottom": 8},
-    //   {"left": null, "right": 30, "bottom": 8.3},
-    //   {"left": null, "right": 20, "bottom": 9},
-    //   {"left": 80, "right": null, "bottom": 9.05},
-    //   {"left": 20, "right": null, "bottom": 9.8},
-    //   {"left": null, "right": 110, "bottom": 10},
-    //   {"left": null, "right": 20, "bottom": 10.6},
-    //   {"left": null, "right": 100, "bottom": 11},
-    //   {"left": 60, "right": null, "bottom": 11.1},
-    //   {"left": 14, "right": null, "bottom": 11.8},
-    //   {"left": 0, "right": 0, "bottom": 12},
-    //   {"left": null, "right": 20, "bottom": 12.3},
-    //   {"left": null, "right": 50, "bottom": 13},
-    //   {"left": 80, "right": null, "bottom": 13},
-    //   {"left": 20, "right": null, "bottom": 13.7},
-    //   {"left": 115, "right": null, "bottom": 14},
-    //   {"left": null, "right": 30, "bottom": 14.3},
-    //   {"left": null, "right": 30, "bottom": 15},
-    //   {"left": 0, "right": 0, "bottom": 15.1},
-    //   {"left": 10, "right": null, "bottom": 15.3},
-    //   {"left": 50, "right": null, "bottom": 16},
-    //   {"left": null, "right": 100, "bottom": 16.1},
-    //   {"left": null, "right": 20, "bottom": 16.7},
-    //   {"left": null, "right": 130, "bottom": 17},
-    //   {"left": 10, "right": null, "bottom": 17.3},
-    //   // Backenddan kelgan ma'lumotlar soni o'zgaradi
-    // ];
     List positions = generatePositions(repository.levelsList.length);
 
     return List.generate(repository.levelsList.length, (index) {
@@ -188,13 +118,7 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
           bottom: activeLevel && bottom != null ? bottom - 80 : (bottom! - 50),
           child: GestureDetector(
               onTap: () => widget.viewModel.selectLevel(repository.levelsList[index]),
-              child: repository.levelsList[index].itemWidget
-
-              // InactiveLevelIndicator(
-              //   activeLevel: activeLevel,
-              //   item: repository.levelsList[index],
-              // ),
-              ));
+              child: repository.levelsList[index].itemWidget));
     });
   }
 
@@ -202,234 +126,199 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        if (widget.viewModel.isBusy(tag: widget.viewModel.getLevelsTag))
-          const RoadmapShimmerWidget(),
-        if (widget.viewModel.isSuccess(tag: widget.viewModel.getLevelsTag))
-          Center(
-            child: SingleChildScrollView(
-              physics: const ClampingScrollPhysics(),
-              reverse: true,
-              child: SafeArea(
-                child: Stack(
-                  children: [
-                    Positioned.fill(
-                      child: Stack(
-                        children: [
-                          Positioned.fill(
-                            child: Image.asset(
-                              Assets.images.roadmapBattleBackground,
-                              alignment: Alignment.bottomCenter,
-                              repeat: ImageRepeat.repeat,
-                              fit: BoxFit.fitWidth,
-                            ),
-                          ),
-                          Positioned.fill(
-                              child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              backgroundGradient(topGradient()),
-                              backgroundGradient(bottomGradient())
-                            ],
-                          ))
-                        ],
-                      ),
-                    ),
-                    CustomPaint(
-                      painter: DashedPathPainter(
-                        originalPath: (size) {
-                          return _customPathFromBottomToTop(size, pathCornerRad, iconSize,
-                                  widget.viewModel.roadMapRepository.levelsList.length)
-                              .reversed
-                              .toList();
-                        },
-                        pathColors: [],
-                        pathColor: AppColors.white,
-                        strokeWidth: 40,
-                        dashGapLength: 0.01,
-                        dashLength: 7.0,
-                      ),
-                      child: const Center(),
-                    ),
-                    CustomPaint(
-                      painter: DashedPathPainter(
-                        originalPath: (size) {
-                          return _customPathFromBottomToTop(size, pathCornerRad, iconSize,
-                              widget.viewModel.roadMapRepository.levelsList.length);
-                        },
-                        pathColors: [],
-                        pathColor: AppColors.blue,
-                        strokeWidth: 1,
-                        dashGapLength: 10.0,
-                        dashLength: 8.0,
-                      ),
-                      child: SizedBox(
-                          width: iconSize * 70,
-                          height: (pathCornerRad * 2) *
-                              (widget.viewModel.roadMapRepository.levelsList.length < 6
-                                  ? 6
-                                  : widget.viewModel.roadMapRepository.levelsList.length),
-                          child: Stack(children: levelItems(widget.viewModel.roadMapRepository))),
-                    ),
-                  ],
-                ),
-              ),
+        if (widget.viewModel.isBusy(tag: widget.viewModel.getLevelsTag)) buildLoadingState(),
+        if (widget.viewModel.isSuccess(tag: widget.viewModel.getLevelsTag)) buildSuccessState(),
+        buildTopRightButton(context),
+      ],
+    );
+  }
+
+  Widget buildLoadingState() {
+    return const RoadmapShimmerWidget();
+  }
+
+  Widget buildSuccessState() {
+    return Center(
+      child: SingleChildScrollView(
+        physics: const ClampingScrollPhysics(),
+        reverse: true,
+        child: SafeArea(
+          child: Stack(
+            children: [
+              buildBackgroundLayer(),
+              buildPathLayers(),
+              buildLevelItemsLayer(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildBackgroundLayer() {
+    return Positioned.fill(
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: Image.asset(
+              Assets.images.roadmapBattleBackground,
+              alignment: Alignment.bottomCenter,
+              repeat: ImageRepeat.repeat,
+              fit: BoxFit.fitWidth,
             ),
           ),
-        Positioned(
-            top: 90,
-            right: 5,
-            child: SafeArea(
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.pushNamed(context, Routes.resultsSectionPage);
-                },
-                child: FlagIndicatorWidget(
-                  userLevel: widget.viewModel.roadMapRepository.userCurrentLevel,
-                ),
-              ),
-            ))
+          Positioned.fill(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                backgroundGradient(topGradient()),
+                backgroundGradient(bottomGradient()),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildPathLayers() {
+    final levelsLength = widget.viewModel.roadMapRepository.levelsList.length;
+
+    return Stack(
+      children: [
+        CustomPaint(
+          painter: DashedPathPainter(
+            originalPath: (size) =>
+                _customPathFromBottomToTop(size, pathCornerRad, iconSize, levelsLength)
+                    .reversed
+                    .toList(),
+            pathColors: [],
+            pathColor: AppColors.white,
+            strokeWidth: 40,
+            dashGapLength: 0.01,
+            dashLength: 7.0,
+          ),
+          child: const Center(),
+        ),
+        CustomPaint(
+          painter: DashedPathPainter(
+            originalPath: (size) =>
+                _customPathFromBottomToTop(size, pathCornerRad, iconSize, levelsLength),
+            pathColors: [],
+            pathColor: AppColors.blue,
+            strokeWidth: 1,
+            dashGapLength: 10.0,
+            dashLength: 8.0,
+          ),
+          child: SizedBox(
+            width: iconSize * 70,
+            height: pathCornerRad * (levelsLength < 6 ? 6 : levelsLength),
+            child: Stack(
+              children: levelItems(widget.viewModel.roadMapRepository),
+            ),
+          ),
+        ),
       ],
+    );
+  }
+
+  Widget buildLevelItemsLayer() {
+    // Bu metod alohida bo'lishi shart emas, lekin kerak bo'lsa tozalab ajratib qo'yiladi.
+    return const SizedBox
+        .shrink(); // Agar yuqoridagi CustomPaint ichida ishlatilsa, bu optional bo'ladi
+  }
+
+  Widget buildTopRightButton(BuildContext context) {
+    return Positioned(
+      top: 90,
+      right: 5,
+      child: SafeArea(
+        child: GestureDetector(
+          onTap: () {
+            Navigator.pushNamed(context, Routes.resultsSectionPage);
+          },
+          child: FlagIndicatorWidget(
+            userLevel: widget.viewModel.roadMapRepository.userCurrentLevel,
+          ),
+        ),
+      ),
     );
   }
 
   List<Path> _customPathFromBottomToTop(
     Size size,
-    double painterCornerRad,
+    double cornerRadius,
     double iconSize,
     int iconCount,
   ) {
     final width = size.width;
     final List<Path> paths = [];
-    iconCount = iconCount - 2;
-    final totalHeight = (iconCount * painterCornerRad * 2) + iconSize;
 
-    // Ajralib turadigan birinchi path (pastdagi maxsus path)
-    // final startX = iconSize / 2;
-    // final startY = iconSize; // pastdan 1-chi qatordagi start
+    // Ikki chet icon hisobga olinmaydi
+    final usableIconCount = iconCount - 2;
 
-    final path = Path();
+    // Chiziqlar soni (yani, path lar soni)
+    final pathCount = (usableIconCount / 2).ceil();
 
-    final startX = iconSize / 2;
-    final startY = ((iconCount) * painterCornerRad * 2) + (iconSize);
-    path.moveTo(startX, startY);
-    path
+    // === 1. Birinchi (eng pastki) path chiziladi ===
+    final firstPath = Path();
+    final firstStartX = iconSize / 2;
+    final firstStartY = ((pathCount - 1) * cornerRadius * 2) + iconSize;
+
+    firstPath.moveTo(firstStartX, firstStartY);
+    firstPath
       ..arcToPoint(
-        Offset(startX + painterCornerRad, startY + painterCornerRad),
+        Offset(firstStartX + cornerRadius, firstStartY + cornerRadius),
         clockwise: false,
-        radius: Radius.circular(painterCornerRad),
+        radius: Radius.circular(cornerRadius),
       )
-      ..relativeLineTo(width - (painterCornerRad * 2) - iconSize, 0)
+      ..relativeLineTo(width - (cornerRadius * 2) - iconSize, 0)
       ..relativeArcToPoint(
-        Offset(painterCornerRad + iconSize / 2, 0),
+        Offset(cornerRadius + iconSize / 2, 0),
         clockwise: true,
         radius: const Radius.circular(0),
       );
 
-    paths.add(path);
+    paths.add(firstPath);
 
-    // Qolgan path'lar
-    for (int i = 1; i < iconCount; i++) {
+    // === 2. Qolgan path lar (zigzag) chiziladi ===
+    for (int i = pathCount - 2; i >= 0; i--) {
       final path = Path();
-      final startY = (i * painterCornerRad * 2) + iconSize;
+      final currentStartY = (i * cornerRadius * 2) + iconSize;
 
-      if (i % 2 == 0) {
-        final startX = iconSize / 2;
-        path.moveTo(startX, startY);
+      final isLeftToRight = (pathCount - 2).isEven ? i.isOdd : i.isEven; // Zigzag yo‘nalish
+
+      if (isLeftToRight) {
+        // Chapdan o‘ngga
+        final currentStartX = iconSize / 2;
+        path.moveTo(currentStartX, currentStartY);
         path
           ..arcToPoint(
-            Offset(startX + painterCornerRad, startY + painterCornerRad),
+            Offset(currentStartX + cornerRadius, currentStartY + cornerRadius),
             clockwise: false,
-            radius: Radius.circular(painterCornerRad),
+            radius: Radius.circular(cornerRadius),
           )
-          ..relativeLineTo(width - (painterCornerRad * 2) - iconSize, 0)
+          ..relativeLineTo(width - (cornerRadius * 2) - iconSize, 0)
           ..relativeArcToPoint(
-            Offset(painterCornerRad, painterCornerRad),
+            Offset(cornerRadius, cornerRadius),
             clockwise: true,
-            radius: Radius.circular(painterCornerRad),
+            radius: Radius.circular(cornerRadius),
           );
       } else {
-        final startX = width - iconSize / 2;
-        path.moveTo(startX, startY);
+        // O‘ngdan chapga
+        final currentStartX = width - iconSize / 2;
+        path.moveTo(currentStartX, currentStartY);
         path
           ..arcToPoint(
-            Offset(startX - painterCornerRad, startY + painterCornerRad),
+            Offset(currentStartX - cornerRadius, currentStartY + cornerRadius),
             clockwise: true,
-            radius: Radius.circular(painterCornerRad),
+            radius: Radius.circular(cornerRadius),
           )
-          ..relativeLineTo(-width + (painterCornerRad * 2) + iconSize, 0)
+          ..relativeLineTo(-width + (cornerRadius * 2) + iconSize, 0)
           ..relativeArcToPoint(
-            Offset(-painterCornerRad, painterCornerRad),
+            Offset(-cornerRadius, cornerRadius),
             clockwise: false,
-            radius: Radius.circular(painterCornerRad),
-          );
-      }
-
-      paths.add(path);
-    }
-
-    return paths;
-  }
-
-  List<Path> _customPath(Size size, double painterCornerRad, double iconSize, int iconCount) {
-    final width = size.width;
-
-    List<Path> paths = [];
-    iconCount = iconCount < 6 ? 6 : iconCount;
-
-    final path = Path();
-
-    final startX = iconSize / 2;
-    final startY = ((iconCount - 2) * painterCornerRad * 2) + (iconSize);
-    path.moveTo(startX, startY);
-    path
-      ..arcToPoint(
-        Offset(startX + painterCornerRad, startY + painterCornerRad),
-        clockwise: false,
-        radius: Radius.circular(painterCornerRad),
-      )
-      ..relativeLineTo(width - (painterCornerRad * 2) - iconSize, 0)
-      ..relativeArcToPoint(
-        Offset(painterCornerRad + iconSize / 2, 0),
-        clockwise: true,
-        radius: const Radius.circular(0),
-      );
-
-    paths.add(path);
-
-    for (int i = 0; i < iconCount - 2; i++) {
-      final path = Path();
-
-      if (i % 2 == 0) {
-        final startX = iconSize / 2;
-        final startY = (i * painterCornerRad * 2) + (iconSize);
-        path.moveTo(startX, startY);
-        path
-          ..arcToPoint(
-            Offset(startX + painterCornerRad, startY + painterCornerRad),
-            clockwise: false,
-            radius: Radius.circular(painterCornerRad),
-          )
-          ..relativeLineTo(width - (painterCornerRad * 2) - iconSize, 0)
-          ..relativeArcToPoint(
-            Offset(painterCornerRad, painterCornerRad),
-            clockwise: true,
-            radius: Radius.circular(painterCornerRad),
-          );
-      } else {
-        final startX = width - iconSize / 2;
-        final startY = (i * painterCornerRad * 2) + (iconSize);
-        path.moveTo(startX, startY);
-        path
-          ..arcToPoint(
-            Offset(-painterCornerRad + startX, startY + painterCornerRad),
-            clockwise: true,
-            radius: Radius.circular(painterCornerRad),
-          )
-          ..relativeLineTo(-width + (painterCornerRad * 2) + iconSize, 0)
-          ..relativeArcToPoint(
-            Offset(-painterCornerRad, painterCornerRad),
-            clockwise: false,
-            radius: Radius.circular(painterCornerRad),
+            radius: Radius.circular(cornerRadius),
           );
       }
 

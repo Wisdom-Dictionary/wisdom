@@ -6,4 +6,8 @@ abstract class RankingRepository {
   List<RankingModel> get rankingGlobalList;
 
   bool get hasMoreData;
+
+  int get userRanking;
+
+  int get userCurrentLevel;
 }

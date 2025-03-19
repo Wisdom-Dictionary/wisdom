@@ -120,7 +120,9 @@ class LevelWordsPage extends ViewModelBuilderWidget<LevelWordsPageViewModel> {
                                             ],
                                           ),
                                         ),
-                                        onTap: () {},
+                                        onTap: () {
+                                          viewModel.goContactsPage();
+                                        },
                                       ),
                                     ),
                                   ],

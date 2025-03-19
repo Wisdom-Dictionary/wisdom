@@ -42,14 +42,16 @@ class OpponentWasFoundDialog extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 32),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     UserDetailsWithName(
                         isPremium: viewmodel.userDetailsModel.isPremuimStatus,
                         rank: viewmodel.userDetailsModel.rank,
                         name: "you".tr()),
                     Padding(
-                      padding: const EdgeInsets.only(top: 16, left: 24, right: 24),
+                      padding: const EdgeInsets.only(
+                        top: 16,
+                      ),
                       child: Text(
                         "vs".tr(),
                         style: AppTextStyle.font28W600Normal

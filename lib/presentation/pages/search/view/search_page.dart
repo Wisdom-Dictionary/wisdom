@@ -60,7 +60,7 @@ class SearchPage extends ViewModelBuilderWidget<SearchPageViewModel> {
         ),
         body: Column(
           children: [
-            //Clean  button
+            //Clean button
             Visibility(
               visible: ((viewModel.recentList.isNotEmpty && viewModel.searchLangMode == 'en') ||
                       (viewModel.recentListUz.isNotEmpty && viewModel.searchLangMode == 'uz')) &&

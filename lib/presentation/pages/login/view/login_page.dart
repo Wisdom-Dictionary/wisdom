@@ -64,44 +64,44 @@ class LoginPage extends ViewModelBuilderWidget<LoginViewModel> {
           ),
           Column(
             children: [
-              if (!Platform.isWindows)
-                SocialButtonWidget(
-                  onTap: () async {
-                    await viewModel.loginWithGoogle();
-                  },
-                  title: "Google",
-                  color: AppColors.lightBackground,
-                  textStyle: AppTextStyle.font12W600Normal.copyWith(
-                    color: AppColors.darkForm,
-                    fontSize: 12.sp,
-                  ),
-                  leftIcon: SvgPicture.asset(
-                    Assets.icons.googleIc,
-                    height: 32,
-                    width: 32,
-                    fit: BoxFit.scaleDown,
-                  ),
-                  margin: EdgeInsets.symmetric(vertical: 3.w),
-                ),
-              if (Platform.isIOS)
-                SocialButtonWidget(
-                  onTap: () async {
-                    await viewModel.loginWithApple();
-                  },
-                  title: "Apple",
-                  color: AppColors.lightBackground,
-                  textStyle: AppTextStyle.font12W600Normal.copyWith(
-                    color: AppColors.darkForm,
-                    fontSize: 12.sp,
-                  ),
-                  leftIcon: SvgPicture.asset(
-                    Assets.icons.appleIc,
-                    height: 32,
-                    width: 32,
-                    fit: BoxFit.scaleDown,
-                  ),
-                  margin: EdgeInsets.symmetric(vertical: 3.w),
-                ),
+              // if (!Platform.isWindows)
+              //   SocialButtonWidget(
+              //     onTap: () async {
+              //       await viewModel.loginWithGoogle();
+              //     },
+              //     title: "Google",
+              //     color: AppColors.lightBackground,
+              //     textStyle: AppTextStyle.font12W600Normal.copyWith(
+              //       color: AppColors.darkForm,
+              //       fontSize: 12.sp,
+              //     ),
+              //     leftIcon: SvgPicture.asset(
+              //       Assets.icons.googleIc,
+              //       height: 32,
+              //       width: 32,
+              //       fit: BoxFit.scaleDown,
+              //     ),
+              //     margin: EdgeInsets.symmetric(vertical: 3.w),
+              //   ),
+              // if (Platform.isIOS)
+              //   SocialButtonWidget(
+              //     onTap: () async {
+              //       await viewModel.loginWithApple();
+              //     },
+              //     title: "Apple",
+              //     color: AppColors.lightBackground,
+              //     textStyle: AppTextStyle.font12W600Normal.copyWith(
+              //       color: AppColors.darkForm,
+              //       fontSize: 12.sp,
+              //     ),
+              //     leftIcon: SvgPicture.asset(
+              //       Assets.icons.appleIc,
+              //       height: 32,
+              //       width: 32,
+              //       fit: BoxFit.scaleDown,
+              //     ),
+              //     margin: EdgeInsets.symmetric(vertical: 3.w),
+              //   ),
               // SocialButtonWidget(
               //   onTap: () async {
               //     await viewModel.loginWithFacebook();

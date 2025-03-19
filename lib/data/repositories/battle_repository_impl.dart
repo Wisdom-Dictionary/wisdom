@@ -363,7 +363,7 @@ class BattleRepositoryImpl extends BattleRepository {
   @override
   void searchingOpponentsChannelClose() {
     channel!.sink.close();
-    _streamController.close();
+    // _streamController.close();
   }
 
   @override
@@ -481,4 +481,7 @@ class BattleRepositoryImpl extends BattleRepository {
   void setSelectedLevelItem(LevelModel levelItem) {
     selectedLevelItem = levelItem;
   }
+
+  @override
+  WebSocketChannel get webSocket => channel!;
 }

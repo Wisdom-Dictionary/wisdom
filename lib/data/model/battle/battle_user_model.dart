@@ -34,7 +34,11 @@ class BattleUserModel {
     return BattleUserModel(
       id: map['id'] != null ? map['id'] as int : null,
       name: map['name'] != null ? map['name'] as String : null,
-      level: map['level'] != null ? map['level'] as int : null,
+      level: map['level'] != null
+          ? map['level'] as int
+          : map['current_level'] != null
+              ? map['current_level'] as int
+              : null,
       isPremium: map['is_premium'] != null ? _parseBool(map['is_premium']) : null,
       rank: map['rank'] != null ? RankModel.fromJson(map['rank'] as Map<String, dynamic>) : null,
     );

@@ -19,7 +19,6 @@ import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/rematch_bat
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/waiting_opponent_battle_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/want_to_rematch_battle_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/life_countdown_provider.dart';
-import 'package:wisdom/presentation/routes/routes.dart';
 
 import '../../../../core/di/app_locator.dart';
 
@@ -80,12 +79,15 @@ class BattleResultViewmodel extends BaseViewModel {
       currentUserGainedStars != null &&
       currentUserSpentTime != null;
 
+  late final StreamSubscription _subscription;
+
   goBack() async {
-    Navigator.pop(context!);
+    battleRepository.searchingOpponentsChannelClose();
+    Navigator.pop(navigatorKey.currentContext!);
   }
 
   void _listenToWebSocket() {
-    battleRepository.searchingOpponents.listen((message) async {
+    _subscription = battleRepository.searchingOpponents.listen((message) async {
       final messageData = jsonDecode(message);
 
       if (messageData['event'] == 'battle-finished') {
@@ -112,18 +114,19 @@ class BattleResultViewmodel extends BaseViewModel {
         opponentUserSpentTime = !user1IsCurrentUser ? result.user1SpentTime : result.user2SpentTime;
         draw = result.draw;
 
-        final isOpenDialog = (ModalRoute.of(context!)?.isCurrent ?? false) != true;
+        final isOpenDialog =
+            (ModalRoute.of(navigatorKey.currentContext!)?.isCurrent ?? false) != true;
 
         if (!hasOpponentData && !isOpenDialog) {
           showDialog(
-            context: context!,
+            context: navigatorKey.currentContext!,
             builder: (context) => WaitingOpponentBattleDialog(
               opponentUser: opponentUser!,
             ),
           );
         }
         if (!currentUserWon) {
-          await context!.read<CountdownProvider>().getLives();
+          await navigatorKey.currentContext!.read<CountdownProvider>().getLives();
         }
         if (sharedPref.getInt(Constants.KEY_USER_BATTLE_END_TIME, 0) != 0) {
           await sharedPref.prefs.remove(Constants.KEY_USER_BATTLE_END_TIME);
@@ -136,17 +139,18 @@ class BattleResultViewmodel extends BaseViewModel {
         battleChannel = eventData['battle_channel'];
         showTopDialog();
         _startTimer(_decrementTimer);
-      } else if (messageData['event'] == 'rematch-status-update') {
+      } else if (messageData['event'] == 'battle-invitation-status-update') {
         waitingRematch.value = false;
         final eventData = jsonDecode(messageData['data']);
         String status = eventData['status'];
         if (status == rejectedTag) {
           rematchInProgress.value = false;
+
           Navigator.of(
-            context!,
+            navigatorKey.currentState!.context,
           ).pop();
           showDialog(
-            context: context!,
+            context: navigatorKey.currentState!.context,
             builder: (context) => OpponentWasNotFoundDialog(
               viewmodel: this,
             ),
@@ -229,6 +233,9 @@ class BattleResultViewmodel extends BaseViewModel {
   }
 
   void postRematchUpdateStatus(String status) {
+    if (!Navigator.of(navigatorKey.currentContext!).canPop()) {
+      return;
+    }
     seconds.value = 20;
     statusTag = status;
     _resetTimer();
@@ -238,7 +245,9 @@ class BattleResultViewmodel extends BaseViewModel {
         await battleRepository.rematchUpdateStatus(battleId: battleId!, status: status);
         statusTag = "";
         rematchUpdateStatus.value = false;
-        Navigator.pop(context!);
+        if (Navigator.of(navigatorKey.currentContext!).canPop()) {
+          Navigator.pop(navigatorKey.currentContext!);
+        }
       } else {
         showDialog(
           context: context!,
@@ -277,5 +286,14 @@ class BattleResultViewmodel extends BaseViewModel {
     _stopTimer();
 
     seconds.value = 20;
+  }
+
+  @override
+  void dispose() async {
+    // if (_timer != null) {
+    //   _timer!.cancel();
+    // }
+    _subscription.cancel();
+    super.dispose();
   }
 }

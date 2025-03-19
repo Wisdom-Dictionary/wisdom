@@ -41,6 +41,10 @@ class LevelWordsPageViewModel extends BaseViewModel {
   String searchLangKey = "searchLangKey";
   String searchTag = 'searchTag';
 
+  void goContactsPage() {
+    Navigator.pushNamed(context!, Routes.myContactsPage);
+  }
+
   void getLevelWords() {
     safeBlock(() async {
       try {

@@ -34,23 +34,6 @@ class RoadmapRepositoryImpl extends RoadmapRepository {
       for (var item in responseData['levels']) {
         _levelsList.add(LevelModel.fromMap(item));
       }
-      // _levelsList = [
-      //   ..._levelsList,
-      //   ..._levelsList,
-      //   ..._levelsList,
-      //   ..._levelsList,
-      //   ..._levelsList,
-      //   ..._levelsList,
-      //   ..._levelsList,
-      //   ..._levelsList,
-      //   ..._levelsList,
-      //   ..._levelsList,
-      //   ..._levelsList,
-      //   ..._levelsList,
-      //   ..._levelsList,
-      //   ..._levelsList,
-      //   ..._levelsList,
-      // ];
       _userCurrentLevel = responseData['user_current_level'] ?? 0;
       if (responseData['rank'] != null) {
         _userRank = RankModel.fromJson(responseData['rank']);

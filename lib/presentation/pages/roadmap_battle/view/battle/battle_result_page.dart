@@ -1,7 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:http/http.dart';
 import 'package:jbaza/jbaza.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
@@ -10,6 +9,7 @@ import 'package:wisdom/config/constants/app_decoration.dart';
 import 'package:wisdom/config/constants/app_text_style.dart';
 import 'package:wisdom/config/constants/assets.dart';
 import 'package:wisdom/config/constants/constants.dart';
+import 'package:wisdom/core/di/app_locator.dart';
 import 'package:wisdom/data/model/battle/battle_result_model.dart';
 import 'package:wisdom/presentation/components/shimmer.dart';
 import 'package:wisdom/presentation/components/w_button.dart';
@@ -23,80 +23,71 @@ import 'package:wisdom/presentation/widgets/custom_app_bar.dart';
 
 class BattleResultPage extends ViewModelBuilderWidget<BattleResultViewmodel> {
   BattleResultPage({super.key});
+
   @override
   void onViewModelReady(BattleResultViewmodel viewModel) {
     super.onViewModelReady(viewModel);
   }
 
-  String formatText(String text, int chunkSize) {
-    final pattern = RegExp('.{1,$chunkSize}');
-    return pattern.allMatches(text).map((e) => e.group(0)).join('\n');
-  }
-
   @override
   Widget builder(BuildContext context, BattleResultViewmodel viewModel, Widget? child) {
     return WillPopScope(
-        // onWillPop: () => viewModel.goBack(),
-        onWillPop: null,
-        child: Scaffold(
-          backgroundColor: isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
-          drawerEnableOpenDragGesture: false,
-          appBar: CustomAppBar(
-            isSearch: false,
-            title: "exercise_result".tr(),
-            onTap: () => Navigator.pop(context),
-            leadingIcon: Assets.icons.arrowLeft,
-          ),
-          body: ListView(
-            physics: const ClampingScrollPhysics(),
-            padding: const EdgeInsets.symmetric(vertical: 13, horizontal: 18),
-            children: [
-              if (!viewModel.hasOpponentData)
-                ShimmerWidget(child: statusIndicatorBar(true, 2))
-              else
-                statusIndicatorBar(viewModel.currentUserWon, viewModel.currentUserGainedStars ?? 0),
-              const SizedBox(
-                height: 8,
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-                decoration: AppDecoration.resultDecor,
-                child: Column(
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
+      onWillPop: null,
+      child: Scaffold(
+        backgroundColor: isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
+        drawerEnableOpenDragGesture: false,
+        appBar: CustomAppBar(
+          isSearch: false,
+          title: "exercise_result".tr(),
+          onTap: () => viewModel.goBack(),
+          leadingIcon: Assets.icons.arrowLeft,
+        ),
+        body: ListView(
+          physics: const ClampingScrollPhysics(),
+          padding: const EdgeInsets.symmetric(vertical: 13, horizontal: 18),
+          children: [
+            if (!viewModel.hasOpponentData)
+              ShimmerWidget(child: statusIndicatorBar(true, 2))
+            else
+              statusIndicatorBar(viewModel.currentUserWon, viewModel.currentUserGainedStars ?? 0),
+            const SizedBox(height: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+              decoration: AppDecoration.resultDecor,
+              child: Column(
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      UserDetailsWithName(
+                        rank: viewModel.currentUser!.rank,
+                        isPremium: viewModel.currentUser!.isPremium,
+                        name: "you".tr(),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16, left: 24, right: 24),
+                        child: Text(
+                          "${viewModel.currentUserCorrectAnswers ?? 0}:${viewModel.opponentUserCorrectAnswers ?? 0}",
+                          style: AppTextStyle.font28W600Normal
+                              .copyWith(color: AppColors.blue, fontSize: 24),
+                        ),
+                      ),
+                      UserDetailsWithName(
+                        rank: viewModel.opponentUser?.rank,
+                        isPremium: viewModel.opponentUser?.isPremium,
+                        name: viewModel.opponentUser?.name ?? "",
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                  SizedBox(
+                    height: 120,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        UserDetailsWithName(
-                          rank: viewModel.currentUser!.rank,
-                          isPremium: viewModel.currentUser!.isPremium,
-                          name: "you".tr(),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 16, left: 24, right: 24),
-                          child: Text(
-                            "${viewModel.currentUserCorrectAnswers ?? 0}:${viewModel.opponentUserCorrectAnswers ?? 0}",
-                            style: AppTextStyle.font28W600Normal
-                                .copyWith(color: AppColors.blue, fontSize: 24),
-                          ),
-                        ),
-                        UserDetailsWithName(
-                          rank: viewModel.opponentUser?.rank,
-                          isPremium: viewModel.opponentUser?.isPremium,
-                          name: viewModel.opponentUser?.name ?? "",
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 24,
-                    ),
-                    SizedBox(
-                      height: 120,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Expanded(
-                              child: Column(
+                        Expanded(
+                          child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
@@ -105,23 +96,29 @@ class BattleResultPage extends ViewModelBuilderWidget<BattleResultViewmodel> {
                                 style: AppTextStyle.font15W600Normal
                                     .copyWith(color: AppColors.black, fontSize: 10),
                               ),
-                              const SizedBox(
-                                height: 8,
-                              ),
+                              const SizedBox(height: 8),
                               if (!viewModel.hasCurrentUserData)
                                 ShimmerWidget(
-                                    child: statusResultBar(0, 0,
-                                        spentTimeInMilliseconds: 0, givenTimeInMilliseconds: 0)),
+                                  child: statusResultBar(
+                                    0,
+                                    0,
+                                    spentTimeInMilliseconds: 0,
+                                    givenTimeInMilliseconds: 0,
+                                  ),
+                                ),
                               if (viewModel.hasCurrentUserData)
-                                statusResultBar(viewModel.currentUserCorrectAnswers ?? 1,
-                                    viewModel.totalQuestions ?? 0,
-                                    spentTimeInMilliseconds: viewModel.currentUserSpentTime,
-                                    givenTimeInMilliseconds: viewModel.battleDuration),
+                                statusResultBar(
+                                  viewModel.currentUserCorrectAnswers ?? 1,
+                                  viewModel.totalQuestions ?? 0,
+                                  spentTimeInMilliseconds: viewModel.currentUserSpentTime,
+                                  givenTimeInMilliseconds: viewModel.battleDuration,
+                                ),
                             ],
-                          )),
-                          divider(),
-                          Expanded(
-                              child: Column(
+                          ),
+                        ),
+                        divider(),
+                        Expanded(
+                          child: Column(
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -131,89 +128,97 @@ class BattleResultPage extends ViewModelBuilderWidget<BattleResultViewmodel> {
                                 style: AppTextStyle.font15W600Normal
                                     .copyWith(color: AppColors.black, fontSize: 10),
                               ),
-                              const SizedBox(
-                                height: 8,
-                              ),
+                              const SizedBox(height: 8),
                               if (!viewModel.hasOpponentData)
                                 ShimmerWidget(
-                                    child: statusResultBar(0, 0,
-                                        spentTimeInMilliseconds: 0, givenTimeInMilliseconds: 0)),
+                                  child: statusResultBar(
+                                    0,
+                                    0,
+                                    spentTimeInMilliseconds: 0,
+                                    givenTimeInMilliseconds: 0,
+                                  ),
+                                ),
                               if (viewModel.hasOpponentData)
-                                statusResultBar(viewModel.opponentUserCorrectAnswers ?? 1,
-                                    viewModel.totalQuestions ?? 0,
-                                    spentTimeInMilliseconds: viewModel.opponentUserSpentTime,
-                                    givenTimeInMilliseconds: viewModel.battleDuration),
+                                statusResultBar(
+                                  viewModel.opponentUserCorrectAnswers ?? 1,
+                                  viewModel.totalQuestions ?? 0,
+                                  spentTimeInMilliseconds: viewModel.opponentUserSpentTime,
+                                  givenTimeInMilliseconds: viewModel.battleDuration,
+                                ),
                             ],
-                          )),
-                        ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      color: isDarkTheme ? AppColors.darkBackground : AppColors.white,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        QuestionsResultList(
+                          items: viewModel.result.result,
+                          user1IsCurrentUser: viewModel.user1IsCurrentUser,
+                        ),
+                      ],
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, Routes.battleExercisesResultPage);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 24),
+                      child: Text(
+                        "view_correct_answers".tr(),
+                        style: AppTextStyle.font15W600Normal.copyWith(
+                          color: AppColors.blue,
+                          fontSize: 14,
+                          decoration: TextDecoration.underline,
+                          decorationColor: AppColors.blue,
+                        ),
                       ),
                     ),
-                    const SizedBox(
-                      height: 24,
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          color: isDarkTheme ? AppColors.darkBackground : AppColors.white),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          QuestionsResultList(
-                            items: viewModel.result.result,
-                            user1IsCurrentUser: viewModel.user1IsCurrentUser,
-                          ),
-                        ],
-                      ),
-                    ),
-                    GestureDetector(
-                        onTap: () {
-                          Navigator.pushNamed(context, Routes.battleExercisesResultPage);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 24),
-                          child: Text(
-                            "view_correct_answers".tr(),
-                            style: AppTextStyle.font15W600Normal.copyWith(
-                                color: AppColors.blue,
-                                fontSize: 14,
-                                decoration: TextDecoration.underline,
-                                decorationColor: AppColors.blue),
-                          ),
-                        )),
-                    WButton(
-                      isDisable: !viewModel.hasOpponentData,
-                      isLoading: viewModel.isBusy(tag: viewModel.postRematchRequestTag),
-                      title: "rematch".tr(),
-                      onTap: () {
-                        final hasUserLives = context.read<CountdownProvider>().hasUserLifes;
-                        if (hasUserLives) {
-                          viewModel.showRematchDialog();
-                        } else {
-                          showDialog(
-                            context: context,
-                            builder: (context) => OutOfLivesDialog(),
-                          );
-                        }
-                      },
-                    )
-                  ],
-                ),
-              )
-            ],
-          ),
-        ));
+                  ),
+                  WButton(
+                    isDisable: !viewModel.hasOpponentData,
+                    isLoading: viewModel.isBusy(tag: viewModel.postRematchRequestTag),
+                    title: "rematch".tr(),
+                    onTap: () {
+                      final hasUserLives = context.read<CountdownProvider>().hasUserLifes;
+                      if (hasUserLives) {
+                        viewModel.showRematchDialog();
+                      } else {
+                        showDialog(
+                          context: context,
+                          builder: (context) => OutOfLivesDialog(),
+                        );
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget divider() {
     return const Center(
       child: SizedBox(
-          height: 57,
-          child: VerticalDivider(
-            thickness: 1,
-            width: 26,
-            color: AppColors.blue,
-          )),
+        height: 57,
+        child: VerticalDivider(
+          thickness: 1,
+          color: AppColors.blue,
+        ),
+      ),
     );
   }
 
@@ -228,11 +233,15 @@ class BattleResultPage extends ViewModelBuilderWidget<BattleResultViewmodel> {
     return "$minutesStr:$secondsStr";
   }
 
-  Widget statusResultBar(int correctAnswers, int totalQuestions,
-      {int? spentTimeInMilliseconds, int? givenTimeInMilliseconds}) {
+  Widget statusResultBar(
+    int correctAnswers,
+    int totalQuestions, {
+    int? spentTimeInMilliseconds,
+    int? givenTimeInMilliseconds,
+  }) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         CircularPercentIndicator(
           startAngle: 90,
@@ -260,9 +269,6 @@ class BattleResultPage extends ViewModelBuilderWidget<BattleResultViewmodel> {
               ),
             ),
           ),
-        ),
-        const SizedBox(
-          width: 12,
         ),
         if (spentTimeInMilliseconds != null && givenTimeInMilliseconds != null)
           CircularPercentIndicator(
@@ -304,47 +310,49 @@ class BattleResultPage extends ViewModelBuilderWidget<BattleResultViewmodel> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Expanded(
-              flex: 2,
-              child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                  decoration: pass
-                      ? AppDecoration.resultDecor
-                      : AppDecoration.resultDecor
-                          .copyWith(color: AppColors.pink.withValues(alpha: 0.1)),
-                  child: SvgPicture.asset(
-                    pass ? Assets.icons.flag : Assets.icons.failureIcon,
-                    height: 56,
-                    width: 56,
-                  ))),
-          const SizedBox(
-            width: 8,
+            flex: 2,
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+              decoration: pass
+                  ? AppDecoration.resultDecor
+                  : AppDecoration.resultDecor
+                      .copyWith(color: AppColors.pink.withValues(alpha: 0.1)),
+              child: SvgPicture.asset(
+                pass ? Assets.icons.flag : Assets.icons.failureIcon,
+                height: 56,
+                width: 56,
+              ),
+            ),
           ),
+          const SizedBox(width: 8),
           Expanded(
-              flex: 5,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                decoration: pass
-                    ? AppDecoration.resultDecor
-                    : AppDecoration.resultDecor
-                        .copyWith(color: AppColors.pink.withValues(alpha: 0.1)),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    pass
-                        ? Text(
-                            "you_won".tr(),
-                            style: AppTextStyle.font17W700Normal
-                                .copyWith(fontSize: 18, color: AppColors.blue),
-                          )
-                        : Text(
-                            "failure".tr(),
-                            style: AppTextStyle.font17W700Normal
-                                .copyWith(fontSize: 18, color: AppColors.red),
-                          ),
-                    statusIndicatorLivesBar(livesStatusIndicator == 0 ? -1 : livesStatusIndicator),
-                  ],
-                ),
-              ))
+            flex: 5,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              decoration: pass
+                  ? AppDecoration.resultDecor
+                  : AppDecoration.resultDecor
+                      .copyWith(color: AppColors.pink.withValues(alpha: 0.1)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                      child: pass
+                          ? Text(
+                              "you_won".tr(),
+                              style: AppTextStyle.font17W700Normal
+                                  .copyWith(fontSize: 18, color: AppColors.blue),
+                            )
+                          : Text(
+                              "failure".tr(),
+                              style: AppTextStyle.font17W700Normal
+                                  .copyWith(fontSize: 18, color: AppColors.red),
+                            )),
+                  statusIndicatorLivesBar(livesStatusIndicator == 0 ? -1 : livesStatusIndicator),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -354,8 +362,9 @@ class BattleResultPage extends ViewModelBuilderWidget<BattleResultViewmodel> {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(1000),
-          color: index.isNegative ? AppColors.white : AppColors.blue),
+        borderRadius: BorderRadius.circular(1000),
+        color: index.isNegative ? AppColors.white : AppColors.blue,
+      ),
       child: Row(
         children: [
           Text(
@@ -363,9 +372,7 @@ class BattleResultPage extends ViewModelBuilderWidget<BattleResultViewmodel> {
             style: AppTextStyle.font17W600Normal
                 .copyWith(color: index.isNegative ? AppColors.red : AppColors.yellow, fontSize: 18),
           ),
-          const SizedBox(
-            width: 4,
-          ),
+          const SizedBox(width: 4),
           index.isNegative
               ? SvgPicture.asset(
                   Assets.icons.heart,
@@ -374,7 +381,7 @@ class BattleResultPage extends ViewModelBuilderWidget<BattleResultViewmodel> {
               : SvgPicture.asset(
                   Assets.icons.starFull,
                   colorFilter: const ColorFilter.mode(AppColors.yellow, BlendMode.srcIn),
-                )
+                ),
         ],
       ),
     );
@@ -456,17 +463,16 @@ class _QuestionsResultListState extends State<QuestionsResultList> {
             ],
           ),
         ),
-        const SizedBox(
-          height: 8,
-        ),
+        const SizedBox(height: 8),
         Container(
           constraints: const BoxConstraints(maxHeight: 385),
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                width: 1,
-                color: AppColors.vibrantBlue.withValues(alpha: 0.15),
-              )),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              width: 1,
+              color: AppColors.vibrantBlue.withValues(alpha: 0.15),
+            ),
+          ),
           child: Stack(
             children: [
               ListView.separated(
@@ -493,9 +499,11 @@ class _QuestionsResultListState extends State<QuestionsResultList> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         answerStatus(currentUserAnswer),
-                        Text(widget.items[index].word ?? "",
-                            style: AppTextStyle.font15W600Normal
-                                .copyWith(fontSize: 14, color: AppColors.blue)),
+                        Text(
+                          widget.items[index].word ?? "",
+                          style: AppTextStyle.font15W600Normal
+                              .copyWith(fontSize: 14, color: AppColors.blue),
+                        ),
                         answerStatus(opponentAnswer),
                       ],
                     ),
@@ -508,7 +516,7 @@ class _QuestionsResultListState extends State<QuestionsResultList> {
                   left: 0,
                   right: 0,
                   child: IgnorePointer(
-                    ignoring: true, // ListView bilan ishlashga halaqit bermaydi
+                    ignoring: true,
                     child: Container(
                       height: 86,
                       decoration: BoxDecoration(
@@ -531,7 +539,7 @@ class _QuestionsResultListState extends State<QuestionsResultList> {
                   left: 0,
                   right: 0,
                   child: IgnorePointer(
-                    ignoring: true, // ListView bilan ishlashga halaqit bermaydi
+                    ignoring: true,
                     child: Container(
                       height: 86,
                       decoration: BoxDecoration(

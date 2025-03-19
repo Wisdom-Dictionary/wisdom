@@ -370,30 +370,45 @@ class _ExercisesResultGlobalPageState extends State<ExercisesResultGlobalPage> {
     return widget.viewModel.isBusy(tag: widget.viewModel.getRankingGlobalTag)
         ? ShimmerExercisesResult()
         : widget.viewModel.isSuccess(tag: widget.viewModel.getRankingGlobalTag)
-            ? RefreshIndicator(
-                onRefresh: () async => widget.viewModel.getRankingGlobal(),
-                child: ListView.builder(
-                  controller: _scrollController,
-                  physics: const ClampingScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  itemCount: widget.viewModel.roadMapRepository.rankingGlobalList.length +
-                      (widget.viewModel.isBusy(tag: widget.viewModel.getRankingGlobalMoreTag)
-                          ? 1
-                          : 0),
-                  itemBuilder: (context, index) {
-                    if (index < widget.viewModel.roadMapRepository.rankingGlobalList.length) {
-                      return RankingItemWidget(
-                        index: index,
-                        item: widget.viewModel.roadMapRepository.rankingGlobalList[index],
-                      );
-                    } else {
-                      return const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 16),
-                        child: Center(child: CircularProgressIndicator()),
-                      );
-                    }
-                  },
-                ),
+            ? Stack(
+                children: [
+                  RefreshIndicator(
+                    onRefresh: () async => widget.viewModel.getRankingGlobal(),
+                    child: ListView.builder(
+                      controller: _scrollController,
+                      physics: const ClampingScrollPhysics(),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      itemCount: widget.viewModel.roadMapRepository.rankingGlobalList.length +
+                          (widget.viewModel.isBusy(tag: widget.viewModel.getRankingGlobalMoreTag)
+                              ? 1
+                              : 0),
+                      itemBuilder: (context, index) {
+                        if (index < widget.viewModel.roadMapRepository.rankingGlobalList.length) {
+                          return RankingItemWidget(
+                            index: index,
+                            item: widget.viewModel.roadMapRepository.rankingGlobalList[index],
+                          );
+                        } else {
+                          return const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 16),
+                            child: Center(child: CircularProgressIndicator()),
+                          );
+                        }
+                      },
+                    ),
+                  ),
+                  Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: SafeArea(
+                        child: CurrentUserItemWidget(
+                            index: widget.viewModel.roadMapRepository.userRanking,
+                            item: RankingModel(
+                                name: "you".tr(),
+                                level: widget.viewModel.roadMapRepository.userCurrentLevel)),
+                      ))
+                ],
               )
             : const Center(child: Text("Unhandled Exception"));
   }
@@ -429,7 +444,7 @@ class RankingItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 18, vertical: 4),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration:
           ShapeDecoration(shape: StadiumBorder(side: itemBorder), color: itemBackgroundColor),
       child: Row(
@@ -478,7 +493,120 @@ class RankingItemWidget extends StatelessWidget {
             SizedBox(
               width: 4,
             ),
-            SvgPicture.asset(Assets.icons.star)
+            SvgPicture.asset(
+              Assets.icons.star,
+              width: 12,
+              height: 12,
+            )
+          ],
+        ),
+      );
+    }
+
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      child: Row(
+        children: [
+          Text(
+            level.toString(),
+            style: AppTextStyle.font13W500Normal.copyWith(fontSize: 10, color: AppColors.blue),
+          ),
+          SizedBox(
+            width: 4,
+          ),
+          SvgPicture.asset(
+            Assets.icons.star,
+            width: 12,
+            height: 12,
+            colorFilter: ColorFilter.mode(AppColors.blue, BlendMode.srcIn),
+          )
+        ],
+      ),
+    );
+  }
+
+  Text indexText() {
+    if (itemInTopRating) {
+      return Text(
+        "${index + 1}.",
+        style: AppTextStyle.font15W600Normal.copyWith(fontSize: 14, color: AppColors.vibrantBlue),
+      );
+    }
+    return Text(
+      "${index + 1}",
+      style: AppTextStyle.font13W500Normal.copyWith(fontSize: 14, color: AppColors.blue),
+    );
+  }
+}
+
+class CurrentUserItemWidget extends StatelessWidget {
+  const CurrentUserItemWidget({super.key, required this.index, required this.item});
+  final int index;
+  final RankingModel item;
+  static const int topRatingCount = 3;
+
+  bool get itemInTopRating {
+    return index + 1 <= topRatingCount;
+  }
+
+  Color? get itemBackgroundColor {
+    return AppColors.blue;
+  }
+
+  BorderSide get itemBorder {
+    if (item.you ?? false) {
+      return const BorderSide(width: 2, color: AppColors.bgAccent);
+    }
+    return BorderSide.none;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 18, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15.5),
+      decoration:
+          ShapeDecoration(shape: StadiumBorder(side: itemBorder), color: itemBackgroundColor),
+      child: Row(
+        children: [
+          indexText(),
+          const SizedBox(
+            width: 8,
+          ),
+          const SizedBox(
+            width: 8,
+          ),
+          Expanded(
+              child: Text(
+            item.name ?? "",
+            style: AppTextStyle.font15W600Normal.copyWith(fontSize: 14, color: AppColors.white),
+          )),
+          if (item.level != null) itemLevel(item.level)
+        ],
+      ),
+    );
+  }
+
+  Widget itemLevel(int? level) {
+    if (itemInTopRating) {
+      return Container(
+        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: ShapeDecoration(shape: StadiumBorder(), color: AppColors.yellow),
+        child: Row(
+          children: [
+            Text(
+              level.toString(),
+              style: AppTextStyle.font13W500Normal.copyWith(fontSize: 10, color: AppColors.blue),
+            ),
+            SizedBox(
+              width: 4,
+            ),
+            SvgPicture.asset(
+              width: 12,
+              height: 12,
+              Assets.icons.verify,
+              colorFilter: ColorFilter.mode(AppColors.blue, BlendMode.srcIn),
+            )
           ],
         ),
       );
@@ -505,15 +633,9 @@ class RankingItemWidget extends StatelessWidget {
   }
 
   Text indexText() {
-    if (itemInTopRating) {
-      return Text(
-        "${index + 1}.",
-        style: AppTextStyle.font15W600Normal.copyWith(fontSize: 14, color: AppColors.vibrantBlue),
-      );
-    }
     return Text(
-      "${index + 1}",
-      style: AppTextStyle.font13W500Normal.copyWith(fontSize: 14, color: AppColors.blue),
+      "$index",
+      style: AppTextStyle.font15W600Normal.copyWith(fontSize: 14, color: AppColors.vibrantBlue),
     );
   }
 }

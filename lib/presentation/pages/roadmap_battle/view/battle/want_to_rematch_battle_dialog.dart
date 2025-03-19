@@ -84,7 +84,7 @@ class WantRematchBattleDialog extends StatelessWidget {
                                   child: Row(
                                     children: [
                                       Text(
-                                        (viewmodel.opponentUser?.rank?.rangeTo ?? 0).toString(),
+                                        (viewmodel.opponentUser?.level ?? 0).toString(),
                                         style: AppTextStyle.font13W500Normal
                                             .copyWith(fontSize: 14, color: AppColors.yellow),
                                       ),

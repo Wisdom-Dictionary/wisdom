@@ -31,7 +31,7 @@ class BattleExercisesViewModel extends BaseViewModel {
 
     if (value != null) {
       if (!value) {
-        Navigator.of(context!).pop();
+        Navigator.of(navigatorKey.currentContext!).pop();
       }
     }
     return;

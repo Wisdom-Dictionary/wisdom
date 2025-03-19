@@ -40,7 +40,7 @@ class LifeStatusBar extends StatelessWidget {
           builder: (_, value, child) {
             if (value <= 0 &&
                 context.watch<CountdownProvider>().recoveryTimeDatetime != null &&
-                context.watch<CountdownProvider>().fullUserLives) {
+                !context.watch<CountdownProvider>().fullUserLives) {
               return Padding(
                 padding: EdgeInsets.only(left: 2.w, right: 2.w, top: 4.h),
                 child: FutureBuilder(

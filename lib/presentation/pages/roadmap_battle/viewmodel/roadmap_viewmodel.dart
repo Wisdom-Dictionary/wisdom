@@ -105,9 +105,6 @@ class RoadMapViewModel extends BaseViewModel {
   }
 
   void selectLevel(LevelModel item) async {
-    // if (!(item.userCurrentLevel ?? false) && (item.star ?? 0) == 0) {
-    //   return;
-    // }
     final noUserLives = !context!.read<CountdownProvider>().hasUserLifes;
     if (noUserLives) {
       showDialog(
@@ -129,11 +126,15 @@ class RoadMapViewModel extends BaseViewModel {
           await sharedPref.prefs.remove(Constants.KEY_USER_BATTLE_END_TIME);
         }
       }
+
       battleRepository.setSelectedLevelItem(item);
       showDialog(
         context: context!,
         builder: (context) => StartBattleDialog(),
       );
+      return;
+    }
+    if (!(item.userCurrentLevel ?? false) && (item.star ?? 0) == 0) {
       return;
     }
     roadMapRepository.setSelectedLevel(item);
