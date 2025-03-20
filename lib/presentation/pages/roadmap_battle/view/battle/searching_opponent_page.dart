@@ -268,7 +268,9 @@ class UserDetails extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 6),
                 decoration: const ShapeDecoration(color: AppColors.yellow, shape: CircleBorder()),
-                child: SvgPicture.asset(Assets.icons.union),
+                child: SvgPicture.asset(
+                  Assets.icons.union,
+                ),
               ))
       ],
     );

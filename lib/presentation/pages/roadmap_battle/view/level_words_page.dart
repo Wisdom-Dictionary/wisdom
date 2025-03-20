@@ -35,12 +35,7 @@ class LevelWordsPage extends ViewModelBuilderWidget<LevelWordsPageViewModel> {
           backgroundColor: isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
           drawerEnableOpenDragGesture: false,
           appBar: CustomAppBar(
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 15),
-                  child: LifeStatusBar(),
-                )
-              ],
+              actions: [LifeStatusBarPadding(child: LifeStatusBar())],
               title: viewModel.levelTestRepository.selectedLevelItem.name ?? "",
               onTap: () => viewModel.goMain(),
               leadingIcon: Assets.icons.arrowLeft),
@@ -137,7 +132,7 @@ class LevelWordsPage extends ViewModelBuilderWidget<LevelWordsPageViewModel> {
   Scrollbar exercisesList(LevelWordsPageViewModel viewModel) {
     return Scrollbar(
       child: ListView.builder(
-        padding: const EdgeInsets.only(top: 18, bottom: 100, left: 18, right: 18),
+        padding: const EdgeInsets.only(top: 18, bottom: 140, left: 18, right: 18),
         itemCount: viewModel.roadmapRepository.levelWordsList.length,
         itemBuilder: (context, index) {
           return GestureDetector(

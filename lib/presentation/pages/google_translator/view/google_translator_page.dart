@@ -78,7 +78,8 @@ class GoogleTranslatorPage extends ViewModelBuilderWidget<GoogleTranslatorPageVi
                           Expanded(
                             child: TextFormField(
                               controller: topController,
-                              style: AppTextStyle.font15W500Normal.copyWith(color: AppColors.blue),
+                              style: AppTextStyle.font15W500Normal.copyWith(
+                                  color: isDarkTheme ? AppColors.white : AppColors.darkGray),
                               keyboardType: TextInputType.multiline,
                               maxLines: null,
                               decoration: InputDecoration(
@@ -163,7 +164,8 @@ class GoogleTranslatorPage extends ViewModelBuilderWidget<GoogleTranslatorPageVi
                           Expanded(
                             child: TextFormField(
                               controller: bottomController,
-                              style: AppTextStyle.font15W500Normal.copyWith(color: AppColors.blue),
+                              style: AppTextStyle.font15W500Normal.copyWith(
+                                  color: isDarkTheme ? AppColors.white : AppColors.darkGray),
                               keyboardType: TextInputType.multiline,
                               maxLines: null,
                               decoration: InputDecoration(

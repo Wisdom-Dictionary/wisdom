@@ -215,6 +215,10 @@ class _Icons extends _AssetsHolder {
 class _Images extends _AssetsHolder {
   const _Images() : super("assets/images");
 
+  String get contactPermissionIos => '$basePath/contact-permission-ios.png';
+
+  String get contactPermissionAndroid => '$basePath/contact-permission-android.png';
+
   String get goldMedal => '$basePath/003-gold medal.png';
 
   String get profile => '$basePath/profile_img.svg';

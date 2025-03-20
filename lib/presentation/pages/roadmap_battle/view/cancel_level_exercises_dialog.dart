@@ -40,7 +40,7 @@ class CancelLevelExercisesDialog extends StatelessWidget {
               ),
               Expanded(
                 child: WButton(
-                  title: "continue".tr(),
+                  title: "no_continue".tr(),
                   onTap: () {
                     Navigator.pop(context, true);
                   },

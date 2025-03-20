@@ -508,17 +508,19 @@ class WordDetailsPage extends ViewModelBuilderWidget<WordDetailPageViewModel> {
                             ],
                           ),
                     Positioned(
-                        bottom: 31,
+                        bottom: 0,
                         left: 16,
                         right: 16,
-                        child: WButton(
-                          margin: EdgeInsets.only(top: 40.h, bottom: 12.h),
-                          title: 'start_the_exercises'.tr(),
-                          onTap: () {
-                            locator<LevelTestRepository>()
-                                .setExerciseType(TestExerciseType.wordExercise);
-                            Navigator.pushNamed(context, Routes.wordExercisesPage);
-                          },
+                        child: SafeArea(
+                          child: WButton(
+                            margin: EdgeInsets.only(top: 40.h, bottom: 12.h),
+                            title: 'start_the_exercises'.tr(),
+                            onTap: () {
+                              locator<LevelTestRepository>()
+                                  .setExerciseType(TestExerciseType.wordExercise);
+                              Navigator.popAndPushNamed(context, Routes.wordExercisesPage);
+                            },
+                          ),
                         ))
                   ],
                 )

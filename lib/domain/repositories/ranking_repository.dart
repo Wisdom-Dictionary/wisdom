@@ -5,9 +5,19 @@ abstract class RankingRepository {
 
   List<RankingModel> get rankingGlobalList;
 
-  bool get hasMoreData;
+  Future<void> getRankingContacts(int page);
 
-  int get userRanking;
+  List<RankingModel> get rankingContactList;
 
-  int get userCurrentLevel;
+  bool get hasMoreGlobalRankingData;
+
+  bool get hasMoreContactRankingData;
+
+  int get userGlobalRanking;
+
+  int get userCurrentGlobalLevel;
+
+  int get userContactRanking;
+
+  int get userCurrentContactLevel;
 }

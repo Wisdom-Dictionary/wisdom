@@ -395,24 +395,25 @@ class UserStatisticsWithNumbers extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           item(
-              value: viewModel.profileRepository.userCabinet?.statistics!.threeStarWins ?? 0,
+              value: viewModel.profileRepository.userCabinet?.statistics?.threeStarWins ?? 0,
               subtitle: "games".tr(),
               itemName: "3_star_wins".tr()),
           divider,
           item(
-              value: viewModel.profileRepository.userCabinet?.statistics!.dailyRecord ?? 0,
+              value: viewModel.profileRepository.userCabinet?.statistics?.dailyRecord ?? 0,
               subtitle: "words".tr(),
               itemName: "daily_record".tr()),
           divider,
           item(
-              value: viewModel.profileRepository.userCabinet?.statistics!.weeklyRecord ?? 0,
+              value: viewModel.profileRepository.userCabinet?.statistics?.weeklyRecord ?? 0,
               subtitle: "words".tr(),
               itemName: "weekly_record".tr()),
           divider,
           item(
-              value: viewModel.profileRepository.userCabinet?.statistics!.monthlyRecord ?? 0,
+              value: viewModel.profileRepository.userCabinet?.statistics?.monthlyRecord ?? 0,
               subtitle: "words".tr(),
               itemName: "monthly_record".tr()),
         ],

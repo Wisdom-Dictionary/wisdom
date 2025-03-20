@@ -52,42 +52,32 @@ class UserDetailsModel {
     this.userCurrentLevel,
     this.user,
     this.tariff,
-    this.isPremium,
     this.statistics,
     this.rank,
   });
 
   final bool? status;
-  static const String statusKey = "status";
 
   final bool? followed;
-  static const String followedKey = "followed";
 
   final bool? following;
-  static const String followingKey = "following";
 
   @JsonKey(name: 'user_current_level')
   final int? userCurrentLevel;
-  static const String userCurrentLevelKey = "user_current_level";
 
   final User? user;
-  static const String userKey = "user";
 
   final Tariff? tariff;
-  static const String tariffKey = "tariff";
-
-  final bool? isPremium;
-  static const String isPremiumKey = "is_premium";
 
   final Statistics? statistics;
-  static const String statisticsKey = "statistics";
 
   final RankModel? rank;
-  static const String rankKey = "rank";
 
   factory UserDetailsModel.fromJson(Map<String, dynamic> json) => _$UserDetailsModelFromJson(json);
 
-  bool get isPremuimStatus => isPremium ?? false;
+  bool get isPremuimStatus => user?.isPremium ?? false;
+
+  bool get isOnlineStatus => user?.isOnline ?? false;
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -97,7 +87,6 @@ class UserDetailsModel {
       'userCurrentLevel': userCurrentLevel,
       'user': user?.toMap(),
       'tariff': tariff?.toMap(),
-      'is_premium': isPremium,
       'statistics': statistics?.toMap(),
       'rank': rank?.toMap(),
     };
@@ -242,6 +231,8 @@ class User {
     this.email,
     this.image,
     this.birthdate,
+    this.isOnline,
+    this.isPremium,
     this.gender = Gender.none,
     this.notification,
     this.profilePhotoUrl,
@@ -264,6 +255,12 @@ class User {
 
   final dynamic birthdate;
   static const String birthdateKey = "birthdate";
+
+  @JsonKey(name: 'is_online')
+  final bool? isOnline;
+
+  @JsonKey(name: 'is_premium')
+  final bool? isPremium;
 
   final Gender gender;
   static const String genderKey = "gender";

@@ -37,15 +37,7 @@ class WordExercisesPage extends ViewModelBuilderWidget<WordExercisesViewModel> {
             onTap: () => viewModel.goBack(),
             leadingIcon: Assets.icons.arrowLeft,
             actions: const [
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    LifeStatusBar(),
-                  ],
-                ),
-              )
+              LifeStatusBarPadding(child: LifeStatusBar()),
             ],
           ),
           body: viewModel.isBusy(tag: viewModel.getWordExercisesTag)
@@ -223,7 +215,7 @@ class _WordExerciseContentState extends State<WordExerciseContent>
                               height: 8,
                             ),
                             itemCount: widget.viewModel.levelTestRepository.testQuestionsList[index]
-                                .answers!.length,
+                                .answers.length,
                             primary: false,
                             shrinkWrap: true,
                             itemBuilder: (context, i) {
@@ -320,16 +312,18 @@ class _WordExerciseContentState extends State<WordExerciseContent>
             ],
           ),
         ),
-        onTap: () {
+        onTap: () async {
           widget.viewModel
               .setAnswer(AnswerEntity(answerId: item.answers[index].id!, questionId: item.id!));
-
+          setState(() {});
           int? nextQuestion = widget.viewModel.validateAnswers;
           if (nextQuestion != null) {
+            await Future.delayed(Duration(milliseconds: 600));
             _tabController.animateTo(nextQuestion);
-          } else {
-            setState(() {});
           }
+          // else {
+          //   setState(() {});
+          // }
         },
       );
 }

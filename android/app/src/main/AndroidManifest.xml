@@ -15,6 +15,7 @@
         android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.WRITE_CONTACTS"/>
 
     <!-- For apps with targetSDK=31 (Android 12) -->
 <!--    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>-->

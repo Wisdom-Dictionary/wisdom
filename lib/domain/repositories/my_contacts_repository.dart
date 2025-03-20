@@ -6,7 +6,9 @@ enum Contacts {
 }
 
 abstract class MyContactsRepository {
-  Future<void> getMyContactsFollowed(Contacts contactType);
+  Future<void> getMyFollowedUsers();
+
+  Future<void> getMyContactUsers();
 
   Future<void> postMyContactsSearch(String searchKeyWord);
 
@@ -14,7 +16,9 @@ abstract class MyContactsRepository {
 
   Future<String> postUnFollow(int userId);
 
-  List<UserDetailsModel> get contactsList;
+  List<UserDetailsModel> get followedList;
+
+  List<UserDetailsModel> get myContactsList;
 
   List<UserDetailsModel> get searchResultList;
 

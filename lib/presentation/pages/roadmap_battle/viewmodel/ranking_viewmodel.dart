@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jbaza/jbaza.dart';
+import 'package:wisdom/core/services/contacts_service.dart';
 import 'package:wisdom/data/viewmodel/local_viewmodel.dart';
 import 'package:wisdom/domain/repositories/ranking_repository.dart';
 import 'package:wisdom/presentation/components/dialog_background.dart';
@@ -14,8 +15,15 @@ class RankingViewModel extends BaseViewModel {
   final localViewModel = locator<LocalViewModel>();
 
   final String getRankingGlobalTag = "getRankingGlobalTag",
-      getRankingGlobalMoreTag = "getRankingGlobalMoreTag";
+      getRankingGlobalMoreTag = "getRankingGlobalMoreTag",
+      getRankingContactTag = "getRankingContactTag",
+      getRankingContactMoreTag = "getRankingContactMoreTag";
   int page = 1;
+  bool hasContactsPermission = false;
+  void contactPermission() async {
+    hasContactsPermission = await CustomContactService.requestContactPermission(context!);
+    notifyListeners();
+  }
 
   void getRankingGlobal() {
     safeBlock(() async {
@@ -36,7 +44,7 @@ class RankingViewModel extends BaseViewModel {
   }
 
   void getRankingGlobalMore() {
-    if (roadMapRepository.hasMoreData) {
+    if (roadMapRepository.hasMoreGlobalRankingData) {
       page++;
       safeBlock(() async {
         if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
@@ -52,6 +60,45 @@ class RankingViewModel extends BaseViewModel {
           );
         }
       }, callFuncName: 'getRankingGlobalMore', tag: getRankingGlobalMoreTag, inProgress: false);
+    }
+  }
+
+  void getRankingContact() {
+    hasContactsPermission = true;
+    safeBlock(() async {
+      if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
+        page = 1;
+        setBusy(true, tag: getRankingContactTag);
+        await roadMapRepository.getRankingContacts(page);
+        setSuccess(tag: getRankingContactTag);
+      } else {
+        showDialog(
+          context: context!,
+          builder: (context) => const DialogBackground(
+            child: NoInternetConnectionDialog(),
+          ),
+        );
+      }
+    }, callFuncName: 'getRankingContact', tag: getRankingContactTag, inProgress: false);
+  }
+
+  void getRankingContactMore() {
+    if (roadMapRepository.hasMoreContactRankingData) {
+      page++;
+      safeBlock(() async {
+        if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
+          setBusy(true, tag: getRankingContactMoreTag);
+          await roadMapRepository.getRankingContacts(page);
+          setSuccess(tag: getRankingContactMoreTag);
+        } else {
+          showDialog(
+            context: context!,
+            builder: (context) => const DialogBackground(
+              child: NoInternetConnectionDialog(),
+            ),
+          );
+        }
+      }, callFuncName: 'getRankingContactMore', tag: getRankingContactMoreTag, inProgress: false);
     }
   }
 }

@@ -35,7 +35,7 @@ class Urls {
   static var testQuestionsCheck = Uri.parse('${baseUrl}api/levels/test-questions-check');
   static var testQuestionsResult = Uri.parse('${baseUrl}api/levels/get-full-test-result');
   static var myContactsFollowed = Uri.parse('${baseUrl}api/my-contacts/followed');
-  static var myContacts = Uri.parse('${baseUrl}api/my-contacts/contacts');
+  static var myContacts = Uri.parse('${baseUrl}api/my-contacts/get-contacts');
   static var myContactsFollow = Uri.parse('${baseUrl}api/my-contacts/follow');
   static var myContactsUnFollow = Uri.parse('${baseUrl}api/my-contacts/unfollow');
   static var myContactsSearch = Uri.parse('${baseUrl}api/my-contacts/search');

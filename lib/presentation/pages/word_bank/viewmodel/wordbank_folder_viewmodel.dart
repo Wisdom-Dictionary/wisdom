@@ -133,8 +133,7 @@ class WordBankFolderViewModel extends BaseViewModel {
             autofocus: true,
             decoration: InputDecoration(
               hintText: "folder_name_hint".tr(),
-              hintStyle: AppTextStyle.font15W600Normal
-                  .copyWith(color: isDarkTheme ? AppColors.gray : AppColors.blue),
+              hintStyle: AppTextStyle.font15W600Normal.copyWith(color: AppColors.gray),
               border: OutlineInputBorder(
                 borderSide: BorderSide(
                   color: isDarkTheme ? AppColors.white : AppColors.blue,

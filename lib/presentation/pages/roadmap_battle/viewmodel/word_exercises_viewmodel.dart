@@ -71,7 +71,7 @@ class WordExercisesViewModel extends BaseViewModel {
     DateTime endDate = DateTime.now();
 
     // Calculate the difference in seconds
-    return endDate.difference(startDate).inSeconds;
+    return endDate.difference(startDate).inMilliseconds;
   }
 
   int? get validateAnswers {
@@ -91,7 +91,14 @@ class WordExercisesViewModel extends BaseViewModel {
 
   bool submitButtonStatus(int tabControllerIndex) {
     if (levelTestRepository.testQuestionsList.length == tabControllerIndex + 1) {
-      return true;
+      if (answers.any(
+        (element) =>
+            element.questionId == levelTestRepository.testQuestionsList[tabControllerIndex].id,
+      )) {
+        return true;
+      } else {
+        return false;
+      }
     }
     if (levelTestRepository.testQuestionsList.length > answers.length) {
       return false;

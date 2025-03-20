@@ -12,9 +12,11 @@ UserDetailsModel _$UserDetailsModelFromJson(Map<String, dynamic> json) => UserDe
       following: json['following'] as bool?,
       userCurrentLevel: (json['user_current_level'] as num?)?.toInt(),
       user: json['user'] == null ? null : User.fromJson(json['user'] as Map<String, dynamic>),
-      tariff: json['tariff'] == null ? null : Tariff.fromJson(json['tariff'] as Map<String, dynamic>),
-      isPremium: json['is_premium'] as bool?,
-      statistics: json['statistics'] == null ? null : Statistics.fromJson(json['statistics'] as Map<String, dynamic>),
+      tariff:
+          json['tariff'] == null ? null : Tariff.fromJson(json['tariff'] as Map<String, dynamic>),
+      statistics: json['statistics'] == null
+          ? null
+          : Statistics.fromJson(json['statistics'] as Map<String, dynamic>),
       rank: json['rank'] == null ? null : RankModel.fromJson(json['rank'] as Map<String, dynamic>),
     );
 
@@ -50,6 +52,8 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       email: json['email'],
       image: json['image'],
       birthdate: json['birthdate'],
+      isPremium: json['is_premium'],
+      isOnline: json['is_online'],
       gender: $enumDecodeNullable(_$GenderEnumMap, json['gender']) ?? Gender.none,
       notification: (json['notification'] as num?)?.toInt(),
       profilePhotoUrl: json['profile_photo_url'] as String?,

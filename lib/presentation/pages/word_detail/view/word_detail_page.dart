@@ -228,245 +228,259 @@ class WordDetailPage extends ViewModelBuilderWidget<WordDetailPageViewModel> {
                               ? AppDecoration.bannerDarkDecor
                               : AppDecoration.bannerDecor,
                           padding: EdgeInsets.symmetric(horizontal: 22.w, vertical: 28.h),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Flexible(
-                                    flex: 1,
-                                    child: Padding(
-                                      padding: EdgeInsets.only(right: 10.w),
-                                      child: Text(
-                                        viewModel.wordEntityRepository.requiredWordWithAllModel
-                                                .word!.word ??
-                                            "unknown",
-                                        style: AppTextStyle.font17W700Normal.copyWith(
-                                            color:
-                                                isDarkTheme ? AppColors.white : AppColors.darkGray,
-                                            fontSize: viewModel.fontSize),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Flexible(
+                                      flex: 1,
+                                      child: Padding(
+                                        padding: EdgeInsets.only(right: 10.w),
+                                        child: Text(
+                                          viewModel.wordEntityRepository.requiredWordWithAllModel
+                                                  .word!.word ??
+                                              "unknown",
+                                          style: AppTextStyle.font17W700Normal.copyWith(
+                                              color: isDarkTheme
+                                                  ? AppColors.white
+                                                  : AppColors.darkGray,
+                                              fontSize: viewModel.fontSize),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  InkWell(
-                                    onTap: () => viewModel.textToSpeech(),
-                                    child: Container(
-                                      height: 52.h,
-                                      width: 52.w,
-                                      padding: EdgeInsets.all(14.w),
-                                      child: SvgPicture.asset(
-                                        Assets.icons.sound,
-                                        // ignore: deprecated_member_use
-                                        color: AppColors.blue,
+                                    InkWell(
+                                      customBorder: const CircleBorder(),
+                                      onTap: () => viewModel.textToSpeech(),
+                                      child: Container(
+                                        height: 52.h,
+                                        width: 52.w,
+                                        padding: EdgeInsets.all(14.w),
+                                        child: SvgPicture.asset(
+                                          Assets.icons.sound,
+                                          // ignore: deprecated_member_use
+                                          color: AppColors.blue,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  viewModel.wordEntityRepository.requiredWordWithAllModel.word!
-                                              .star !=
-                                          "0"
-                                      ? Padding(
-                                          padding: EdgeInsets.symmetric(horizontal: 5.w),
-                                          child: SvgPicture.asset(
-                                            viewModel.findRank(viewModel.wordEntityRepository
-                                                .requiredWordWithAllModel.word!.star!),
-                                          ),
-                                        )
-                                      : SizedBox(width: 10.w),
-                                  InkWell(
-                                    onTap: () => viewModel.addAllWords(globalKey),
-                                    child: Container(
-                                      height: 52.h,
-                                      width: 52.w,
-                                      padding: EdgeInsets.all(14.w),
-                                      key: globalKey,
-                                      child: SvgPicture.asset(
-                                        Assets.icons.saveWord,
-                                        color: AppColors.blue,
+                                    if (viewModel.wordEntityRepository.requiredWordWithAllModel
+                                            .word!.star !=
+                                        "0")
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(horizontal: 5.w),
+                                        child: SvgPicture.asset(
+                                          viewModel.findRank(viewModel.wordEntityRepository
+                                              .requiredWordWithAllModel.word!.star!),
+                                        ),
+                                      ),
+                                    InkWell(
+                                      customBorder: const CircleBorder(),
+                                      onTap: () => viewModel.addAllWords(globalKey),
+                                      child: Container(
+                                        height: 52.h,
+                                        width: 52.w,
+                                        padding: EdgeInsets.all(14.w),
+                                        key: globalKey,
+                                        child: SvgPicture.asset(
+                                          Assets.icons.saveWord,
+                                          color: AppColors.blue,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              Stack(
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(right: 75.w),
-                                    child: Align(
-                                      alignment: Alignment.topLeft,
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            viewModel.wordEntityRepository.requiredWordWithAllModel
-                                                    .word!.wordClasswordClass ??
-                                                "",
-                                            style: AppTextStyle.font15W500Normal.copyWith(
-                                                color: isDarkTheme
-                                                    ? AppColors.white
-                                                    : AppColors.darkGray,
-                                                fontSize: viewModel.fontSize),
-                                          ),
-                                          Flexible(
-                                            child: Padding(
-                                              padding: EdgeInsets.only(left: 5.w),
-                                              child: Text(
-                                                "  ${viewModel.wordEntityRepository.requiredWordWithAllModel.word!.wordClassBody ?? ""}",
-                                                style: AppTextStyle.font15W400NormalHtml.copyWith(
-                                                    color: AppColors.paleGray,
-                                                    fontSize: viewModel.fontSize! - 2),
-                                              ),
+                                  ],
+                                ),
+                                Stack(
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.only(right: 75.w),
+                                      child: Align(
+                                        alignment: Alignment.topLeft,
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              viewModel
+                                                      .wordEntityRepository
+                                                      .requiredWordWithAllModel
+                                                      .word!
+                                                      .wordClasswordClass ??
+                                                  "",
+                                              style: AppTextStyle.font15W500Normal.copyWith(
+                                                  color: isDarkTheme
+                                                      ? AppColors.white
+                                                      : AppColors.darkGray,
+                                                  fontSize: viewModel.fontSize),
                                             ),
-                                          )
-                                        ],
+                                            Flexible(
+                                              child: Padding(
+                                                padding: EdgeInsets.only(left: 5.w),
+                                                child: Text(
+                                                  "  ${viewModel.wordEntityRepository.requiredWordWithAllModel.word!.wordClassBody ?? ""}",
+                                                  style: AppTextStyle.font15W400NormalHtml.copyWith(
+                                                      color: AppColors.paleGray,
+                                                      fontSize: viewModel.fontSize! - 2),
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Visibility(
-                                    visible: viewModel.wordEntityRepository.requiredWordWithAllModel
-                                            .word!.image !=
-                                        null,
-                                    child: Align(
-                                      alignment: Alignment.centerRight,
-                                      child: InkWell(
-                                        onTap: () => viewModel.showPhotoView(),
-                                        child: Container(
-                                          height: 66.w,
-                                          padding: EdgeInsets.all(2.r),
-                                          width: 66.w,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(9.r),
-                                            // color: AppColors.lightBlue,
-                                          ),
-                                          child: ClipRRect(
-                                            borderRadius: BorderRadius.circular(9.r),
-                                            child: viewModel.wordEntityRepository
-                                                        .requiredWordWithAllModel.word!.image !=
-                                                    null
-                                                ? Image.network(
-                                                    Urls.baseUrl +
-                                                        viewModel.wordEntityRepository
-                                                            .requiredWordWithAllModel.word!.image!,
-                                                    fit: BoxFit.scaleDown,
-                                                  )
-                                                : const SizedBox.shrink(),
+                                    Visibility(
+                                      visible: viewModel.wordEntityRepository
+                                              .requiredWordWithAllModel.word!.image !=
+                                          null,
+                                      child: Align(
+                                        alignment: Alignment.centerRight,
+                                        child: InkWell(
+                                          onTap: () => viewModel.showPhotoView(),
+                                          child: Container(
+                                            height: 66.w,
+                                            padding: EdgeInsets.all(2.r),
+                                            width: 66.w,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(9.r),
+                                              // color: AppColors.lightBlue,
+                                            ),
+                                            child: ClipRRect(
+                                              borderRadius: BorderRadius.circular(9.r),
+                                              child: viewModel.wordEntityRepository
+                                                          .requiredWordWithAllModel.word!.image !=
+                                                      null
+                                                  ? Image.network(
+                                                      Urls.baseUrl +
+                                                          viewModel
+                                                              .wordEntityRepository
+                                                              .requiredWordWithAllModel
+                                                              .word!
+                                                              .image!,
+                                                      fit: BoxFit.scaleDown,
+                                                    )
+                                                  : const SizedBox.shrink(),
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: viewModel.parentsWithAllList.length,
-                                padding: EdgeInsets.only(bottom: 15.h),
-                                itemBuilder: (context, index) {
-                                  var item = viewModel.parentsWithAllList[index];
-                                  bool isSelected = false;
-                                  if (!viewModel.localViewModel.isSearchByUz) {
-                                    isSelected = viewModel.isWordContained(
-                                            viewModel.conductToString(item.wordsUz ?? [])) &&
-                                        viewModel.getFirstPhrase;
-                                  }
-                                  if (isSelected) {
-                                    viewModel.firstAutoScroll();
-                                  }
-                                  return Container(
-                                    key: isSelected ? viewModel.scrollKey : null,
-                                    child: ParentWidget(
-                                      model: item,
-                                      orderNum: "${index + 1}",
+                                  ],
+                                ),
+                                ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: viewModel.parentsWithAllList.length,
+                                  padding: EdgeInsets.only(bottom: 15.h),
+                                  itemBuilder: (context, index) {
+                                    var item = viewModel.parentsWithAllList[index];
+                                    bool isSelected = false;
+                                    if (!viewModel.localViewModel.isSearchByUz) {
+                                      isSelected = viewModel.isWordContained(
+                                              viewModel.conductToString(item.wordsUz ?? [])) &&
+                                          viewModel.getFirstPhrase;
+                                    }
+                                    if (isSelected) {
+                                      viewModel.firstAutoScroll();
+                                    }
+                                    return Container(
+                                      key: isSelected ? viewModel.scrollKey : null,
+                                      child: ParentWidget(
+                                        model: item,
+                                        orderNum: "${index + 1}",
+                                      ),
+                                    );
+                                  },
+                                ),
+                                Visibility(
+                                  visible: viewModel.parentsWithAllList.last.phrasesWithAll !=
+                                          null &&
+                                      viewModel.parentsWithAllList.last.phrasesWithAll!.isNotEmpty,
+                                  child: ExpandablePanel(
+                                    theme: const ExpandableThemeData(
+                                      tapHeaderToExpand: true,
+                                      tapBodyToCollapse: false,
+                                      tapBodyToExpand: false,
+                                      headerAlignment: ExpandablePanelHeaderAlignment.center,
+                                      iconColor: AppColors.blue,
+                                      iconSize: 32,
+                                      iconPadding: EdgeInsets.zero,
                                     ),
-                                  );
-                                },
-                              ),
-                              Visibility(
-                                visible: viewModel.parentsWithAllList.last.phrasesWithAll != null &&
-                                    viewModel.parentsWithAllList.last.phrasesWithAll!.isNotEmpty,
-                                child: ExpandablePanel(
-                                  theme: const ExpandableThemeData(
-                                    tapHeaderToExpand: true,
-                                    tapBodyToCollapse: false,
-                                    tapBodyToExpand: false,
-                                    headerAlignment: ExpandablePanelHeaderAlignment.center,
-                                    iconColor: AppColors.blue,
-                                    iconSize: 32,
-                                    iconPadding: EdgeInsets.zero,
-                                  ),
-                                  controller: ExpandableController(
-                                      initialExpanded: controller.expanded =
-                                          viewModel.hasToBeExpanded(
-                                              viewModel.parentsWithAllList.last.phrasesWithAll)),
-                                  header: Center(
-                                    child: Text(
-                                      "words_phrases".tr(),
-                                      style: AppTextStyle.font18W500Normal.copyWith(
-                                          color: AppColors.blue,
-                                          fontSize: viewModel.fontSize! + 2,
-                                          fontWeight: FontWeight.w600),
+                                    controller: ExpandableController(
+                                        initialExpanded: controller.expanded =
+                                            viewModel.hasToBeExpanded(
+                                                viewModel.parentsWithAllList.last.phrasesWithAll)),
+                                    header: Center(
+                                      child: Text(
+                                        "words_phrases".tr(),
+                                        style: AppTextStyle.font18W500Normal.copyWith(
+                                            color: AppColors.blue,
+                                            fontSize: viewModel.fontSize! + 2,
+                                            fontWeight: FontWeight.w600),
+                                      ),
                                     ),
-                                  ),
-                                  expanded: (viewModel.parentsWithAllList.last.phrasesWithAll !=
-                                              null &&
-                                          viewModel
-                                              .parentsWithAllList.last.phrasesWithAll!.isNotEmpty)
-                                      ? ListView.builder(
-                                          shrinkWrap: true,
-                                          padding: EdgeInsets.symmetric(horizontal: 10.w),
-                                          physics: const NeverScrollableScrollPhysics(),
-                                          itemCount: viewModel
-                                              .parentsWithAllList.last.phrasesWithAll!.length,
-                                          itemBuilder: (context, index) {
-                                            var phraseModel = viewModel
-                                                .parentsWithAllList.last.phrasesWithAll![index];
-                                            bool isSelected = viewModel.isWordEqual(
-                                                    phraseModel.phrases!.pWord ?? "") &&
-                                                viewModel.getFirstPhrase;
-                                            if (viewModel.localViewModel.isSearchByUz) {
-                                              isSelected = viewModel.isWordContained(
-                                                      viewModel.conductToStringPhrasesTranslate(
-                                                          phraseModel.phrasesTranslate ?? [])) &&
-                                                  viewModel.getFirstPhrase &&
-                                                  viewModel.isWordEqual(
-                                                      phraseModel.phrases!.pWord ?? "");
-                                            }
-                                            if (phraseModel.parentPhrasesWithAll != null &&
-                                                phraseModel.parentPhrasesWithAll!.isNotEmpty) {
-                                              bool subSelected = false;
-                                              for (var model in phraseModel.parentPhrasesWithAll!) {
-                                                subSelected = viewModel.isWordContained(viewModel
-                                                        .conductToStringParentPhrasesTranslate(
-                                                            model.parentPhrasesTranslate ?? [])) &&
+                                    expanded: (viewModel.parentsWithAllList.last.phrasesWithAll !=
+                                                null &&
+                                            viewModel
+                                                .parentsWithAllList.last.phrasesWithAll!.isNotEmpty)
+                                        ? ListView.builder(
+                                            shrinkWrap: true,
+                                            padding: EdgeInsets.symmetric(horizontal: 10.w),
+                                            physics: const NeverScrollableScrollPhysics(),
+                                            itemCount: viewModel
+                                                .parentsWithAllList.last.phrasesWithAll!.length,
+                                            itemBuilder: (context, index) {
+                                              var phraseModel = viewModel
+                                                  .parentsWithAllList.last.phrasesWithAll![index];
+                                              bool isSelected = viewModel.isWordEqual(
+                                                      phraseModel.phrases!.pWord ?? "") &&
+                                                  viewModel.getFirstPhrase;
+                                              if (viewModel.localViewModel.isSearchByUz) {
+                                                isSelected = viewModel.isWordContained(
+                                                        viewModel.conductToStringPhrasesTranslate(
+                                                            phraseModel.phrasesTranslate ?? [])) &&
                                                     viewModel.getFirstPhrase &&
                                                     viewModel.isWordEqual(
                                                         phraseModel.phrases!.pWord ?? "");
                                               }
-                                              if (subSelected) {
-                                                isSelected = subSelected;
+                                              if (phraseModel.parentPhrasesWithAll != null &&
+                                                  phraseModel.parentPhrasesWithAll!.isNotEmpty) {
+                                                bool subSelected = false;
+                                                for (var model
+                                                    in phraseModel.parentPhrasesWithAll!) {
+                                                  subSelected = viewModel.isWordContained(viewModel
+                                                          .conductToStringParentPhrasesTranslate(
+                                                              model.parentPhrasesTranslate ??
+                                                                  [])) &&
+                                                      viewModel.getFirstPhrase &&
+                                                      viewModel.isWordEqual(
+                                                          phraseModel.phrases!.pWord ?? "");
+                                                }
+                                                if (subSelected) {
+                                                  isSelected = subSelected;
+                                                }
                                               }
-                                            }
-                                            if (isSelected) {
-                                              viewModel.firstAutoScroll();
-                                            }
-                                            return Container(
-                                              key: isSelected ? viewModel.scrollKey : null,
-                                              child: PhrasesWidget(
-                                                  model: phraseModel,
-                                                  orderNum: '1',
-                                                  index: index,
-                                                  isSelected: isSelected),
-                                            );
-                                          },
-                                        )
-                                      : const SizedBox.shrink(),
-                                  collapsed: const SizedBox.shrink(),
+                                              if (isSelected) {
+                                                viewModel.firstAutoScroll();
+                                              }
+                                              return Container(
+                                                key: isSelected ? viewModel.scrollKey : null,
+                                                child: PhrasesWidget(
+                                                    model: phraseModel,
+                                                    orderNum: '1',
+                                                    index: index,
+                                                    isSelected: isSelected),
+                                              );
+                                            },
+                                          )
+                                        : const SizedBox.shrink(),
+                                    collapsed: const SizedBox.shrink(),
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                         const BannerAdWidget(),

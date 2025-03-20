@@ -270,8 +270,8 @@ packages:
     description:
       path: "."
       ref: master
-      resolved-ref: a4b31722f710a6d1bb187f0962e255137ba75b8c
-      url: "https://github.com/hkhere/flutter_contacts.git"
+      resolved-ref: fa34dcc03f964e3cfbac82d613d7f41aab6d166e
+      url: "https://github.com/jumaboyevich/flutter_contacts.git"
     source: git
     version: "0.6.3"
   convert:

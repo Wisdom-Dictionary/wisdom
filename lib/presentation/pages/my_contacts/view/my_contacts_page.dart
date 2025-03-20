@@ -1,14 +1,20 @@
+import 'dart:io';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:jbaza/jbaza.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:wisdom/app.dart';
 import 'package:wisdom/config/constants/app_colors.dart';
 import 'package:wisdom/config/constants/app_text_style.dart';
 import 'package:wisdom/config/constants/assets.dart';
 import 'package:wisdom/config/constants/constants.dart';
+import 'package:wisdom/core/services/contacts_service.dart';
 import 'package:wisdom/data/model/my_contacts/user_details_model.dart';
 import 'package:wisdom/domain/repositories/my_contacts_repository.dart';
+import 'package:wisdom/presentation/components/w_button.dart';
 import 'package:wisdom/presentation/pages/my_contacts/view/my_contacts_app_bar.dart';
 import 'package:wisdom/presentation/pages/my_contacts/view/my_contacts_empty_widget.dart';
 import 'package:wisdom/presentation/pages/my_contacts/view/my_contcats_shimmer_widget.dart';
@@ -41,8 +47,8 @@ class _MyContactsPageState extends State<MyContactsPage> with SingleTickerProvid
       appBar: MyContactsAppBar(
         title: "my_contacts".tr(),
         actions: [
-          Align(
-            alignment: Alignment.centerRight,
+          Transform.translate(
+            offset: Offset(0, 5),
             child: IconButton(
                 onPressed: () {
                   Navigator.pushNamed(context, Routes.myContactsSearchPage);
@@ -123,12 +129,81 @@ class _MyContactsPageState extends State<MyContactsPage> with SingleTickerProvid
   }
 }
 
+class ContactsPermissionDialog extends StatelessWidget {
+  const ContactsPermissionDialog({
+    super.key,
+  });
+
+  String get getPermissionImage => switch (Theme.of(navigatorKey.currentContext!).platform) {
+        TargetPlatform.android => Assets.images.contactPermissionAndroid,
+        TargetPlatform.iOS => Assets.images.contactPermissionIos,
+        _ => Assets.images.contactPermissionIos
+      };
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(18.0))),
+      insetPadding: EdgeInsets.all(16),
+      contentPadding: EdgeInsets.only(left: 24, top: 32, right: 24, bottom: 24),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            "contacts_access".tr(),
+            style: AppTextStyle.font18W500Normal
+                .copyWith(color: AppColors.blue, fontWeight: FontWeight.w600),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 32),
+            child: Image.asset(getPermissionImage),
+          ),
+          Text(
+            "contacts_access_content".tr(),
+            textAlign: TextAlign.center,
+            style: AppTextStyle.font13W500Normal.copyWith(fontSize: 14, color: AppColors.black),
+          ),
+          SizedBox(
+            height: 32,
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: WButton(
+                  titleColor: AppColors.blue,
+                  color: AppColors.lavender,
+                  title: "cancel".tr(),
+                  onTap: () {
+                    Navigator.pop(context, false);
+                  },
+                ),
+              ),
+              SizedBox(
+                width: 8,
+              ),
+              Expanded(
+                child: WButton(
+                  title: "settings".tr(),
+                  onTap: () async {
+                    Navigator.pop(context, true);
+                    await openAppSettings();
+                  },
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class ContactsList extends ViewModelBuilderWidget<MyContactsViewModel> {
   ContactsList({super.key});
 
   @override
   void onViewModelReady(MyContactsViewModel viewModel) {
-    viewModel.getMyContacts(Contacts.getMyContacts);
+    viewModel.getMyContactUsers();
     super.onViewModelReady(viewModel);
   }
 
@@ -137,81 +212,30 @@ class ContactsList extends ViewModelBuilderWidget<MyContactsViewModel> {
     return viewModel.isBusy(tag: viewModel.getMyContactsTag)
         ? const MyContcatsShimmerWidget()
         : viewModel.isSuccess(tag: viewModel.getMyContactsTag)
-            ? viewModel.myContactsRepository.contactsList.isEmpty
+            ? viewModel.myContactsRepository.myContactsList.isEmpty ||
+                    !viewModel.hasContactsPermission
                 ? MyContactsEmptyPage(
                     icon: SvgPicture.asset(Assets.icons.calendarOutlined),
                     title: "title_my_contacts_list_empty".tr(),
                     description: "description_my_contacts_list_empty".tr(),
                   )
-                : ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 27),
-                    itemCount: 8,
-                    itemBuilder: (context, index) => GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(context, Routes.contactDetailsPage);
+                : RefreshIndicator(
+                    onRefresh: () async => viewModel.getMyContactUsers(),
+                    child: ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 27),
+                      itemCount: viewModel.myContactsRepository.myContactsList.length,
+                      itemBuilder: (context, index) {
+                        final item = viewModel.myContactsRepository.myContactsList[index];
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(context, Routes.contactDetailsPage,
+                                arguments: item.toMap());
+                          },
+                          child: ContactItemWidget(
+                            item: item,
+                          ),
+                        );
                       },
-                      child: Container(
-                        padding: const EdgeInsets.only(top: 13, bottom: 16, left: 18, right: 18),
-                        margin: const EdgeInsets.symmetric(vertical: 4),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(32.r),
-                            color: AppColors.bgLightBlue.withValues(alpha: 0.1)),
-                        child: Row(
-                          children: [
-                            SvgPicture.asset(
-                              Assets.icons.userAvatar,
-                              height: 35,
-                              width: 35,
-                            ),
-                            const SizedBox(
-                              width: 11,
-                            ),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  Text(
-                                    "Farruh Saitov",
-                                    style: AppTextStyle.font13W500Normal
-                                        .copyWith(fontSize: 14, color: AppColors.blue),
-                                  ),
-                                  const SizedBox(
-                                    height: 4.61,
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        "12460",
-                                        style: AppTextStyle.font13W500Normal
-                                            .copyWith(color: AppColors.blue),
-                                      ),
-                                      const SizedBox(
-                                        width: 4,
-                                      ),
-                                      SvgPicture.asset(
-                                        Assets.icons.verify,
-                                        colorFilter:
-                                            const ColorFilter.mode(AppColors.blue, BlendMode.srcIn),
-                                      )
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SvgPicture.asset(
-                              Assets.icons.wifi,
-                              colorFilter: const ColorFilter.mode(AppColors.green, BlendMode.srcIn),
-                            ),
-                            const SizedBox(
-                              width: 24,
-                            ),
-                            SvgPicture.asset(
-                              Assets.icons.battle,
-                              colorFilter: const ColorFilter.mode(AppColors.blue, BlendMode.srcIn),
-                            ),
-                          ],
-                        ),
-                      ),
                     ),
                   )
             : const Center();
@@ -228,7 +252,7 @@ class ContactsFollowedList extends ViewModelBuilderWidget<MyContactsViewModel> {
 
   @override
   void onViewModelReady(MyContactsViewModel viewModel) {
-    viewModel.getMyContacts(Contacts.getMyContactsFollowed);
+    viewModel.getMyFollowedUsers();
     super.onViewModelReady(viewModel);
   }
 
@@ -237,7 +261,7 @@ class ContactsFollowedList extends ViewModelBuilderWidget<MyContactsViewModel> {
     return viewModel.isBusy(tag: viewModel.getMyContactsTag)
         ? const MyContcatsShimmerWidget()
         : viewModel.isSuccess(tag: viewModel.getMyContactsTag)
-            ? viewModel.myContactsRepository.contactsList.isEmpty
+            ? viewModel.myContactsRepository.followedList.isEmpty
                 ? MyContactsEmptyPage(
                     icon: SvgPicture.asset(
                       height: 113,
@@ -250,18 +274,18 @@ class ContactsFollowedList extends ViewModelBuilderWidget<MyContactsViewModel> {
                     description: "description_my_followed_list_empty".tr(),
                   )
                 : RefreshIndicator(
-                    onRefresh: () async => viewModel.getMyContacts(Contacts.getMyContactsFollowed),
+                    onRefresh: () async => viewModel.getMyContactUsers(),
                     child: ListView.builder(
                       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 27),
-                      itemCount: viewModel.myContactsRepository.contactsList.length,
+                      itemCount: viewModel.myContactsRepository.followedList.length,
                       itemBuilder: (context, index) => GestureDetector(
                         onTap: () {
                           Navigator.pushNamed(context, Routes.contactDetailsPage,
                               arguments:
-                                  viewModel.myContactsRepository.contactsList[index].toMap());
+                                  viewModel.myContactsRepository.followedList[index].toMap());
                         },
                         child: ContactItemWidget(
-                          item: viewModel.myContactsRepository.contactsList[index],
+                          item: viewModel.myContactsRepository.followedList[index],
                         ),
                       ),
                     ),
@@ -295,11 +319,41 @@ class ContactItemWidget extends StatelessWidget {
               width: 35,
             )
           else
-            CircleAvatar(
-              radius: 16.r,
-              backgroundImage:
-                  NetworkImage(Uri.encodeFull("${item.user!.profilePhotoUrl!}&format=png")),
-              backgroundColor: Colors.transparent,
+            Stack(
+              children: [
+                Container(
+                  decoration: ShapeDecoration(
+                      shape: CircleBorder(
+                          side: BorderSide(
+                              width: 2,
+                              color: item.isPremuimStatus
+                                  ? AppColors.yellow
+                                  : AppColors.lightBackground))),
+                  child: CircleAvatar(
+                    radius: 16.r,
+                    backgroundImage:
+                        NetworkImage(Uri.encodeFull("${item.user!.profilePhotoUrl!}&format=png")),
+                    backgroundColor: Colors.transparent,
+                  ),
+                ),
+                if (item.isPremuimStatus)
+                  Positioned(
+                      top: 0,
+                      right: 0,
+                      child: Transform.translate(
+                        offset: Offset(1.6, -1.6),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 2.5, vertical: 3.2),
+                          decoration:
+                              const ShapeDecoration(color: AppColors.yellow, shape: CircleBorder()),
+                          child: SvgPicture.asset(
+                            Assets.icons.union,
+                            width: 7.91,
+                            height: 6.56,
+                          ),
+                        ),
+                      ))
+              ],
             ),
           const SizedBox(
             width: 11,
@@ -336,7 +390,8 @@ class ContactItemWidget extends StatelessWidget {
           ),
           SvgPicture.asset(
             Assets.icons.wifi,
-            colorFilter: const ColorFilter.mode(AppColors.green, BlendMode.srcIn),
+            colorFilter: ColorFilter.mode(
+                item.isOnlineStatus ? AppColors.green : AppColors.textDisabled, BlendMode.srcIn),
           ),
           const SizedBox(
             width: 24,

@@ -55,7 +55,7 @@ class SearchHistoryItem extends StatelessWidget {
                               TextSpan(
                                 text: '   $secondText',
                                 style: AppTextStyle.font15W500Normal.copyWith(
-                                  color: AppColors.paleBlue,
+                                  color: isDarkTheme ? AppColors.lightGray : AppColors.blue,
                                   fontSize: 15.sp,
                                 ),
                               ),

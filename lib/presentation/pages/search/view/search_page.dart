@@ -171,7 +171,7 @@ class SearchPage extends ViewModelBuilderWidget<SearchPageViewModel> {
                           var item = viewModel.searchRepository.searchResultUzList[index];
                           return SearchWordItem(
                             firstText: item.word ?? "unknown",
-                            secondText: item.wordClass ?? "",
+                            secondText: item.type ?? "",
                             star: item.star.toString(),
                             thirdText: item.same,
                             onTap: () => viewModel.goToDetail(item),

@@ -12,9 +12,12 @@ import 'package:wisdom/config/constants/app_colors.dart';
 import 'package:wisdom/config/constants/app_text_style.dart';
 import 'package:wisdom/config/constants/assets.dart';
 import 'package:wisdom/config/constants/constants.dart';
+import 'package:wisdom/core/services/contacts_service.dart';
 import 'package:wisdom/data/model/roadmap/ranking_model.dart';
 import 'package:wisdom/presentation/components/shimmer.dart';
 import 'package:wisdom/presentation/pages/my_contacts/view/my_contacts_app_bar.dart';
+import 'package:wisdom/presentation/pages/my_contacts/view/my_contacts_empty_widget.dart';
+import 'package:wisdom/presentation/pages/my_contacts/view/my_contacts_page.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/widgets/life_status_bar.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/ranking_viewmodel.dart';
 
@@ -57,6 +60,18 @@ class _ResultsSectionContentPageState extends State<ResultsSectionContentPage>
     _tabController.addListener(() {
       setState(() {}); // Tab o'zgarganda UI yangilanadi
     });
+    CustomContactService.requestContactPermission(context).then(
+      (value) {
+        if (!value) {
+          showDialog(
+            context: context,
+            builder: (context) => ContactsPermissionDialog(),
+          );
+        } else {
+          widget.viewModel.getRankingContact();
+        }
+      },
+    );
     super.initState();
   }
 
@@ -65,12 +80,9 @@ class _ResultsSectionContentPageState extends State<ResultsSectionContentPage>
     return Scaffold(
       backgroundColor: isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
       appBar: MyContactsAppBar(
-        title: "exercises_result".tr(),
+        title: "exercise_results".tr(),
         actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 16),
-            child: LifeStatusBar(),
-          )
+          LifeStatusBarPadding(child: LifeStatusBar()),
         ],
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(56.h),
@@ -216,122 +228,85 @@ class ExercisesResultContactsPage extends StatefulWidget {
 }
 
 class _ExercisesResultContactsPageState extends State<ExercisesResultContactsPage> {
-  bool permissionIsGranted = false;
-  Future<void> _pickContact() async {
-    permissionIsGranted = await requestContactPermission(context);
-    if (!permissionIsGranted) {
-      // not permission
-      return;
-    }
-
-    try {
-      final List<Contact> contacts = await ContactsService.getContacts();
-      if (contacts.isNotEmpty) {
-        Map<String, dynamic> contactsList = {
-          "contactName": [
-            "+998900000000",
-            "+998900000000",
-            "+998900000000",
-          ]
-        };
-        String content = "contacts:${contacts.map(
-              (e) {
-                return "${e.displayName} - ${e.phones?.map(
-                      (e) => e.value,
-                    ).toList().join(", ")}";
-              },
-            ).toList().join("\n")}";
-
-        File file = await writeStringToFile("contacts", content);
-
-        FormData formData = FormData.fromMap({
-          "contact": await MultipartFile.fromFile(file.path, filename: "contacts.txt"),
-        });
-      }
-    } catch (e) {}
-  }
-
-  Future<File> writeStringToFile(String filename, String content) async {
-    final directory = await getApplicationDocumentsDirectory();
-    final file = File('${directory.path}/$filename');
-    return file.writeAsString(content);
-  }
-
-  Future<bool> requestContactPermission(BuildContext context) async {
-    PermissionStatus status = await Permission.contacts.status;
-
-    if (status.isPermanentlyDenied) {
-      return false;
-    } else if (!status.isGranted) {
-      // Request the permission if not granted
-      PermissionStatus newStatus = await Permission.contacts.request();
-      if (newStatus.isGranted) {
-        return true;
-      }
-    } else {
-      return true;
-    }
-    return false;
-  }
-
   @override
   void initState() {
-    _pickContact();
+    _scrollController = ScrollController()..addListener(_scrollListener);
 
     super.initState();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return !permissionIsGranted
-        ? permissionIsNotGrantedPage()
-        : widget.viewModel.isBusy(tag: widget.viewModel.getRankingGlobalTag)
-            ? ShimmerExercisesResult()
-            : widget.viewModel.isSuccess(tag: widget.viewModel.getRankingGlobalTag)
-                ? ListView.builder(
-                    physics: ClampingScrollPhysics(),
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    itemCount: widget.viewModel.roadMapRepository.rankingGlobalList.length,
-                    itemBuilder: (context, index) => RankingItemWidget(
-                      index: index,
-                      item: widget.viewModel.roadMapRepository.rankingGlobalList[index],
-                    ),
-                  )
-                : Center(
-                    child: Text("Unhandled Exeption"),
-                  );
+  late ScrollController _scrollController;
+
+  void _scrollListener() {
+    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
+      if (!widget.viewModel.isBusy(tag: widget.viewModel.getRankingContactMoreTag)) {
+        widget.viewModel.getRankingContactMore();
+      }
+    }
   }
 
-  Widget permissionIsNotGrantedPage() => Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                "Contacts Permission Required",
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(
-                height: 16,
-              ),
-              Text(
-                "Kontaktlar uchun ruxsat rad etilgan. Iltimos, uni ilova sozlamalaridan yoqing",
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(
-                height: 16,
-              ),
-              TextButton(
-                onPressed: () async {
-                  await openAppSettings();
-                },
-                child: const Text("Sozlamalarga o'tish"),
-              )
-            ],
-          ),
-        ),
-      );
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return !widget.viewModel.hasContactsPermission
+        ? MyContactsEmptyPage(
+            icon: SvgPicture.asset(Assets.icons.calendarOutlined),
+            title: "title_my_contacts_list_empty".tr(),
+            description: "description_my_contacts_list_empty".tr(),
+          )
+        : widget.viewModel.isBusy(tag: widget.viewModel.getRankingContactTag)
+            ? ShimmerExercisesResult()
+            : widget.viewModel.isSuccess(tag: widget.viewModel.getRankingContactTag)
+                ? Stack(
+                    children: [
+                      RefreshIndicator(
+                        onRefresh: () async => widget.viewModel.getRankingGlobal(),
+                        child: ListView.builder(
+                          controller: _scrollController,
+                          physics: const ClampingScrollPhysics(),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          itemCount: widget.viewModel.roadMapRepository.rankingContactList.length +
+                              (widget.viewModel
+                                      .isBusy(tag: widget.viewModel.getRankingContactMoreTag)
+                                  ? 1
+                                  : 0),
+                          itemBuilder: (context, index) {
+                            if (index <
+                                widget.viewModel.roadMapRepository.rankingContactList.length) {
+                              return RankingItemWidget(
+                                index: index,
+                                item: widget.viewModel.roadMapRepository.rankingContactList[index],
+                              );
+                            } else {
+                              return const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 16),
+                                child: Center(child: CircularProgressIndicator()),
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                      Positioned(
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          child: SafeArea(
+                            child: CurrentUserItemWidget(
+                                index: widget.viewModel.roadMapRepository.userContactRanking,
+                                item: RankingModel(
+                                    name: "you".tr(),
+                                    level: widget
+                                        .viewModel.roadMapRepository.userCurrentContactLevel)),
+                          ))
+                    ],
+                  )
+                : const Center(child: Text("Unhandled Exception"));
+  }
 }
 
 class ExercisesResultGlobalPage extends StatefulWidget {
@@ -403,10 +378,10 @@ class _ExercisesResultGlobalPageState extends State<ExercisesResultGlobalPage> {
                       bottom: 0,
                       child: SafeArea(
                         child: CurrentUserItemWidget(
-                            index: widget.viewModel.roadMapRepository.userRanking,
+                            index: widget.viewModel.roadMapRepository.userCurrentGlobalLevel,
                             item: RankingModel(
                                 name: "you".tr(),
-                                level: widget.viewModel.roadMapRepository.userCurrentLevel)),
+                                level: widget.viewModel.roadMapRepository.userGlobalRanking)),
                       ))
                 ],
               )
@@ -588,32 +563,9 @@ class CurrentUserItemWidget extends StatelessWidget {
   }
 
   Widget itemLevel(int? level) {
-    if (itemInTopRating) {
-      return Container(
-        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        decoration: ShapeDecoration(shape: StadiumBorder(), color: AppColors.yellow),
-        child: Row(
-          children: [
-            Text(
-              level.toString(),
-              style: AppTextStyle.font13W500Normal.copyWith(fontSize: 10, color: AppColors.blue),
-            ),
-            SizedBox(
-              width: 4,
-            ),
-            SvgPicture.asset(
-              width: 12,
-              height: 12,
-              Assets.icons.verify,
-              colorFilter: ColorFilter.mode(AppColors.blue, BlendMode.srcIn),
-            )
-          ],
-        ),
-      );
-    }
-
-    return Padding(
+    return Container(
       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: ShapeDecoration(shape: StadiumBorder(), color: AppColors.yellow),
       child: Row(
         children: [
           Text(
@@ -624,7 +576,9 @@ class CurrentUserItemWidget extends StatelessWidget {
             width: 4,
           ),
           SvgPicture.asset(
-            Assets.icons.star,
+            width: 12,
+            height: 12,
+            Assets.icons.verify,
             colorFilter: ColorFilter.mode(AppColors.blue, BlendMode.srcIn),
           )
         ],
@@ -635,7 +589,8 @@ class CurrentUserItemWidget extends StatelessWidget {
   Text indexText() {
     return Text(
       "$index",
-      style: AppTextStyle.font15W600Normal.copyWith(fontSize: 14, color: AppColors.vibrantBlue),
+      style: AppTextStyle.font15W600Normal
+          .copyWith(fontSize: 14, color: AppColors.white.withValues(alpha: 0.3)),
     );
   }
 }

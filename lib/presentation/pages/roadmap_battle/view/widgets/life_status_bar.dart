@@ -16,7 +16,8 @@ class LifeStatusBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      // mainAxisAlignment: MainAxisAlignment.center,
       children: [
         ValueListenableBuilder(
           valueListenable: ValueNotifier<int>(context.watch<CountdownProvider>().userLife),
@@ -93,5 +94,19 @@ class LifeStatusBar extends StatelessWidget {
         )
       ],
     );
+  }
+}
+
+class LifeStatusBarPadding extends StatelessWidget {
+  const LifeStatusBarPadding({super.key, required this.child});
+  final Widget child;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+        padding: EdgeInsets.only(top: 15.h, right: 15),
+        child: Align(
+          alignment: Alignment.center,
+          child: child,
+        ));
   }
 }

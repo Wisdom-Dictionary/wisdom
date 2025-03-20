@@ -22,7 +22,7 @@ class ContactDetailsPage extends ViewModelBuilderWidget<ContactDetailsViewModel>
   @override
   void onViewModelReady(ContactDetailsViewModel viewModel) {
     super.onViewModelReady(viewModel);
-    viewModel.setFollowStatus(contactItemData.followed ?? false);
+    viewModel.setFollowStatus(contactItemData.followed ?? true);
   }
 
   @override
@@ -108,7 +108,7 @@ class ContactDetailsBar extends StatelessWidget {
                 height: 2,
               ),
               Text(
-                "Rank: ${contactItemData.rank?.name ?? ""}",
+                "${"rank".tr()}: ${contactItemData.rank?.name ?? ""}",
                 style: AppTextStyle.font13W500Normal.copyWith(color: AppColors.blue, fontSize: 12),
               ),
             ],

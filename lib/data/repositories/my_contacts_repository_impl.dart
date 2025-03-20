@@ -1,8 +1,10 @@
 import 'dart:convert';
 
+import 'package:contacts_service/contacts_service.dart';
 import 'package:jbaza/jbaza.dart';
 import 'package:wisdom/config/constants/urls.dart';
 import 'package:wisdom/core/domain/http_is_success.dart';
+import 'package:wisdom/core/services/contacts_service.dart';
 import 'package:wisdom/core/services/custom_client.dart';
 import 'package:wisdom/data/model/my_contacts/contact_follow_model.dart';
 import 'package:wisdom/data/model/my_contacts/user_details_model.dart';
@@ -13,25 +15,58 @@ class MyContactsRepositoryImpl extends MyContactsRepository {
 
   final CustomClient customClient;
 
-  List<UserDetailsModel> _contactsList = [];
+  List<UserDetailsModel> _myContactsList = [];
+  List<UserDetailsModel> _followedList = [];
   List<UserDetailsModel> _searchResultList = [];
 
   @override
-  List<UserDetailsModel> get contactsList => _contactsList;
+  List<UserDetailsModel> get followedList => _followedList;
 
   @override
-  Future<void> getMyContactsFollowed(Contacts contactType) async {
-    _contactsList = [];
-    if (contactType == Contacts.getMyContacts) {
-      return;
-    }
+  List<UserDetailsModel> get myContactsList => _myContactsList;
+
+  @override
+  Future<void> getMyFollowedUsers() async {
+    _followedList = [];
+
     var response = await customClient.get(
-      contactType == Contacts.getMyContacts ? Urls.myContacts : Urls.myContactsFollowed,
+      Urls.myContactsFollowed,
     );
     if (response.isSuccessful) {
       final responseData = jsonDecode(response.body);
       for (var item in responseData['users']) {
-        _contactsList.add(UserDetailsModel.fromJson(item));
+        _followedList.add(UserDetailsModel.fromJson(item));
+      }
+    } else {
+      throw VMException(response.body, callFuncName: 'getMyContactsFollowed', response: response);
+    }
+  }
+
+  @override
+  Future<void> getMyContactUsers() async {
+    _myContactsList = [];
+
+    final requestBody = {
+      'contacts': await CustomContactService.pickContact(),
+    };
+    print(requestBody["contacts"]);
+    var response = await customClient.post(Urls.myContacts,
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: jsonEncode(requestBody));
+
+    if (response.isSuccessful) {
+      final responseData = jsonDecode(response.body);
+      var contactsData = responseData['contacts'];
+      if (contactsData is Map<String, dynamic>) {
+        // Value’larni listga aylantiramiz
+        contactsData = responseData['contacts'].values.cast<Map<String, dynamic>>().toList();
+      }
+
+      for (var item in contactsData) {
+        _myContactsList.add(UserDetailsModel.fromJson(item));
       }
     } else {
       throw VMException(response.body, callFuncName: 'getMyContactsFollowed', response: response);

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
@@ -104,6 +106,7 @@ class ParentWidget extends ViewModelWidget<WordDetailPageViewModel> {
                 return ExpandablePanel(
                   controller: controller,
                   theme: const ExpandableThemeData(
+                    hasIcon: false,
                     tapHeaderToExpand: true,
                     tapBodyToCollapse: false,
                     tapBodyToExpand: false,
@@ -112,6 +115,15 @@ class ParentWidget extends ViewModelWidget<WordDetailPageViewModel> {
                     iconSize: 32,
                     iconPadding: EdgeInsets.zero,
                   ),
+                  // builder: (_, collapsed, expanded) {
+                  //   return Column(
+                  //     crossAxisAlignment: CrossAxisAlignment.start,
+                  //     children: <Widget>[
+                  //       collapsed,
+                  //       expanded,
+                  //     ],
+                  //   );
+                  // },
                   header: Padding(
                     padding: EdgeInsets.symmetric(vertical: 4.h),
                     child: Row(
@@ -152,7 +164,21 @@ class ParentWidget extends ViewModelWidget<WordDetailPageViewModel> {
                               viewModel.conductAndHighlightUzWords(model.wordsUz, null, null),
                             ],
                           )),
-                        )
+                        ),
+                        ExpandableButton(
+                          child: Builder(
+                            builder: (context) {
+                              final controller = ExpandableController.of(context, required: true);
+                              return Transform.rotate(
+                                angle: controller!.expanded ? pi / 2 : 0,
+                                child: Icon(
+                                  Icons.arrow_forward_ios_rounded,
+                                  color: AppColors.blue,
+                                ),
+                              );
+                            },
+                          ),
+                        ),
                       ],
                     ),
                   ),
