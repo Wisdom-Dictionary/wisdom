@@ -7,6 +7,8 @@ abstract class RankingRepository {
 
   Future<void> getRankingContacts(int page);
 
+  Future<void> getRankingContactsFromCache();
+
   List<RankingModel> get rankingContactList;
 
   bool get hasMoreGlobalRankingData;

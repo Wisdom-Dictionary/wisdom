@@ -23,6 +23,7 @@ class SearchingOpponentPage extends ViewModelBuilderWidget<SearchingOpponentView
   void onViewModelReady(SearchingOpponentViewmodel viewModel) {
     viewModel.getUser();
     viewModel.connectBattle();
+    viewModel.startSearchOpponentTimer();
     super.onViewModelReady(viewModel);
   }
 

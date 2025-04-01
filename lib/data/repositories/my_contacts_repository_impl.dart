@@ -1,19 +1,22 @@
 import 'dart:convert';
+import 'dart:developer';
 
-import 'package:contacts_service/contacts_service.dart';
 import 'package:jbaza/jbaza.dart';
+import 'package:wisdom/config/constants/constants.dart';
 import 'package:wisdom/config/constants/urls.dart';
+import 'package:wisdom/core/db/preference_helper.dart';
 import 'package:wisdom/core/domain/http_is_success.dart';
 import 'package:wisdom/core/services/contacts_service.dart';
 import 'package:wisdom/core/services/custom_client.dart';
-import 'package:wisdom/data/model/my_contacts/contact_follow_model.dart';
 import 'package:wisdom/data/model/my_contacts/user_details_model.dart';
 import 'package:wisdom/domain/repositories/my_contacts_repository.dart';
 
 class MyContactsRepositoryImpl extends MyContactsRepository {
-  MyContactsRepositoryImpl(this.customClient);
+  MyContactsRepositoryImpl(this.customClient, this.preferenceHelper);
 
   final CustomClient customClient;
+
+  final SharedPreferenceHelper preferenceHelper;
 
   List<UserDetailsModel> _myContactsList = [];
   List<UserDetailsModel> _followedList = [];
@@ -44,12 +47,11 @@ class MyContactsRepositoryImpl extends MyContactsRepository {
 
   @override
   Future<void> getMyContactUsers() async {
-    _myContactsList = [];
+    // _myContactsList = [];
 
     final requestBody = {
       'contacts': await CustomContactService.pickContact(),
     };
-    print(requestBody["contacts"]);
     var response = await customClient.post(Urls.myContacts,
         headers: {
           "Content-Type": "application/json",
@@ -64,7 +66,11 @@ class MyContactsRepositoryImpl extends MyContactsRepository {
         // Value’larni listga aylantiramiz
         contactsData = responseData['contacts'].values.cast<Map<String, dynamic>>().toList();
       }
-
+      preferenceHelper.putString(
+        Constants.KEY_CONTACTS_DATA,
+        jsonEncode(contactsData),
+      );
+      _myContactsList = [];
       for (var item in contactsData) {
         _myContactsList.add(UserDetailsModel.fromJson(item));
       }
@@ -147,5 +153,17 @@ class MyContactsRepositoryImpl extends MyContactsRepository {
   @override
   void searchResultListClear() {
     _searchResultList = [];
+  }
+
+  @override
+  Future<void> getMyContactUsersFromCache() async {
+    _myContactsList = [];
+    String data = preferenceHelper.getString(Constants.KEY_CONTACTS_DATA, "");
+    if (data.isNotEmpty) {
+      final contactsData = jsonDecode(data);
+      for (var item in contactsData) {
+        _myContactsList.add(UserDetailsModel.fromJson(item));
+      }
+    }
   }
 }

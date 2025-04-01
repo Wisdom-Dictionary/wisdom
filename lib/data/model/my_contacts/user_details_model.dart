@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+// ignore: unused_import
 import 'dart:convert';
 
 import 'package:json_annotation/json_annotation.dart';
@@ -79,12 +80,44 @@ class UserDetailsModel {
 
   bool get isOnlineStatus => user?.isOnline ?? false;
 
+  int get averageTime => ((statistics?.averageTime ?? 1) / 1000).floor();
+
+  int get averageTimeValue => averageTime > 60 ? (averageTime / 60).toInt() : averageTime;
+
+  String get averageTimeSymbol => averageTime > 60 ? " m" : " s";
+
+  int get gameAccuracy => statistics?.gameAccuracy ?? 1;
+
+  int get winRate => statistics?.winRate ?? 1;
+
+  int get bestTime => statistics?.bestTime ?? 1;
+
+  bool get hasUser => user != null;
+
+  bool get hasUserPhoto => user?.profilePhotoUrl != null;
+
+  String get userPhoto => "${user?.profilePhotoUrl}&format=png";
+
+  String get userName => user?.name ?? "";
+
+  // int get userCurrentLevel => this.userCurrentLevel ?? 0;
+
+  int get userStars => statistics?.userStars ?? 0;
+
+  int get threeStarWins => statistics?.threeStarWins ?? 0;
+
+  int get dailyRecord => statistics?.dailyRecord ?? 0;
+
+  int get weeklyRecord => statistics?.weeklyRecord ?? 0;
+
+  int get monthlyRecord => statistics?.monthlyRecord ?? 0;
+
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'status': status,
       'followed': followed,
       'following': following,
-      'userCurrentLevel': userCurrentLevel,
+      'user_current_level': userCurrentLevel,
       'user': user?.toMap(),
       'tariff': tariff?.toMap(),
       'statistics': statistics?.toMap(),

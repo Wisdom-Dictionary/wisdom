@@ -27,8 +27,13 @@ class WordExercisesViewModel extends BaseViewModel {
   final String getWordExercisesTag = "getWordExercisesTag";
   final String postWordExercisesCheckTag = "postWordExercisesCheckTag";
   final String postWordExercisesResultTag = "postWordExercisesResultTag";
+  final String answerAddedTag = "answerAddedTag", answerUpdatedTag = "answerUpdatedTag";
   int page = 0;
   List<AnswerEntity> answers = [];
+
+  goBackFromExercisesResultPage() async {
+    Navigator.pop(context!);
+  }
 
   goBack() async {
     if (levelTestRepository.exerciseType == TestExerciseType.levelExercise) {
@@ -106,12 +111,19 @@ class WordExercisesViewModel extends BaseViewModel {
     return true;
   }
 
-  setAnswer(AnswerEntity answer) {
-    if (!answers.any(
+  String? setAnswer(AnswerEntity answer) {
+    int index = answers.indexWhere(
       (element) => element.questionId == answer.questionId,
-    )) {
+    );
+    if (index == -1) {
       answers.add(answer);
+      return answerAddedTag;
+    } else if (answers[index].answerId != answer.answerId) {
+      answers.removeAt(index);
+      answers.insert(index, answer);
+      return answerUpdatedTag;
     }
+    return null;
   }
 
   void postTestQuestionsResult() {
@@ -121,7 +133,10 @@ class WordExercisesViewModel extends BaseViewModel {
         if (levelTestRepository.exerciseType == TestExerciseType.wordExercise) {
           await levelTestRepository.postWordQuestionsCheck(answers);
         } else {
-          await levelTestRepository.postTestQuestionsCheck(answers, spendTimeForExercises);
+          final time = spendTimeForExercises > (givenTimeForExercise * 1000)
+              ? (givenTimeForExercise * 1000)
+              : spendTimeForExercises;
+          await levelTestRepository.postTestQuestionsCheck(answers, time);
           if (!levelTestRepository.pass) {
             await context!.read<CountdownProvider>().getLives();
           }

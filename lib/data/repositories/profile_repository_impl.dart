@@ -224,5 +224,5 @@ class ProfileRepositoryImpl extends ProfileRepository {
   TariffsModel? get currentTariff => _currentTariff;
 
   @override
-  UserDetailsModel? get userCabinet => _userDetailsModel;
+  UserDetailsModel get userCabinet => _userDetailsModel ?? UserDetailsModel();
 }

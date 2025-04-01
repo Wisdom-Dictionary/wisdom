@@ -21,16 +21,21 @@ class RoadmapRepositoryImpl extends RoadmapRepository {
   int _userCurrentLevel = 0;
   RankModel? _userRank;
   LevelModel? selectedLevel;
+  bool _canMoreLoad = true;
 
   // getting levels from host
   @override
   Future<void> getLevels(int page) async {
-    _levelsList = [];
+    if (page == 1) {
+      _levelsList = [];
+    }
     var response = await customClient.get(
       Uri.https(Urls.baseAddress, "/api/levels", {"page": "$page"}),
     );
     if (response.isSuccessful) {
       final responseData = jsonDecode(response.body);
+      _canMoreLoad = (responseData['levels'] as List).isNotEmpty;
+
       for (var item in responseData['levels']) {
         _levelsList.add(LevelModel.fromMap(item));
       }
@@ -79,4 +84,7 @@ class RoadmapRepositoryImpl extends RoadmapRepository {
 
   @override
   RankModel? get userRank => _userRank;
+
+  @override
+  bool get canMoreLoad => _canMoreLoad;
 }

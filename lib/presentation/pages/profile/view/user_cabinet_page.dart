@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:jbaza/jbaza.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:wisdom/app.dart';
@@ -45,59 +44,64 @@ class UserCabinetPage extends ViewModelBuilderWidget<ProfilePageViewModel> {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 24),
-            child: PopupMenuButton(
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(18.0),
+            child: Transform.translate(
+              offset: Offset(0, 7),
+              child: PopupMenuButton(
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(18.0),
+                  ),
                 ),
-              ),
-              menuPadding: const EdgeInsets.all(24),
-              offset: const Offset(0, 50),
-              elevation: 10,
-              shadowColor: AppColors.bgLightBlue.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(18.r),
-              color: AppColors.white,
-              child: SvgPicture.asset(Assets.icons.popupMenu),
-              itemBuilder: (context) {
-                return <PopupMenuEntry>[
-                  PopupMenuItem(
-                      onTap: () async {
-                        await Navigator.pushNamed(context, Routes.updateProfilePage);
-                        viewModel.getUserDetails();
-                      },
-                      padding: EdgeInsets.zero,
-                      child: Row(
-                        children: [
-                          SvgPicture.asset(Assets.icons.edit3),
-                          const SizedBox(
-                            width: 8,
-                          ),
-                          Text('edit'.tr(),
+                offset: const Offset(0, 10),
+                elevation: 10,
+                shadowColor: AppColors.bgLightBlue.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(18.r),
+                color: AppColors.white,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: SvgPicture.asset(Assets.icons.popupMenu),
+                ),
+                itemBuilder: (context) {
+                  return <PopupMenuEntry>[
+                    PopupMenuItem(
+                        onTap: () async {
+                          await Navigator.pushNamed(context, Routes.updateProfilePage);
+                          viewModel.getUserDetails();
+                        },
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                        child: Row(
+                          children: [
+                            SvgPicture.asset(Assets.icons.edit3),
+                            const SizedBox(
+                              width: 8,
+                            ),
+                            Text('edit'.tr(),
+                                style: AppTextStyle.font13W500Normal
+                                    .copyWith(color: AppColors.darkGray, fontSize: 14)),
+                          ],
+                        )),
+                    const PopupMenuDivider(),
+                    PopupMenuItem(
+                        onTap: () async {
+                          await viewModel.logOut();
+                        },
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                        child: Row(
+                          children: [
+                            SvgPicture.asset(Assets.icons.logOut),
+                            const SizedBox(
+                              width: 8,
+                            ),
+                            Text(
+                              'exit'.tr(),
                               style: AppTextStyle.font13W500Normal
-                                  .copyWith(color: AppColors.darkGray, fontSize: 14)),
-                        ],
-                      )),
-                  const PopupMenuDivider(),
-                  PopupMenuItem(
-                      onTap: () async {
-                        await viewModel.logOut();
-                      },
-                      padding: EdgeInsets.zero,
-                      child: Row(
-                        children: [
-                          SvgPicture.asset(Assets.icons.logOut),
-                          const SizedBox(
-                            width: 8,
-                          ),
-                          Text(
-                            'exit'.tr(),
-                            style: AppTextStyle.font13W500Normal
-                                .copyWith(color: AppColors.red, fontSize: 14),
-                          ),
-                        ],
-                      )),
-                ];
-              },
+                                  .copyWith(color: AppColors.red, fontSize: 14),
+                            ),
+                          ],
+                        )),
+                  ];
+                },
+              ),
             ),
           )
         ],
@@ -132,20 +136,20 @@ class UserCabinetPage extends ViewModelBuilderWidget<ProfilePageViewModel> {
                 ),
                 detailItem(
                     title: "phone".tr(),
-                    detail: (viewModel.profileRepository.userCabinet?.user?.phone.toString() ?? "")
+                    detail: (viewModel.profileRepository.userCabinet.user?.phone.toString() ?? "")
                         .phoneFormatter),
                 const SizedBox(
                   height: 8,
                 ),
                 detailItem(
                     title: "status".tr(),
-                    detail: viewModel.profileRepository.userCabinet?.tariff?.name?.en ?? ""),
+                    detail: viewModel.profileRepository.userCabinet.tariff?.name?.en ?? ""),
                 const SizedBox(
                   height: 8,
                 ),
                 detailItem(
                     title: "gender".tr(),
-                    detail: viewModel.profileRepository.userCabinet?.user?.gender.localeName ?? ""),
+                    detail: viewModel.profileRepository.userCabinet.user?.gender.localeName ?? ""),
               ],
             ),
           )
@@ -208,31 +212,22 @@ class UserStatisticsWithPersentage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        item(
-            percent: viewModel.profileRepository.userCabinet?.statistics?.winRate ?? 1,
-            title: "win_rate".tr()),
+        item(percent: viewModel.winRate, title: "win_rate".tr()),
+        const SizedBox(
+          width: 12,
+        ),
+        item(percent: viewModel.gameAccuracy, title: "game_accuracy".tr()),
         const SizedBox(
           width: 12,
         ),
         item(
-            percent: viewModel.profileRepository.userCabinet?.statistics?.gameAccuracy ?? 1,
-            title: "game_accuracy".tr()),
-        const SizedBox(
-          width: 12,
-        ),
-        item(
-            percent:
-                ((viewModel.profileRepository.userCabinet?.statistics?.averageTime ?? 1) / 1000)
-                    .floor(),
-            percentSign: " s",
+            percent: viewModel.averageTimeValue,
+            percentSign: viewModel.averageTimeSymbol,
             title: "average_time".tr()),
         const SizedBox(
           width: 12,
         ),
-        item(
-            percent: viewModel.profileRepository.userCabinet?.statistics?.bestTime ?? 1,
-            percentSign: " s",
-            title: "best_time".tr()),
+        item(percent: viewModel.bestTime, percentSign: " s", title: "best_time".tr()),
       ],
     );
   }
@@ -274,8 +269,7 @@ class UserDetailsBar extends StatelessWidget {
   Row _buildContent() {
     return Row(
       children: [
-        if (viewModel.profileRepository.userCabinet?.user == null ||
-            viewModel.profileRepository.userCabinet?.user?.profilePhotoUrl == null)
+        if (!viewModel.hasUser || !viewModel.hasUserPhoto)
           SvgPicture.asset(
             Assets.icons.userAvatar,
             height: 56,
@@ -287,8 +281,7 @@ class UserDetailsBar extends StatelessWidget {
                 BoxDecoration(shape: BoxShape.circle, border: Border.all(color: AppColors.white)),
             child: CircleAvatar(
               radius: 28.r,
-              backgroundImage: NetworkImage(Uri.encodeFull(
-                  "${viewModel.profileRepository.userCabinet?.user?.profilePhotoUrl}&format=png")),
+              backgroundImage: NetworkImage(Uri.encodeFull(viewModel.userPhoto)),
               backgroundColor: Colors.transparent,
             ),
           ),
@@ -300,35 +293,45 @@ class UserDetailsBar extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                viewModel.profileRepository.userCabinet?.user?.name ?? "",
+                viewModel.userName,
                 style: AppTextStyle.font17W600Normal.copyWith(color: AppColors.blue, fontSize: 18),
               ),
-              const SizedBox(
-                height: 4,
-              ),
-              GestureDetector(
-                onTap: () async {
-                  if (viewModel.profileRepository.userCabinet?.user?.id != null) {
-                    await Clipboard.setData(ClipboardData(
-                        text: viewModel.profileRepository.userCabinet!.user!.id!.toString()));
-                    ScaffoldMessenger.of(navigatorKey.currentState!.context)
-                        .showSnackBar(const SnackBar(
-                      content: Text("Value copied to clipboard"),
-                    ));
-                  }
-                },
-                child: Row(
-                  children: [
-                    Text(
-                      "ID: ${viewModel.profileRepository.userCabinet?.user?.id ?? ""}",
-                      style: AppTextStyle.font13W500Normal
-                          .copyWith(color: AppColors.blue, fontSize: 12),
+              Transform.translate(
+                offset: Offset(-4, 0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(4),
+                    onTap: () async {
+                      if (viewModel.hasUser) {
+                        await Clipboard.setData(ClipboardData(
+                            text: viewModel.profileRepository.userCabinet!.user!.id!.toString()));
+                        if (navigatorKey.currentContext!.mounted) {
+                          ScaffoldMessenger.of(navigatorKey.currentContext!)
+                              .showSnackBar(const SnackBar(
+                            content: Text("Value copied to clipboard"),
+                          ));
+                        }
+                      }
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            "ID: ${viewModel.profileRepository.userCabinet?.user?.id ?? ""}",
+                            style: AppTextStyle.font13W500Normal
+                                .copyWith(color: AppColors.blue, fontSize: 12),
+                          ),
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          SvgPicture.asset(Assets.icons.documentCopy)
+                        ],
+                      ),
                     ),
-                    const SizedBox(
-                      width: 8,
-                    ),
-                    SvgPicture.asset(Assets.icons.documentCopy)
-                  ],
+                  ),
                 ),
               ),
             ],
@@ -340,7 +343,7 @@ class UserDetailsBar extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  (viewModel.profileRepository.userCabinet?.statistics?.winRate ?? 0).toString(),
+                  (viewModel.userCurrentLevel).toString(),
                   style:
                       AppTextStyle.font13W500Normal.copyWith(color: AppColors.blue, fontSize: 14),
                 ),
@@ -359,7 +362,7 @@ class UserDetailsBar extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  (viewModel.profileRepository.userCabinet?.statistics?.userStars ?? 0).toString(),
+                  (viewModel.userStars).toString(),
                   style:
                       AppTextStyle.font13W500Normal.copyWith(color: AppColors.blue, fontSize: 14),
                 ),
@@ -398,22 +401,17 @@ class UserStatisticsWithNumbers extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           item(
-              value: viewModel.profileRepository.userCabinet?.statistics?.threeStarWins ?? 0,
-              subtitle: "games".tr(),
-              itemName: "3_star_wins".tr()),
+              value: viewModel.threeStarWins, subtitle: "games".tr(), itemName: "3_star_wins".tr()),
+          divider,
+          item(value: viewModel.dailyRecord, subtitle: "words".tr(), itemName: "daily_record".tr()),
           divider,
           item(
-              value: viewModel.profileRepository.userCabinet?.statistics?.dailyRecord ?? 0,
-              subtitle: "words".tr(),
-              itemName: "daily_record".tr()),
-          divider,
-          item(
-              value: viewModel.profileRepository.userCabinet?.statistics?.weeklyRecord ?? 0,
+              value: viewModel.weeklyRecord,
               subtitle: "words".tr(),
               itemName: "weekly_record".tr()),
           divider,
           item(
-              value: viewModel.profileRepository.userCabinet?.statistics?.monthlyRecord ?? 0,
+              value: viewModel.monthlyRecord,
               subtitle: "words".tr(),
               itemName: "monthly_record".tr()),
         ],

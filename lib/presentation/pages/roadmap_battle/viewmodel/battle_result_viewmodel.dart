@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:jbaza/jbaza.dart';
@@ -14,7 +15,7 @@ import 'package:wisdom/domain/repositories/battle_repository.dart';
 import 'package:wisdom/domain/repositories/profile_repository.dart';
 import 'package:wisdom/presentation/components/dialog_background.dart';
 import 'package:wisdom/presentation/components/no_internet_connection_dialog.dart';
-import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/opponent_was_not_found_dialog.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/opponent_was_rejected_rematch_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/rematch_battle_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/waiting_opponent_battle_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/want_to_rematch_battle_dialog.dart';
@@ -33,7 +34,8 @@ class BattleResultViewmodel extends BaseViewModel {
 
   final localViewModel = locator<LocalViewModel>();
 
-  final String postWordExercisesResultTag = "postWordExercisesResultTag",
+  final String postInviteTag = "postInviteTag",
+      postWordExercisesResultTag = "postWordExercisesResultTag",
       postRematchRequestTag = "postRematchRequestTag",
       rejectedTag = "rejected",
       acceptedTag = "accepted";
@@ -91,6 +93,7 @@ class BattleResultViewmodel extends BaseViewModel {
       final messageData = jsonDecode(message);
 
       if (messageData['event'] == 'battle-finished') {
+        log(messageData['data']);
         final eventData = jsonDecode(messageData['data']);
         userId = profileRepository.userCabinet!.user!.id;
         result = BattleResultModel.fromJson(eventData['data']);
@@ -130,6 +133,8 @@ class BattleResultViewmodel extends BaseViewModel {
         }
         if (sharedPref.getInt(Constants.KEY_USER_BATTLE_END_TIME, 0) != 0) {
           await sharedPref.prefs.remove(Constants.KEY_USER_BATTLE_END_TIME);
+          await sharedPref.prefs.remove(Constants.KEY_USER_BATTLE_ID);
+          await sharedPref.prefs.remove(Constants.KEY_USER_BATTLE_OPPONENT_USER);
         }
         notifyListeners(); // UI-ni yangilash
       } else if (messageData['event'] == 'rematch') {
@@ -140,24 +145,30 @@ class BattleResultViewmodel extends BaseViewModel {
         showTopDialog();
         _startTimer(_decrementTimer);
       } else if (messageData['event'] == 'battle-invitation-status-update') {
-        waitingRematch.value = false;
-        final eventData = jsonDecode(messageData['data']);
-        String status = eventData['status'];
-        if (status == rejectedTag) {
-          rematchInProgress.value = false;
-
-          Navigator.of(
-            navigatorKey.currentState!.context,
-          ).pop();
-          showDialog(
-            context: navigatorKey.currentState!.context,
-            builder: (context) => OpponentWasNotFoundDialog(
-              viewmodel: this,
-            ),
-          );
-        }
+        rejectedRematchBattle(messageData);
       }
     }, cancelOnError: true, onDone: () {}, onError: (error) {});
+  }
+
+  void rejectedRematchBattle(Map<String, dynamic> messageData) {
+    waitingRematch.value = false;
+    final eventData = jsonDecode(messageData['data']);
+    String status = eventData['status'];
+    if (status == rejectedTag) {
+      rematchInProgress.value = false;
+      Navigator.pop(navigatorKey.currentContext!);
+      showDialog(
+        context: navigatorKey.currentContext!,
+        builder: (context) => OpponentWasRejectedRematchDialog(viewmodel: this),
+      );
+
+      // showTopSnackBar(
+      //   Overlay.of(context!),
+      //   CustomSnackBar.error(
+      //     message: "Opponent rejected invitation",
+      //   ),
+      // );
+    }
   }
 
   void showTopDialog() {
@@ -187,6 +198,24 @@ class BattleResultViewmodel extends BaseViewModel {
       transitionDuration: const Duration(milliseconds: 300),
     );
   }
+
+  // void postInviteBattle({required int opponentId}) {
+  //   setBusy(true, tag: postInviteTag);
+  //   safeBlock(() async {
+  //     if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
+  //       await battleRepository.invite(opponentId: opponentId);
+  //       setSuccess(tag: postInviteTag);
+  //     } else {
+  //       showDialog(
+  //         context: context!,
+  //         builder: (context) => const DialogBackground(
+  //           child: NoInternetConnectionDialog(),
+  //         ),
+  //       );
+  //       setBusy(false, tag: postInviteTag);
+  //     }
+  //   }, callFuncName: 'postInvite', tag: postInviteTag, inProgress: false);
+  // }
 
   void postTestQuestionsResult() {
     setBusy(true, tag: postWordExercisesResultTag);
@@ -278,6 +307,7 @@ class BattleResultViewmodel extends BaseViewModel {
     if (seconds.value > 0) {
       seconds.value--;
     } else if (seconds.value == 0) {
+      _resetTimer();
       postRematchUpdateStatus(rejectedTag);
     }
   }

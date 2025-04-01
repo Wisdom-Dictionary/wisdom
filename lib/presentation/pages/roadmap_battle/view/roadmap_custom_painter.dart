@@ -1,12 +1,14 @@
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:wisdom/config/constants/app_colors.dart';
 import 'package:wisdom/config/constants/assets.dart';
 import 'package:wisdom/data/model/roadmap/level_model.dart';
 import 'package:wisdom/domain/repositories/roadmap_repository.dart';
+import 'package:wisdom/presentation/components/shimmer.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/widgets/roadmap_shimmer_widget.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/widgets/task_level_indicator_widget.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/roadmap_viewmodel.dart';
@@ -101,7 +103,7 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
   List<Positioned> levelItems(RoadmapRepository repository) {
     List positions = generatePositions(repository.levelsList.length);
 
-    return List.generate(repository.levelsList.length, (index) {
+    List<Positioned> items = List.generate(repository.levelsList.length, (index) {
       int positionIndex = index;
       if (index >= positions.length) {
         positionIndex = positions.length - 1;
@@ -120,14 +122,44 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
               onTap: () => widget.viewModel.selectLevel(repository.levelsList[index]),
               child: repository.levelsList[index].itemWidget));
     });
+
+    if (widget.viewModel.isBusy(tag: widget.viewModel.getLevelsTag) && widget.viewModel.page > 1) {
+      Map<String, dynamic> loadingWidgetposition = generatePositions(positions.length + 1).last;
+
+      double? left = (loadingWidgetposition["left"] as int?)?.toDouble();
+      double? right = (loadingWidgetposition["right"] as int?)?.toDouble();
+      double? bottom = ((loadingWidgetposition["bottom"] ?? 1) * pathCornerRad * 2).toDouble();
+
+      final loadingWidget = Positioned(
+        left: left,
+        right: right,
+        bottom: (bottom! - 50),
+        child: Stack(
+          children: [
+            LevelItem(
+              item: LevelModel(name: "0"),
+            ),
+            Positioned.fill(child: Center(child: CupertinoActivityIndicator()))
+          ],
+        ),
+      );
+
+      items.add(loadingWidget);
+    }
+    return items;
   }
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        if (widget.viewModel.isBusy(tag: widget.viewModel.getLevelsTag)) buildLoadingState(),
-        if (widget.viewModel.isSuccess(tag: widget.viewModel.getLevelsTag)) buildSuccessState(),
+        if (widget.viewModel.isBusy(tag: widget.viewModel.getLevelsTag) &&
+            widget.viewModel.page == 1)
+          buildLoadingState(),
+        if (widget.viewModel.isSuccess(tag: widget.viewModel.getLevelsTag) ||
+            (widget.viewModel.isBusy(tag: widget.viewModel.getLevelsTag) &&
+                widget.viewModel.page > 1))
+          buildSuccessState(),
         buildTopRightButton(context),
       ],
     );
@@ -137,9 +169,30 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
     return const RoadmapShimmerWidget();
   }
 
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _scrollController.addListener(() {
+      final enableToPagination = _scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent -
+              (widget.viewModel.roadMapRepository.levelsList.length * 4);
+
+      bool canMoreLoad = widget.viewModel.roadMapRepository.canMoreLoad;
+      if (canMoreLoad &&
+          enableToPagination &&
+          !widget.viewModel.isBusy(tag: widget.viewModel.getLevelsTag)) {
+        widget.viewModel.getLevels();
+      }
+    });
+  }
+
   Widget buildSuccessState() {
     return Center(
       child: SingleChildScrollView(
+        controller: _scrollController,
         physics: const ClampingScrollPhysics(),
         reverse: true,
         child: SafeArea(
@@ -156,26 +209,43 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
   }
 
   Widget buildBackgroundLayer() {
+    final List<String> imageList = [
+      Assets.images.roadmapBattleBackground1,
+      Assets.images.roadmapBattleBackground2,
+      Assets.images.roadmapBattleBackground3,
+      Assets.images.roadmapBattleBackground4,
+      Assets.images.roadmapBattleBackground5,
+      Assets.images.roadmapBattleBackground6,
+      Assets.images.roadmapBattleBackground7,
+      Assets.images.roadmapBattleBackground8,
+    ];
+
+    final double imageHeight = MediaQuery.of(context).size.height;
+    int levelsLength =
+        widget.viewModel.roadMapRepository.levelsList.length; // or custom height per scroll page
+    final double heightSize =
+        pathCornerRad * (levelsLength < 6 ? 6 : levelsLength); // dynamic value, example
+    final int scrollPageCount = (heightSize / imageHeight).ceil(); // dynamic value, example
+
     return Positioned.fill(
       child: Stack(
         children: [
-          Positioned.fill(
-            child: Image.asset(
-              Assets.images.roadmapBattleBackground,
-              alignment: Alignment.bottomCenter,
-              repeat: ImageRepeat.repeat,
-              fit: BoxFit.fitWidth,
-            ),
-          ),
-          Positioned.fill(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                backgroundGradient(topGradient()),
-                backgroundGradient(bottomGradient()),
-              ],
-            ),
-          ),
+          ...List.generate(scrollPageCount, (index) {
+            final imageIndex = index % 8; // 0 to 7 repeat
+            final imagePath = imageList[imageIndex]; // imageList = your 8 images
+
+            return Positioned(
+              bottom: index * imageHeight, // each background image positioned higher
+              left: 0,
+              right: 0,
+              height: imageHeight, // Adjust according to scrollable screen height
+              child: Image.asset(
+                imagePath,
+                fit: BoxFit.fitWidth,
+                alignment: Alignment.topCenter,
+              ),
+            );
+          }),
         ],
       ),
     );

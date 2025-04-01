@@ -237,7 +237,14 @@ class _Images extends _AssetsHolder {
 
   String get noInternet => '$basePath/no-wifi.png';
 
-  String get roadmapBattleBackground => '$basePath/roadmap_background.png';
+  String get roadmapBattleBackground1 => '$basePath/roadmap_background-1.png';
+  String get roadmapBattleBackground2 => '$basePath/roadmap_background-2.png';
+  String get roadmapBattleBackground3 => '$basePath/roadmap_background-3.png';
+  String get roadmapBattleBackground4 => '$basePath/roadmap_background-4.png';
+  String get roadmapBattleBackground5 => '$basePath/roadmap_background-5.png';
+  String get roadmapBattleBackground6 => '$basePath/roadmap_background-6.png';
+  String get roadmapBattleBackground7 => '$basePath/roadmap_background-7.png';
+  String get roadmapBattleBackground8 => '$basePath/roadmap_background-8.png';
 
   String get roadmapWay => '$basePath/roadmap_way.svg';
 

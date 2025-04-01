@@ -2,29 +2,23 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:jbaza/jbaza.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:wisdom/app.dart';
 import 'package:wisdom/config/constants/constants.dart';
-
 import 'package:wisdom/config/constants/urls.dart';
-import 'package:wisdom/core/db/db_helper.dart';
 import 'package:wisdom/core/db/preference_helper.dart';
-import 'package:wisdom/core/di/app_locator.dart';
 import 'package:wisdom/core/domain/http_is_success.dart';
 import 'package:wisdom/core/services/custom_client.dart';
-import 'package:wisdom/data/model/battle/battle_user_model.dart';
-import 'package:wisdom/data/model/my_contacts/user_details_model.dart';
 import 'package:wisdom/data/model/roadmap/answer_entity.dart';
 import 'package:wisdom/data/model/roadmap/level_model.dart';
 import 'package:wisdom/data/model/roadmap/test_question_model.dart';
 import 'package:wisdom/data/model/user/user_model.dart';
 import 'package:wisdom/domain/repositories/battle_repository.dart';
-import 'package:wisdom/domain/repositories/profile_repository.dart';
-import 'package:wisdom/presentation/routes/routes.dart';
 
 class AuthParams {
   final String auth;
@@ -70,32 +64,33 @@ class BattleRepositoryImpl extends BattleRepository {
 
   StreamController<String> _streamController = StreamController.broadcast();
 
-  ValueNotifier<List<TestQuestionModel>> _battleQuestionsList =
+  final ValueNotifier<List<TestQuestionModel>> _battleQuestionsList =
       ValueNotifier<List<TestQuestionModel>>([]);
   List<TestQuestionModel> _battleQuestionsResultList = [];
 
   @override
-  void connectBattle() async {
+  void connectBattle(Function(Map<String, dynamic>) channelsFunction) async {
     if (_streamController.isClosed) {
       _streamController = StreamController.broadcast();
     }
-    print("🔌 WebSocket bog‘lanmoqda...");
+    log("🔌 WebSocket bog‘lanmoqda...");
     channel = WebSocketChannel.connect(
         Uri.parse("wss://websocket.yangixonsaroy.uz/app/e2d8827c7a35c9043726"));
     channel!.stream.listen(
       (message) async {
-        print("📩 Yangi xabar: $message"); // WebSocket dan kelgan xabarni chiqarish
+        log("📩 Yangi xabar: $message"); // WebSocket dan kelgan xabarni chiqarish
 
         final Map<String, dynamic> messageData = jsonDecode(message);
 
         if (messageData["event"] == "pusher:connection_established") {
-          final endDateBattle =
-              sharedPreferenceHelper.getInt(Constants.KEY_USER_BATTLE_END_TIME, 0);
-          if (endDateBattle == 0) {
-            subscribeSearchingChannels(messageData);
-          } else {
-            subscribeContinueBattleChannels(messageData);
-          }
+          channelsFunction(messageData);
+          // final endDateBattle =
+          //     sharedPreferenceHelper.getInt(Constants.KEY_USER_BATTLE_END_TIME, 0);
+          // if (endDateBattle == 0) {
+          //   subscribeSearchingChannels(messageData);
+          // } else {
+          //   subscribeContinueBattleChannels(messageData);
+          // }
         } else if (messageData['event'] == 'battle-started') {
           final Map<String, dynamic> data = jsonDecode(messageData['data']);
           _battleId = data["data"]["battle_id"];
@@ -103,24 +98,25 @@ class BattleRepositoryImpl extends BattleRepository {
           _startTime = data["start_time"];
           _endTime = data["end_time"];
 
-          List<TestQuestionModel> _list = [];
+          List<TestQuestionModel> list = [];
 
           for (var item in (data['questions'] as List)) {
-            _list.add(TestQuestionModel.fromMap(item));
+            list.add(TestQuestionModel.fromMap(item));
           }
-          _battleQuestionsList.value = _list;
+          _battleQuestionsList.value = list;
           sharedPreferenceHelper.putInt(Constants.KEY_USER_BATTLE_END_TIME, _endTime!);
-          _streamController.add(message);
-          return;
+          sharedPreferenceHelper.putInt(Constants.KEY_USER_BATTLE_ID, _battleId!);
+          // _streamController.add(message);
+          // return;
         }
 
         _streamController.add(message);
       },
       onError: (error) {
-        print("❌ WebSocket xatosi: $error");
+        log("❌ WebSocket xatosi: $error");
       },
       onDone: () {
-        print("🔴 WebSocket yopildi");
+        log("🔴 WebSocket yopildi");
       },
       cancelOnError: true,
     );
@@ -128,62 +124,8 @@ class BattleRepositoryImpl extends BattleRepository {
     intervalSendPing();
   }
 
-  // @override
-  // void connectContinueBattle() async {
-  //   print("🔌 WebSocket bog‘lanmoqda...");
-  //   final continueBattleChannel = WebSocketChannel.connect(
-  //       Uri.parse("wss://websocket.yangixonsaroy.uz/app/e2d8827c7a35c9043726"));
-  //   continueBattleChannel.stream.listen(
-  //     (message) async {
-  //       print("📩 Yangi xabar: $message"); // WebSocket dan kelgan xabarni chiqarish
-
-  //       final Map<String, dynamic> messageData = jsonDecode(message);
-
-  //       if (messageData["event"] == "pusher:connection_established") {
-  //         AuthParams authParams = await reverbAuth(_battleChannel!);
-
-  //         message = {
-  //           "event": "pusher:subscribe",
-  //           "data": {
-  //             "channel": _battleChannel!,
-  //             "auth": authParams.auth,
-  //             "channel_data": authParams.channelData,
-  //           }
-  //         };
-  //         continueBattleChannel.sink.add(jsonEncode(message));
-
-  //         final channelData = jsonDecode(params!.channelData);
-  //         final privateChannelName = "private-user.${channelData["user_id"]}";
-  //         // Subscribe to Private Channel
-
-  //         authParams = await reverbAuth(privateChannelName);
-
-  //         message = {
-  //           "event": "pusher:subscribe",
-  //           "data": {
-  //             "channel": privateChannelName,
-  //             "auth": authParams.auth,
-  //             "channel_data": authParams.channelData,
-  //           }
-  //         };
-  //         continueBattleChannel.sink.add(jsonEncode(message));
-  //         channel = continueBattleChannel;
-  //       }
-  //     },
-  //     onError: (error) {
-  //       print("❌ WebSocket xatosi: $error");
-  //     },
-  //     onDone: () {
-  //       print("🔴 WebSocket yopildi");
-  //     },
-  //     cancelOnError: true,
-  //   );
-
-  //   intervalSendPing();
-  // }
-
   Timer intervalSendPing() {
-    // Har 5 soniyada ma'lumot yuborish
+    // Har 30 soniyada ma'lumot yuborish
     return Timer.periodic(const Duration(seconds: 30), (timer) {
       if (channel != null) {
         channel!.sink.add('Ping from client');
@@ -192,6 +134,7 @@ class BattleRepositoryImpl extends BattleRepository {
     });
   }
 
+  @override
   Future<void> subscribeSearchingChannels(Map<String, dynamic> messageData) async {
     final Map<String, dynamic> socketData = jsonDecode(messageData["data"]);
     socketId = socketData["socket_id"];
@@ -209,6 +152,7 @@ class BattleRepositoryImpl extends BattleRepository {
     await startSearchingOpponents();
   }
 
+  @override
   Future<void> subscribeContinueBattleChannels(Map<String, dynamic> messageData) async {
     final Map<String, dynamic> socketData = jsonDecode(messageData["data"]);
     socketId = socketData["socket_id"];
@@ -220,6 +164,16 @@ class BattleRepositoryImpl extends BattleRepository {
     // Subscribe to Private Channel
 
     await subscribeToChannel(channelName: privateChannelName);
+  }
+
+  @override
+  Future<void> subscribeInvitationBattleChannels(Map<String, dynamic> messageData) async {
+    final Map<String, dynamic> socketData = jsonDecode(messageData["data"]);
+    socketId = socketData["socket_id"];
+    final userData = sharedPreferenceHelper.getString(Constants.KEY_USER, "");
+    UserModel user = UserModel.fromJson(jsonDecode(userData));
+    log("user.id - ${user.id}");
+    await subscribeToChannel(channelName: "private-user.${user.id!}");
   }
 
   Stream<String> get messageStream => _streamController.stream;
@@ -242,7 +196,7 @@ class BattleRepositoryImpl extends BattleRepository {
           "Accept": "application/json",
         },
         body: jsonEncode(requestBody));
-    print("readyBattle - ${response.body}");
+    log("readyBattle - ${response.body}");
     if (!response.isSuccessful) {
       throw VMException(response.body, callFuncName: 'postBattleReady', response: response);
     }
@@ -250,8 +204,16 @@ class BattleRepositoryImpl extends BattleRepository {
 
   @override
   Future<void> cancelBattle() async {
-    //battle_channel
-    var response = await customClient.post(Urls.cancelBattle);
+    final requestBody = {
+      'battle_id': _battleId,
+      'battle_channel': _battleChannel,
+    };
+    var response = await customClient.post(Urls.cancelBattle,
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: jsonEncode(requestBody));
     if (!response.isSuccessful) {
       throw VMException(response.body, callFuncName: 'postCancelBattle', response: response);
     }
@@ -275,7 +237,7 @@ class BattleRepositoryImpl extends BattleRepository {
           "Accept": "application/json",
         },
         body: jsonEncode(requestBody));
-    print("checkBattleQuestions - ${response.body}");
+    log("checkBattleQuestions - ${response.body}");
     if (!response.isSuccessful) {
       throw VMException(response.body, callFuncName: 'postWordQuestionsCheck', response: response);
     }
@@ -323,9 +285,7 @@ class BattleRepositoryImpl extends BattleRepository {
           "Accept": "application/json",
         },
         body: jsonEncode(requestBody));
-    print("startBattle - ${response.body}");
     if (response.isSuccessful || response.statusCode == 409) {
-      final responseData = jsonDecode(response.body);
     } else {
       throw VMException(response.body, callFuncName: 'getTestQuestions', response: response);
     }
@@ -450,7 +410,6 @@ class BattleRepositoryImpl extends BattleRepository {
 
   @override
   Future<void> getBattleData() async {
-    Navigator.pushNamed(navigatorKey.currentState!.context, Routes.battleExercisesPage);
     var response = await customClient.post(
       Urls.getBattleData,
     );
@@ -469,8 +428,8 @@ class BattleRepositoryImpl extends BattleRepository {
         _list.add(TestQuestionModel.fromMap(item));
       }
       _battleQuestionsList.value = _list;
-      connectBattle();
-      // connectContinueBattle();
+      connectBattle(subscribeContinueBattleChannels);
+
       sharedPreferenceHelper.putInt(Constants.KEY_USER_BATTLE_END_TIME, _endTime!);
     } else {
       throw VMException(response.body, callFuncName: 'getTestQuestions', response: response);
@@ -484,4 +443,56 @@ class BattleRepositoryImpl extends BattleRepository {
 
   @override
   WebSocketChannel get webSocket => channel!;
+
+  @override
+  Future<void> invite({required int opponentId}) async {
+    final requestBody = {
+      "opponent_id": opponentId,
+    };
+    var response = await customClient.post(Urls.inviteBattle,
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: jsonEncode(requestBody));
+// {"battle_id":314,"battle_channel":"battle.106237.106241"}
+    log("response.isSuccessful- ${response.isSuccessful}\nresponse.statusCode- ${response.statusCode}\nresponse.body- ${response.body}");
+    if (response.isSuccessful) {
+      connectBattle(subscribeInvitationBattleChannels);
+    } else {
+      final responseBody = jsonDecode(response.body);
+      BuildContext? context = navigatorKey.currentState?.overlay?.context;
+      if (context != null) {
+        showTopSnackBar(
+          Overlay.of(context, rootOverlay: true),
+          CustomSnackBar.success(
+            message: responseBody["message"] ?? "Default message",
+          ),
+        );
+      }
+      throw VMException(response.body, callFuncName: 'getTestQuestions', response: response);
+    }
+  }
+
+  @override
+  Future<void> inviteUpdateStatus({required int battleId, required String status}) async {
+    // if (status == 'accepted') {
+    //   connectBattle(subscribeInvitationBattleChannels);
+    // }
+    final requestBody = {
+      "battle_id": battleId,
+      "status": status,
+    };
+    var response = await customClient.post(Urls.inviteUpdateStatus,
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: jsonEncode(requestBody));
+
+    if (response.isSuccessful) {
+    } else {
+      throw VMException(response.body, callFuncName: 'getTestQuestions', response: response);
+    }
+  }
 }

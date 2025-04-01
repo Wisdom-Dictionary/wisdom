@@ -22,7 +22,7 @@ class RoadmapShimmerWidget extends StatelessWidget {
             children: [
               Positioned.fill(
                 child: Image.asset(
-                  Assets.images.roadmapBattleBackground,
+                  Assets.images.roadmapBattleBackground1,
                   repeat: ImageRepeat.repeat,
                   fit: BoxFit.fitWidth,
                 ),

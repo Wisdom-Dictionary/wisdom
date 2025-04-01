@@ -36,14 +36,8 @@ class BattleExercisesPage extends ViewModelBuilderWidget<BattleExercisesViewMode
             onTap: () => viewModel.goBack(),
             leadingIcon: Assets.icons.arrowLeft,
             actions: const [
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    LifeStatusBar(),
-                  ],
-                ),
+              LifeStatusBarPadding(
+                child: LifeStatusBar(),
               )
             ],
           ),
@@ -325,15 +319,16 @@ class _BattleExerciseContentState extends State<BattleExerciseContent>
             ],
           ),
         ),
-        onTap: () {
-          widget.viewModel
-              .setAnswer(AnswerEntity(answerId: item.answers![index].id!, questionId: item.id!));
-
-          int? nextQuestion = widget.viewModel.validateAnswers;
-          if (nextQuestion != null) {
-            _tabController.animateTo(nextQuestion);
-          } else {
-            setState(() {});
+        onTap: () async {
+          final String? result = widget.viewModel
+              .setAnswer(AnswerEntity(answerId: item.answers[index].id!, questionId: item.id!));
+          setState(() {});
+          if (result != null && result == widget.viewModel.answerAddedTag) {
+            int? nextQuestion = widget.viewModel.validateAnswers;
+            if (nextQuestion != null) {
+              await Future.delayed(Duration(milliseconds: 600));
+              _tabController.animateTo(nextQuestion);
+            }
           }
         },
       );

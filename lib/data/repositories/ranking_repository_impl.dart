@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:jbaza/jbaza.dart';
+import 'package:wisdom/config/constants/constants.dart';
 import 'package:wisdom/config/constants/urls.dart';
+import 'package:wisdom/core/db/preference_helper.dart';
 import 'package:wisdom/core/domain/http_is_success.dart';
 import 'package:wisdom/core/services/contacts_service.dart';
 import 'package:wisdom/core/services/custom_client.dart';
@@ -9,10 +11,10 @@ import 'package:wisdom/data/model/roadmap/ranking_model.dart';
 import 'package:wisdom/domain/repositories/ranking_repository.dart';
 
 class RankingRepositoryImpl extends RankingRepository {
-  RankingRepositoryImpl(this.customClient);
+  RankingRepositoryImpl(this.customClient, this.preferenceHelper);
 
   final CustomClient customClient;
-
+  final SharedPreferenceHelper preferenceHelper;
   List<RankingModel> _rankingGlobalList = [];
   List<RankingModel> _rankingContactList = [];
   bool _hasMoreGlobalRankingData = true, _hasMoreContactRankingData = true;
@@ -60,15 +62,17 @@ class RankingRepositoryImpl extends RankingRepository {
 
   @override
   Future<void> getRankingContacts(int page) async {
-    if (page == 1) {
-      _rankingContactList = [];
-    }
     final requestBody = {
+      "limit": "25",
+      "page": "$page",
       'contacts': await CustomContactService.pickContact(),
     };
 
     var response = await customClient.post(
-        Uri.https(Urls.baseAddress, "/api/rankings/contacts", {"per_page": "100", "page": "$page"}),
+        Uri.https(
+          Urls.baseAddress,
+          "/api/rankings/contacts",
+        ),
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
@@ -77,6 +81,14 @@ class RankingRepositoryImpl extends RankingRepository {
     if (response.isSuccessful) {
       final responseData = jsonDecode(response.body);
       _hasMoreContactRankingData = (responseData['data'] as List).isNotEmpty;
+
+      preferenceHelper.putString(
+        Constants.KEY_EXERCISE_RESULTS_CONTACTS_DATA,
+        response.body,
+      );
+      if (page == 1) {
+        _rankingContactList = [];
+      }
       for (var item in responseData['data']) {
         _rankingContactList.add(RankingModel.fromJson(item));
       }
@@ -95,4 +107,16 @@ class RankingRepositoryImpl extends RankingRepository {
 
   @override
   int get userCurrentContactLevel => _userCurrentContactLevel;
+
+  @override
+  Future<void> getRankingContactsFromCache() async {
+    _rankingContactList = [];
+    String data = preferenceHelper.getString(Constants.KEY_EXERCISE_RESULTS_CONTACTS_DATA, "");
+    if (data.isNotEmpty) {
+      final contactsData = jsonDecode(data);
+      for (var item in contactsData['data']) {
+        _rankingContactList.add(RankingModel.fromJson(item));
+      }
+    }
+  }
 }

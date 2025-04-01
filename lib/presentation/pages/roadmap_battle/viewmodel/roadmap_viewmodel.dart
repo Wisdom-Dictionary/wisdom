@@ -1,10 +1,14 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:jbaza/jbaza.dart';
 import 'package:provider/provider.dart';
+import 'package:wisdom/app.dart';
 import 'package:wisdom/config/constants/constants.dart';
 import 'package:wisdom/core/db/db_helper.dart';
 import 'package:wisdom/core/db/preference_helper.dart';
+import 'package:wisdom/data/model/battle/battle_user_model.dart';
 import 'package:wisdom/data/model/my_contacts/user_details_model.dart';
 import 'package:wisdom/data/model/roadmap/level_model.dart';
 import 'package:wisdom/data/viewmodel/local_viewmodel.dart';
@@ -14,10 +18,12 @@ import 'package:wisdom/domain/repositories/profile_repository.dart';
 import 'package:wisdom/domain/repositories/roadmap_repository.dart';
 import 'package:wisdom/presentation/components/dialog_background.dart';
 import 'package:wisdom/presentation/components/no_internet_connection_dialog.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/continue_battle_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/out_of_lives_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/start_battle_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/sign_in_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/life_countdown_provider.dart';
+import 'package:wisdom/presentation/routes/routes.dart';
 
 import '../../../../core/di/app_locator.dart';
 
@@ -32,15 +38,19 @@ class RoadMapViewModel extends BaseViewModel {
   final sharedPref = locator<SharedPreferenceHelper>();
   final localViewModel = locator<LocalViewModel>();
 
-  final String getLevelsTag = "getLevelsTag", getUserDetailsTag = "getUserDetailsTag";
+  final String getLevelsTag = "getLevelsTag",
+      getLevelsMoreTag = "getLevelsMoreTag",
+      getUserDetailsTag = "getUserDetailsTag";
   int page = 0;
   UserDetailsModel? userDetailsModel;
+  BattleUserModel? battleOpponentUser = BattleUserModel();
+  Timer? _timer;
+  ValueNotifier<int> seconds = ValueNotifier<int>(20);
+  ValueNotifier<bool> battleUpdateStatus = ValueNotifier<bool>(false);
+  ValueNotifier<bool> continueBattleProgress = ValueNotifier<bool>(false);
 
   int get pathSize => (listCountCeil * 0.5).floor();
 
-  // int get listCountCeil => (roadMapRepository.levelsList.length % 10).isOdd
-  //     ? roadMapRepository.levelsList.length + 1
-  //     : roadMapRepository.levelsList.length;
   int get listCountCeil => roadMapRepository.levelsList.length;
 
   void userData() {
@@ -104,6 +114,38 @@ class RoadMapViewModel extends BaseViewModel {
     }, callFuncName: 'getLevels', tag: getLevelsTag, inProgress: false);
   }
 
+  void getLevelsMore() {
+    safeBlock(() async {
+      try {
+        if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
+          setBusy(true, tag: getLevelsMoreTag);
+          await roadMapRepository.getLevels(++page);
+          setSuccess(tag: getLevelsMoreTag);
+        } else {
+          showDialog(
+            context: context!,
+            builder: (context) => const DialogBackground(
+              child: NoInternetConnectionDialog(),
+            ),
+          );
+        }
+      } catch (e) {
+        if (e is VMException) {
+          if (e.response != null) {
+            if (e.response!.statusCode == 403) {
+              showDialog(
+                context: context!,
+                builder: (context) => const DialogBackground(
+                  child: SignInDialog(),
+                ),
+              );
+            }
+          }
+        }
+      }
+    }, callFuncName: 'getLevelsMore', tag: getLevelsMoreTag, inProgress: false);
+  }
+
   void selectLevel(LevelModel item) async {
     final noUserLives = !context!.read<CountdownProvider>().hasUserLifes;
     if (noUserLives) {
@@ -120,10 +162,12 @@ class RoadMapViewModel extends BaseViewModel {
         final dateTimeNowInMillisecont = DateTime.now().millisecondsSinceEpoch;
         battleEndDate = battleEndDate * 1000;
         if (dateTimeNowInMillisecont < battleEndDate) {
-          await battleRepository.getBattleData();
+          showTopDialog();
           return;
         } else {
           await sharedPref.prefs.remove(Constants.KEY_USER_BATTLE_END_TIME);
+          await sharedPref.prefs.remove(Constants.KEY_USER_BATTLE_ID);
+          await sharedPref.prefs.remove(Constants.KEY_USER_BATTLE_OPPONENT_USER);
         }
       }
 
@@ -140,5 +184,131 @@ class RoadMapViewModel extends BaseViewModel {
     roadMapRepository.setSelectedLevel(item);
     levelTestRepository.setSelectedLevel(item);
     locator<LocalViewModel>().changePageIndex(25);
+  }
+
+  void continueBattle() async {
+    safeBlock(() async {
+      try {
+        if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
+          continueBattleProgress.value = true;
+          await battleRepository.getBattleData();
+          continueBattleProgress.value = false;
+          _resetTimer();
+          if (Navigator.canPop(navigatorKey.currentContext!)) {
+            Navigator.pop(navigatorKey.currentContext!);
+          }
+          Navigator.pushNamed(navigatorKey.currentContext!, Routes.battleExercisesPage);
+        } else {
+          showDialog(
+            context: context!,
+            builder: (context) => const DialogBackground(
+              child: NoInternetConnectionDialog(),
+            ),
+          );
+        }
+      } catch (e) {
+        continueBattleProgress.value = false;
+        if (e is VMException) {
+          if (e.response != null) {
+            if (e.response!.statusCode == 403) {
+              showDialog(
+                context: context!,
+                builder: (context) => const DialogBackground(
+                  child: SignInDialog(),
+                ),
+              );
+            }
+          }
+        }
+      }
+    }, callFuncName: 'getBattleData', tag: "getBattleDataTag", inProgress: false);
+  }
+
+  void cancelStartedBattle() async {
+    safeBlock(() async {
+      try {
+        if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
+          int battleId = sharedPref.getInt(Constants.KEY_USER_BATTLE_ID, 0);
+          if (battleId == 0) {
+            return;
+          }
+          battleUpdateStatus.value = true;
+
+          await battleRepository.rematchUpdateStatus(battleId: battleId, status: "rejected");
+          await sharedPref.prefs.remove(Constants.KEY_USER_BATTLE_END_TIME);
+          await sharedPref.prefs.remove(Constants.KEY_USER_BATTLE_ID);
+          await sharedPref.prefs.remove(Constants.KEY_USER_BATTLE_OPPONENT_USER);
+          battleUpdateStatus.value = false;
+          _resetTimer();
+          if (Navigator.canPop(navigatorKey.currentContext!)) {
+            Navigator.pop(navigatorKey.currentContext!);
+          }
+        } else {
+          showDialog(
+            context: context!,
+            builder: (context) => const DialogBackground(
+              child: NoInternetConnectionDialog(),
+            ),
+          );
+        }
+      } catch (e) {
+        battleUpdateStatus.value = false;
+        if (e is VMException) {
+          if (e.response != null) {
+            if (e.response!.statusCode == 403) {
+              showDialog(
+                context: context!,
+                builder: (context) => const DialogBackground(
+                  child: SignInDialog(),
+                ),
+              );
+            }
+          }
+        }
+      }
+    }, callFuncName: 'getBattleData', tag: "getBattleDataTag", inProgress: false);
+  }
+
+  void showTopDialog() {
+    battleOpponentUser =
+        BattleUserModel.fromJson(sharedPref.getString(Constants.KEY_USER_BATTLE_OPPONENT_USER, ""));
+    _resetTimer();
+    _startTimer(_decrementTimer);
+    showGeneralDialog(
+      context: navigatorKey.currentContext!,
+      barrierDismissible: true,
+      barrierLabel: "Top Dialog",
+      pageBuilder: (context, anim1, anim2) {
+        return ContinueBattleDialog(
+          viewmodel: this,
+        );
+      },
+      transitionDuration: const Duration(milliseconds: 300),
+    );
+  }
+
+  void _startTimer(Function() onChange) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      onChange();
+    });
+  }
+
+  void _stopTimer() {
+    _timer?.cancel();
+  }
+
+  _decrementTimer() {
+    if (seconds.value > 0) {
+      seconds.value--;
+    } else if (seconds.value == 0) {
+      _stopTimer();
+      cancelStartedBattle();
+    }
+  }
+
+  void _resetTimer() {
+    _stopTimer();
+
+    seconds.value = 20;
   }
 }

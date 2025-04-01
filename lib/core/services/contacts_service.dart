@@ -7,24 +7,35 @@ class CustomContactService {
     try {
       final List<Contact> contacts = await ContactsService.getContacts();
       if (contacts.isNotEmpty) {
-        final List<Map<String, dynamic>> formattedContacts = contacts
-            .where((contact) => contact.displayName != null && contact.phones?.isNotEmpty == true)
-            .map((contact) {
-          if (contact.displayName == null && contact.phones == null) {}
-          return {
-            'contactName': contact.displayName ?? '',
-            'phoneNumbers': contact.phones
-                    ?.map((item) => formatPhoneNumber(item.value ?? ""))
-                    .toSet()
-                    .toList() ??
-                [],
-          };
-        }).toList();
+        final Set<String> uniqueKeys = {};
+        final List<Map<String, dynamic>> formattedContacts = [];
+
+        for (final contact in contacts) {
+          if (contact.displayName != null && contact.phones?.isNotEmpty == true) {
+            final contactName = contact.displayName ?? '';
+            final phoneNumbers =
+                contact.phones!.map((item) => formatPhoneNumber(item.value ?? "")).toSet().toList();
+
+            // Create a unique key for deduplication
+            final key = '$contactName-${phoneNumbers.join(",")}';
+
+            if (!uniqueKeys.contains(key)) {
+              uniqueKeys.add(key);
+              formattedContacts.add({
+                'contactName': contactName,
+                'phoneNumbers': phoneNumbers,
+              });
+            }
+          }
+        }
+
         return formattedContacts;
       } else {
         return null;
       }
-    } catch (e) {}
+    } catch (e) {
+      return null;
+    }
   }
 
   static String formatPhoneNumber(String input) {

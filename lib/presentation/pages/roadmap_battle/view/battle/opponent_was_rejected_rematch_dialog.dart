@@ -7,12 +7,11 @@ import 'package:wisdom/config/constants/app_text_style.dart';
 import 'package:wisdom/config/constants/constants.dart';
 import 'package:wisdom/presentation/components/w_button.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/battle_result_viewmodel.dart';
-import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/searching_opponent_viewmodel.dart';
 
-class OpponentWasNotFoundDialog extends StatelessWidget {
-  const OpponentWasNotFoundDialog({
-    super.key,
-  });
+class OpponentWasRejectedRematchDialog extends StatelessWidget {
+  const OpponentWasRejectedRematchDialog({super.key, required this.viewmodel});
+
+  final BattleResultViewmodel viewmodel;
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +51,7 @@ class OpponentWasNotFoundDialog extends StatelessWidget {
                         color: AppColors.lavender,
                         title: "cancel".tr(),
                         onTap: () {
-                          Navigator.pop(context, false);
+                          Navigator.pop(context);
                         },
                       ),
                     ),
@@ -63,7 +62,8 @@ class OpponentWasNotFoundDialog extends StatelessWidget {
                       child: WButton(
                         title: "try_again".tr(),
                         onTap: () {
-                          Navigator.pop(context, true);
+                          Navigator.pop(context);
+                          viewmodel.showRematchDialog();
                         },
                       ),
                     ),

@@ -20,7 +20,6 @@ import 'package:wisdom/data/model/user/user_model.dart';
 import 'package:wisdom/data/viewmodel/local_viewmodel.dart';
 import 'package:wisdom/domain/repositories/profile_repository.dart';
 import 'package:wisdom/domain/repositories/word_entity_repository.dart';
-import 'package:wisdom/presentation/widgets/loading_widget.dart';
 
 import '../../../routes/routes.dart';
 
@@ -52,6 +51,38 @@ class ProfilePageViewModel extends BaseViewModel {
   Future? dialog;
 
   String? get imageUrl => userModel.image != null ? '${Urls.baseUrl}${userModel.image!}' : null;
+
+  int get averageTime => profileRepository.userCabinet!.averageTime;
+
+  int get averageTimeValue => averageTime > 60 ? (averageTime / 60).toInt() : averageTime;
+
+  String get averageTimeSymbol => averageTime > 60 ? " m" : " s";
+
+  int get gameAccuracy => profileRepository.userCabinet!.gameAccuracy;
+
+  int get winRate => profileRepository.userCabinet?.statistics?.winRate ?? 1;
+
+  int get bestTime => profileRepository.userCabinet?.statistics?.bestTime ?? 1;
+
+  bool get hasUser => profileRepository.userCabinet?.user != null;
+
+  bool get hasUserPhoto => profileRepository.userCabinet?.user?.profilePhotoUrl != null;
+
+  String get userPhoto => "${profileRepository.userCabinet?.user?.profilePhotoUrl}&format=png";
+
+  String get userName => profileRepository.userCabinet?.user?.name ?? "";
+
+  int get userCurrentLevel => profileRepository.userCabinet?.userCurrentLevel ?? 0;
+
+  int get userStars => profileRepository.userCabinet?.statistics?.userStars ?? 0;
+
+  int get threeStarWins => profileRepository.userCabinet?.statistics?.threeStarWins ?? 0;
+
+  int get dailyRecord => profileRepository.userCabinet?.statistics?.dailyRecord ?? 0;
+
+  int get weeklyRecord => profileRepository.userCabinet?.statistics?.weeklyRecord ?? 0;
+
+  int get monthlyRecord => profileRepository.userCabinet?.statistics?.monthlyRecord ?? 0;
 
   void saveButtonActive() {
     saveButtonsActive = !saveButtonsActive;

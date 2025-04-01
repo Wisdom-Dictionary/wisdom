@@ -29,7 +29,7 @@ abstract class ProfileRepository {
 
   Future<UserDetailsModel> getUserCabinet();
 
-  UserDetailsModel? get userCabinet;
+  UserDetailsModel get userCabinet;
 
   Future<UserModel> updateUser(UserModel userModel);
 

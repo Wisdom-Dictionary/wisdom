@@ -27,6 +27,11 @@ class MyContactsViewModel extends BaseViewModel {
         if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
           if (await CustomContactService.requestContactPermission(context!)) {
             hasContactsPermission = true;
+            await myContactsRepository.getMyContactUsersFromCache();
+            if (myContactsRepository.myContactsList.isNotEmpty) {
+              setSuccess(tag: getMyContactsTag);
+            }
+
             await myContactsRepository.getMyContactUsers();
           } else {
             showDialog(

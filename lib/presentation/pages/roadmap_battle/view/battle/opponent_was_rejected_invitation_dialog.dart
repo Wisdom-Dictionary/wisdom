@@ -6,11 +6,9 @@ import 'package:wisdom/config/constants/app_colors.dart';
 import 'package:wisdom/config/constants/app_text_style.dart';
 import 'package:wisdom/config/constants/constants.dart';
 import 'package:wisdom/presentation/components/w_button.dart';
-import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/battle_result_viewmodel.dart';
-import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/searching_opponent_viewmodel.dart';
 
-class OpponentWasNotFoundDialog extends StatelessWidget {
-  const OpponentWasNotFoundDialog({
+class OpponentWasRejectedInvitationDialog extends StatelessWidget {
+  const OpponentWasRejectedInvitationDialog({
     super.key,
   });
 
@@ -38,36 +36,19 @@ class OpponentWasNotFoundDialog extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 32),
                   child: Text(
-                    "we_could_not_find_you_an_opponent".tr(),
+                    "user_rejected_the_offer".tr(),
                     textAlign: TextAlign.center,
                     style: AppTextStyle.font13W500Normal
                         .copyWith(color: AppColors.black, fontSize: 14),
                   ),
                 ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: WButton(
-                        titleStyle: AppTextStyle.font15W500Normal.copyWith(color: AppColors.blue),
-                        color: AppColors.lavender,
-                        title: "cancel".tr(),
-                        onTap: () {
-                          Navigator.pop(context, false);
-                        },
-                      ),
-                    ),
-                    SizedBox(
-                      width: 8,
-                    ),
-                    Expanded(
-                      child: WButton(
-                        title: "try_again".tr(),
-                        onTap: () {
-                          Navigator.pop(context, true);
-                        },
-                      ),
-                    ),
-                  ],
+                WButton(
+                  titleStyle: AppTextStyle.font15W500Normal.copyWith(color: AppColors.blue),
+                  color: AppColors.lavender,
+                  title: "cancel".tr(),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
                 )
               ],
             ),

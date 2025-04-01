@@ -21,6 +21,7 @@ class Urls {
   static var claimlives = Uri.parse('${baseUrl}api/lives/claim');
   // battle apis
   static var battle = '${baseUrl}api/battle';
+  static var inviteBattle = Uri.parse('$battle/invite');
   static var reverbAuth = Uri.parse('${baseUrl}api/reverb/auth');
   static var stopSearchingOpponents = Uri.parse('$battle/stop-searching-opponents');
   static var startBattle = Uri.parse('$battle/start-battle');
@@ -30,6 +31,7 @@ class Urls {
   static var getFullBattleResult = Uri.parse('$battle/get-full-battle-result');
   static var rematchRequest = Uri.parse('$battle/rematch-request');
   static var rematchUpdateStatus = Uri.parse('$battle/rematch-update-status');
+  static var inviteUpdateStatus = Uri.parse('$battle/invite-update-status');
   static var getBattleData = Uri.parse('$battle/get-battle-data');
 
   static var testQuestionsCheck = Uri.parse('${baseUrl}api/levels/test-questions-check');

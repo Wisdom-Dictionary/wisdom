@@ -14,6 +14,8 @@ abstract class BattleRepository {
 
   WebSocketChannel get webSocket;
 
+  Future<void> invite({required int opponentId});
+
   Future<void> subscribeToChannel({required String channelName});
 
   Future<void> startSearchingOpponents();
@@ -41,6 +43,8 @@ abstract class BattleRepository {
 
   Future<void> rematchUpdateStatus({required int battleId, required String status});
 
+  Future<void> inviteUpdateStatus({required int battleId, required String status});
+
   ValueNotifier<List<TestQuestionModel>> get battleQuestionsList;
 
   List<TestQuestionModel> get battleQuestionsResultList;
@@ -55,7 +59,11 @@ abstract class BattleRepository {
 
   void searchingOpponentsChannelClose();
 
-  void connectBattle();
+  void connectBattle(Function(Map<String, dynamic>) channelsFunction);
 
-  // void connectContinueBattle();
+  Future<void> subscribeSearchingChannels(Map<String, dynamic> messageData);
+
+  Future<void> subscribeContinueBattleChannels(Map<String, dynamic> messageData);
+
+  Future<void> subscribeInvitationBattleChannels(Map<String, dynamic> messageData);
 }

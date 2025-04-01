@@ -39,21 +39,22 @@ class MyContcatsShimmerWidget extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Text(
-                        "Farruh Saitov",
-                        style: AppTextStyle.font13W500Normal
-                            .copyWith(fontSize: 14, backgroundColor: AppColors.blue),
+                      Container(
+                        margin: EdgeInsets.only(right: 30),
+                        height: 17,
+                        width: 150,
+                        decoration: ShapeDecoration(color: AppColors.blue, shape: StadiumBorder()),
                       ),
                       SizedBox(
                         height: 4.61,
                       ),
                       Row(
                         children: [
-                          Text(
-                            "12460",
-                            style: AppTextStyle.font13W500Normal.copyWith(
-                              backgroundColor: AppColors.blue,
-                            ),
+                          Container(
+                            height: 16,
+                            width: 80,
+                            decoration:
+                                ShapeDecoration(color: AppColors.blue, shape: StadiumBorder()),
                           ),
                           SizedBox(
                             width: 4,

@@ -29,14 +29,14 @@ class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewMod
   @override
   Widget builder(BuildContext context, WordExercisesViewModel viewModel, Widget? child) {
     return WillPopScope(
-        onWillPop: () => viewModel.goBack(),
+        onWillPop: () => viewModel.goBackFromExercisesResultPage(),
         child: Scaffold(
           backgroundColor: isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
           drawerEnableOpenDragGesture: false,
           appBar: CustomAppBar(
             isSearch: false,
             title: "exercise_result".tr(),
-            onTap: () => viewModel.goBack(),
+            onTap: () => viewModel.goBackFromExercisesResultPage(),
             leadingIcon: Assets.icons.arrowLeft,
           ),
           body: ListView(
@@ -130,7 +130,7 @@ class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewMod
             child: SizedBox(
               width: 70,
               child: Text(
-                "words_found_correctly".tr(),
+                "right_answers".tr(),
                 textAlign: TextAlign.center,
                 style: AppTextStyle.font13W500Normal.copyWith(fontSize: 10, color: AppColors.blue),
               ),

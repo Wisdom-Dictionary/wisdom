@@ -254,6 +254,7 @@
   "rematch": "Rematch",
   "do_you_want_to_rematch": "Do you want to rematch?",
   "friendly_match": "Friendly match",
+  "battle_in_progress": "Battle in progress",
   "rejection": "Reject",
   "accept": "Accept",
   "battle_exercises": "Battle exercises",
@@ -265,5 +266,6 @@
   "contacts_access": "Contacts Access",
   "contacts_access_content": "Allow us to access your contacts to easily find and connect with friends.",
   "rank": "Rank",
-  "no_continue": "No, continue"
+  "no_continue": "No, continue",
+  "user_rejected_the_offer": "The user rejected the offer"
 }

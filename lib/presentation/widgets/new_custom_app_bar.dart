@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:wisdom/config/constants/constants.dart';
+
 import '../../config/constants/app_colors.dart';
 import '../../config/constants/app_text_style.dart';
 import '../../config/constants/assets.dart';
@@ -22,6 +23,7 @@ class NewCustomAppBar extends StatefulWidget implements PreferredSizeWidget {
     this.isTitle = true,
     this.leading,
     this.onChange,
+    this.keyboardType,
     this.focus = false,
     this.actions = const [],
   });
@@ -38,6 +40,7 @@ class NewCustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   bool hasLeading;
   bool isTitle;
   bool focus;
+  TextInputType? keyboardType;
   final List<Widget>? actions;
 
   @override
@@ -121,6 +124,8 @@ class _NewCustomAppBarState extends State<NewCustomAppBar> {
                   onTapOutside: (event) {
                     FocusManager.instance.primaryFocus?.unfocus();
                   },
+                  keyboardType: widget.keyboardType,
+                  textInputAction: TextInputAction.done,
                   decoration: InputDecoration(
                     prefixIcon: Padding(
                       padding: EdgeInsets.only(left: 8.0.w),

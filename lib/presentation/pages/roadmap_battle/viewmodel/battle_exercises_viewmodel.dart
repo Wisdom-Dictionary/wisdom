@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:jbaza/jbaza.dart';
 import 'package:wisdom/app.dart';
+import 'package:wisdom/config/constants/constants.dart';
+import 'package:wisdom/core/db/preference_helper.dart';
 import 'package:wisdom/data/model/roadmap/answer_entity.dart';
 import 'package:wisdom/data/model/roadmap/test_question_model.dart';
 import 'package:wisdom/data/viewmodel/local_viewmodel.dart';
@@ -15,9 +17,12 @@ import '../../../../core/di/app_locator.dart';
 class BattleExercisesViewModel extends BaseViewModel {
   BattleExercisesViewModel({required super.context});
   final battleRepository = locator<BattleRepository>();
+
+  final sharedPref = locator<SharedPreferenceHelper>();
   final localViewModel = locator<LocalViewModel>();
 
   final String postExercisesCheckTag = "postWordExercisesCheckTag";
+  final String answerAddedTag = "answerAddedTag", answerUpdatedTag = "answerUpdatedTag";
 
   List<AnswerEntity> answers = [];
 
@@ -31,6 +36,14 @@ class BattleExercisesViewModel extends BaseViewModel {
 
     if (value != null) {
       if (!value) {
+        await sharedPref.prefs.remove(Constants.KEY_USER_BATTLE_END_TIME);
+        await sharedPref.prefs.remove(Constants.KEY_USER_BATTLE_ID);
+        await sharedPref.prefs.remove(Constants.KEY_USER_BATTLE_OPPONENT_USER);
+        // final time = spendTimeForExercises > (givenTimeForExercise * 1000)
+        //     ? (givenTimeForExercise * 1000)
+        //     : spendTimeForExercises;
+        // await battleRepository.checkBattleQuestions(answers, time);
+        await battleRepository.cancelBattle();
         Navigator.of(navigatorKey.currentContext!).pop();
       }
     }
@@ -78,7 +91,14 @@ class BattleExercisesViewModel extends BaseViewModel {
 
   bool submitButtonStatus(int tabControllerIndex) {
     if (battleRepository.battleQuestionsList.value.length == tabControllerIndex + 1) {
-      return true;
+      if (answers.any(
+        (element) =>
+            element.questionId == battleRepository.battleQuestionsList.value[tabControllerIndex].id,
+      )) {
+        return true;
+      } else {
+        return false;
+      }
     }
     if (battleRepository.battleQuestionsList.value.length > answers.length) {
       return false;
@@ -86,19 +106,29 @@ class BattleExercisesViewModel extends BaseViewModel {
     return true;
   }
 
-  setAnswer(AnswerEntity answer) {
-    if (!answers.any(
+  String? setAnswer(AnswerEntity answer) {
+    int index = answers.indexWhere(
       (element) => element.questionId == answer.questionId,
-    )) {
+    );
+    if (index == -1) {
       answers.add(answer);
+      return answerAddedTag;
+    } else if (answers[index].answerId != answer.answerId) {
+      answers.removeAt(index);
+      answers.insert(index, answer);
+      return answerUpdatedTag;
     }
+    return null;
   }
 
   void postTestQuestionsResult() {
     setBusy(true, tag: postExercisesCheckTag);
     safeBlock(() async {
       if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
-        await battleRepository.checkBattleQuestions(answers, spendTimeForExercises);
+        final time = spendTimeForExercises > (givenTimeForExercise * 1000)
+            ? (givenTimeForExercise * 1000)
+            : spendTimeForExercises;
+        await battleRepository.checkBattleQuestions(answers, time);
 
         Navigator.popAndPushNamed(
           context!,

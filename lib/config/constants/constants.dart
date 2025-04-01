@@ -1,8 +1,12 @@
 class Constants {
   static const KEY_USER_BATTLE_END_TIME = "user_battle_end_time";
+  static const KEY_USER_BATTLE_ID = "user_battle_id";
+  static const KEY_USER_BATTLE_OPPONENT_USER = "user_battle_opponent_user";
   static const KEY_USER_CABINET = "user_cabinet";
   static const KEY_USER = "user";
   static const KEY_CONTACTS = "contacts";
+  static const KEY_CONTACTS_DATA = "contacts_data";
+  static const KEY_EXERCISE_RESULTS_CONTACTS_DATA = "exercise_results_contacts_data";
   static const KEY_RECENT = "recent_words";
   static const KEY_RECENT_UZ = "recent_words_uz";
   static const STATE_NOT_REGISTERED = 0;

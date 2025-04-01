@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,14 +9,13 @@ import 'package:wisdom/config/constants/app_colors.dart';
 import 'package:wisdom/config/constants/app_text_style.dart';
 import 'package:wisdom/config/constants/assets.dart';
 import 'package:wisdom/config/constants/constants.dart';
-import 'package:wisdom/core/services/contacts_service.dart';
 import 'package:wisdom/data/model/my_contacts/user_details_model.dart';
-import 'package:wisdom/domain/repositories/my_contacts_repository.dart';
 import 'package:wisdom/presentation/components/w_button.dart';
 import 'package:wisdom/presentation/pages/my_contacts/view/my_contacts_app_bar.dart';
 import 'package:wisdom/presentation/pages/my_contacts/view/my_contacts_empty_widget.dart';
 import 'package:wisdom/presentation/pages/my_contacts/view/my_contcats_shimmer_widget.dart';
 import 'package:wisdom/presentation/pages/my_contacts/viewmodel/my_contacts_viewmodel.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/searching_opponent_viewmodel.dart';
 import 'package:wisdom/presentation/routes/routes.dart';
 
 class MyContactsPage extends StatefulWidget {
@@ -38,6 +35,15 @@ class _MyContactsPageState extends State<MyContactsPage> with SingleTickerProvid
       setState(() {}); // Tab o'zgarganda UI yangilanadi
     });
     super.initState();
+  }
+
+  final SearchingOpponentViewmodel searchingOpponentViewmodel =
+      SearchingOpponentViewmodel(context: navigatorKey.currentContext);
+
+  @override
+  void dispose() {
+    searchingOpponentViewmodel.dispose();
+    super.dispose();
   }
 
   @override
@@ -69,7 +75,11 @@ class _MyContactsPageState extends State<MyContactsPage> with SingleTickerProvid
                 borderRadius: BorderRadius.circular(32),
                 color: AppColors.white.withValues(alpha: 0.1)),
             child: TabBar(
-              indicatorColor: AppColors.red,
+              splashFactory: NoSplash.splashFactory,
+              overlayColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
+                // Use the default focused overlay color
+                return states.contains(WidgetState.focused) ? null : Colors.transparent;
+              }),
               dividerColor: Colors.transparent,
               indicator:
                   BoxDecoration(color: AppColors.white, borderRadius: BorderRadius.circular(23.5)),
@@ -123,7 +133,14 @@ class _MyContactsPageState extends State<MyContactsPage> with SingleTickerProvid
       ),
       body: TabBarView(
         controller: _tabController,
-        children: [ContactsList(), ContactsFollowedList()],
+        children: [
+          ContactsList(
+            searchingOpponentViewmodel: searchingOpponentViewmodel,
+          ),
+          ContactsFollowedList(
+            searchingOpponentViewmodel: searchingOpponentViewmodel,
+          )
+        ],
       ),
     );
   }
@@ -199,7 +216,9 @@ class ContactsPermissionDialog extends StatelessWidget {
 }
 
 class ContactsList extends ViewModelBuilderWidget<MyContactsViewModel> {
-  ContactsList({super.key});
+  ContactsList({super.key, required this.searchingOpponentViewmodel});
+
+  final SearchingOpponentViewmodel searchingOpponentViewmodel;
 
   @override
   void onViewModelReady(MyContactsViewModel viewModel) {
@@ -232,6 +251,7 @@ class ContactsList extends ViewModelBuilderWidget<MyContactsViewModel> {
                                 arguments: item.toMap());
                           },
                           child: ContactItemWidget(
+                            searchingOpponentViewmodel: searchingOpponentViewmodel,
                             item: item,
                           ),
                         );
@@ -248,8 +268,8 @@ class ContactsList extends ViewModelBuilderWidget<MyContactsViewModel> {
 }
 
 class ContactsFollowedList extends ViewModelBuilderWidget<MyContactsViewModel> {
-  ContactsFollowedList({super.key});
-
+  ContactsFollowedList({super.key, required this.searchingOpponentViewmodel});
+  final SearchingOpponentViewmodel searchingOpponentViewmodel;
   @override
   void onViewModelReady(MyContactsViewModel viewModel) {
     viewModel.getMyFollowedUsers();
@@ -285,6 +305,7 @@ class ContactsFollowedList extends ViewModelBuilderWidget<MyContactsViewModel> {
                                   viewModel.myContactsRepository.followedList[index].toMap());
                         },
                         child: ContactItemWidget(
+                          searchingOpponentViewmodel: searchingOpponentViewmodel,
                           item: viewModel.myContactsRepository.followedList[index],
                         ),
                       ),
@@ -300,8 +321,10 @@ class ContactsFollowedList extends ViewModelBuilderWidget<MyContactsViewModel> {
 }
 
 class ContactItemWidget extends StatelessWidget {
-  const ContactItemWidget({super.key, required this.item});
+  const ContactItemWidget(
+      {super.key, required this.item, required this.searchingOpponentViewmodel});
   final UserDetailsModel item;
+  final SearchingOpponentViewmodel searchingOpponentViewmodel;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -394,14 +417,86 @@ class ContactItemWidget extends StatelessWidget {
                 item.isOnlineStatus ? AppColors.green : AppColors.textDisabled, BlendMode.srcIn),
           ),
           const SizedBox(
-            width: 24,
+            width: 4,
           ),
-          SvgPicture.asset(
-            Assets.icons.battle,
-            colorFilter: const ColorFilter.mode(AppColors.blue, BlendMode.srcIn),
+          InviteBattleWidget(
+            userId: item.user!.id!,
+            searchingOpponentViewmodel: searchingOpponentViewmodel,
           ),
         ],
       ),
     );
   }
 }
+
+class InviteBattleWidget extends StatelessWidget {
+  InviteBattleWidget({super.key, required this.userId, required this.searchingOpponentViewmodel});
+  final int userId;
+  final SearchingOpponentViewmodel searchingOpponentViewmodel;
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<bool>(
+      valueListenable: searchingOpponentViewmodel.inviteUpdateStatus,
+      builder: (context, value, child) {
+        return value && userId == searchingOpponentViewmodel.invitedIserId
+            ? const Padding(
+                padding: EdgeInsets.only(left: 8.0),
+                child: SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                    )),
+              )
+            : IconButton(
+                visualDensity: VisualDensity(horizontal: -3, vertical: -4),
+                padding: EdgeInsets.zero,
+                onPressed: () {
+                  searchingOpponentViewmodel.postInviteBattle(opponentId: userId);
+                },
+                icon: SvgPicture.asset(
+                  Assets.icons.battle,
+                  colorFilter: const ColorFilter.mode(AppColors.blue, BlendMode.srcIn),
+                ),
+              );
+      },
+    );
+  }
+}
+
+// class InviteBattleWidget extends ViewModelBuilderWidget<SearchingOpponentViewmodel> {
+//   InviteBattleWidget({super.key, required this.userId});
+//   final int userId;
+//   @override
+//   void onViewModelReady(SearchingOpponentViewmodel viewModel) {
+//     super.onViewModelReady(viewModel);
+//   }
+
+//   @override
+//   Widget builder(BuildContext context, SearchingOpponentViewmodel viewModel, Widget? child) {
+//     return viewModel.isBusy(tag: viewModel.postInviteTag)
+//         ? SizedBox(
+//             height: 20,
+//             width: 20,
+//             child: CircularProgressIndicator(
+//               strokeWidth: 2,
+//             ))
+//         : IconButton(
+//             visualDensity: VisualDensity(horizontal: -3, vertical: -4),
+//             padding: EdgeInsets.zero,
+//             onPressed: () {
+//               viewModel.postInviteBattle(opponentId: userId);
+//             },
+//             icon: SvgPicture.asset(
+//               Assets.icons.battle,
+//               colorFilter: const ColorFilter.mode(AppColors.blue, BlendMode.srcIn),
+//             ),
+//           );
+//   }
+
+//   @override
+//   SearchingOpponentViewmodel viewModelBuilder(BuildContext context) {
+//     return SearchingOpponentViewmodel(context: context);
+//   }
+// }

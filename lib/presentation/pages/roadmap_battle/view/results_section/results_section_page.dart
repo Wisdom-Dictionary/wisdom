@@ -265,7 +265,7 @@ class _ExercisesResultContactsPageState extends State<ExercisesResultContactsPag
                 ? Stack(
                     children: [
                       RefreshIndicator(
-                        onRefresh: () async => widget.viewModel.getRankingGlobal(),
+                        onRefresh: () async => widget.viewModel.getRankingContact(),
                         child: ListView.builder(
                           controller: _scrollController,
                           physics: const ClampingScrollPhysics(),

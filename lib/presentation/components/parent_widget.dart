@@ -124,6 +124,7 @@ class ParentWidget extends ViewModelWidget<WordDetailPageViewModel> {
                   //     ],
                   //   );
                   // },
+
                   header: Padding(
                     padding: EdgeInsets.symmetric(vertical: 4.h),
                     child: Row(
@@ -147,7 +148,7 @@ class ParentWidget extends ViewModelWidget<WordDetailPageViewModel> {
                                 padding: EdgeInsets.only(right: 10.w),
                                 child: SvgPicture.asset(viewModel.findRank(model.parents!.star!)))
                             : const SizedBox.shrink(),
-                        Flexible(
+                        Expanded(
                           child: Text.rich(TextSpan(
                             text: (viewModel.parentsWithAllList.length != 1) ? "$orderNum. " : "",
                             style: AppTextStyle.font15W700Normal.copyWith(
@@ -165,6 +166,7 @@ class ParentWidget extends ViewModelWidget<WordDetailPageViewModel> {
                             ],
                           )),
                         ),
+                        // Spacer(),
                         ExpandableButton(
                           child: Builder(
                             builder: (context) {

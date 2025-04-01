@@ -17,6 +17,5 @@ class DialogBackground extends StatelessWidget {
           backgroundColor: isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
           child: child,
         ));
-    ;
   }
 }

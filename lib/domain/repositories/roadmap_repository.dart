@@ -13,6 +13,8 @@ abstract class RoadmapRepository {
 
   int get userCurrentLevel;
 
+  bool get canMoreLoad;
+
   RankModel? get userRank;
 
   List<LevelWordModel> get levelWordsList;

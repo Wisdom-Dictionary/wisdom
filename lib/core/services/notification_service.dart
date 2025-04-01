@@ -3,11 +3,17 @@ import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
+import 'package:wisdom/app.dart';
 import 'package:wisdom/core/di/app_locator.dart';
 import 'package:wisdom/data/viewmodel/local_viewmodel.dart';
 import 'package:wisdom/main.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/invite_battle_dialog.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/rematch_battle_dialog.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/battle_result_viewmodel.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/searching_opponent_viewmodel.dart';
 
 class AppNotificationService {
   static AppNotificationService get to => locator.get<AppNotificationService>();
@@ -16,6 +22,20 @@ class AppNotificationService {
   int reminderId = 111;
   final String _reminderTitle = "Wisdom";
   final String _reminderBody = "Yangi so’zlarni qaytarish payti keldi";
+
+  void showTopDialog(Map<String, dynamic> messageData) {
+    showGeneralDialog(
+      context: navigatorKey.currentContext!,
+      barrierDismissible: true,
+      barrierLabel: "Top Dialog",
+      pageBuilder: (context, anim1, anim2) {
+        return InviteBattleDialog(
+          messageData: messageData,
+        );
+      },
+      transitionDuration: const Duration(milliseconds: 300),
+    );
+  }
 
   Future initNotification() async {
     if (Platform.isWindows) return;
@@ -32,6 +52,12 @@ class AppNotificationService {
     }
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (Platform.isAndroid) showNotification(message, '');
+      if (message.data.isNotEmpty) {
+        final messageData = message.data;
+        if (messageData['type'] == 'battle_invitation') {
+          showTopDialog(messageData);
+        }
+      }
     });
     var androidInitializationSettings = const AndroidInitializationSettings('@mipmap/ic_launcher');
     var iosInitializationSettings = const DarwinInitializationSettings();

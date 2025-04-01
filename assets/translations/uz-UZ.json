@@ -252,6 +252,7 @@
   "rematch": "Rematch",
   "do_you_want_to_rematch": "Rematch qilishni hohlaysizmi?",
   "friendly_match": "Do'stona match",
+  "battle_in_progress": "Jarayondagi Battle",
   "rejection": "Rad etish",
   "accept": "Qabul qilish",
   "battle_exercises": "Battle mashqlari",
@@ -263,5 +264,6 @@
   "contacts_access": "Kontaktlarga ruhsat",
   "contacts_access_content": "Do'stlaringizni osongina topish va ular bilan bog'lanish uchun bizga kontaktlaringizga kirishga ruxsat bering.",
   "rank": "Daraja",
-  "no_continue": "Yo'q, davom etish"
+  "no_continue": "Yo'q, davom etish",
+  "user_rejected_the_offer": "Foydalanuvchi taklifni rad etdi"
 }

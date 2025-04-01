@@ -52,7 +52,9 @@ class WordExercisesPage extends ViewModelBuilderWidget<WordExercisesViewModel> {
                               padding: const EdgeInsets.only(left: 18, right: 18, bottom: 16),
                               child: CountDownTimer(
                                 secondsRemaining: viewModel.givenTimeForExercise,
-                                whenTimeExpires: () {},
+                                whenTimeExpires: () {
+                                  viewModel.postTestQuestionsResult();
+                                },
                                 countDownTimerStyle: AppTextStyle.font13W500Normal
                                     .copyWith(color: AppColors.blue, fontSize: 12),
                               ),
@@ -313,17 +315,16 @@ class _WordExerciseContentState extends State<WordExerciseContent>
           ),
         ),
         onTap: () async {
-          widget.viewModel
+          final String? result = widget.viewModel
               .setAnswer(AnswerEntity(answerId: item.answers[index].id!, questionId: item.id!));
           setState(() {});
-          int? nextQuestion = widget.viewModel.validateAnswers;
-          if (nextQuestion != null) {
-            await Future.delayed(Duration(milliseconds: 600));
-            _tabController.animateTo(nextQuestion);
+          if (result != null && result == widget.viewModel.answerAddedTag) {
+            int? nextQuestion = widget.viewModel.validateAnswers;
+            if (nextQuestion != null) {
+              await Future.delayed(Duration(milliseconds: 600));
+              _tabController.animateTo(nextQuestion);
+            }
           }
-          // else {
-          //   setState(() {});
-          // }
         },
       );
 }

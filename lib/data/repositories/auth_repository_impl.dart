@@ -99,6 +99,7 @@ class AuthRepositoryImpl extends AuthRepository {
 
   @override
   Future<bool> applyFirebase(String token) async {
+    log("firebase token - $token");
     final response = await _dioClient.post(
       Urls.applyFirebaseId.path,
       data: {'token': token},

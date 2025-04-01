@@ -69,6 +69,10 @@ class RankingViewModel extends BaseViewModel {
       if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
         page = 1;
         setBusy(true, tag: getRankingContactTag);
+        await roadMapRepository.getRankingContactsFromCache();
+        if (roadMapRepository.rankingContactList.isNotEmpty) {
+          setSuccess(tag: getRankingContactTag);
+        }
         await roadMapRepository.getRankingContacts(page);
         setSuccess(tag: getRankingContactTag);
       } else {

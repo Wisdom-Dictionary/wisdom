@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:jbaza/jbaza.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
+import 'package:wisdom/app.dart';
 import 'package:wisdom/config/constants/app_colors.dart';
 import 'package:wisdom/config/constants/app_decoration.dart';
 import 'package:wisdom/config/constants/app_text_style.dart';
@@ -18,15 +19,24 @@ import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/searching_o
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/want_to_rematch_battle_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/battle_result_viewmodel.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/life_countdown_provider.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/searching_opponent_viewmodel.dart';
 import 'package:wisdom/presentation/routes/routes.dart';
 import 'package:wisdom/presentation/widgets/custom_app_bar.dart';
 
 class BattleResultPage extends ViewModelBuilderWidget<BattleResultViewmodel> {
   BattleResultPage({super.key});
 
+  late final SearchingOpponentViewmodel searchingOpponentViewmodel;
   @override
   void onViewModelReady(BattleResultViewmodel viewModel) {
+    searchingOpponentViewmodel = SearchingOpponentViewmodel(context: navigatorKey.currentContext);
     super.onViewModelReady(viewModel);
+  }
+
+  @override
+  void onDestroy(BattleResultViewmodel model) {
+    searchingOpponentViewmodel.dispose();
+    super.onDestroy(model);
   }
 
   @override
@@ -263,7 +273,7 @@ class BattleResultPage extends ViewModelBuilderWidget<BattleResultViewmodel> {
             child: SizedBox(
               width: 70,
               child: Text(
-                "words_found_correctly".tr(),
+                "right_answers".tr(),
                 textAlign: TextAlign.center,
                 style: AppTextStyle.font13W500Normal.copyWith(fontSize: 10, color: AppColors.blue),
               ),
@@ -520,6 +530,7 @@ class _QuestionsResultListState extends State<QuestionsResultList> {
                     child: Container(
                       height: 86,
                       decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
@@ -543,6 +554,7 @@ class _QuestionsResultListState extends State<QuestionsResultList> {
                     child: Container(
                       height: 86,
                       decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,

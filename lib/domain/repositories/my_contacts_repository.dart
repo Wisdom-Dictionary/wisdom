@@ -10,6 +10,8 @@ abstract class MyContactsRepository {
 
   Future<void> getMyContactUsers();
 
+  Future<void> getMyContactUsersFromCache();
+
   Future<void> postMyContactsSearch(String searchKeyWord);
 
   Future<String> postFollow(int userId);

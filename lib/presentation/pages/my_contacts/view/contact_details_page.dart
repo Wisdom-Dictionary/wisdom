@@ -144,38 +144,28 @@ class UserStatisticsWithPersentage extends StatelessWidget {
 
   final UserDetailsModel contactItemData;
 
-  int averageTime(int? time) {
-    if (time == null) {
-      return 0;
-    }
-    return (time / 1000).toInt();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        item(percent: contactItemData.statistics?.winRate ?? 0, title: "win_rate".tr()),
+        item(percent: contactItemData.winRate, title: "win_rate".tr()),
         SizedBox(
           width: 12,
         ),
-        item(percent: contactItemData.statistics?.gameAccuracy ?? 0, title: "game_accuracy".tr()),
+        item(percent: contactItemData.gameAccuracy, title: "game_accuracy".tr()),
         SizedBox(
           width: 12,
         ),
         item(
-            percent: averageTime(contactItemData.statistics?.averageTime),
-            percentSign: " s",
+            percent: contactItemData.averageTimeValue,
+            percentSign: contactItemData.averageTimeSymbol,
             title: "average_time".tr()),
         SizedBox(
           width: 12,
         ),
-        item(
-            percent: contactItemData.statistics?.bestTime ?? 0,
-            percentSign: " s",
-            title: "best_time".tr()),
+        item(percent: contactItemData.bestTime, percentSign: " s", title: "best_time".tr()),
       ],
     );
   }
@@ -227,22 +217,22 @@ class UserStatisticsWithNumbers extends StatelessWidget {
       child: Row(
         children: [
           item(
-              value: contactItemData.statistics?.threeStarWins ?? 0,
+              value: contactItemData.threeStarWins,
               subtitle: "games".tr(),
               itemName: "3_star_wins".tr()),
           divider,
           item(
-              value: contactItemData.statistics?.dailyRecord ?? 0,
+              value: contactItemData.dailyRecord,
               subtitle: "words".tr(),
               itemName: "daily_record".tr()),
           divider,
           item(
-              value: contactItemData.statistics?.weeklyRecord ?? 0,
+              value: contactItemData.weeklyRecord,
               subtitle: "words".tr(),
               itemName: "weekly_record".tr()),
           divider,
           item(
-              value: contactItemData.statistics?.monthlyRecord ?? 0,
+              value: contactItemData.monthlyRecord,
               subtitle: "words".tr(),
               itemName: "monthly_record".tr()),
         ],
