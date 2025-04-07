@@ -1,11 +1,14 @@
+import 'dart:developer';
+
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:jbaza/jbaza.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:wisdom/core/localization/locale_keys.g.dart';
 import 'package:wisdom/data/viewmodel/local_viewmodel.dart';
 import 'package:wisdom/domain/repositories/my_contacts_repository.dart';
 import 'package:wisdom/presentation/components/dialog_background.dart';
-import 'package:wisdom/presentation/components/no_internet_connection_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/sign_in_dialog.dart';
 
 import '../../../../core/di/app_locator.dart';
@@ -45,12 +48,7 @@ class ContactDetailsViewModel extends BaseViewModel {
             ),
           );
         } else {
-          showDialog(
-            context: context!,
-            builder: (context) => const DialogBackground(
-              child: NoInternetConnectionDialog(),
-            ),
-          );
+          callBackError(LocaleKeys.no_internet.tr());
         }
       } catch (e) {
         if (e is VMException) {
@@ -67,5 +65,16 @@ class ContactDetailsViewModel extends BaseViewModel {
         }
       }
     }, callFuncName: 'getMyContactFollow', tag: getMyContactFollowTag, inProgress: false);
+  }
+
+  @override
+  callBackError(String text) {
+    log(text);
+    showTopSnackBar(
+      Overlay.of(context!),
+      CustomSnackBar.error(
+        message: text,
+      ),
+    );
   }
 }

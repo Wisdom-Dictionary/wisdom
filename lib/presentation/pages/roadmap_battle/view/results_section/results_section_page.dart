@@ -1,13 +1,8 @@
-import 'dart:io';
-
-import 'package:contacts_service/contacts_service.dart';
-import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:jbaza/jbaza.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:wisdom/config/constants/app_colors.dart';
 import 'package:wisdom/config/constants/app_text_style.dart';
 import 'package:wisdom/config/constants/assets.dart';
@@ -253,7 +248,8 @@ class _ExercisesResultContactsPageState extends State<ExercisesResultContactsPag
 
   @override
   Widget build(BuildContext context) {
-    return !widget.viewModel.hasContactsPermission
+    return !widget.viewModel.hasContactsPermission ||
+            widget.viewModel.roadMapRepository.rankingContactList.isEmpty
         ? MyContactsEmptyPage(
             icon: SvgPicture.asset(Assets.icons.calendarOutlined),
             title: "title_my_contacts_list_empty".tr(),
@@ -344,48 +340,62 @@ class _ExercisesResultGlobalPageState extends State<ExercisesResultGlobalPage> {
   Widget build(BuildContext context) {
     return widget.viewModel.isBusy(tag: widget.viewModel.getRankingGlobalTag)
         ? ShimmerExercisesResult()
-        : widget.viewModel.isSuccess(tag: widget.viewModel.getRankingGlobalTag)
-            ? Stack(
-                children: [
-                  RefreshIndicator(
-                    onRefresh: () async => widget.viewModel.getRankingGlobal(),
-                    child: ListView.builder(
-                      controller: _scrollController,
-                      physics: const ClampingScrollPhysics(),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      itemCount: widget.viewModel.roadMapRepository.rankingGlobalList.length +
-                          (widget.viewModel.isBusy(tag: widget.viewModel.getRankingGlobalMoreTag)
-                              ? 1
-                              : 0),
-                      itemBuilder: (context, index) {
-                        if (index < widget.viewModel.roadMapRepository.rankingGlobalList.length) {
-                          return RankingItemWidget(
-                            index: index,
-                            item: widget.viewModel.roadMapRepository.rankingGlobalList[index],
-                          );
-                        } else {
-                          return const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 16),
-                            child: Center(child: CircularProgressIndicator()),
-                          );
-                        }
-                      },
-                    ),
-                  ),
-                  Positioned(
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      child: SafeArea(
-                        child: CurrentUserItemWidget(
-                            index: widget.viewModel.roadMapRepository.userCurrentGlobalLevel,
-                            item: RankingModel(
-                                name: "you".tr(),
-                                level: widget.viewModel.roadMapRepository.userGlobalRanking)),
-                      ))
-                ],
+        : widget.viewModel.roadMapRepository.rankingGlobalList.isEmpty
+            ? MyContactsEmptyPage(
+                icon: SvgPicture.asset(
+                  height: 113,
+                  width: 133,
+                  Assets.icons.followed,
+                  colorFilter:
+                      ColorFilter.mode(AppColors.blue.withValues(alpha: 0.12), BlendMode.srcIn),
+                ),
+                title: "no_data".tr(),
+                description: "",
               )
-            : const Center(child: Text("Unhandled Exception"));
+            : widget.viewModel.isSuccess(tag: widget.viewModel.getRankingGlobalTag)
+                ? Stack(
+                    children: [
+                      RefreshIndicator(
+                        onRefresh: () async => widget.viewModel.getRankingGlobal(),
+                        child: ListView.builder(
+                          controller: _scrollController,
+                          physics: const ClampingScrollPhysics(),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          itemCount: widget.viewModel.roadMapRepository.rankingGlobalList.length +
+                              (widget.viewModel
+                                      .isBusy(tag: widget.viewModel.getRankingGlobalMoreTag)
+                                  ? 1
+                                  : 0),
+                          itemBuilder: (context, index) {
+                            if (index <
+                                widget.viewModel.roadMapRepository.rankingGlobalList.length) {
+                              return RankingItemWidget(
+                                index: index,
+                                item: widget.viewModel.roadMapRepository.rankingGlobalList[index],
+                              );
+                            } else {
+                              return const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 16),
+                                child: Center(child: CircularProgressIndicator()),
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                      Positioned(
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          child: SafeArea(
+                            child: CurrentUserItemWidget(
+                                index: widget.viewModel.roadMapRepository.userCurrentGlobalLevel,
+                                item: RankingModel(
+                                    name: "you".tr(),
+                                    level: widget.viewModel.roadMapRepository.userGlobalRanking)),
+                          ))
+                    ],
+                  )
+                : const Center(child: Text("Unhandled Exception"));
   }
 }
 

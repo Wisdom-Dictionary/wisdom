@@ -2,19 +2,21 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:jbaza/jbaza.dart';
 import 'package:provider/provider.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:wisdom/app.dart';
 import 'package:wisdom/config/constants/constants.dart';
 import 'package:wisdom/core/db/preference_helper.dart';
+import 'package:wisdom/core/localization/locale_keys.g.dart';
 import 'package:wisdom/data/model/battle/battle_result_model.dart';
 import 'package:wisdom/data/model/battle/battle_user_model.dart';
 import 'package:wisdom/data/viewmodel/local_viewmodel.dart';
 import 'package:wisdom/domain/repositories/battle_repository.dart';
 import 'package:wisdom/domain/repositories/profile_repository.dart';
-import 'package:wisdom/presentation/components/dialog_background.dart';
-import 'package:wisdom/presentation/components/no_internet_connection_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/opponent_was_rejected_rematch_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/rematch_battle_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/waiting_opponent_battle_dialog.dart';
@@ -224,12 +226,7 @@ class BattleResultViewmodel extends BaseViewModel {
         await battleRepository.postFullBattleResult();
         setSuccess(tag: postWordExercisesResultTag);
       } else {
-        showDialog(
-          context: context!,
-          builder: (context) => const DialogBackground(
-            child: NoInternetConnectionDialog(),
-          ),
-        );
+        callBackError(LocaleKeys.no_internet.tr());
         setBusy(false, tag: postWordExercisesResultTag);
       }
     }, callFuncName: 'postWordExercisesResult', tag: postWordExercisesResultTag, inProgress: false);
@@ -250,12 +247,7 @@ class BattleResultViewmodel extends BaseViewModel {
         setSuccess(tag: postRematchRequestTag);
         waitingRematch.value = true;
       } else {
-        showDialog(
-          context: context!,
-          builder: (context) => const DialogBackground(
-            child: NoInternetConnectionDialog(),
-          ),
-        );
+        callBackError(LocaleKeys.no_internet.tr());
         setBusy(false, tag: postRematchRequestTag);
       }
     }, callFuncName: 'postRematchRequest', tag: postRematchRequestTag, inProgress: false);
@@ -278,12 +270,7 @@ class BattleResultViewmodel extends BaseViewModel {
           Navigator.pop(navigatorKey.currentContext!);
         }
       } else {
-        showDialog(
-          context: context!,
-          builder: (context) => const DialogBackground(
-            child: NoInternetConnectionDialog(),
-          ),
-        );
+        callBackError(LocaleKeys.no_internet.tr());
         statusTag = "";
         rematchUpdateStatus.value = false;
       }
@@ -325,5 +312,16 @@ class BattleResultViewmodel extends BaseViewModel {
     // }
     _subscription.cancel();
     super.dispose();
+  }
+
+  @override
+  callBackError(String text) {
+    log(text);
+    showTopSnackBar(
+      Overlay.of(context!),
+      CustomSnackBar.error(
+        message: text,
+      ),
+    );
   }
 }

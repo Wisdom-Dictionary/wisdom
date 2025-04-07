@@ -56,6 +56,7 @@ class BattleExercisesPage extends ViewModelBuilderWidget<BattleExercisesViewMode
                         padding: const EdgeInsets.only(left: 18, right: 18, bottom: 16),
                         child: CountDownTimer(
                           secondsRemaining: viewModel.givenTimeForExercise,
+                          initialValue: viewModel.initialTimeForExercise,
                           whenTimeExpires: () {
                             viewModel.postTestQuestionsResult();
                           },

@@ -1,10 +1,14 @@
+import 'dart:developer';
+
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:jbaza/jbaza.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:wisdom/core/localization/locale_keys.g.dart';
 import 'package:wisdom/core/services/contacts_service.dart';
 import 'package:wisdom/data/viewmodel/local_viewmodel.dart';
 import 'package:wisdom/domain/repositories/ranking_repository.dart';
-import 'package:wisdom/presentation/components/dialog_background.dart';
-import 'package:wisdom/presentation/components/no_internet_connection_dialog.dart';
 
 import '../../../../core/di/app_locator.dart';
 
@@ -33,12 +37,7 @@ class RankingViewModel extends BaseViewModel {
         await roadMapRepository.getRankingGlobal(page);
         setSuccess(tag: getRankingGlobalTag);
       } else {
-        showDialog(
-          context: context!,
-          builder: (context) => const DialogBackground(
-            child: NoInternetConnectionDialog(),
-          ),
-        );
+        callBackError(LocaleKeys.no_internet.tr());
       }
     }, callFuncName: 'getRankingGlobal', tag: getRankingGlobalTag, inProgress: false);
   }
@@ -52,12 +51,7 @@ class RankingViewModel extends BaseViewModel {
           await roadMapRepository.getRankingGlobal(page);
           setSuccess(tag: getRankingGlobalMoreTag);
         } else {
-          showDialog(
-            context: context!,
-            builder: (context) => const DialogBackground(
-              child: NoInternetConnectionDialog(),
-            ),
-          );
+          callBackError(LocaleKeys.no_internet.tr());
         }
       }, callFuncName: 'getRankingGlobalMore', tag: getRankingGlobalMoreTag, inProgress: false);
     }
@@ -76,12 +70,7 @@ class RankingViewModel extends BaseViewModel {
         await roadMapRepository.getRankingContacts(page);
         setSuccess(tag: getRankingContactTag);
       } else {
-        showDialog(
-          context: context!,
-          builder: (context) => const DialogBackground(
-            child: NoInternetConnectionDialog(),
-          ),
-        );
+        callBackError(LocaleKeys.no_internet.tr());
       }
     }, callFuncName: 'getRankingContact', tag: getRankingContactTag, inProgress: false);
   }
@@ -95,14 +84,20 @@ class RankingViewModel extends BaseViewModel {
           await roadMapRepository.getRankingContacts(page);
           setSuccess(tag: getRankingContactMoreTag);
         } else {
-          showDialog(
-            context: context!,
-            builder: (context) => const DialogBackground(
-              child: NoInternetConnectionDialog(),
-            ),
-          );
+          callBackError(LocaleKeys.no_internet.tr());
         }
       }, callFuncName: 'getRankingContactMore', tag: getRankingContactMoreTag, inProgress: false);
     }
+  }
+
+  @override
+  callBackError(String text) {
+    log(text);
+    showTopSnackBar(
+      Overlay.of(context!),
+      CustomSnackBar.error(
+        message: text,
+      ),
+    );
   }
 }

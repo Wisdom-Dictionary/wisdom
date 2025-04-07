@@ -9,84 +9,69 @@ class CountDownTimer extends StatefulWidget {
     Key? key,
     required this.secondsRemaining,
     required this.whenTimeExpires,
+    this.initialValue,
     this.countDownFormatter,
     this.countDownTimerStyle,
   }) : super(key: key);
 
   final int secondsRemaining;
+  final int? initialValue;
   final VoidCallback whenTimeExpires;
   final TextStyle? countDownTimerStyle;
   final Function(int seconds)? countDownFormatter;
 
   @override
-  State createState() => _CountDownTimerState();
+  State<CountDownTimer> createState() => _CountDownTimerState();
 }
 
 class _CountDownTimerState extends State<CountDownTimer> with TickerProviderStateMixin {
-  late final AnimationController _controller;
-  late final Duration duration;
+  late AnimationController _controller;
 
   String get timerDisplayString {
     final duration = _controller.duration! * _controller.value;
-    if (widget.countDownFormatter != null) {
-      return widget.countDownFormatter!(duration.inSeconds) as String;
-    } else {
-      return formatHHMMSS(duration.inSeconds);
-    }
+    return widget.countDownFormatter?.call(duration.inSeconds) ?? formatHHMMSS(duration.inSeconds);
   }
 
   String formatHHMMSS(int seconds) {
-    final hours = (seconds / 3600).truncate();
-    seconds = (seconds % 3600).truncate();
-    final minutes = (seconds / 60).truncate();
+    final hours = seconds ~/ 3600;
+    final minutes = (seconds % 3600) ~/ 60;
+    final secondsLeft = seconds % 60;
 
-    final hoursStr = (hours).toString().padLeft(2, '0');
-    final minutesStr = (minutes).toString().padLeft(2, '0');
-    final secondsStr = (seconds % 60).toString().padLeft(2, '0');
+    final hoursStr = hours.toString().padLeft(2, '0');
+    final minutesStr = minutes.toString().padLeft(2, '0');
+    final secondsStr = secondsLeft.toString().padLeft(2, '0');
 
-    if (hours == 0) {
-      return '$minutesStr:$secondsStr';
-    }
-
-    return '$hoursStr:$minutesStr:$secondsStr';
+    return hours > 0 ? '$hoursStr:$minutesStr:$secondsStr' : '$minutesStr:$secondsStr';
   }
 
   @override
   void initState() {
     super.initState();
-    duration = Duration(seconds: widget.secondsRemaining);
-    _controller = AnimationController(
-      vsync: this,
-      duration: duration,
-    );
-    _controller
-      ..reverse(from: widget.secondsRemaining.toDouble())
-      ..addStatusListener((status) {
-        if (status == AnimationStatus.completed || status == AnimationStatus.dismissed) {
-          widget.whenTimeExpires();
-        }
-      });
+    _initController();
+  }
+
+  void _initController() {
+    final duration = Duration(seconds: widget.secondsRemaining);
+    _controller = AnimationController(vsync: this, duration: duration);
+
+    final initialProgress =
+        (widget.initialValue ?? widget.secondsRemaining) / widget.secondsRemaining;
+    _controller.reverse(from: initialProgress);
+
+    _controller.addStatusListener((status) {
+      if (status == AnimationStatus.dismissed) {
+        widget.whenTimeExpires();
+      }
+    });
   }
 
   @override
   void didUpdateWidget(CountDownTimer oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.secondsRemaining != oldWidget.secondsRemaining) {
-      setState(() {
-        duration = Duration(seconds: widget.secondsRemaining);
-        _controller.dispose();
-        _controller = AnimationController(
-          vsync: this,
-          duration: duration,
-        );
-        _controller
-          ..reverse(from: widget.secondsRemaining.toDouble())
-          ..addStatusListener((status) {
-            if (status == AnimationStatus.completed) {
-              widget.whenTimeExpires();
-            }
-          });
-      });
+    if (widget.secondsRemaining != oldWidget.secondsRemaining ||
+        widget.initialValue != oldWidget.initialValue) {
+      _controller.dispose();
+      _initController();
     }
   }
 
@@ -101,14 +86,16 @@ class _CountDownTimerState extends State<CountDownTimer> with TickerProviderStat
     return Center(
       child: AnimatedBuilder(
         animation: _controller,
-        builder: (_, Widget? child) {
+        builder: (_, __) {
           return Row(
             children: [
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
-                      color: AppColors.lavender, borderRadius: BorderRadius.circular(6)),
-                  padding: EdgeInsets.symmetric(horizontal: 3, vertical: 2.5),
+                    color: AppColors.lavender,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 2.5),
                   child: LinearPercentIndicator(
                     lineHeight: 7,
                     progressColor: AppColors.green,
@@ -116,28 +103,23 @@ class _CountDownTimerState extends State<CountDownTimer> with TickerProviderStat
                     padding: EdgeInsets.zero,
                     fillColor: Colors.transparent,
                     barRadius: const Radius.circular(6),
-                    percent: ((_controller.duration! * _controller.value).inSeconds) /
+                    percent: (_controller.duration! * _controller.value).inSeconds /
                         widget.secondsRemaining,
                   ),
                 ),
               ),
-              const SizedBox(
-                width: 8,
-              ),
+              const SizedBox(width: 8),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3.5),
                 decoration: BoxDecoration(
-                    color: AppColors.lavender, borderRadius: BorderRadius.circular(32)),
+                  color: AppColors.lavender,
+                  borderRadius: BorderRadius.circular(32),
+                ),
                 child: Row(
                   children: [
                     SvgPicture.asset(Assets.icons.clock),
-                    const SizedBox(
-                      width: 4,
-                    ),
-                    Text(
-                      timerDisplayString,
-                      style: widget.countDownTimerStyle,
-                    ),
+                    const SizedBox(width: 4),
+                    Text(timerDisplayString, style: widget.countDownTimerStyle),
                   ],
                 ),
               )

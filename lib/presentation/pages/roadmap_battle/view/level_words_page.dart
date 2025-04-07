@@ -16,7 +16,6 @@ import 'package:wisdom/presentation/pages/roadmap_battle/view/widgets/life_statu
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/level_words_page_viewmodel.dart';
 import 'package:wisdom/presentation/routes/routes.dart';
 import 'package:wisdom/presentation/widgets/custom_app_bar.dart';
-import 'package:wisdom/presentation/widgets/loading_widget.dart';
 
 class LevelWordsPage extends ViewModelBuilderWidget<LevelWordsPageViewModel> {
   LevelWordsPage({super.key});
@@ -39,7 +38,7 @@ class LevelWordsPage extends ViewModelBuilderWidget<LevelWordsPageViewModel> {
               title: viewModel.levelTestRepository.selectedLevelItem.name ?? "",
               onTap: () => viewModel.goMain(),
               leadingIcon: Assets.icons.arrowLeft),
-          body: !viewModel.isSuccess(tag: viewModel.getLevelWordsTag)
+          body: viewModel.isBusy(tag: viewModel.getLevelWordsTag)
               ? ShimmerLevelWords()
               : viewModel.isError(tag: viewModel.getLevelWordsTag)
                   ? Center(

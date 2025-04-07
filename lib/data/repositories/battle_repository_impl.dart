@@ -5,10 +5,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:jbaza/jbaza.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-import 'package:wisdom/app.dart';
 import 'package:wisdom/config/constants/constants.dart';
 import 'package:wisdom/config/constants/urls.dart';
 import 'package:wisdom/core/db/preference_helper.dart';
@@ -156,7 +153,7 @@ class BattleRepositoryImpl extends BattleRepository {
   Future<void> subscribeContinueBattleChannels(Map<String, dynamic> messageData) async {
     final Map<String, dynamic> socketData = jsonDecode(messageData["data"]);
     socketId = socketData["socket_id"];
-    await subscribeToChannel(channelName: _battleChannel!);
+    await subscribeToChannel(channelName: "private-${_battleChannel!}");
 
     final channelData = jsonDecode(params!.channelData);
 
@@ -184,8 +181,6 @@ class BattleRepositoryImpl extends BattleRepository {
 
   @override
   Future<void> readyBattle({required int battleId, required String battleChannel}) async {
-    await subscribeToChannel(channelName: battleChannel);
-
     final requestBody = {
       'battle_id': battleId,
       'battle_channel': battleChannel,
@@ -455,22 +450,13 @@ class BattleRepositoryImpl extends BattleRepository {
           "Accept": "application/json",
         },
         body: jsonEncode(requestBody));
-// {"battle_id":314,"battle_channel":"battle.106237.106241"}
-    log("response.isSuccessful- ${response.isSuccessful}\nresponse.statusCode- ${response.statusCode}\nresponse.body- ${response.body}");
     if (response.isSuccessful) {
       connectBattle(subscribeInvitationBattleChannels);
     } else {
       final responseBody = jsonDecode(response.body);
-      BuildContext? context = navigatorKey.currentState?.overlay?.context;
-      if (context != null) {
-        showTopSnackBar(
-          Overlay.of(context, rootOverlay: true),
-          CustomSnackBar.success(
-            message: responseBody["message"] ?? "Default message",
-          ),
-        );
-      }
-      throw VMException(response.body, callFuncName: 'getTestQuestions', response: response);
+
+      throw VMException(responseBody["message"] ?? response.body,
+          callFuncName: 'postinviteBattle', response: response);
     }
   }
 
@@ -494,5 +480,10 @@ class BattleRepositoryImpl extends BattleRepository {
     } else {
       throw VMException(response.body, callFuncName: 'getTestQuestions', response: response);
     }
+  }
+
+  @override
+  void reconnectSearchingOpponent() {
+    // TODO: implement reconnectSearchingOpponent
   }
 }

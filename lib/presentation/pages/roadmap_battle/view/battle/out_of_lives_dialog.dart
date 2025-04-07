@@ -2,17 +2,16 @@ import 'dart:ui';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:wisdom/config/constants/app_colors.dart';
 import 'package:wisdom/config/constants/app_text_style.dart';
-import 'package:wisdom/config/constants/assets.dart';
 import 'package:wisdom/presentation/components/w_button.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/life_countdown_provider.dart';
 
 class OutOfLivesDialog extends StatelessWidget {
-  const OutOfLivesDialog({super.key});
-
+  const OutOfLivesDialog({super.key, required this.title, required this.subTitle});
+  final String title;
+  final String subTitle;
   @override
   Widget build(BuildContext context) {
     return BackdropFilter(
@@ -28,7 +27,7 @@ class OutOfLivesDialog extends StatelessWidget {
                 shrinkWrap: true,
                 children: [
                   Text(
-                    "you_did_not_start_the_battle".tr(),
+                    title,
                     textAlign: TextAlign.center,
                     style: AppTextStyle.font17W600Normal
                         .copyWith(fontSize: 18, color: AppColors.orange),
@@ -37,7 +36,7 @@ class OutOfLivesDialog extends StatelessWidget {
                     height: 32,
                   ),
                   Text(
-                    "you_do_not_have_enough_lives".tr(),
+                    subTitle,
                     textAlign: TextAlign.center,
                     style: AppTextStyle.font13W500Normal
                         .copyWith(fontSize: 14, color: AppColors.black),

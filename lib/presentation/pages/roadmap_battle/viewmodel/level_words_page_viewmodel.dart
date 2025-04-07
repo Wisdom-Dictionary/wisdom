@@ -1,6 +1,12 @@
+import 'dart:developer';
+
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:jbaza/jbaza.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:wisdom/core/db/preference_helper.dart';
+import 'package:wisdom/core/localization/locale_keys.g.dart';
 import 'package:wisdom/data/model/recent_model.dart';
 import 'package:wisdom/data/model/roadmap/level_word_model.dart';
 import 'package:wisdom/data/model/search_result_model.dart';
@@ -47,19 +53,16 @@ class LevelWordsPageViewModel extends BaseViewModel {
 
   void getLevelWords() {
     safeBlock(() async {
-      try {
+      if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
         await roadmapRepository.getLevelWords();
         if (roadmapRepository.levelWordsList.isNotEmpty) {
           setSuccess(tag: getLevelWordsTag);
         } else {
           callBackError("text");
         }
-      } catch (e) {
-        callBackError("text");
-        if (e is VMException) {
-          setError(e, tag: getLevelWordsTag);
-        }
-        setError(VMException(e.toString()), tag: getLevelWordsTag);
+      } else {
+        setBusy(false, tag: getLevelWordsTag);
+        callBackError(LocaleKeys.no_internet.tr());
       }
     }, callFuncName: 'getLevelWords', tag: getLevelWordsTag);
   }
@@ -141,5 +144,16 @@ class LevelWordsPageViewModel extends BaseViewModel {
 
   goMain() {
     localViewModel.changePageIndex(3);
+  }
+
+  @override
+  callBackError(String text) {
+    log(text);
+    showTopSnackBar(
+      Overlay.of(context!),
+      CustomSnackBar.error(
+        message: text,
+      ),
+    );
   }
 }

@@ -10,13 +10,11 @@ import 'package:wisdom/config/constants/app_decoration.dart';
 import 'package:wisdom/config/constants/app_text_style.dart';
 import 'package:wisdom/config/constants/assets.dart';
 import 'package:wisdom/config/constants/constants.dart';
-import 'package:wisdom/core/di/app_locator.dart';
 import 'package:wisdom/data/model/battle/battle_result_model.dart';
 import 'package:wisdom/presentation/components/shimmer.dart';
 import 'package:wisdom/presentation/components/w_button.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/out_of_lives_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/searching_opponent_page.dart';
-import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/want_to_rematch_battle_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/battle_result_viewmodel.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/life_countdown_provider.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/searching_opponent_viewmodel.dart';
@@ -206,7 +204,10 @@ class BattleResultPage extends ViewModelBuilderWidget<BattleResultViewmodel> {
                       } else {
                         showDialog(
                           context: context,
-                          builder: (context) => OutOfLivesDialog(),
+                          builder: (context) => OutOfLivesDialog(
+                            title: "you_did_not_start_the_battle".tr(),
+                            subTitle: "you_do_not_have_enough_lives".tr(),
+                          ),
                         );
                       }
                     },

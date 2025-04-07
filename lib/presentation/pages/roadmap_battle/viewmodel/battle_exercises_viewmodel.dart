@@ -1,14 +1,15 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:jbaza/jbaza.dart';
 import 'package:wisdom/app.dart';
 import 'package:wisdom/config/constants/constants.dart';
 import 'package:wisdom/core/db/preference_helper.dart';
+import 'package:wisdom/core/localization/locale_keys.g.dart';
 import 'package:wisdom/data/model/roadmap/answer_entity.dart';
 import 'package:wisdom/data/model/roadmap/test_question_model.dart';
 import 'package:wisdom/data/viewmodel/local_viewmodel.dart';
 import 'package:wisdom/domain/repositories/battle_repository.dart';
 import 'package:wisdom/presentation/components/dialog_background.dart';
-import 'package:wisdom/presentation/components/no_internet_connection_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/cancel_level_exercises_dialog.dart';
 import 'package:wisdom/presentation/routes/routes.dart';
 
@@ -57,6 +58,17 @@ class BattleExercisesViewModel extends BaseViewModel {
       return 0;
     }
     DateTime startDate = DateTime.fromMillisecondsSinceEpoch(battleRepository.startDate! * 1000);
+    DateTime endDate = DateTime.fromMillisecondsSinceEpoch(battleRepository.endDate! * 1000);
+
+    // Calculate the difference in seconds
+    return endDate.difference(startDate).inSeconds;
+  }
+
+  int get initialTimeForExercise {
+    if (!hasTimer) {
+      return 0;
+    }
+    DateTime startDate = DateTime.now();
     DateTime endDate = DateTime.fromMillisecondsSinceEpoch(battleRepository.endDate! * 1000);
 
     // Calculate the difference in seconds
@@ -137,12 +149,7 @@ class BattleExercisesViewModel extends BaseViewModel {
 
         setSuccess(tag: postExercisesCheckTag);
       } else {
-        showDialog(
-          context: context!,
-          builder: (context) => const DialogBackground(
-            child: NoInternetConnectionDialog(),
-          ),
-        );
+        callBackError(LocaleKeys.no_internet.tr());
         setBusy(false, tag: postExercisesCheckTag);
       }
     }, callFuncName: 'postWordExercisesCheck', tag: postExercisesCheckTag, inProgress: false);

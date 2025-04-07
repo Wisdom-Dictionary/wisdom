@@ -1,23 +1,25 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:jbaza/jbaza.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:wisdom/app.dart';
 import 'package:wisdom/config/constants/constants.dart';
 import 'package:wisdom/core/db/db_helper.dart';
 import 'package:wisdom/core/db/preference_helper.dart';
+import 'package:wisdom/core/localization/locale_keys.g.dart';
 import 'package:wisdom/data/model/battle/battle_user_model.dart';
 import 'package:wisdom/data/model/my_contacts/user_details_model.dart';
 import 'package:wisdom/data/viewmodel/local_viewmodel.dart';
 import 'package:wisdom/domain/repositories/battle_repository.dart';
 import 'package:wisdom/domain/repositories/profile_repository.dart';
-import 'package:wisdom/presentation/components/dialog_background.dart';
-import 'package:wisdom/presentation/components/no_internet_connection_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/opponent_was_found_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/opponent_was_not_found_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/opponent_was_rejected_invitation_dialog.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/out_of_lives_dialog.dart';
 import 'package:wisdom/presentation/routes/routes.dart';
 
 import '../../../../core/di/app_locator.dart';
@@ -109,12 +111,22 @@ class SearchingOpponentViewmodel extends BaseViewModel {
     _startTimer(_incrementTimer);
   }
 
+  @override
+  callBackError(String text) {
+    showTopSnackBar(
+      Overlay.of(context!),
+      CustomSnackBar.error(
+        message: text,
+      ),
+    );
+  }
+
   void _listenToWebSocket() async {
     if (userDetailsModel.user == null) {
-      if (profileRepository.userCabinet == null) {
+      if (!profileRepository.userCabinet.hasUser) {
         userDetailsModel = await profileRepository.getUserCabinet();
       } else {
-        userDetailsModel = profileRepository.userCabinet!;
+        userDetailsModel = profileRepository.userCabinet;
       }
     }
     _subscription = battleRepository.searchingOpponents.listen(
@@ -123,9 +135,11 @@ class SearchingOpponentViewmodel extends BaseViewModel {
 
           statusMessage = message;
           if (messageData['event'] == 'user-matched' &&
-              messageData['channel'] == 'private-user.${userDetailsModel.user!.id}') {
+              (messageData['channel'] as String).contains('private-user.')) {
             userMatched(messageData);
             _stopTimer();
+          } else if (messageData['event'] == 'match-cancelled') {
+            matchCancelled();
           } else if (messageData['event'] == 'user-search-failed') {
             _stopTimer();
             battleRepository.stopSearchingOpponents();
@@ -138,6 +152,7 @@ class SearchingOpponentViewmodel extends BaseViewModel {
                 if (value == null || !value) {
                   Navigator.pop(navigatorKey.currentContext!);
                 } else {
+                  startSearchOpponentTimer();
                   battleRepository.connectBattle(battleRepository.subscribeSearchingChannels);
                 }
               },
@@ -186,7 +201,6 @@ class SearchingOpponentViewmodel extends BaseViewModel {
 
   Future<dynamic> userMatched(Map<String, dynamic> messageData) async {
     statusMessage = "Matched with opponent: ${messageData['data']}";
-    log("userMatched");
     _resetTimer();
     seconds.value = 3;
 
@@ -196,14 +210,14 @@ class SearchingOpponentViewmodel extends BaseViewModel {
     user1 = BattleUserModel.fromMap(data['user1']);
     user2 = BattleUserModel.fromMap(data['user2']);
     if (userDetailsModel.user == null) {
-      if (profileRepository.userCabinet == null) {
+      if (profileRepository.userCabinet.user == null) {
         userDetailsModel = await profileRepository.getUserCabinet();
       } else {
-        userDetailsModel = profileRepository.userCabinet!;
+        userDetailsModel = profileRepository.userCabinet;
       }
     }
     sharedPref.putString(Constants.KEY_USER_BATTLE_OPPONENT_USER, opponentUser!.toJson());
-
+    battleRepository.subscribeToChannel(channelName: "private-battle.${user1!.id}.${user2!.id}");
     return showDialog(
       barrierDismissible: false,
       context: navigatorKey.currentContext!,
@@ -219,12 +233,7 @@ class SearchingOpponentViewmodel extends BaseViewModel {
       navigatorKey.currentState!.context,
       (route) => route.isFirst ? true : false,
     );
-    // Navigator.popUntil(
-    //     navigatorKey.currentState!.context, ModalRoute.withName(Routes.mainPage));
     Navigator.pushNamed(navigatorKey.currentState!.context, Routes.battleExercisesPage);
-
-    // Navigator.pushNamedAndRemoveUntil(navigatorKey.currentState!.context,
-    //     Routes.battleExercisesPage, ModalRoute.withName(Routes.searchingOpponentPage));
   }
 
   void connectBattle() {
@@ -235,10 +244,10 @@ class SearchingOpponentViewmodel extends BaseViewModel {
     setBusy(true, tag: getGetUserTag);
     safeBlock(
       () async {
-        if (profileRepository.userCabinet == null) {
+        if (profileRepository.userCabinet.user == null) {
           userDetailsModel = await profileRepository.getUserCabinet();
         } else {
-          userDetailsModel = profileRepository.userCabinet!;
+          userDetailsModel = profileRepository.userCabinet;
         }
         setSuccess(tag: getGetUserTag);
       },
@@ -256,12 +265,7 @@ class SearchingOpponentViewmodel extends BaseViewModel {
         Navigator.pop(context!);
         setSuccess(tag: stopSearchingOpponentTag);
       } else {
-        showDialog(
-          context: context!,
-          builder: (context) => const DialogBackground(
-            child: NoInternetConnectionDialog(),
-          ),
-        );
+        callBackError(LocaleKeys.no_internet.tr());
       }
     }, callFuncName: 'stopSearchingOpponent', tag: stopSearchingOpponentTag, inProgress: false);
   }
@@ -307,8 +311,8 @@ class SearchingOpponentViewmodel extends BaseViewModel {
   }
 
   int? invitedIserId;
-  void postInviteBattle({required int opponentId}) {
-    safeBlock(() async {
+  void postInviteBattle({required int opponentId}) async {
+    try {
       if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
         invitedIserId = opponentId;
         inviteUpdateStatus.value = true;
@@ -316,15 +320,16 @@ class SearchingOpponentViewmodel extends BaseViewModel {
         invitedIserId = null;
         inviteUpdateStatus.value = false;
       } else {
-        showDialog(
-          context: context!,
-          builder: (context) => const DialogBackground(
-            child: NoInternetConnectionDialog(),
-          ),
-        );
+        callBackError(LocaleKeys.no_internet.tr());
         invitedIserId = null;
       }
-    }, callFuncName: 'postInvite', tag: postInviteTag, inProgress: false);
+    } catch (e) {
+      if (e is VMException) {
+        setError(VMException(e.message, callFuncName: 'applePay', tag: postInviteTag));
+      }
+      invitedIserId = null;
+      inviteUpdateStatus.value = false;
+    }
   }
 
   void postInviteUpdateStatus(String status) {
@@ -338,16 +343,12 @@ class SearchingOpponentViewmodel extends BaseViewModel {
 
         statusTag = "";
         inviteUpdateStatus.value = false;
-        if (Navigator.of(navigatorKey.currentContext!).canPop()) {
+
+        if (Navigator.of(navigatorKey.currentContext!).canPop() && status == rejectedTag) {
           Navigator.pop(navigatorKey.currentContext!);
         }
       } else {
-        showDialog(
-          context: context!,
-          builder: (context) => const DialogBackground(
-            child: NoInternetConnectionDialog(),
-          ),
-        );
+        callBackError(LocaleKeys.no_internet.tr());
         statusTag = "";
         inviteUpdateStatus.value = false;
       }
@@ -361,5 +362,20 @@ class SearchingOpponentViewmodel extends BaseViewModel {
     // }
     _subscription.cancel();
     super.dispose();
+  }
+
+  void matchCancelled() {
+    Navigator.popUntil(
+      navigatorKey.currentContext!,
+      (route) => route.isFirst ? true : false,
+    );
+    showDialog<bool>(
+      barrierDismissible: false,
+      context: navigatorKey.currentContext!,
+      builder: (context) => OutOfLivesDialog(
+        title: 'no_action_taken'.tr(),
+        subTitle: 'you_lost_1_heart'.tr(),
+      ),
+    );
   }
 }

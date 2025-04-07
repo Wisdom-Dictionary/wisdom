@@ -1,4 +1,3 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -26,7 +25,7 @@ class MyContactsAppBar extends StatefulWidget implements PreferredSizeWidget {
   State<MyContactsAppBar> createState() => _MyContactsAppBarState();
 
   @override
-  Size get preferredSize => Size.fromHeight(121.h);
+  Size get preferredSize => Size.fromHeight(132.h);
 }
 
 class _MyContactsAppBarState extends State<MyContactsAppBar> {

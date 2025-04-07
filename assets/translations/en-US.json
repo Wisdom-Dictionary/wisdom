@@ -170,6 +170,8 @@
   "we_could_not_find_you_an_opponent": "We couldn't find you an opponent.",
   "you_did_not_start_the_battle": "You didn’t start the battle!",
   "you_do_not_have_enough_lives": "You use all your lives, you don't have enough lives to complete the exercises",
+  "no_action_taken": "No action taken",
+  "you_lost_1_heart": "Since you didn’t accept the battle, you lost 1 heart. Try again!",
   "lives_timer_leading_text": "You will get your next lives after ",
   "lives_timer_trailing_text": " minutes",
   "you_are_out_of_lives": "You are out of lives!",
@@ -267,5 +269,6 @@
   "contacts_access_content": "Allow us to access your contacts to easily find and connect with friends.",
   "rank": "Rank",
   "no_continue": "No, continue",
-  "user_rejected_the_offer": "The user rejected the offer"
+  "user_rejected_the_offer": "The user rejected the offer",
+  "no_data": "No data"
 }

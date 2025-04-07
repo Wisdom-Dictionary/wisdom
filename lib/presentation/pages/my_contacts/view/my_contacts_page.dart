@@ -27,18 +27,16 @@ class MyContactsPage extends StatefulWidget {
 
 class _MyContactsPageState extends State<MyContactsPage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
-
+  late final SearchingOpponentViewmodel searchingOpponentViewmodel;
   @override
   void initState() {
+    searchingOpponentViewmodel = SearchingOpponentViewmodel(context: context);
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(() {
       setState(() {}); // Tab o'zgarganda UI yangilanadi
     });
     super.initState();
   }
-
-  final SearchingOpponentViewmodel searchingOpponentViewmodel =
-      SearchingOpponentViewmodel(context: navigatorKey.currentContext);
 
   @override
   void dispose() {
@@ -230,35 +228,32 @@ class ContactsList extends ViewModelBuilderWidget<MyContactsViewModel> {
   Widget builder(BuildContext context, MyContactsViewModel viewModel, Widget? child) {
     return viewModel.isBusy(tag: viewModel.getMyContactsTag)
         ? const MyContcatsShimmerWidget()
-        : viewModel.isSuccess(tag: viewModel.getMyContactsTag)
-            ? viewModel.myContactsRepository.myContactsList.isEmpty ||
-                    !viewModel.hasContactsPermission
-                ? MyContactsEmptyPage(
-                    icon: SvgPicture.asset(Assets.icons.calendarOutlined),
-                    title: "title_my_contacts_list_empty".tr(),
-                    description: "description_my_contacts_list_empty".tr(),
-                  )
-                : RefreshIndicator(
-                    onRefresh: () async => viewModel.getMyContactUsers(),
-                    child: ListView.builder(
-                      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 27),
-                      itemCount: viewModel.myContactsRepository.myContactsList.length,
-                      itemBuilder: (context, index) {
-                        final item = viewModel.myContactsRepository.myContactsList[index];
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(context, Routes.contactDetailsPage,
-                                arguments: item.toMap());
-                          },
-                          child: ContactItemWidget(
-                            searchingOpponentViewmodel: searchingOpponentViewmodel,
-                            item: item,
-                          ),
-                        );
+        : viewModel.myContactsRepository.myContactsList.isEmpty || !viewModel.hasContactsPermission
+            ? MyContactsEmptyPage(
+                icon: SvgPicture.asset(Assets.icons.calendarOutlined),
+                title: "title_my_contacts_list_empty".tr(),
+                description: "description_my_contacts_list_empty".tr(),
+              )
+            : RefreshIndicator(
+                onRefresh: () async => viewModel.getMyContactUsers(),
+                child: ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 27),
+                  itemCount: viewModel.myContactsRepository.myContactsList.length,
+                  itemBuilder: (context, index) {
+                    final item = viewModel.myContactsRepository.myContactsList[index];
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(context, Routes.contactDetailsPage,
+                            arguments: item.toMap());
                       },
-                    ),
-                  )
-            : const Center();
+                      child: ContactItemWidget(
+                        searchingOpponentViewmodel: searchingOpponentViewmodel,
+                        item: item,
+                      ),
+                    );
+                  },
+                ),
+              );
   }
 
   @override
@@ -280,38 +275,35 @@ class ContactsFollowedList extends ViewModelBuilderWidget<MyContactsViewModel> {
   Widget builder(BuildContext context, MyContactsViewModel viewModel, Widget? child) {
     return viewModel.isBusy(tag: viewModel.getMyContactsTag)
         ? const MyContcatsShimmerWidget()
-        : viewModel.isSuccess(tag: viewModel.getMyContactsTag)
-            ? viewModel.myContactsRepository.followedList.isEmpty
-                ? MyContactsEmptyPage(
-                    icon: SvgPicture.asset(
-                      height: 113,
-                      width: 133,
-                      Assets.icons.followed,
-                      colorFilter:
-                          ColorFilter.mode(AppColors.blue.withValues(alpha: 0.12), BlendMode.srcIn),
+        : viewModel.myContactsRepository.followedList.isEmpty
+            ? MyContactsEmptyPage(
+                icon: SvgPicture.asset(
+                  height: 113,
+                  width: 133,
+                  Assets.icons.followed,
+                  colorFilter:
+                      ColorFilter.mode(AppColors.blue.withValues(alpha: 0.12), BlendMode.srcIn),
+                ),
+                title: "title_my_followed_list_empty".tr(),
+                description: "description_my_followed_list_empty".tr(),
+              )
+            : RefreshIndicator(
+                onRefresh: () async => viewModel.getMyContactUsers(),
+                child: ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 27),
+                  itemCount: viewModel.myContactsRepository.followedList.length,
+                  itemBuilder: (context, index) => GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, Routes.contactDetailsPage,
+                          arguments: viewModel.myContactsRepository.followedList[index].toMap());
+                    },
+                    child: ContactItemWidget(
+                      searchingOpponentViewmodel: searchingOpponentViewmodel,
+                      item: viewModel.myContactsRepository.followedList[index],
                     ),
-                    title: "title_my_followed_list_empty".tr(),
-                    description: "description_my_followed_list_empty".tr(),
-                  )
-                : RefreshIndicator(
-                    onRefresh: () async => viewModel.getMyContactUsers(),
-                    child: ListView.builder(
-                      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 27),
-                      itemCount: viewModel.myContactsRepository.followedList.length,
-                      itemBuilder: (context, index) => GestureDetector(
-                        onTap: () {
-                          Navigator.pushNamed(context, Routes.contactDetailsPage,
-                              arguments:
-                                  viewModel.myContactsRepository.followedList[index].toMap());
-                        },
-                        child: ContactItemWidget(
-                          searchingOpponentViewmodel: searchingOpponentViewmodel,
-                          item: viewModel.myContactsRepository.followedList[index],
-                        ),
-                      ),
-                    ),
-                  )
-            : const Center();
+                  ),
+                ),
+              );
   }
 
   @override
@@ -439,7 +431,9 @@ class InviteBattleWidget extends StatelessWidget {
     return ValueListenableBuilder<bool>(
       valueListenable: searchingOpponentViewmodel.inviteUpdateStatus,
       builder: (context, value, child) {
-        return value && userId == searchingOpponentViewmodel.invitedIserId
+        return value &&
+                userId == searchingOpponentViewmodel.invitedIserId &&
+                !searchingOpponentViewmodel.isError(tag: searchingOpponentViewmodel.postInviteTag)
             ? const Padding(
                 padding: EdgeInsets.only(left: 8.0),
                 child: SizedBox(

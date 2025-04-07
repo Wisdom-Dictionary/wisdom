@@ -2,13 +2,10 @@ import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-
 import 'package:wisdom/config/constants/app_colors.dart';
 import 'package:wisdom/config/constants/assets.dart';
 import 'package:wisdom/data/model/roadmap/level_model.dart';
 import 'package:wisdom/domain/repositories/roadmap_repository.dart';
-import 'package:wisdom/presentation/components/shimmer.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/widgets/roadmap_shimmer_widget.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/widgets/task_level_indicator_widget.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/roadmap_viewmodel.dart';
@@ -139,7 +136,7 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
             LevelItem(
               item: LevelModel(name: "0"),
             ),
-            Positioned.fill(child: Center(child: CupertinoActivityIndicator()))
+            const Positioned.fill(child: Center(child: CupertinoActivityIndicator()))
           ],
         ),
       );
@@ -153,13 +150,20 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        if (widget.viewModel.isBusy(tag: widget.viewModel.getLevelsTag) &&
-            widget.viewModel.page == 1)
-          buildLoadingState(),
         if (widget.viewModel.isSuccess(tag: widget.viewModel.getLevelsTag) ||
             (widget.viewModel.isBusy(tag: widget.viewModel.getLevelsTag) &&
                 widget.viewModel.page > 1))
-          buildSuccessState(),
+          buildSuccessState()
+        else
+          Positioned.fill(
+            child: Image.asset(
+              Assets.images.roadmapBattleBackground1,
+              fit: BoxFit.fitWidth,
+            ),
+          ),
+        if (widget.viewModel.isBusy(tag: widget.viewModel.getLevelsTag) &&
+            widget.viewModel.page == 1)
+          buildLoadingState(),
         buildTopRightButton(context),
       ],
     );

@@ -1,13 +1,14 @@
 import 'dart:async';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:jbaza/jbaza.dart';
 import 'package:provider/provider.dart';
 import 'package:wisdom/app.dart';
 import 'package:wisdom/config/constants/constants.dart';
 import 'package:wisdom/core/db/db_helper.dart';
 import 'package:wisdom/core/db/preference_helper.dart';
+import 'package:wisdom/core/localization/locale_keys.g.dart';
 import 'package:wisdom/data/model/battle/battle_user_model.dart';
 import 'package:wisdom/data/model/my_contacts/user_details_model.dart';
 import 'package:wisdom/data/model/roadmap/level_model.dart';
@@ -17,7 +18,6 @@ import 'package:wisdom/domain/repositories/level_test_repository.dart';
 import 'package:wisdom/domain/repositories/profile_repository.dart';
 import 'package:wisdom/domain/repositories/roadmap_repository.dart';
 import 'package:wisdom/presentation/components/dialog_background.dart';
-import 'package:wisdom/presentation/components/no_internet_connection_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/continue_battle_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/out_of_lives_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/start_battle_dialog.dart';
@@ -58,7 +58,7 @@ class RoadMapViewModel extends BaseViewModel {
       try {
         if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
           setBusy(true, tag: getUserDetailsTag);
-          if (profileRepository.userCabinet == null) {
+          if (profileRepository.userCabinet.user == null) {
             userDetailsModel = await profileRepository.getUserCabinet();
           } else {
             userDetailsModel = profileRepository.userCabinet;
@@ -90,12 +90,8 @@ class RoadMapViewModel extends BaseViewModel {
           await roadMapRepository.getLevels(++page);
           setSuccess(tag: getLevelsTag);
         } else {
-          showDialog(
-            context: context!,
-            builder: (context) => const DialogBackground(
-              child: NoInternetConnectionDialog(),
-            ),
-          );
+          setBusy(false, tag: getLevelsTag);
+          callBackError(LocaleKeys.no_internet.tr());
         }
       } catch (e) {
         if (e is VMException) {
@@ -122,12 +118,7 @@ class RoadMapViewModel extends BaseViewModel {
           await roadMapRepository.getLevels(++page);
           setSuccess(tag: getLevelsMoreTag);
         } else {
-          showDialog(
-            context: context!,
-            builder: (context) => const DialogBackground(
-              child: NoInternetConnectionDialog(),
-            ),
-          );
+          callBackError(LocaleKeys.no_internet.tr());
         }
       } catch (e) {
         if (e is VMException) {
@@ -151,7 +142,10 @@ class RoadMapViewModel extends BaseViewModel {
     if (noUserLives) {
       showDialog(
         context: context!,
-        builder: (context) => OutOfLivesDialog(),
+        builder: (context) => OutOfLivesDialog(
+          title: "you_did_not_start_the_battle".tr(),
+          subTitle: "you_do_not_have_enough_lives".tr(),
+        ),
       );
       return;
     }
@@ -199,12 +193,8 @@ class RoadMapViewModel extends BaseViewModel {
           }
           Navigator.pushNamed(navigatorKey.currentContext!, Routes.battleExercisesPage);
         } else {
-          showDialog(
-            context: context!,
-            builder: (context) => const DialogBackground(
-              child: NoInternetConnectionDialog(),
-            ),
-          );
+          setBusy(false, tag: "getBattleDataTag");
+          callBackError(LocaleKeys.no_internet.tr());
         }
       } catch (e) {
         continueBattleProgress.value = false;
@@ -244,12 +234,8 @@ class RoadMapViewModel extends BaseViewModel {
             Navigator.pop(navigatorKey.currentContext!);
           }
         } else {
-          showDialog(
-            context: context!,
-            builder: (context) => const DialogBackground(
-              child: NoInternetConnectionDialog(),
-            ),
-          );
+          setBusy(false, tag: "getBattleDataTag");
+          callBackError(LocaleKeys.no_internet.tr());
         }
       } catch (e) {
         battleUpdateStatus.value = false;

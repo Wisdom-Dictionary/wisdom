@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:wisdom/config/constants/app_colors.dart';
-import 'package:wisdom/config/constants/assets.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/roadmap_custom_painter.dart';
 
 class RoadmapShimmerWidget extends StatelessWidget {
@@ -20,13 +19,6 @@ class RoadmapShimmerWidget extends StatelessWidget {
           height: 900,
           child: Stack(
             children: [
-              Positioned.fill(
-                child: Image.asset(
-                  Assets.images.roadmapBattleBackground1,
-                  repeat: ImageRepeat.repeat,
-                  fit: BoxFit.fitWidth,
-                ),
-              ),
               Shimmer.fromColors(
                 baseColor: Colors.grey.shade400,
                 highlightColor: Colors.grey.shade300,

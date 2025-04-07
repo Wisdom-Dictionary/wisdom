@@ -171,6 +171,8 @@
   "lives_timer_leading_text": "Keyingi jonlaringizni ",
   "lives_timer_trailing_text": "  daqiqadan so'ng olasiz",
   "you_are_out_of_lives": "Sizda urinishlar soni tugagan!",
+  "no_action_taken": "Jarayon bajarilmadi",
+  "you_lost_1_heart": "Battleni qabul qilmaganingiz uchun siz 1 ta yurakni yo'qotdingiz. Qayta urinib ko'ring!",
   "try_again": "Qayta urinish",
   "vs": "VA",
   "you": "Siz",
@@ -265,5 +267,6 @@
   "contacts_access_content": "Do'stlaringizni osongina topish va ular bilan bog'lanish uchun bizga kontaktlaringizga kirishga ruxsat bering.",
   "rank": "Daraja",
   "no_continue": "Yo'q, davom etish",
-  "user_rejected_the_offer": "Foydalanuvchi taklifni rad etdi"
+  "user_rejected_the_offer": "Foydalanuvchi taklifni rad etdi",
+  "no_data": "Ma'lumotlar topilmadi"
 }

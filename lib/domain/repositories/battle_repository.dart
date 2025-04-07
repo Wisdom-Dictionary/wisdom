@@ -2,11 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-import 'package:wisdom/data/model/battle/battle_user_model.dart';
 import 'package:wisdom/data/model/roadmap/answer_entity.dart';
 import 'package:wisdom/data/model/roadmap/level_model.dart';
 import 'package:wisdom/data/model/roadmap/test_question_model.dart';
-import 'package:wisdom/data/model/user/user_model.dart';
 import 'package:wisdom/data/repositories/battle_repository_impl.dart';
 
 abstract class BattleRepository {
@@ -60,6 +58,8 @@ abstract class BattleRepository {
   void searchingOpponentsChannelClose();
 
   void connectBattle(Function(Map<String, dynamic>) channelsFunction);
+
+  void reconnectSearchingOpponent();
 
   Future<void> subscribeSearchingChannels(Map<String, dynamic> messageData);
 
