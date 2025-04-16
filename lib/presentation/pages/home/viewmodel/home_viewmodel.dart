@@ -117,6 +117,14 @@ class HomeViewModel extends BaseViewModel {
     }, callFuncName: 'getAd', tag: getAdTag, inProgress: false);
   }
 
+  void goLatestSelectedPage() async {
+    int index = sharedPref.getInt(Constants.KEY_LATEST_SELECTED_INDEX, 0);
+    if (index != 0) {
+      localViewModel.changePageIndex(index);
+      sharedPref.putInt(Constants.KEY_LATEST_SELECTED_INDEX, 0);
+    }
+  }
+
   Future getRefreshAds() async {
     safeBlock(
       () async {

@@ -6,6 +6,7 @@ import 'package:jbaza/jbaza.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:wisdom/core/db/preference_helper.dart';
+import 'package:wisdom/core/domain/entities/def_enum.dart';
 import 'package:wisdom/core/localization/locale_keys.g.dart';
 import 'package:wisdom/data/model/recent_model.dart';
 import 'package:wisdom/data/model/roadmap/level_word_model.dart';
@@ -49,6 +50,13 @@ class LevelWordsPageViewModel extends BaseViewModel {
 
   void goContactsPage() {
     Navigator.pushNamed(context!, Routes.myContactsPage);
+  }
+
+  void goLevelExercisesPage() {
+    levelTestRepository.setExerciseType(TestExerciseType.levelExercise);
+    Navigator.pushNamed(context!, Routes.wordExercisesPage).then((onValue) {
+      getLevelWords();
+    });
   }
 
   void getLevelWords() {
@@ -132,7 +140,9 @@ class LevelWordsPageViewModel extends BaseViewModel {
           recentModel = model as RecentModel;
         }
         localViewModel.wordDetailModel = recentModel;
-        Navigator.of(context!).pushNamed(Routes.wordDetailsPage);
+        Navigator.of(context!).pushNamed(Routes.wordDetailsPage).then((value) {
+          getLevelWords();
+        });
       },
       callFuncName: 'goToDetail',
     );
@@ -144,6 +154,7 @@ class LevelWordsPageViewModel extends BaseViewModel {
 
   goMain() {
     localViewModel.changePageIndex(3);
+    localViewModel.changeRoadMapLoadingStatus(true);
   }
 
   @override

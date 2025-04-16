@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +32,7 @@ class SearchingOpponentPage extends ViewModelBuilderWidget<SearchingOpponentView
       appBar: NewCustomAppBar(
         title: "battle".tr(),
         onTap: () {
-          Navigator.pop(context);
+          viewModel.stopSearchOpponent();
         },
       ),
       body: SafeArea(

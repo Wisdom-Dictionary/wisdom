@@ -1,4 +1,5 @@
 import 'package:add_to_cart_animation/add_to_cart_animation.dart';
+import 'package:badges/badges.dart' as badges;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,7 +13,6 @@ import 'package:wisdom/core/di/app_locator.dart';
 import 'package:wisdom/core/localization/locale_keys.g.dart';
 import 'package:wisdom/presentation/components/dialog_background.dart';
 import 'package:wisdom/presentation/pages/home/viewmodel/home_viewmodel.dart';
-import 'package:badges/badges.dart' as badges;
 import 'package:wisdom/presentation/pages/roadmap_battle/view/sign_in_dialog.dart';
 
 import '../../config/constants/assets.dart';
@@ -167,6 +167,8 @@ class HomeBottomNavBar extends ViewModelWidget<HomeViewModel> {
                           defIcon: Assets.icons.cupOutlined,
                           filledIcon: Assets.icons.cup,
                           callBack: () {
+                            viewModel.sharedPref.putInt(Constants.KEY_LATEST_SELECTED_INDEX, 3);
+
                             if (!isLoggedIn) {
                               showDialog(
                                 context: context,
@@ -177,11 +179,12 @@ class HomeBottomNavBar extends ViewModelWidget<HomeViewModel> {
                               return;
                             }
                             onTap(3);
+                            viewModel.localViewModel.changePageIndex(3);
+
                             viewModel.localViewModel.isFinal = false;
                             viewModel.localViewModel.isTitle = false;
                             viewModel.localViewModel.isSubSub = false;
                             viewModel.localViewModel.subId = -1;
-                            viewModel.localViewModel.changePageIndex(3);
                           }),
                     ),
                   ),

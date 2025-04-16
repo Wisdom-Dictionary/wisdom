@@ -1,14 +1,18 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:jbaza/jbaza.dart';
 import 'package:provider/provider.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:wisdom/app.dart';
 import 'package:wisdom/config/constants/constants.dart';
 import 'package:wisdom/core/db/db_helper.dart';
 import 'package:wisdom/core/db/preference_helper.dart';
 import 'package:wisdom/core/localization/locale_keys.g.dart';
+import 'package:wisdom/core/session/manager/session_manager.dart';
 import 'package:wisdom/data/model/battle/battle_user_model.dart';
 import 'package:wisdom/data/model/my_contacts/user_details_model.dart';
 import 'package:wisdom/data/model/roadmap/level_model.dart';
@@ -53,16 +57,29 @@ class RoadMapViewModel extends BaseViewModel {
 
   int get listCountCeil => roadMapRepository.levelsList.length;
 
+  void checkHasInProgressBattle() async {
+    int battleEndDate = sharedPref.getInt(Constants.KEY_USER_BATTLE_END_TIME, 0);
+
+    if (battleEndDate != 0) {
+      final dateTimeNowInMillisecont = DateTime.now().millisecondsSinceEpoch;
+      battleEndDate = battleEndDate * 1000;
+      if (dateTimeNowInMillisecont < battleEndDate) {
+        showTopDialog();
+        return;
+      } else {
+        await sharedPref.prefs.remove(Constants.KEY_USER_BATTLE_END_TIME);
+        await sharedPref.prefs.remove(Constants.KEY_USER_BATTLE_ID);
+        await sharedPref.prefs.remove(Constants.KEY_USER_BATTLE_OPPONENT_USER);
+      }
+    }
+  }
+
   void userData() {
     safeBlock(() async {
       try {
         if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
           setBusy(true, tag: getUserDetailsTag);
-          if (profileRepository.userCabinet.user == null) {
-            userDetailsModel = await profileRepository.getUserCabinet();
-          } else {
-            userDetailsModel = profileRepository.userCabinet;
-          }
+          userDetailsModel = await profileRepository.getUserCabinet();
           setSuccess(tag: getUserDetailsTag);
         }
       } catch (e) {
@@ -75,6 +92,7 @@ class RoadMapViewModel extends BaseViewModel {
                   child: SignInDialog(),
                 ),
               );
+              // locator<SessionManager>().endLocalSession();
             }
           }
         }
@@ -82,12 +100,17 @@ class RoadMapViewModel extends BaseViewModel {
     }, callFuncName: 'getLevels', tag: getLevelsTag, inProgress: false);
   }
 
+  bool get initialRequest => roadMapRepository.topLastPage == roadMapRepository.bottomLastPage;
+
   void getLevels() {
     safeBlock(() async {
       try {
         if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
           setBusy(true, tag: getLevelsTag);
-          await roadMapRepository.getLevels(++page);
+          if (locator<LocalViewModel>().userLevelsSatusChanged) {
+            await roadMapRepository.getLevels();
+            locator<LocalViewModel>().changeRoadMapLoadingStatus(false);
+          }
           setSuccess(tag: getLevelsTag);
         } else {
           setBusy(false, tag: getLevelsTag);
@@ -97,12 +120,13 @@ class RoadMapViewModel extends BaseViewModel {
         if (e is VMException) {
           if (e.response != null) {
             if (e.response!.statusCode == 403) {
-              showDialog(
-                context: context!,
-                builder: (context) => const DialogBackground(
-                  child: SignInDialog(),
-                ),
-              );
+              // showDialog(
+              //   context: context!,
+              //   builder: (context) => const DialogBackground(
+              //     child: SignInDialog(),
+              //   ),
+              // );
+              locator<SessionManager>().endLocalSession();
             }
           }
         }
@@ -110,26 +134,57 @@ class RoadMapViewModel extends BaseViewModel {
     }, callFuncName: 'getLevels', tag: getLevelsTag, inProgress: false);
   }
 
-  void getLevelsMore() {
+  void getLevelsBottomMore() {
+    setBusy(true, tag: getLevelsMoreTag);
     safeBlock(() async {
       try {
         if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
-          setBusy(true, tag: getLevelsMoreTag);
-          await roadMapRepository.getLevels(++page);
+          await roadMapRepository.getLevelsPaginationBottom();
           setSuccess(tag: getLevelsMoreTag);
         } else {
+          setBusy(false, tag: getLevelsMoreTag);
           callBackError(LocaleKeys.no_internet.tr());
         }
       } catch (e) {
         if (e is VMException) {
           if (e.response != null) {
             if (e.response!.statusCode == 403) {
-              showDialog(
-                context: context!,
-                builder: (context) => const DialogBackground(
-                  child: SignInDialog(),
-                ),
-              );
+              // showDialog(
+              //   context: context!,
+              //   builder: (context) => const DialogBackground(
+              //     child: SignInDialog(),
+              //   ),
+              // );
+              locator<SessionManager>().endLocalSession();
+            }
+          }
+        }
+      }
+    }, callFuncName: 'getLevelsMore', tag: getLevelsMoreTag, inProgress: false);
+  }
+
+  void getLevelsTopMore() {
+    setBusy(true, tag: getLevelsMoreTag);
+    safeBlock(() async {
+      try {
+        if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
+          await roadMapRepository.getLevelsPaginationTop();
+          setSuccess(tag: getLevelsMoreTag);
+        } else {
+          setBusy(false, tag: getLevelsMoreTag);
+          callBackError(LocaleKeys.no_internet.tr());
+        }
+      } catch (e) {
+        if (e is VMException) {
+          if (e.response != null) {
+            if (e.response!.statusCode == 403) {
+              // showDialog(
+              //   context: context!,
+              //   builder: (context) => const DialogBackground(
+              //     child: SignInDialog(),
+              //   ),
+              // );
+              locator<SessionManager>().endLocalSession();
             }
           }
         }
@@ -143,6 +198,7 @@ class RoadMapViewModel extends BaseViewModel {
       showDialog(
         context: context!,
         builder: (context) => OutOfLivesDialog(
+          showHeartIcon: true,
           title: "you_did_not_start_the_battle".tr(),
           subTitle: "you_do_not_have_enough_lives".tr(),
         ),
@@ -150,26 +206,12 @@ class RoadMapViewModel extends BaseViewModel {
       return;
     }
     if (item.type == LevelType.battle) {
-      int battleEndDate = sharedPref.getInt(Constants.KEY_USER_BATTLE_END_TIME, 0);
-
-      if (battleEndDate != 0) {
-        final dateTimeNowInMillisecont = DateTime.now().millisecondsSinceEpoch;
-        battleEndDate = battleEndDate * 1000;
-        if (dateTimeNowInMillisecont < battleEndDate) {
-          showTopDialog();
-          return;
-        } else {
-          await sharedPref.prefs.remove(Constants.KEY_USER_BATTLE_END_TIME);
-          await sharedPref.prefs.remove(Constants.KEY_USER_BATTLE_ID);
-          await sharedPref.prefs.remove(Constants.KEY_USER_BATTLE_OPPONENT_USER);
-        }
-      }
-
       battleRepository.setSelectedLevelItem(item);
       showDialog(
         context: context!,
         builder: (context) => StartBattleDialog(),
       );
+      locator<LocalViewModel>().changeRoadMapLoadingStatus(true);
       return;
     }
     if (!(item.userCurrentLevel ?? false) && (item.star ?? 0) == 0) {
@@ -188,9 +230,11 @@ class RoadMapViewModel extends BaseViewModel {
           await battleRepository.getBattleData();
           continueBattleProgress.value = false;
           _resetTimer();
-          if (Navigator.canPop(navigatorKey.currentContext!)) {
-            Navigator.pop(navigatorKey.currentContext!);
-          }
+
+          Navigator.popUntil(
+            navigatorKey.currentContext!,
+            (route) => route.isFirst ? true : false,
+          );
           Navigator.pushNamed(navigatorKey.currentContext!, Routes.battleExercisesPage);
         } else {
           setBusy(false, tag: "getBattleDataTag");
@@ -242,12 +286,13 @@ class RoadMapViewModel extends BaseViewModel {
         if (e is VMException) {
           if (e.response != null) {
             if (e.response!.statusCode == 403) {
-              showDialog(
-                context: context!,
-                builder: (context) => const DialogBackground(
-                  child: SignInDialog(),
-                ),
-              );
+              // showDialog(
+              //   context: context!,
+              //   builder: (context) => const DialogBackground(
+              //     child: SignInDialog(),
+              //   ),
+              // );
+              locator<SessionManager>().endLocalSession();
             }
           }
         }
@@ -260,17 +305,19 @@ class RoadMapViewModel extends BaseViewModel {
         BattleUserModel.fromJson(sharedPref.getString(Constants.KEY_USER_BATTLE_OPPONENT_USER, ""));
     _resetTimer();
     _startTimer(_decrementTimer);
-    showGeneralDialog(
-      context: navigatorKey.currentContext!,
-      barrierDismissible: true,
-      barrierLabel: "Top Dialog",
-      pageBuilder: (context, anim1, anim2) {
-        return ContinueBattleDialog(
-          viewmodel: this,
-        );
-      },
-      transitionDuration: const Duration(milliseconds: 300),
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showGeneralDialog(
+        context: context!,
+        barrierDismissible: true,
+        barrierLabel: "Top Dialog",
+        pageBuilder: (context, anim1, anim2) {
+          return ContinueBattleDialog(
+            viewmodel: this,
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 300),
+      );
+    });
   }
 
   void _startTimer(Function() onChange) {
@@ -296,5 +343,16 @@ class RoadMapViewModel extends BaseViewModel {
     _stopTimer();
 
     seconds.value = 20;
+  }
+
+  @override
+  callBackError(String text) {
+    log(text);
+    showTopSnackBar(
+      Overlay.of(context!),
+      CustomSnackBar.error(
+        message: text,
+      ),
+    );
   }
 }

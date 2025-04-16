@@ -265,10 +265,13 @@
   "you_won": "You Won",
   "failure": "Failure",
   "success": "Success",
+  "dont_give_up": "Don't give up!",
   "contacts_access": "Contacts Access",
   "contacts_access_content": "Allow us to access your contacts to easily find and connect with friends.",
   "rank": "Rank",
   "no_continue": "No, continue",
   "user_rejected_the_offer": "The user rejected the offer",
-  "no_data": "No data"
+  "no_data": "No data",
+  "you_have_to_buy_pro": "To battle with your friend, you have to buy the Pro version",
+  "your_friend_have_to_buy_pro": "It looks like your friend is using the free version of this app. Battles between friends are available only with the Pro version"
 }

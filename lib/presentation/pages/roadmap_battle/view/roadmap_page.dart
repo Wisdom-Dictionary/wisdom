@@ -18,7 +18,10 @@ class RoadmapPage extends ViewModelBuilderWidget<RoadMapViewModel> {
   @override
   void onViewModelReady(RoadMapViewModel viewModel) {
     viewModel.userData();
+
     viewModel.getLevels();
+
+    viewModel.checkHasInProgressBattle();
     super.onViewModelReady(viewModel);
   }
 

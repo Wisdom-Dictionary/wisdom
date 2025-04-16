@@ -9,11 +9,14 @@ import 'package:wisdom/config/constants/app_colors.dart';
 import 'package:wisdom/config/constants/app_text_style.dart';
 import 'package:wisdom/config/constants/assets.dart';
 import 'package:wisdom/config/constants/constants.dart';
+import 'package:wisdom/core/services/purchase_observer.dart';
 import 'package:wisdom/data/model/my_contacts/user_details_model.dart';
 import 'package:wisdom/presentation/components/w_button.dart';
 import 'package:wisdom/presentation/pages/my_contacts/view/my_contacts_app_bar.dart';
 import 'package:wisdom/presentation/pages/my_contacts/view/my_contacts_empty_widget.dart';
 import 'package:wisdom/presentation/pages/my_contacts/view/my_contcats_shimmer_widget.dart';
+import 'package:wisdom/presentation/pages/my_contacts/view/you_have_not_premium_dialog.dart';
+import 'package:wisdom/presentation/pages/my_contacts/view/your_friend_have_not_premium_dialog.dart';
 import 'package:wisdom/presentation/pages/my_contacts/viewmodel/my_contacts_viewmodel.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/searching_opponent_viewmodel.dart';
 import 'package:wisdom/presentation/routes/routes.dart';
@@ -40,7 +43,7 @@ class _MyContactsPageState extends State<MyContactsPage> with SingleTickerProvid
 
   @override
   void dispose() {
-    searchingOpponentViewmodel.dispose();
+    // searchingOpponentViewmodel.dispose();
     super.dispose();
   }
 
@@ -288,7 +291,7 @@ class ContactsFollowedList extends ViewModelBuilderWidget<MyContactsViewModel> {
                 description: "description_my_followed_list_empty".tr(),
               )
             : RefreshIndicator(
-                onRefresh: () async => viewModel.getMyContactUsers(),
+                onRefresh: () async => viewModel.getMyFollowedUsers(),
                 child: ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 27),
                   itemCount: viewModel.myContactsRepository.followedList.length,
@@ -412,6 +415,7 @@ class ContactItemWidget extends StatelessWidget {
             width: 4,
           ),
           InviteBattleWidget(
+            userIsPremium: item.isPremuimStatus,
             userId: item.user!.id!,
             searchingOpponentViewmodel: searchingOpponentViewmodel,
           ),
@@ -422,8 +426,13 @@ class ContactItemWidget extends StatelessWidget {
 }
 
 class InviteBattleWidget extends StatelessWidget {
-  InviteBattleWidget({super.key, required this.userId, required this.searchingOpponentViewmodel});
+  InviteBattleWidget(
+      {super.key,
+      required this.userId,
+      required this.userIsPremium,
+      required this.searchingOpponentViewmodel});
   final int userId;
+  final bool userIsPremium;
   final SearchingOpponentViewmodel searchingOpponentViewmodel;
 
   @override
@@ -447,7 +456,19 @@ class InviteBattleWidget extends StatelessWidget {
                 visualDensity: VisualDensity(horizontal: -3, vertical: -4),
                 padding: EdgeInsets.zero,
                 onPressed: () {
-                  searchingOpponentViewmodel.postInviteBattle(opponentId: userId);
+                  if (!PurchasesObserver().isPro()) {
+                    showDialog(
+                      context: context,
+                      builder: (context) => YouHaveNotPremiumDialog(),
+                    );
+                  } else if (!userIsPremium) {
+                    showDialog(
+                      context: context,
+                      builder: (context) => YourFriendHaveNotPremiumDialog(),
+                    );
+                  } else {
+                    searchingOpponentViewmodel.postInviteBattle(opponentId: userId);
+                  }
                 },
                 icon: SvgPicture.asset(
                   Assets.icons.battle,

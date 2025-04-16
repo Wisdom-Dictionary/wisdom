@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:jbaza/jbaza.dart';
 import 'package:wisdom/config/constants/constants.dart';
@@ -81,7 +82,7 @@ class RankingRepositoryImpl extends RankingRepository {
     if (response.isSuccessful) {
       final responseData = jsonDecode(response.body);
       _hasMoreContactRankingData = (responseData['data'] as List).isNotEmpty;
-
+      log(response.body);
       preferenceHelper.putString(
         Constants.KEY_EXERCISE_RESULTS_CONTACTS_DATA,
         response.body,

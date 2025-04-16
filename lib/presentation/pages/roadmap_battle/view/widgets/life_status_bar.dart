@@ -1,9 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:formz/formz.dart';
 import 'package:provider/provider.dart';
 import 'package:wisdom/config/constants/app_colors.dart';
 import 'package:wisdom/config/constants/app_text_style.dart';
@@ -39,55 +38,88 @@ class LifeStatusBar extends StatelessWidget {
         ValueListenableBuilder<int>(
           valueListenable: ValueNotifier<int>(context.watch<CountdownProvider>().remainingSeconds),
           builder: (_, value, child) {
-            if (value <= 0 &&
-                context.watch<CountdownProvider>().recoveryTimeDatetime != null &&
-                !context.watch<CountdownProvider>().fullUserLives) {
+            if (value <= 0 && !context.watch<CountdownProvider>().fullUserLives) {
               return Padding(
-                padding: EdgeInsets.only(left: 2.w, right: 2.w, top: 4.h),
-                child: FutureBuilder(
-                    future: context.watch<CountdownProvider>().claimLives(),
-                    builder: (_, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const SizedBox(
-                          height: 10,
-                          width: 10,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 0.8,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                            backgroundColor: Colors.transparent,
-                          ),
-                        );
-                      }
-                      return Material(
-                        borderRadius: BorderRadius.circular(21.r),
-                        color: AppColors.white,
-                        child: InkWell(
-                          onTap: () {
-                            Provider.of<CountdownProvider>(context, listen: false).claimLives();
-                          },
+                  padding: EdgeInsets.only(left: 2.w, right: 2.w, top: 4.h),
+                  child: ValueListenableBuilder(
+                      valueListenable: context.watch<CountdownProvider>().status,
+                      builder: (_, status, child) {
+                        if (status == FormzSubmissionStatus.inProgress) {
+                          return const SizedBox(
+                            height: 10,
+                            width: 10,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 0.8,
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              backgroundColor: Colors.transparent,
+                            ),
+                          );
+                        }
+                        return Material(
                           borderRadius: BorderRadius.circular(21.r),
-                          child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
-                            height: 19.h,
-                            child: Center(
-                              child: Text(
-                                "claim".tr(),
-                                style:
-                                    AppTextStyle.font13W500Normal.copyWith(color: AppColors.blue),
+                          color: AppColors.white,
+                          child: InkWell(
+                            onTap: () {
+                              Provider.of<CountdownProvider>(context, listen: false).claimLives();
+                            },
+                            borderRadius: BorderRadius.circular(21.r),
+                            child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+                              height: 19.h,
+                              child: Center(
+                                child: Text(
+                                  "claim".tr(),
+                                  style:
+                                      AppTextStyle.font13W500Normal.copyWith(color: AppColors.blue),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      );
-                    }),
-              );
+                        );
+                      })
+                  //  FutureBuilder(
+                  //     future: context.watch<CountdownProvider>().claimLives(),
+                  //     builder: (_, snapshot) {
+                  //       if (snapshot.connectionState == ConnectionState.waiting) {
+                  //         return const SizedBox(
+                  //           height: 10,
+                  //           width: 10,
+                  //           child: CircularProgressIndicator(
+                  //             strokeWidth: 0.8,
+                  //             valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  //             backgroundColor: Colors.transparent,
+                  //           ),
+                  //         );
+                  //       }
+                  //       return Material(
+                  //         borderRadius: BorderRadius.circular(21.r),
+                  //         color: AppColors.white,
+                  //         child: InkWell(
+                  //           onTap: () {
+                  //             Provider.of<CountdownProvider>(context, listen: false).claimLives();
+                  //           },
+                  //           borderRadius: BorderRadius.circular(21.r),
+                  //           child: Container(
+                  //             padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+                  //             height: 19.h,
+                  //             child: Center(
+                  //               child: Text(
+                  //                 "claim".tr(),
+                  //                 style:
+                  //                     AppTextStyle.font13W500Normal.copyWith(color: AppColors.blue),
+                  //               ),
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       );
+                  //     }),
+                  );
             }
-            if (value.isNegative ||
-                context.watch<CountdownProvider>().recoveryTimeDatetime == null) {
+            if (value.isNegative || context.watch<CountdownProvider>().remainingSeconds == 0) {
               return const Center();
             }
             return Text(
-              CountdownProvider.timerString(value),
+              CountdownProvider.formatTimer(value),
               style: AppTextStyle.font13W500Normal.copyWith(color: AppColors.white, fontSize: 12),
             );
           },

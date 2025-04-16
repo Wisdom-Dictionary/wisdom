@@ -12,7 +12,6 @@ import 'package:wisdom/data/model/roadmap/level_model.dart';
 import 'package:wisdom/data/model/roadmap/level_word_model.dart';
 import 'package:wisdom/data/model/roadmap/test_answer_response_model.dart';
 import 'package:wisdom/data/model/roadmap/test_question_model.dart';
-import 'package:wisdom/data/model/roadmap/test_answer_model.dart';
 import 'package:wisdom/domain/repositories/level_test_repository.dart';
 
 class LevelTestRepositoryImpl extends LevelTestRepository {
@@ -238,4 +237,25 @@ class LevelTestRepositoryImpl extends LevelTestRepository {
 
   @override
   LevelModel get selectedLevelItem => _selectedLevel!;
+
+  @override
+  Future<String?> postCancelTest() async {
+    final requestBody = {
+      'level_exercise_id': _levelExerciseId,
+    };
+    var response = await customClient.post(Urls.cancelLevelTest(_selectedLevel!.id!),
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: jsonEncode(requestBody));
+
+    if (response.isSuccessful) {
+      final responseBody = jsonDecode(response.body);
+
+      return responseBody["message"];
+    } else {
+      throw VMException(response.body, callFuncName: 'getTestQuestionsResult', response: response);
+    }
+  }
 }

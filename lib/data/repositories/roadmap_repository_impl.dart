@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:jbaza/jbaza.dart';
 import 'package:wisdom/config/constants/urls.dart';
@@ -18,19 +19,17 @@ class RoadmapRepositoryImpl extends RoadmapRepository {
 
   List<LevelWordModel> _levelWordsList = [];
   List<LevelModel> _levelsList = [];
-  int _userCurrentLevel = 0;
+  int _userCurrentLevel = 0, _bottomLastPage = 0, _topLastPage = 0;
   RankModel? _userRank;
   LevelModel? selectedLevel;
-  bool _canMoreLoad = true;
+  bool _canMoreLoad = true, _canMoreLoadBottom = true, _canMoreLoadTop = true;
 
   // getting levels from host
   @override
-  Future<void> getLevels(int page) async {
-    if (page == 1) {
-      _levelsList = [];
-    }
+  Future<void> getLevels() async {
+    _levelsList = [];
     var response = await customClient.get(
-      Uri.https(Urls.baseAddress, "/api/levels", {"page": "$page"}),
+      Uri.https(Urls.baseAddress, "/api/levels", {"limit": "16"}),
     );
     if (response.isSuccessful) {
       final responseData = jsonDecode(response.body);
@@ -39,7 +38,12 @@ class RoadmapRepositoryImpl extends RoadmapRepository {
       for (var item in responseData['levels']) {
         _levelsList.add(LevelModel.fromMap(item));
       }
+      log("limit: 16 = ${_levelsList.length}");
       _userCurrentLevel = responseData['user_current_level'] ?? 0;
+      int currentPage = responseData['current_page'] ?? 0;
+      _bottomLastPage = currentPage;
+      _topLastPage = currentPage;
+      _canMoreLoadBottom = _bottomLastPage > 1;
       if (responseData['rank'] != null) {
         _userRank = RankModel.fromJson(responseData['rank']);
       }
@@ -87,4 +91,62 @@ class RoadmapRepositoryImpl extends RoadmapRepository {
 
   @override
   bool get canMoreLoad => _canMoreLoad;
+
+  @override
+  Future<void> getLevelsPaginationBottom() async {
+    var response = await customClient.get(
+      Uri.https(Urls.baseAddress, "/api/levels", {"limit": "10", "page": "${_bottomLastPage - 1}"}),
+    );
+    if (response.isSuccessful) {
+      final responseData = jsonDecode(response.body);
+      List items = [];
+      for (var item in responseData['levels']) {
+        items.add(LevelModel.fromMap(item));
+      }
+      _levelsList = [...items, ..._levelsList];
+      _userCurrentLevel = responseData['user_current_level'] ?? 0;
+      _bottomLastPage = responseData['current_page'] ?? 0;
+      _canMoreLoadBottom = _bottomLastPage > 1;
+      if (responseData['rank'] != null) {
+        _userRank = RankModel.fromJson(responseData['rank']);
+      }
+    } else {
+      throw VMException(response.body, callFuncName: 'getLevels', response: response);
+    }
+  }
+
+  @override
+  Future<void> getLevelsPaginationTop() async {
+    var response = await customClient.get(
+      Uri.https(Urls.baseAddress, "/api/levels", {"limit": "10", "page": "${_topLastPage + 1}"}),
+    );
+    if (response.isSuccessful) {
+      final responseData = jsonDecode(response.body);
+      List items = [];
+      for (var item in responseData['levels']) {
+        items.add(LevelModel.fromMap(item));
+      }
+      _levelsList = [..._levelsList, ...items];
+      _userCurrentLevel = responseData['user_current_level'] ?? 0;
+      _topLastPage = responseData['current_page'] ?? 0;
+      _canMoreLoadTop = items.isNotEmpty;
+      if (responseData['rank'] != null) {
+        _userRank = RankModel.fromJson(responseData['rank']);
+      }
+    } else {
+      throw VMException(response.body, callFuncName: 'getLevels', response: response);
+    }
+  }
+
+  @override
+  bool get canMoreLoadBottom => _canMoreLoadBottom;
+
+  @override
+  bool get canMoreLoadTop => _canMoreLoadTop;
+
+  @override
+  int get bottomLastPage => _bottomLastPage;
+
+  @override
+  int get topLastPage => _topLastPage;
 }

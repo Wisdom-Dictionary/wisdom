@@ -21,6 +21,7 @@ class UserLiveRepositoryImpl extends UserLiveRepository {
     try {
       var response = await customClient.get(Urls.lives);
       if (response.isSuccessful) {
+        log(response.body);
         final responseData = jsonDecode(response.body);
         _userLifesModel = UserLifeModel.fromMap(responseData);
       } else {
@@ -31,12 +32,6 @@ class UserLiveRepositoryImpl extends UserLiveRepository {
     }
   }
 
-  static const sampleResponse = {
-    "lives": 2,
-    "max_lives": 3,
-    "recovery_time_datetime": "2025-02-06 10:28:05"
-  };
-
   @override
   UserLifeModel? get userLifesModel => _userLifesModel;
 
@@ -44,6 +39,7 @@ class UserLiveRepositoryImpl extends UserLiveRepository {
   Future<void> claimLives() async {
     var response = await customClient.post(Urls.claimlives);
     if (response.isSuccessful) {
+      log(response.body);
       final responseData = jsonDecode(response.body);
       _userLifesModel = UserLifeModel.fromMap(responseData);
     } else {

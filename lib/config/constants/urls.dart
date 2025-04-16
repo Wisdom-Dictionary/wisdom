@@ -72,6 +72,11 @@ class Urls {
         "/api/word/$wordId/get-full-word-questions-result",
       );
 
+  static Uri cancelLevelTest(int levelId) => Uri.https(
+        Urls.baseAddress,
+        "/api/levels/$levelId/cencel-test",
+      );
+
   static subscribe(int id) => Uri.parse('${baseUrl}api/subscribe/set/$id');
 
   static getSpeakingView(int id) => Uri.parse("${baseUrl}api/catalogue/speaking/word/view/$id");

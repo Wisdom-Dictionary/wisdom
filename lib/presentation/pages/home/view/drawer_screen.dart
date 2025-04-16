@@ -97,7 +97,6 @@ class DrawerScreen extends ViewModelWidget<HomeViewModel> {
                 isLoggedIn
                     ? Navigator.of(context).pushNamed(Routes.userCabinetPage)
                     : viewModel.navigateTo(Routes.loginPage);
-                ZoomDrawer.of(context)!.toggle();
               },
             ),
             DrawerMenuItem(

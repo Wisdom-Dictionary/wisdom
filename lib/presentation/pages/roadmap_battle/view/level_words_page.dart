@@ -3,18 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:jbaza/jbaza.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:wisdom/config/constants/app_colors.dart';
 import 'package:wisdom/config/constants/app_text_style.dart';
 import 'package:wisdom/config/constants/assets.dart';
 import 'package:wisdom/config/constants/constants.dart';
 import 'package:wisdom/core/di/app_locator.dart';
-import 'package:wisdom/core/domain/entities/def_enum.dart';
 import 'package:wisdom/data/model/roadmap/level_word_model.dart';
+import 'package:wisdom/presentation/components/shimmer.dart';
 import 'package:wisdom/presentation/components/w_button.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/widgets/life_status_bar.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/level_words_page_viewmodel.dart';
-import 'package:wisdom/presentation/routes/routes.dart';
 import 'package:wisdom/presentation/widgets/custom_app_bar.dart';
 
 class LevelWordsPage extends ViewModelBuilderWidget<LevelWordsPageViewModel> {
@@ -82,9 +80,7 @@ class LevelWordsPage extends ViewModelBuilderWidget<LevelWordsPageViewModel> {
                                           ),
                                         ),
                                         onTap: () {
-                                          viewModel.levelTestRepository
-                                              .setExerciseType(TestExerciseType.levelExercise);
-                                          Navigator.pushNamed(context, Routes.wordExercisesPage);
+                                          viewModel.goLevelExercisesPage();
                                         },
                                       ),
                                     ),
@@ -130,16 +126,20 @@ class LevelWordsPage extends ViewModelBuilderWidget<LevelWordsPageViewModel> {
 
   Scrollbar exercisesList(LevelWordsPageViewModel viewModel) {
     return Scrollbar(
-      child: ListView.builder(
-        padding: const EdgeInsets.only(top: 18, bottom: 140, left: 18, right: 18),
-        itemCount: viewModel.roadmapRepository.levelWordsList.length,
-        itemBuilder: (context, index) {
-          return GestureDetector(
-              onTap: () {
-                viewModel.searchByWord(viewModel.roadmapRepository.levelWordsList[index]);
-              },
-              child: itemExercise(index, viewModel.roadmapRepository.levelWordsList[index]));
-        },
+      child: RefreshIndicator(
+        onRefresh: () async => viewModel.getLevelWords(),
+        child: ListView.builder(
+          controller: ScrollController(),
+          padding: const EdgeInsets.only(top: 18, bottom: 140, left: 18, right: 18),
+          itemCount: viewModel.roadmapRepository.levelWordsList.length,
+          itemBuilder: (context, index) {
+            return GestureDetector(
+                onTap: () {
+                  viewModel.searchByWord(viewModel.roadmapRepository.levelWordsList[index]);
+                },
+                child: itemExercise(index, viewModel.roadmapRepository.levelWordsList[index]));
+          },
+        ),
       ),
     );
   }
@@ -222,11 +222,9 @@ class ShimmerLevelWords extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Shimmer.fromColors(
-      baseColor: Colors.grey.shade600,
-      highlightColor: Colors.grey.shade400,
-      enabled: true,
-      period: const Duration(seconds: 2),
+    return ShimmerWidget(
+      baseColor: AppColors.blue.withValues(alpha: 0.6),
+      highlightColor: AppColors.bgLightBlue.withValues(alpha: 0.7),
       child: SafeArea(
         child: Stack(
           children: [

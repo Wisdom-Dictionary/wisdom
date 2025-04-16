@@ -7,10 +7,8 @@ import 'package:wisdom/config/constants/app_text_style.dart';
 import 'package:wisdom/config/constants/assets.dart';
 import 'package:wisdom/config/constants/constants.dart';
 import 'package:wisdom/data/model/roadmap/test_question_model.dart';
-import 'package:wisdom/presentation/components/w_button.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/word_exercises_page.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/battle_result_viewmodel.dart';
-import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/word_exercises_result_viewmodel.dart';
 import 'package:wisdom/presentation/widgets/custom_app_bar.dart';
 
 class BattleExercisesResultPage extends ViewModelBuilderWidget<BattleResultViewmodel> {
@@ -124,14 +122,14 @@ class BattleExercisesResultPage extends ViewModelBuilderWidget<BattleResultViewm
               letter(index),
               style: AppTextStyle.font15W500Normal.copyWith(
                   fontSize: 14,
-                  color: item.answers![index].correct || item.answers![index].selected
+                  color: item.answers[index].correct || item.answers[index].selected
                       ? AppColors.white.withValues(alpha: 0.3)
                       : AppColors.vibrantBlue.withValues(alpha: 0.4)),
             ),
             const SizedBox(
               width: 15,
             ),
-            Text(item.answers![index].body ?? "",
+            Text(item.answers[index].body ?? "",
                 style: AppTextStyle.font15W500Normal.copyWith(
                     fontSize: 14,
                     color: item.answers![index].correct || item.answers![index].selected

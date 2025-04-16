@@ -13,6 +13,7 @@ import 'package:jbaza/jbaza.dart';
 import 'package:provider/provider.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+import 'package:wisdom/config/constants/constants.dart';
 import 'package:wisdom/core/db/db_helper.dart';
 import 'package:wisdom/core/db/preference_helper.dart';
 import 'package:wisdom/core/services/purchase_observer.dart';
@@ -227,6 +228,7 @@ Future _initServices() async {
   await locator<AdState>().init();
   await locator<DBHelper>().init();
   await locator<SharedPreferenceHelper>().getInstance();
+  locator<SharedPreferenceHelper>().putInt(Constants.KEY_LATEST_SELECTED_INDEX, 0);
 }
 
 class ReceivedNotification {

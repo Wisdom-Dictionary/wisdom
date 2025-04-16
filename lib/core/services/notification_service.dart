@@ -11,9 +11,6 @@ import 'package:wisdom/core/di/app_locator.dart';
 import 'package:wisdom/data/viewmodel/local_viewmodel.dart';
 import 'package:wisdom/main.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/invite_battle_dialog.dart';
-import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/rematch_battle_dialog.dart';
-import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/battle_result_viewmodel.dart';
-import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/searching_opponent_viewmodel.dart';
 
 class AppNotificationService {
   static AppNotificationService get to => locator.get<AppNotificationService>();
@@ -53,8 +50,9 @@ class AppNotificationService {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (Platform.isAndroid) showNotification(message, '');
       if (message.data.isNotEmpty) {
+        log(message.data.toString());
         final messageData = message.data;
-        if (messageData['type'] == 'battle_invitation') {
+        if (messageData['type'] == 'battle_invitation' || messageData['type'] == 'battle_rematch') {
           showTopDialog(messageData);
         }
       }

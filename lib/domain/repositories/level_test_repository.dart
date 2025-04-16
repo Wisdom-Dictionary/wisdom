@@ -24,6 +24,8 @@ abstract class LevelTestRepository {
 
   Future<void> postWordQuestionsResult();
 
+  Future<String?> postCancelTest();
+
   List<TestQuestionModel> get testQuestionsList;
 
   List<TestQuestionModel> get testQuestionsResultList;

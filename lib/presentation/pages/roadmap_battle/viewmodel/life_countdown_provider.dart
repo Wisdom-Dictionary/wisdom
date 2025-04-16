@@ -1,77 +1,82 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:formz/formz.dart';
 import 'package:wisdom/core/di/app_locator.dart';
+import 'package:wisdom/core/services/purchase_observer.dart';
 import 'package:wisdom/domain/repositories/user_live_repository.dart';
 
 class CountdownProvider with ChangeNotifier {
   final UserLiveRepository _userLiveRepository = locator<UserLiveRepository>();
-  int remainingSeconds = 0;
+  ValueNotifier status = ValueNotifier<FormzSubmissionStatus>(FormzSubmissionStatus.initial);
+
   Timer? _timer;
+  DateTime? _targetTime;
 
   CountdownProvider() {
     getLives();
   }
 
-  static String timerString(int value) =>
-      "${value ~/ 60}:${(value % 60).toString().padLeft(2, '0')}";
-
-  bool get hasUserLifes => userLife != 0;
-
-  String? get recoveryTimeDatetime => _userLiveRepository.userLifesModel?.recoveryTimeDatetime;
-
-  bool get fullUserLives => userLife == maxUserLife;
-
-  int get userLife => _userLiveRepository.userLifesModel?.lives ?? 0;
-
-  int get maxUserLife => _userLiveRepository.userLifesModel?.maxLives ?? 3;
-
-  DateTime? getRecoveryDateTime() {
-    if (_userLiveRepository.userLifesModel == null ||
-        _userLiveRepository.userLifesModel!.recoveryTimeDatetime == null) {
-      return null;
-    }
-    return DateTime.parse(
-        _userLiveRepository.userLifesModel!.recoveryTimeDatetime!.replaceAll(" ", "T"));
-  }
-
-  getLives() async {
+  Future<void> getLives() async {
+    status.value = FormzSubmissionStatus.inProgress;
     await _userLiveRepository.getLives();
-    fetchCountdown();
-  }
-
-  fetchCountdown() async {
-    DateTime? recoveryTimeDatetime = getRecoveryDateTime();
-    if (recoveryTimeDatetime != null) {
-      int newValueSeconds = recoveryTimeDatetime.difference(DateTime.now()).inSeconds;
-      if (remainingSeconds != newValueSeconds) {
-        remainingSeconds = newValueSeconds;
-        notifyListeners();
-        if (remainingSeconds > 0) {
-          startCountdown();
-        }
-      }
-      return;
-    }
+    status.value = FormzSubmissionStatus.success;
+    _setTargetTimeFromRepository();
+    _startTimerIfNeeded();
     notifyListeners();
   }
 
-  Future<void> claimLives() async {
-    await _userLiveRepository.claimLives();
-    fetchCountdown();
+  /// Parses recovery time from the repository
+  void _setTargetTimeFromRepository() {
+    final raw = _userLiveRepository.userLifesModel?.recoveryTimeDatetime;
+    if (raw == null) return;
+
+    _targetTime = DateTime.tryParse(raw.replaceAll(" ", "T"));
   }
 
-  /// **Timer boshlash**
-  void startCountdown() {
+  /// Starts periodic notifier for UI
+  void _startTimerIfNeeded() {
+    if (_targetTime == null || remainingSeconds <= 0) return;
+
     _timer?.cancel();
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (remainingSeconds > 0) {
-        remainingSeconds--;
-        notifyListeners();
-      } else {
-        timer.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (remainingSeconds <= 0) {
+        _timer?.cancel();
+        if (PurchasesObserver().isPro()) {
+          getLives();
+        }
       }
+      notifyListeners();
     });
   }
+
+  /// Claiming lives resets the target
+  Future<void> claimLives() async {
+    status.value = FormzSubmissionStatus.inProgress;
+    await _userLiveRepository.claimLives();
+    _setTargetTimeFromRepository();
+    _startTimerIfNeeded();
+    status.value = FormzSubmissionStatus.success;
+    notifyListeners();
+  }
+
+  /// Remaining seconds based on real-time
+  int get remainingSeconds {
+    if (_targetTime == null) return 0;
+    final seconds = _targetTime!.difference(DateTime.now()).inSeconds;
+    return seconds;
+  }
+
+  /// Formatted timer string like "02:30"
+  static String formatTimer(int value) =>
+      "${value ~/ 60}:${(value % 60).toString().padLeft(2, '0')}";
+
+  /// Accessors
+  bool get hasUserLifes => userLife != 0;
+  bool get fullUserLives => userLife >= maxUserLife;
+
+  int get userLife => _userLiveRepository.userLifesModel?.lives ?? 0;
+  int get maxUserLife => _userLiveRepository.userLifesModel?.maxLives ?? 3;
 
   @override
   void dispose() {

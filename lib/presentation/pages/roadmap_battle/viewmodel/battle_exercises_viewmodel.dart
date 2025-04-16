@@ -1,6 +1,10 @@
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:jbaza/jbaza.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:wisdom/app.dart';
 import 'package:wisdom/config/constants/constants.dart';
 import 'package:wisdom/core/db/preference_helper.dart';
@@ -45,6 +49,7 @@ class BattleExercisesViewModel extends BaseViewModel {
         //     : spendTimeForExercises;
         // await battleRepository.checkBattleQuestions(answers, time);
         await battleRepository.cancelBattle();
+        battleRepository.dispose();
         Navigator.of(navigatorKey.currentContext!).pop();
       }
     }
@@ -133,9 +138,13 @@ class BattleExercisesViewModel extends BaseViewModel {
     return null;
   }
 
-  void postTestQuestionsResult() {
-    setBusy(true, tag: postExercisesCheckTag);
-    safeBlock(() async {
+  void postTestQuestionsResult() async {
+    if (isBusy(tag: postExercisesCheckTag) || isSuccess(tag: postExercisesCheckTag)) {
+      return;
+    }
+    try {
+      setBusy(true, tag: postExercisesCheckTag);
+
       if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
         final time = spendTimeForExercises > (givenTimeForExercise * 1000)
             ? (givenTimeForExercise * 1000)
@@ -152,8 +161,21 @@ class BattleExercisesViewModel extends BaseViewModel {
         callBackError(LocaleKeys.no_internet.tr());
         setBusy(false, tag: postExercisesCheckTag);
       }
-    }, callFuncName: 'postWordExercisesCheck', tag: postExercisesCheckTag, inProgress: false);
+    } catch (e) {
+      if (e is VMException) {
+        setError(VMException(e.message), tag: postExercisesCheckTag);
+      }
+    }
   }
 
-  retryWordQuestions() {}
+  @override
+  callBackError(String text) {
+    log(text);
+    showTopSnackBar(
+      Overlay.of(context!),
+      CustomSnackBar.error(
+        message: text,
+      ),
+    );
+  }
 }

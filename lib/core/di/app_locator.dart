@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:jbaza/jbaza.dart';
 import 'package:wisdom/core/db/db_helper.dart';
 import 'package:wisdom/core/db/preference_helper.dart';
@@ -37,8 +39,6 @@ import 'package:wisdom/domain/repositories/roadmap_repository.dart';
 import 'package:wisdom/domain/repositories/search_repository.dart';
 import 'package:wisdom/domain/repositories/user_live_repository.dart';
 import 'package:wisdom/domain/repositories/word_entity_repository.dart';
-import 'dart:developer';
-
 import 'package:wisdom/domain/repositories/wordbank_api_repository.dart';
 
 final locator = JbazaLocator.instance;

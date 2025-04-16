@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
@@ -73,6 +74,26 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
       {"left": 150, "right": null, "bottom": 8},
     ];
 
+    //   final List<Map<String, dynamic>> basePositions = [
+    //   {"left": null, "right": 83, "bottom": 1},
+    //   {"left": 82, "right": null, "bottom": 1.05},
+    //   {"left": 20, "right": null, "bottom": 1.7},
+    //   {"left": null, "right": 126, "bottom": 2},
+    //   {"left": null, "right": 24, "bottom": 2.8},
+    //   {"left": 120, "right": null, "bottom": 3},
+    //   {"left": 10, "right": null, "bottom": 3.5},
+    //   {"left": 100, "right": null, "bottom": 4},
+    //   {"left": null, "right": 64, "bottom": 4.05},
+    //   {"left": null, "right": 50, "bottom": 5},
+    //   {"left": 82, "right": null, "bottom": 5.1},
+    //   {"left": 20, "right": null, "bottom": 5.8},
+    //   {"left": null, "right": 100, "bottom": 6},
+    //   {"left": null, "right": 14, "bottom": 6.6},
+    //   {"left": 120, "right": null, "bottom": 7},
+    //   {"left": 14, "right": null, "bottom": 7.5},
+    //   {"left": 150, "right": null, "bottom": 8},
+    // ];
+
     final List<Map<String, dynamic>> result = [];
 
     final double bottomStart = (basePositions.first['bottom'] as num).toDouble();
@@ -120,7 +141,7 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
               child: repository.levelsList[index].itemWidget));
     });
 
-    if (widget.viewModel.isBusy(tag: widget.viewModel.getLevelsTag) && widget.viewModel.page > 1) {
+    if (widget.viewModel.isBusy(tag: widget.viewModel.getLevelsMoreTag)) {
       Map<String, dynamic> loadingWidgetposition = generatePositions(positions.length + 1).last;
 
       double? left = (loadingWidgetposition["left"] as int?)?.toDouble();
@@ -146,12 +167,43 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
     return items;
   }
 
+  _scrollToItem() {
+    // Foydalanuvchi leveli qaysi indeksda bo‘lsa, uni markazga yaqin qilish
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // widget.viewModel.roadMapRepository.levelsList
+      int targetIndex = widget.viewModel.roadMapRepository.userCurrentLevel;
+
+      // Markazga tushirish uchun - visibleItemCount ~/ 2
+      int scrollToIndex = (targetIndex - (visibleItemCount ~/ 2))
+          .clamp(0, widget.viewModel.roadMapRepository.levelsList.length - visibleItemCount);
+
+      // double offset = scrollToIndex * itemHeight;
+      double offset = 300;
+
+      _scrollController.jumpTo(offset); // yoki animateTo
+    });
+  }
+
+  // _scrollToCurrentItem() {
+  //   // Foydalanuvchi leveli qaysi indeksda bo‘lsa, uni markazga yaqin qilish
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     double offset = -400;
+  //     _scrollController.jumpTo(offset); // yoki animateTo
+  //   });
+  // }
+
   @override
   Widget build(BuildContext context) {
+    // if (widget.viewModel.roadMapRepository.levelsList.isNotEmpty &&
+    //     widget.viewModel.initialRequest &&
+    //     widget.viewModel.roadMapRepository.userCurrentLevel > 15) {
+    //   _scrollToItem();
+    // }
+
     return Stack(
       children: [
         if (widget.viewModel.isSuccess(tag: widget.viewModel.getLevelsTag) ||
-            (widget.viewModel.isBusy(tag: widget.viewModel.getLevelsTag) &&
+            (widget.viewModel.isBusy(tag: widget.viewModel.getLevelsMoreTag) &&
                 widget.viewModel.page > 1))
           buildSuccessState()
         else
@@ -161,9 +213,7 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
               fit: BoxFit.fitWidth,
             ),
           ),
-        if (widget.viewModel.isBusy(tag: widget.viewModel.getLevelsTag) &&
-            widget.viewModel.page == 1)
-          buildLoadingState(),
+        if (widget.viewModel.isBusy(tag: widget.viewModel.getLevelsTag)) buildLoadingState(),
         buildTopRightButton(context),
       ],
     );
@@ -174,6 +224,8 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
   }
 
   final ScrollController _scrollController = ScrollController();
+  final double itemHeight = 100; // Har bir item balandligi (taxminan)
+  final int visibleItemCount = 9; // Ekranda ko‘rinadigan itemlar soni
 
   @override
   void initState() {
@@ -184,11 +236,21 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
           _scrollController.position.maxScrollExtent -
               (widget.viewModel.roadMapRepository.levelsList.length * 4);
 
-      bool canMoreLoad = widget.viewModel.roadMapRepository.canMoreLoad;
-      if (canMoreLoad &&
+      bool canMoreLoadTop = widget.viewModel.roadMapRepository.canMoreLoadTop;
+      if (canMoreLoadTop &&
           enableToPagination &&
-          !widget.viewModel.isBusy(tag: widget.viewModel.getLevelsTag)) {
-        widget.viewModel.getLevels();
+          !widget.viewModel.isBusy(tag: widget.viewModel.getLevelsMoreTag)) {
+        widget.viewModel.getLevelsTopMore();
+      }
+
+      final enableToPaginationBottom =
+          _scrollController.position.pixels <= _scrollController.position.minScrollExtent &&
+              !widget.viewModel.isBusy(tag: widget.viewModel.getLevelsMoreTag);
+      bool canMoreLoadBottom = widget.viewModel.roadMapRepository.canMoreLoadBottom;
+
+      log("_scrollController.position.pixels < 100 - $enableToPaginationBottom");
+      if (enableToPaginationBottom && canMoreLoadBottom) {
+        widget.viewModel.getLevelsBottomMore();
       }
     });
   }

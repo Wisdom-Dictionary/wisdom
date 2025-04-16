@@ -55,10 +55,11 @@ class BattleRepositoryImpl extends BattleRepository {
   String? socketId;
   AuthParams? params;
   LevelModel? selectedLevelItem;
-
+  Timer? interval;
   int? _battleId, _startTime, _endTime;
   String? _battleChannel;
 
+  Set<String> subscribedChannels = {};
   StreamController<String> _streamController = StreamController.broadcast();
 
   final ValueNotifier<List<TestQuestionModel>> _battleQuestionsList =
@@ -117,8 +118,8 @@ class BattleRepositoryImpl extends BattleRepository {
       },
       cancelOnError: true,
     );
-
-    intervalSendPing();
+    if (interval != null && interval!.isActive) return;
+    interval = intervalSendPing();
   }
 
   Timer intervalSendPing() {
@@ -171,12 +172,18 @@ class BattleRepositoryImpl extends BattleRepository {
     UserModel user = UserModel.fromJson(jsonDecode(userData));
     log("user.id - ${user.id}");
     await subscribeToChannel(channelName: "private-user.${user.id!}");
+
+    // if (interval != null && interval!.isActive) return;
+    // interval = intervalSendPing();
   }
 
   Stream<String> get messageStream => _streamController.stream;
 
+  @override
   void dispose() {
-    channel!.sink.close();
+    channel?.sink.close();
+    interval?.cancel();
+    interval = null;
   }
 
   @override
@@ -234,7 +241,10 @@ class BattleRepositoryImpl extends BattleRepository {
         body: jsonEncode(requestBody));
     log("checkBattleQuestions - ${response.body}");
     if (!response.isSuccessful) {
-      throw VMException(response.body, callFuncName: 'postWordQuestionsCheck', response: response);
+      final responseBody = jsonDecode(response.body);
+
+      throw VMException(responseBody["message"] ?? response.body,
+          callFuncName: 'postWordQuestionsCheck', response: response);
     }
   }
 
@@ -298,18 +308,22 @@ class BattleRepositoryImpl extends BattleRepository {
 
   @override
   Future<void> subscribeToChannel({required String channelName}) async {
-    AuthParams authParams = await reverbAuth(channelName);
+    if (!subscribedChannels.contains(channelName)) {
+      AuthParams authParams = await reverbAuth(channelName);
 
-    final message = {
-      "event": "pusher:subscribe",
-      "data": {
-        "channel": channelName,
-        "auth": authParams.auth,
-        "channel_data": authParams.channelData,
-      }
-    };
-    channel!.sink.add(jsonEncode(message));
-    log(jsonEncode(message));
+      final message = {
+        "event": "pusher:subscribe",
+        "data": {
+          "channel": channelName,
+          "auth": authParams.auth,
+          "channel_data": authParams.channelData,
+        }
+      };
+
+      channel!.sink.add(jsonEncode(message));
+      subscribedChannels.add(channelName);
+      log(jsonEncode(message));
+    }
   }
 
   @override

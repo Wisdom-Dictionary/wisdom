@@ -92,6 +92,10 @@ class UserDetailsModel {
 
   int get bestTime => statistics?.bestTime ?? 1;
 
+  int get bestTimeValue => bestTime > 60 ? (bestTime / 60).toInt() : bestTime;
+
+  String get bestTimeSymbol => bestTime > 60 ? " m" : " s";
+
   bool get hasUser => user != null;
 
   bool get hasUserPhoto => user?.profilePhotoUrl != null;

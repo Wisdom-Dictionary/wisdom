@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:wisdom/config/constants/app_colors.dart';
+import 'package:wisdom/presentation/components/shimmer.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/roadmap_custom_painter.dart';
 
 class RoadmapShimmerWidget extends StatelessWidget {
@@ -19,12 +20,11 @@ class RoadmapShimmerWidget extends StatelessWidget {
           height: 900,
           child: Stack(
             children: [
-              Shimmer.fromColors(
-                baseColor: Colors.grey.shade400,
-                highlightColor: Colors.grey.shade300,
-                enabled: true,
-                direction: ShimmerDirection.btt,
-                period: const Duration(seconds: 5),
+              ShimmerWidget(
+                duration: Duration(seconds: 4),
+                shimmerDirection: ShimmerDirection.btt,
+                baseColor: AppColors.white,
+                highlightColor: AppColors.bgLightBlue.withValues(alpha: 0.5),
                 child: CustomPaint(
                   painter: DashedPathPainter(
                     originalPath: (size) {

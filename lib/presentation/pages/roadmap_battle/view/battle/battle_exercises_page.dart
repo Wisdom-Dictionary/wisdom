@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -58,6 +60,7 @@ class BattleExercisesPage extends ViewModelBuilderWidget<BattleExercisesViewMode
                           secondsRemaining: viewModel.givenTimeForExercise,
                           initialValue: viewModel.initialTimeForExercise,
                           whenTimeExpires: () {
+                            log("battle CountDownTimer");
                             viewModel.postTestQuestionsResult();
                           },
                           countDownTimerStyle: AppTextStyle.font13W500Normal

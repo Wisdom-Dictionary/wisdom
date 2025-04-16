@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:ui';
 
 import 'package:easy_localization/easy_localization.dart';
@@ -21,7 +20,6 @@ import 'package:wisdom/presentation/routes/routes.dart';
 import 'package:wisdom/presentation/widgets/social_button.dart';
 
 import '../../../../config/constants/assets.dart';
-import '../../../widgets/app_button_widget.dart';
 
 // ignore: must_be_immutable
 class LoginPage extends ViewModelBuilderWidget<LoginViewModel> {
@@ -122,11 +120,6 @@ class LoginPage extends ViewModelBuilderWidget<LoginViewModel> {
                   viewModel.navigateTo(Routes.loginWithPhonePage);
                 },
                 title: LocaleKeys.sign_in_with_phone.tr(),
-                color: AppColors.lightBackground,
-                textStyle: AppTextStyle.font12W600Normal.copyWith(
-                  color: AppColors.darkForm,
-                  fontSize: 12.sp,
-                ),
                 margin: EdgeInsets.symmetric(vertical: 3.w),
               ),
               // TextButton(

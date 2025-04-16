@@ -40,6 +40,7 @@ class HomePage extends ViewModelBuilderWidget<HomeViewModel> {
     _isAndroidPermissionGranted();
     _requestPermissions();
     _configureSelectNotificationSubject(viewModel);
+    viewModel.goLatestSelectedPage();
   }
 
   @override

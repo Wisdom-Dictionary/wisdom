@@ -11,34 +11,38 @@ class NoInternetConnectionDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 24, right: 24, bottom: 18, top: 32),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            "no_internet".tr(),
-            style: AppTextStyle.font17W600Normal.copyWith(fontSize: 18, color: AppColors.orange),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 32),
-            child: SvgPicture.asset(Assets.icons.wifiOff),
-          ),
-          Text(
-            "no_internet_content".tr(),
-            textAlign: TextAlign.center,
-            style: AppTextStyle.font13W500Normal.copyWith(fontSize: 14, color: AppColors.black),
-          ),
-          const SizedBox(
-            height: 32,
-          ),
-          WButton(
-            title: "got_it".tr(),
-            onTap: () {
-              Navigator.pop(context);
-            },
-          ),
-        ],
+    return Dialog(
+      insetPadding: const EdgeInsets.symmetric(horizontal: 16),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 24, right: 24, bottom: 18, top: 32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "no_internet".tr(),
+              style: AppTextStyle.font17W600Normal.copyWith(fontSize: 18, color: AppColors.orange),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 32),
+              child: SvgPicture.asset(Assets.icons.wifiOff),
+            ),
+            Text(
+              "no_internet_content".tr(),
+              textAlign: TextAlign.center,
+              style: AppTextStyle.font13W500Normal.copyWith(fontSize: 14, color: AppColors.black),
+            ),
+            const SizedBox(
+              height: 32,
+            ),
+            WButton(
+              title: "got_it".tr(),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

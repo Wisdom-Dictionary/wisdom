@@ -263,10 +263,13 @@
   "you_won": "Siz yutdingiz",
   "failure": "Yutqazdingiz",
   "success": "Muvaffaqiyatli",
+  "dont_give_up": "Taslim bo'lma!",
   "contacts_access": "Kontaktlarga ruhsat",
   "contacts_access_content": "Do'stlaringizni osongina topish va ular bilan bog'lanish uchun bizga kontaktlaringizga kirishga ruxsat bering.",
   "rank": "Daraja",
   "no_continue": "Yo'q, davom etish",
   "user_rejected_the_offer": "Foydalanuvchi taklifni rad etdi",
-  "no_data": "Ma'lumotlar topilmadi"
+  "no_data": "Ma'lumotlar topilmadi",
+  "you_have_to_buy_pro": "Do'stingiz bilan battle qilish uchun siz Pro versiyasini sotib olishingiz kerak",
+  "your_friend_have_to_buy_pro": "Do‘stingiz ushbu ilovaning bepul versiyasidan foydalanayotganga o‘xshaydi. Do'stlar o'rtasidagi battle faqat Pro versiyasida mavjud"
 }

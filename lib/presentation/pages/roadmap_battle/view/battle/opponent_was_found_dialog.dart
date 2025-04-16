@@ -5,7 +5,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:wisdom/config/constants/app_colors.dart';
 import 'package:wisdom/config/constants/app_text_style.dart';
 import 'package:wisdom/config/constants/assets.dart';
-import 'package:wisdom/data/model/roadmap/rank_model.dart';
 import 'package:wisdom/presentation/components/w_button.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/searching_opponent_page.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/searching_opponent_viewmodel.dart';
@@ -72,22 +71,29 @@ class OpponentWasFoundDialog extends StatelessWidget {
               ValueListenableBuilder(
                 valueListenable: viewmodel.readyBattleTagLoading,
                 builder: (context, value, child) => WButton(
+                  isDisable: viewmodel.isSuccess(tag: viewmodel.readyBattleTag),
                   isLoading: value,
-                  // isDisable: viewmodel.isSuccess(tag: viewmodel.readyBattleTag),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SvgPicture.asset(Assets.icons.battle),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        "start".tr(),
-                        style: AppTextStyle.font13W500Normal
-                            .copyWith(color: AppColors.white, fontSize: 14),
-                      )
-                    ],
-                  ),
+                  child: viewmodel.isSuccess(tag: viewmodel.readyBattleTag)
+                      ? Text(
+                          "waiting_for_your_opponent".tr(),
+                          style: AppTextStyle.font15W500Normal.copyWith(color: AppColors.white),
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(Assets.icons.battle),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              "start".tr(),
+                              style: AppTextStyle.font13W500Normal
+                                  .copyWith(color: AppColors.white, fontSize: 14),
+                            )
+                          ],
+                        ),
                   onTap: () {
                     viewmodel.readyBattle();
                   },

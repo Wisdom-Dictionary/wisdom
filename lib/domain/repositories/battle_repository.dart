@@ -66,4 +66,6 @@ abstract class BattleRepository {
   Future<void> subscribeContinueBattleChannels(Map<String, dynamic> messageData);
 
   Future<void> subscribeInvitationBattleChannels(Map<String, dynamic> messageData);
+
+  void dispose();
 }

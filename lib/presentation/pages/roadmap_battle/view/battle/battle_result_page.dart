@@ -4,7 +4,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:jbaza/jbaza.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
-import 'package:wisdom/app.dart';
 import 'package:wisdom/config/constants/app_colors.dart';
 import 'package:wisdom/config/constants/app_decoration.dart';
 import 'package:wisdom/config/constants/app_text_style.dart';
@@ -15,6 +14,7 @@ import 'package:wisdom/presentation/components/shimmer.dart';
 import 'package:wisdom/presentation/components/w_button.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/out_of_lives_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/searching_opponent_page.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/view/widgets/life_status_bar.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/battle_result_viewmodel.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/life_countdown_provider.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/searching_opponent_viewmodel.dart';
@@ -27,7 +27,7 @@ class BattleResultPage extends ViewModelBuilderWidget<BattleResultViewmodel> {
   late final SearchingOpponentViewmodel searchingOpponentViewmodel;
   @override
   void onViewModelReady(BattleResultViewmodel viewModel) {
-    searchingOpponentViewmodel = SearchingOpponentViewmodel(context: navigatorKey.currentContext);
+    searchingOpponentViewmodel = SearchingOpponentViewmodel(context: null);
     super.onViewModelReady(viewModel);
   }
 
@@ -39,6 +39,9 @@ class BattleResultPage extends ViewModelBuilderWidget<BattleResultViewmodel> {
 
   @override
   Widget builder(BuildContext context, BattleResultViewmodel viewModel, Widget? child) {
+    if (viewModel.isSuccess(tag: viewModel.postRematchRequestTag)) {
+      searchingOpponentViewmodel.listenToWebSocket();
+    }
     return WillPopScope(
       onWillPop: null,
       child: Scaffold(
@@ -49,6 +52,9 @@ class BattleResultPage extends ViewModelBuilderWidget<BattleResultViewmodel> {
           title: "exercise_result".tr(),
           onTap: () => viewModel.goBack(),
           leadingIcon: Assets.icons.arrowLeft,
+          actions: const [
+            LifeStatusBarPadding(child: LifeStatusBar()),
+          ],
         ),
         body: ListView(
           physics: const ClampingScrollPhysics(),

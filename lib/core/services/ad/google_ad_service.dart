@@ -21,12 +21,13 @@ class GoogleAdService implements AdService {
   @override
   Widget getBannerAdWidget() {
     // TODO: implement getBannerAdWidget
-    throw UnimplementedError();
+    // throw UnimplementedError();
+    return Center();
   }
 
   @override
-  Future<void> refreshAds() {
+  Future<void> refreshAds() async {
     // TODO: implement refreshAds
-    throw UnimplementedError();
+    // throw UnimplementedError();
   }
 }

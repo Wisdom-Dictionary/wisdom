@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -58,6 +60,24 @@ class NewCustomAppBar extends StatefulWidget implements PreferredSizeWidget {
 class _NewCustomAppBarState extends State<NewCustomAppBar> {
   TextEditingController controller = TextEditingController();
   ValueNotifier<bool> hasText = ValueNotifier<bool>(false);
+  Timer? _debounce;
+
+  @override
+  void initState() {
+    controller.addListener(_onSearchChanged);
+    super.initState();
+  }
+
+  _onSearchChanged() {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+
+    _debounce = Timer(const Duration(milliseconds: 800), () {
+      final query = controller.text.trim();
+      if (query.isNotEmpty) {
+        onChanged(query);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -118,9 +138,7 @@ class _NewCustomAppBarState extends State<NewCustomAppBar> {
                   style: AppTextStyle.font15W400Normal.copyWith(color: AppColors.blue),
                   cursorHeight: 19.h,
                   controller: controller,
-                  onChanged: (value) {
-                    onChanged(value);
-                  },
+                  onChanged: (value) {},
                   onTapOutside: (event) {
                     FocusManager.instance.primaryFocus?.unfocus();
                   },
@@ -181,5 +199,13 @@ class _NewCustomAppBarState extends State<NewCustomAppBar> {
     if (widget.onChange != null) {
       widget.onChange!(text);
     }
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    controller.removeListener(_onSearchChanged);
+    controller.dispose();
+    super.dispose();
   }
 }

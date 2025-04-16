@@ -263,9 +263,10 @@ class _ExercisesResultContactsPageState extends State<ExercisesResultContactsPag
                       RefreshIndicator(
                         onRefresh: () async => widget.viewModel.getRankingContact(),
                         child: ListView.builder(
+                          shrinkWrap: true,
                           controller: _scrollController,
-                          physics: const ClampingScrollPhysics(),
-                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          physics: AlwaysScrollableScrollPhysics(),
+                          padding: const EdgeInsets.only(top: 12, bottom: 100),
                           itemCount: widget.viewModel.roadMapRepository.rankingContactList.length +
                               (widget.viewModel
                                       .isBusy(tag: widget.viewModel.getRankingContactMoreTag)
@@ -274,9 +275,28 @@ class _ExercisesResultContactsPageState extends State<ExercisesResultContactsPag
                           itemBuilder: (context, index) {
                             if (index <
                                 widget.viewModel.roadMapRepository.rankingContactList.length) {
-                              return RankingItemWidget(
-                                index: index,
-                                item: widget.viewModel.roadMapRepository.rankingContactList[index],
+                              return Stack(
+                                children: [
+                                  RankingItemWidget(
+                                    index: index,
+                                    item: widget
+                                        .viewModel.roadMapRepository.rankingContactList[index],
+                                  ),
+                                  if (widget.viewModel.selectedItem != null &&
+                                      widget.viewModel.selectedItem!.userId ==
+                                          widget.viewModel.roadMapRepository
+                                              .rankingContactList[index].userId)
+                                    Positioned.fill(
+                                        child: ShimmerWidget(
+                                            child: Container(
+                                      margin:
+                                          const EdgeInsets.symmetric(horizontal: 18, vertical: 4),
+                                      padding:
+                                          const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                      decoration: const ShapeDecoration(
+                                          color: AppColors.black, shape: StadiumBorder()),
+                                    )))
+                                ],
                               );
                             } else {
                               return const Padding(
@@ -360,7 +380,7 @@ class _ExercisesResultGlobalPageState extends State<ExercisesResultGlobalPage> {
                         child: ListView.builder(
                           controller: _scrollController,
                           physics: const ClampingScrollPhysics(),
-                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          padding: const EdgeInsets.only(top: 12, bottom: 100),
                           itemCount: widget.viewModel.roadMapRepository.rankingGlobalList.length +
                               (widget.viewModel
                                       .isBusy(tag: widget.viewModel.getRankingGlobalMoreTag)
@@ -369,9 +389,37 @@ class _ExercisesResultGlobalPageState extends State<ExercisesResultGlobalPage> {
                           itemBuilder: (context, index) {
                             if (index <
                                 widget.viewModel.roadMapRepository.rankingGlobalList.length) {
-                              return RankingItemWidget(
-                                index: index,
-                                item: widget.viewModel.roadMapRepository.rankingGlobalList[index],
+                              return GestureDetector(
+                                onTap: () {
+                                  if (!widget.viewModel
+                                      .isBusy(tag: widget.viewModel.getUserDetailsByIdTag)) {
+                                    widget.viewModel.getUserDetails(widget
+                                        .viewModel.roadMapRepository.rankingGlobalList[index]);
+                                  }
+                                },
+                                child: Stack(
+                                  children: [
+                                    RankingItemWidget(
+                                      index: index,
+                                      item: widget
+                                          .viewModel.roadMapRepository.rankingGlobalList[index],
+                                    ),
+                                    if (widget.viewModel.selectedItem != null &&
+                                        widget.viewModel.selectedItem!.userId ==
+                                            widget.viewModel.roadMapRepository
+                                                .rankingGlobalList[index].userId)
+                                      Positioned.fill(
+                                          child: ShimmerWidget(
+                                              child: Container(
+                                        margin:
+                                            const EdgeInsets.symmetric(horizontal: 18, vertical: 4),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 16, vertical: 12),
+                                        decoration: const ShapeDecoration(
+                                            color: AppColors.black, shape: StadiumBorder()),
+                                      )))
+                                  ],
+                                ),
                               );
                             } else {
                               return const Padding(
@@ -388,10 +436,11 @@ class _ExercisesResultGlobalPageState extends State<ExercisesResultGlobalPage> {
                           bottom: 0,
                           child: SafeArea(
                             child: CurrentUserItemWidget(
-                                index: widget.viewModel.roadMapRepository.userCurrentGlobalLevel,
+                                index: widget.viewModel.roadMapRepository.userGlobalRanking,
                                 item: RankingModel(
                                     name: "you".tr(),
-                                    level: widget.viewModel.roadMapRepository.userGlobalRanking)),
+                                    level:
+                                        widget.viewModel.roadMapRepository.userCurrentGlobalLevel)),
                           ))
                     ],
                   )
@@ -479,7 +528,7 @@ class RankingItemWidget extends StatelessWidget {
               width: 4,
             ),
             SvgPicture.asset(
-              Assets.icons.star,
+              Assets.icons.verify,
               width: 12,
               height: 12,
             )
@@ -500,7 +549,7 @@ class RankingItemWidget extends StatelessWidget {
             width: 4,
           ),
           SvgPicture.asset(
-            Assets.icons.star,
+            Assets.icons.verify,
             width: 12,
             height: 12,
             colorFilter: ColorFilter.mode(AppColors.blue, BlendMode.srcIn),
@@ -518,7 +567,7 @@ class RankingItemWidget extends StatelessWidget {
       );
     }
     return Text(
-      "${index + 1}",
+      item.ranking.toString(),
       style: AppTextStyle.font13W500Normal.copyWith(fontSize: 14, color: AppColors.blue),
     );
   }

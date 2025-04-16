@@ -17,7 +17,6 @@ import 'package:wisdom/data/model/battle/battle_user_model.dart';
 import 'package:wisdom/data/viewmodel/local_viewmodel.dart';
 import 'package:wisdom/domain/repositories/battle_repository.dart';
 import 'package:wisdom/domain/repositories/profile_repository.dart';
-import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/opponent_was_rejected_rematch_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/rematch_battle_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/waiting_opponent_battle_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/want_to_rematch_battle_dialog.dart';
@@ -86,7 +85,7 @@ class BattleResultViewmodel extends BaseViewModel {
   late final StreamSubscription _subscription;
 
   goBack() async {
-    battleRepository.searchingOpponentsChannelClose();
+    battleRepository.dispose();
     Navigator.pop(navigatorKey.currentContext!);
   }
 
@@ -97,7 +96,7 @@ class BattleResultViewmodel extends BaseViewModel {
       if (messageData['event'] == 'battle-finished') {
         log(messageData['data']);
         final eventData = jsonDecode(messageData['data']);
-        userId = profileRepository.userCabinet!.user!.id;
+        userId = profileRepository.userCabinet.user!.id;
         result = BattleResultModel.fromJson(eventData['data']);
         user1IsCurrentUser = result.user1?.id == userId;
 
@@ -119,9 +118,8 @@ class BattleResultViewmodel extends BaseViewModel {
         opponentUserSpentTime = !user1IsCurrentUser ? result.user1SpentTime : result.user2SpentTime;
         draw = result.draw;
 
-        final isOpenDialog =
-            (ModalRoute.of(navigatorKey.currentContext!)?.isCurrent ?? false) != true;
-
+        final isOpenDialog = (ModalRoute.of(context!)?.isCurrent ?? false) != true;
+        log("isOpenDialog - $isOpenDialog --- hasOpponentData - $hasOpponentData");
         if (!hasOpponentData && !isOpenDialog) {
           showDialog(
             context: navigatorKey.currentContext!,
@@ -147,36 +145,40 @@ class BattleResultViewmodel extends BaseViewModel {
         showTopDialog();
         _startTimer(_decrementTimer);
       } else if (messageData['event'] == 'battle-invitation-status-update') {
-        rejectedRematchBattle(messageData);
+        // rejectedRematchBattle(messageData);
+        waitingRematch.value = false;
+        rematchInProgress.value = false;
+        Navigator.pop(navigatorKey.currentContext!);
       }
     }, cancelOnError: true, onDone: () {}, onError: (error) {});
   }
 
-  void rejectedRematchBattle(Map<String, dynamic> messageData) {
-    waitingRematch.value = false;
-    final eventData = jsonDecode(messageData['data']);
-    String status = eventData['status'];
-    if (status == rejectedTag) {
-      rematchInProgress.value = false;
-      Navigator.pop(navigatorKey.currentContext!);
-      showDialog(
-        context: navigatorKey.currentContext!,
-        builder: (context) => OpponentWasRejectedRematchDialog(viewmodel: this),
-      );
+  // void rejectedRematchBattle(Map<String, dynamic> messageData) {
+  //   waitingRematch.value = false;
+  //   final eventData = jsonDecode(messageData['data']);
+  //   String status = eventData['status'];
+  //   if (status == rejectedTag) {
+  //     rematchInProgress.value = false;
+  //     Navigator.pop(navigatorKey.currentContext!);
+  //     showDialog(
+  //       context: navigatorKey.currentContext!,
+  //       builder: (context) => OpponentWasRejectedInvitationDialog(),
+  //       // builder: (context) => OpponentWasRejectedRematchDialog(viewmodel: this),
+  //     );
 
-      // showTopSnackBar(
-      //   Overlay.of(context!),
-      //   CustomSnackBar.error(
-      //     message: "Opponent rejected invitation",
-      //   ),
-      // );
-    }
-  }
+  //     // showTopSnackBar(
+  //     //   Overlay.of(context!),
+  //     //   CustomSnackBar.error(
+  //     //     message: "Opponent rejected invitation",
+  //     //   ),
+  //     // );
+  //   }
+  // }
 
   void showTopDialog() {
     showGeneralDialog(
       context: navigatorKey.currentContext!,
-      barrierDismissible: true,
+      barrierDismissible: false,
       barrierLabel: "Top Dialog",
       pageBuilder: (context, anim1, anim2) {
         return RematchBattleDialog(
@@ -264,6 +266,10 @@ class BattleResultViewmodel extends BaseViewModel {
     safeBlock(() async {
       if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
         await battleRepository.rematchUpdateStatus(battleId: battleId!, status: status);
+        if (status == rejectedTag) {
+          await navigatorKey.currentContext!.read<CountdownProvider>().getLives();
+        }
+
         statusTag = "";
         rematchUpdateStatus.value = false;
         if (Navigator.of(navigatorKey.currentContext!).canPop()) {
@@ -307,9 +313,9 @@ class BattleResultViewmodel extends BaseViewModel {
 
   @override
   void dispose() async {
-    // if (_timer != null) {
-    //   _timer!.cancel();
-    // }
+    if (_timer != null) {
+      _timer!.cancel();
+    }
     _subscription.cancel();
     super.dispose();
   }

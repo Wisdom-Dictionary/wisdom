@@ -53,7 +53,9 @@ class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewMod
                 child: Column(
                   children: [
                     statusResultBar(viewModel.levelTestRepository.resultModel!.correctAnswers ?? 0,
-                        viewModel.levelTestRepository.resultModel!.totalQuestions ?? 0),
+                        viewModel.levelTestRepository.resultModel!.totalQuestions ?? 0,
+                        spendTime: viewModel.levelTestRepository.resultModel!.timeTaken,
+                        testDuration: viewModel.levelTestRepository.resultModel!.testDuration),
                     const SizedBox(
                       height: 24,
                     ),
@@ -108,7 +110,23 @@ class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewMod
         ));
   }
 
-  Widget statusResultBar(int correctAnswers, int totalQuestions, {int? spendTime}) {
+  String formatMilliseconds(int milliseconds) {
+    int totalSeconds = (milliseconds / 1000).floor();
+    int minutes = (totalSeconds / 60).floor();
+    int seconds = totalSeconds % 60;
+
+    String minutesStr = minutes.toString().padLeft(2, '0');
+    String secondsStr = seconds.toString().padLeft(2, '0');
+
+    return "$minutesStr:$secondsStr";
+  }
+
+  Widget statusResultBar(
+    int correctAnswers,
+    int totalQuestions, {
+    int? spendTime = 0,
+    int? testDuration = 0,
+  }) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -147,9 +165,10 @@ class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewMod
             lineWidth: 5.0,
             animation: true,
             backgroundColor: AppColors.vibrantBlue.withValues(alpha: 0.15),
-            percent: 0.5,
+            percent:
+                testDuration == null || testDuration < spendTime ? 0 : spendTime / testDuration,
             center: Text(
-              "$spendTime",
+              formatMilliseconds(spendTime),
               style: AppTextStyle.font15W600Normal.copyWith(fontSize: 10, color: AppColors.blue),
             ),
             progressColor: AppColors.blue,
@@ -160,12 +179,40 @@ class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewMod
                 width: 70,
                 child: Text(
                   "time_taken".tr(),
+                  textAlign: TextAlign.center,
                   style:
                       AppTextStyle.font13W500Normal.copyWith(fontSize: 10, color: AppColors.blue),
                 ),
               ),
             ),
           ),
+        // if (spendTime != null)
+        //   CircularPercentIndicator(
+        //     startAngle: 90,
+        //     radius: 28.0,
+        //     lineWidth: 5.0,
+        //     animation: true,
+        //     backgroundColor: AppColors.vibrantBlue.withValues(alpha: 0.15),
+        //     percent:
+        //         testDuration == null || testDuration < spendTime ? 0 : spendTime / testDuration,
+        //     center: Text(
+        //       "$spendTime",
+        //       style: AppTextStyle.font15W600Normal.copyWith(fontSize: 10, color: AppColors.blue),
+        //     ),
+        //     progressColor: AppColors.blue,
+        //     circularStrokeCap: CircularStrokeCap.round,
+        //     footer: Padding(
+        //       padding: const EdgeInsets.only(top: 4),
+        //       child: SizedBox(
+        //         width: 70,
+        //         child: Text(
+        //           "time_taken".tr(),
+        //           style:
+        //               AppTextStyle.font13W500Normal.copyWith(fontSize: 10, color: AppColors.blue),
+        //         ),
+        //       ),
+        //     ),
+        //   ),
       ],
     );
   }
@@ -209,7 +256,7 @@ class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewMod
                               .copyWith(fontSize: 18, color: AppColors.blue),
                         )
                       : Text(
-                          "failure".tr(),
+                          "dont_give_up".tr(),
                           style: AppTextStyle.font17W700Normal
                               .copyWith(fontSize: 18, color: AppColors.red),
                         ),

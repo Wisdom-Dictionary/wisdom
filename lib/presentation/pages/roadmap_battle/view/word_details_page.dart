@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:jbaza/jbaza.dart';
 import 'package:selectable/selectable.dart';
 import 'package:wisdom/config/constants/app_decoration.dart';
@@ -13,11 +12,9 @@ import 'package:wisdom/config/constants/urls.dart';
 import 'package:wisdom/core/di/app_locator.dart';
 import 'package:wisdom/core/domain/entities/def_enum.dart';
 import 'package:wisdom/domain/repositories/level_test_repository.dart';
-import 'package:wisdom/domain/repositories/roadmap_repository.dart';
 import 'package:wisdom/presentation/components/parent_widget.dart';
 import 'package:wisdom/presentation/components/phrases_widget.dart';
 import 'package:wisdom/presentation/components/w_button.dart';
-import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/word_details_page_viewmodel.dart';
 import 'package:wisdom/presentation/pages/word_detail/viewmodel/word_detail_page_viewmodel.dart';
 import 'package:wisdom/presentation/routes/routes.dart';
 import 'package:wisdom/presentation/widgets/banner_ad_widget.dart';
@@ -518,7 +515,11 @@ class WordDetailsPage extends ViewModelBuilderWidget<WordDetailPageViewModel> {
                             onTap: () {
                               locator<LevelTestRepository>()
                                   .setExerciseType(TestExerciseType.wordExercise);
-                              Navigator.popAndPushNamed(context, Routes.wordExercisesPage);
+                              Navigator.pushNamed(context, Routes.wordExercisesPage)
+                                  // .then((value) {
+                                  //   Navigator.pop(context);
+                                  // })
+                                  ;
                             },
                           ),
                         ))

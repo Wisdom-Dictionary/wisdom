@@ -115,7 +115,7 @@ class ContactDetailsBar extends StatelessWidget {
           ),
         ),
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(color: AppColors.blue, borderRadius: BorderRadius.circular(37)),
           child: Row(
             children: [
@@ -151,21 +151,24 @@ class UserStatisticsWithPersentage extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         item(percent: contactItemData.winRate, title: "win_rate".tr()),
-        SizedBox(
+        const SizedBox(
           width: 12,
         ),
         item(percent: contactItemData.gameAccuracy, title: "game_accuracy".tr()),
-        SizedBox(
+        const SizedBox(
           width: 12,
         ),
         item(
             percent: contactItemData.averageTimeValue,
             percentSign: contactItemData.averageTimeSymbol,
             title: "average_time".tr()),
-        SizedBox(
+        const SizedBox(
           width: 12,
         ),
-        item(percent: contactItemData.bestTime, percentSign: " s", title: "best_time".tr()),
+        item(
+            percent: contactItemData.bestTimeValue,
+            percentSign: contactItemData.bestTimeSymbol,
+            title: "best_time".tr()),
       ],
     );
   }
@@ -192,6 +195,7 @@ class UserStatisticsWithPersentage extends StatelessWidget {
         percent: 0,
         center: Text(
           percent != null ? "$percent${percentSign ?? "%"}" : "",
+          textAlign: TextAlign.center,
           style: AppTextStyle.font15W600Normal.copyWith(color: AppColors.blue, fontSize: 16),
         ),
         footer: Padding(

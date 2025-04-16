@@ -1,4 +1,5 @@
 class Constants {
+  static const KEY_LATEST_SELECTED_INDEX = "latest_selected_bottom_menu_item";
   static const KEY_USER_BATTLE_END_TIME = "user_battle_end_time";
   static const KEY_USER_BATTLE_ID = "user_battle_id";
   static const KEY_USER_BATTLE_OPPONENT_USER = "user_battle_opponent_user";

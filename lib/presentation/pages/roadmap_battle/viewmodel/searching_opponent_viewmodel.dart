@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -24,11 +25,16 @@ import 'package:wisdom/presentation/routes/routes.dart';
 
 import '../../../../core/di/app_locator.dart';
 
-class SearchingOpponentViewmodel extends BaseViewModel {
-  SearchingOpponentViewmodel({required super.context}) {
-    _listenToWebSocket();
-  }
+enum BattleCreateType { fromSearchingOpponent, fromInvitation }
 
+class SearchingOpponentViewmodel extends BaseViewModel {
+  SearchingOpponentViewmodel({
+    required super.context,
+  }) {
+    // listenToWebSocket();
+    // connectionType = type;
+  }
+  BattleCreateType connectionType = BattleCreateType.fromSearchingOpponent;
   final battleRepository = locator<BattleRepository>();
   final profileRepository = locator<ProfileRepository>();
 
@@ -45,6 +51,7 @@ class SearchingOpponentViewmodel extends BaseViewModel {
   UserDetailsModel userDetailsModel = UserDetailsModel();
   String statusMessage = "Waiting for events...";
   Timer? _timer;
+  late DateTime _startTime;
   ValueNotifier<int> seconds = ValueNotifier<int>(0);
   ValueNotifier<bool> readyBattleTagLoading = ValueNotifier<bool>(false);
   ValueNotifier<bool> matchCancelledTag = ValueNotifier<bool>(false);
@@ -52,7 +59,7 @@ class SearchingOpponentViewmodel extends BaseViewModel {
 
   BattleUserModel? user1, user2;
   BattleUserModel battleInviteUser = BattleUserModel();
-  int? _battleId, _readyUser1Id, _readyUser2Id;
+  int? _battleId;
 
   BattleUserModel? get opponentUser => user1!.id! == userDetailsModel.user!.id! ? user2 : user1;
 
@@ -66,6 +73,8 @@ class SearchingOpponentViewmodel extends BaseViewModel {
   late final StreamSubscription _subscription;
 
   void _startTimer(Function() onChange) {
+    _startTime = DateTime.now();
+
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       onChange();
     });
@@ -76,18 +85,17 @@ class SearchingOpponentViewmodel extends BaseViewModel {
   }
 
   _incrementTimer() {
-    seconds.value++;
+    final elapsed = DateTime.now().difference(_startTime).inSeconds;
+    seconds.value = elapsed;
   }
 
   _decrementTimer() {
     if (seconds.value > 0) {
       seconds.value--;
     } else if (seconds.value == 0) {
-      if (_readyUser1Id != null && _readyUser2Id != null) {
-        _resetTimer();
+      _resetTimer();
 
-        startBattle();
-      }
+      battleStarted();
     }
   }
 
@@ -121,7 +129,7 @@ class SearchingOpponentViewmodel extends BaseViewModel {
     );
   }
 
-  void _listenToWebSocket() async {
+  void listenToWebSocket() async {
     if (userDetailsModel.user == null) {
       if (!profileRepository.userCabinet.hasUser) {
         userDetailsModel = await profileRepository.getUserCabinet();
@@ -136,6 +144,7 @@ class SearchingOpponentViewmodel extends BaseViewModel {
           statusMessage = message;
           if (messageData['event'] == 'user-matched' &&
               (messageData['channel'] as String).contains('private-user.')) {
+            log('user-matched');
             userMatched(messageData);
             _stopTimer();
           } else if (messageData['event'] == 'match-cancelled') {
@@ -143,6 +152,7 @@ class SearchingOpponentViewmodel extends BaseViewModel {
           } else if (messageData['event'] == 'user-search-failed') {
             _stopTimer();
             battleRepository.stopSearchingOpponents();
+            battleRepository.dispose();
             showDialog<bool>(
               barrierDismissible: false,
               context: navigatorKey.currentContext!,
@@ -158,19 +168,24 @@ class SearchingOpponentViewmodel extends BaseViewModel {
               },
             );
           } else if (messageData['event'] == 'battle-started') {
-            battleStarted();
-          } else if (messageData['event'] == 'ready-for-battle') {
-            statusMessage = "Ready users for battle";
-            final data = jsonDecode(messageData["data"]);
-            if (_readyUser1Id == null) {
-              _readyUser1Id = data["user_id"];
-            } else {
-              _readyUser2Id = data["user_id"];
-            }
-          } else if (messageData['event'] == 'user-search-failed') {
+            _startTimer(_decrementTimer);
+          }
+          // else if (messageData['event'] == 'ready-for-battle') {
+          //   statusMessage = "Ready users for battle";
+          //   final data = jsonDecode(messageData["data"]);
+          //   if (_readyUser1Id == null) {
+          //     _readyUser1Id = data["user_id"];
+          //   } else {
+          //     _readyUser2Id = data["user_id"];
+          //   }
+          // }
+          else if (messageData['event'] == 'user-search-failed') {
             statusMessage = "Search failed. No opponent found.";
           } else if (messageData['event'] == 'battle-invitation-status-update') {
             rejectedRematchBattle(messageData);
+            if (connectionType == BattleCreateType.fromInvitation) {
+              battleRepository.dispose();
+            }
           }
 
           notifyListeners(); // UI-ni yangilash
@@ -191,13 +206,26 @@ class SearchingOpponentViewmodel extends BaseViewModel {
     String status = eventData['status'];
     if (status == rejectedTag) {
       // rematchInProgress.value = false;
-      // Navigator.pop(navigatorKey.currentContext!);
       showDialog(
         context: navigatorKey.currentContext!,
-        builder: (context) => const OpponentWasRejectedInvitationDialog(),
+        builder: (context) => OpponentWasRejectedInvitationDialog(),
+        // builder: (context) => OpponentWasRejectedRematchDialog(viewmodel: this),
       );
     }
   }
+  // void rejectedRematchBattle(Map<String, dynamic> messageData) {
+  //   // waitingRematch.value = false;
+  //   final eventData = jsonDecode(messageData['data']);
+  //   String status = eventData['status'];
+  //   if (status == rejectedTag) {
+  //     // rematchInProgress.value = false;
+  //     // Navigator.pop(navigatorKey.currentContext!);
+  //     showDialog(
+  //       context: navigatorKey.currentContext!,
+  //       builder: (context) => const OpponentWasRejectedInvitationDialog(),
+  //     );
+  //   }
+  // }
 
   Future<dynamic> userMatched(Map<String, dynamic> messageData) async {
     statusMessage = "Matched with opponent: ${messageData['data']}";
@@ -229,14 +257,17 @@ class SearchingOpponentViewmodel extends BaseViewModel {
 
   battleStarted() {
     //Search opponent page
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
     Navigator.popUntil(
       navigatorKey.currentState!.context,
       (route) => route.isFirst ? true : false,
     );
     Navigator.pushNamed(navigatorKey.currentState!.context, Routes.battleExercisesPage);
+    // });
   }
 
   void connectBattle() {
+    listenToWebSocket();
     battleRepository.connectBattle(battleRepository.subscribeSearchingChannels);
   }
 
@@ -261,8 +292,8 @@ class SearchingOpponentViewmodel extends BaseViewModel {
       if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
         setBusy(true, tag: stopSearchingOpponentTag);
         await battleRepository.stopSearchingOpponents();
-        battleRepository.searchingOpponentsChannelClose();
-        Navigator.pop(context!);
+        battleRepository.dispose();
+        Navigator.pop(navigatorKey.currentContext!);
         setSuccess(tag: stopSearchingOpponentTag);
       } else {
         callBackError(LocaleKeys.no_internet.tr());
@@ -277,34 +308,33 @@ class SearchingOpponentViewmodel extends BaseViewModel {
         setBusy(true, tag: readyBattleTag);
         await battleRepository.readyBattle(
             battleId: _battleId!, battleChannel: "private-battle.${user1!.id}.${user2!.id}");
-        _startTimer(_decrementTimer);
         readyBattleTagLoading.value = false;
         setSuccess(tag: readyBattleTag);
       }
     }, callFuncName: 'stopSearchingOpponent', tag: stopSearchingOpponentTag, inProgress: false);
   }
 
-  void startBattle() {
-    safeBlock(() async {
-      if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
-        readyBattleTagLoading.value = true;
-        setBusy(true, tag: readyBattleTag);
-        final int user1Id = user1!.id!;
-        final int user2Id = user2!.id!;
-        await battleRepository.startBattle(
-            battleId: _battleId!,
-            battleChannel: "private-battle.$user1Id.$user2Id",
-            user1Id: user1Id,
-            user2Id: user2Id);
-        readyBattleTagLoading.value = false;
-        setSuccess(tag: readyBattleTag);
-      }
-    }, callFuncName: 'stopSearchingOpponent', tag: stopSearchingOpponentTag, inProgress: false);
-  }
+  // void startBattle() {
+  //   safeBlock(() async {
+  //     if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
+  //       readyBattleTagLoading.value = true;
+  //       setBusy(true, tag: readyBattleTag);
+  //       final int user1Id = user1!.id!;
+  //       final int user2Id = user2!.id!;
+  //       await battleRepository.startBattle(
+  //           battleId: _battleId!,
+  //           battleChannel: "private-battle.$user1Id.$user2Id",
+  //           user1Id: user1Id,
+  //           user2Id: user2Id);
+  //       readyBattleTagLoading.value = false;
+  //       setSuccess(tag: readyBattleTag);
+  //     }
+  //   }, callFuncName: 'stopSearchingOpponent', tag: stopSearchingOpponentTag, inProgress: false);
+  // }
 
   setBattleData(Map<String, dynamic> messageData) async {
     _battleId = int.tryParse(messageData['battle_id']);
-    // _battleChannel = messageData['battle_channel'];
+    listenToWebSocket();
     battleInviteUser = BattleUserModel.fromJson(messageData['user']);
     seconds.value = 20;
     _startTimer(_decrementInvitationTimer);
@@ -317,6 +347,7 @@ class SearchingOpponentViewmodel extends BaseViewModel {
         invitedIserId = opponentId;
         inviteUpdateStatus.value = true;
         await battleRepository.invite(opponentId: opponentId);
+        connectionType = BattleCreateType.fromInvitation;
         invitedIserId = null;
         inviteUpdateStatus.value = false;
       } else {
@@ -340,11 +371,13 @@ class SearchingOpponentViewmodel extends BaseViewModel {
     safeBlock(() async {
       if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
         await battleRepository.inviteUpdateStatus(battleId: _battleId!, status: status);
-
+        connectionType == BattleCreateType.fromInvitation;
         statusTag = "";
         inviteUpdateStatus.value = false;
 
         if (Navigator.of(navigatorKey.currentContext!).canPop() && status == rejectedTag) {
+          _subscription.cancel();
+          battleRepository.dispose();
           Navigator.pop(navigatorKey.currentContext!);
         }
       } else {
@@ -357,9 +390,8 @@ class SearchingOpponentViewmodel extends BaseViewModel {
 
   @override
   void dispose() async {
-    // if (_timer != null) {
-    //   _timer!.cancel();
-    // }
+    _timer?.cancel();
+    _timer = null;
     _subscription.cancel();
     super.dispose();
   }

@@ -51,6 +51,16 @@ class WordExercisesViewModel extends BaseViewModel {
 
       if (value != null) {
         if (!value) {
+          final resultText = await levelTestRepository.postCancelTest();
+          if (resultText != null) {
+            showTopSnackBar(
+              Overlay.of(context!),
+              CustomSnackBar.success(
+                message: resultText,
+              ),
+            );
+          }
+          await context!.read<CountdownProvider>().getLives();
           Navigator.pop(context!);
         }
       }
@@ -146,8 +156,15 @@ class WordExercisesViewModel extends BaseViewModel {
             await context!.read<CountdownProvider>().getLives();
           }
         }
-        Navigator.pop(context!);
-        Navigator.pushNamed(context!, Routes.wordExercisesCheckPage);
+        Navigator.popUntil(
+          context!,
+          (route) => route.isFirst ? true : false,
+        );
+        Navigator.pushNamed(context!, Routes.wordExercisesCheckPage)
+            // .then((onValue) {
+            //   Navigator.pop(context!);
+            // })
+            ;
         setSuccess(tag: postWordExercisesCheckTag);
       } else {
         callBackError(LocaleKeys.no_internet.tr());
@@ -156,12 +173,15 @@ class WordExercisesViewModel extends BaseViewModel {
     }, callFuncName: 'postWordExercisesCheck', tag: postWordExercisesCheckTag, inProgress: false);
   }
 
-  retryWordQuestions() {
-    Navigator.pop(context!);
+  retryWordQuestions() async {
+    Navigator.popUntil(
+      context!,
+      (route) => route.isFirst ? true : false,
+    );
     Navigator.pushNamed(context!, Routes.wordExercisesPage);
   }
 
-  void getTestQuestions() {
+  Future<void> getTestQuestions() async {
     safeBlock(() async {
       if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
         setBusy(true, tag: getWordExercisesTag);

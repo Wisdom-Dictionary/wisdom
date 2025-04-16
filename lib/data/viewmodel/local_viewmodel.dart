@@ -3,6 +3,7 @@ import 'dart:io';
 
 // import 'package:adapty_flutter/adapty_flutter.dart';
 import 'package:add_to_cart_animation/add_to_cart_animation.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,6 +12,7 @@ import 'package:jbaza/jbaza.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:wisdom/app.dart';
 import 'package:wisdom/config/constants/app_text_style.dart';
 import 'package:wisdom/config/constants/constants.dart';
 import 'package:wisdom/core/db/preference_helper.dart';
@@ -22,6 +24,7 @@ import 'package:wisdom/data/model/catalog_model.dart';
 import 'package:wisdom/data/model/recent_model.dart';
 import 'package:wisdom/data/model/word_bank_model.dart';
 import 'package:wisdom/domain/repositories/word_entity_repository.dart';
+import 'package:wisdom/presentation/components/no_internet_connection_dialog.dart';
 import 'package:wisdom/presentation/routes/routes.dart';
 
 import '../../config/constants/app_colors.dart';
@@ -31,7 +34,16 @@ import '../model/exercise_model.dart';
 
 class LocalViewModel extends BaseViewModel {
   LocalViewModel(
-      {required super.context, required this.preferenceHelper, required this.netWorkChecker});
+      {required super.context, required this.preferenceHelper, required this.netWorkChecker}) {
+    netWorkChecker.networkListener().listen((ConnectivityResult result) {
+      if (result == ConnectivityResult.none) {
+        _showNoConnectionDialog();
+      }
+      //  else {
+      //   _closeDialogIfOpen();
+      // }
+    });
+  }
 
   final SharedPreferenceHelper preferenceHelper;
 
@@ -48,6 +60,7 @@ class LocalViewModel extends BaseViewModel {
   ValueNotifier<int> currentIndex = ValueNotifier<int>(0);
 
   ValueNotifier<bool> isNetworkAvailable = ValueNotifier<bool>(false);
+  bool _isDialogShown = false;
 
   ValueNotifier<int> cleanNotifier = ValueNotifier<int>(0);
 
@@ -90,10 +103,33 @@ class LocalViewModel extends BaseViewModel {
   // BannerAd? banner;
   bool boundException = false;
   bool boundExceptionLoop = false;
+  bool userLevelsSatusChanged = true;
 
   Widget get bannerAdWidget => locator.get<AdService>().getBannerAdWidget();
 
   AdService get adService => locator.get<AdService>();
+
+  void _showNoConnectionDialog() {
+    if (!_isDialogShown) {
+      _isDialogShown = true;
+      showDialog(
+        context: navigatorKey.currentContext!,
+        barrierDismissible: false,
+        builder: (_) => NoInternetConnectionDialog(),
+      ).then(
+        (value) {
+          _isDialogShown = false;
+        },
+      );
+    }
+  }
+
+  void _closeDialogIfOpen() {
+    if (_isDialogShown) {
+      Navigator.of(context!).pop();
+      _isDialogShown = false;
+    }
+  }
 
   void createInterstitialAd() {
     InterstitialAd.load(
@@ -138,6 +174,10 @@ class LocalViewModel extends BaseViewModel {
     isNetworkAvailable.value = await netWorkChecker.isNetworkAvailable();
   }
 
+  void changeRoadMapLoadingStatus(bool userLevelsSatusValue) {
+    userLevelsSatusChanged = userLevelsSatusValue;
+  }
+
   void changePageIndex(int index) async {
     // if (banner != null) {
     //   banner!.dispose();
@@ -160,12 +200,30 @@ class LocalViewModel extends BaseViewModel {
       // }
     }
     notifyListeners();
-    pageController.animateTo(
-      0,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeIn,
-    );
-    pageController.jumpToPage(index);
+    if (index == 3) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (pageController.hasClients) {
+          pageController.animateTo(
+            0,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeIn,
+          );
+          pageController.jumpToPage(index);
+          // checkNetworkConnection();
+          // log('changePageIndex : $index');
+          // notifyListeners();
+        }
+      });
+      return;
+    } else {
+      pageController.animateTo(
+        0,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeIn,
+      );
+      pageController.jumpToPage(index);
+    }
+
     checkNetworkConnection();
     log('changePageIndex : $index');
   }

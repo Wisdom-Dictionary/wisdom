@@ -2,12 +2,15 @@ import 'package:wisdom/config/constants/urls.dart';
 
 class RankingModel {
   RankingModel({
+    this.userId,
     this.ranking,
     this.rankIcon,
     this.name,
     this.level,
     this.you,
   });
+
+  final int? userId;
 
   final int? ranking;
   static const String rankingKey = "ranking";
@@ -33,6 +36,7 @@ class RankingModel {
 
   factory RankingModel.fromJson(Map<String, dynamic> json) {
     return RankingModel(
+      userId: json["user_id"],
       ranking: json["ranking"],
       rankIcon: json["rank_icon"],
       name: json["name"],
