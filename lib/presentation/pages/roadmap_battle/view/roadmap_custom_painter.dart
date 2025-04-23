@@ -1,14 +1,16 @@
-import 'dart:developer';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:flutter/cupertino.dart';
+import 'package:formz/formz.dart';
+import 'package:provider/provider.dart';
 import 'package:wisdom/config/constants/app_colors.dart';
 import 'package:wisdom/config/constants/assets.dart';
 import 'package:wisdom/data/model/roadmap/level_model.dart';
 import 'package:wisdom/domain/repositories/roadmap_repository.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/widgets/roadmap_shimmer_widget.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/widgets/task_level_indicator_widget.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/life_countdown_provider.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/roadmap_viewmodel.dart';
 import 'package:wisdom/presentation/routes/routes.dart';
 
@@ -167,55 +169,43 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
     return items;
   }
 
-  _scrollToItem() {
-    // Foydalanuvchi leveli qaysi indeksda bo‘lsa, uni markazga yaqin qilish
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      // widget.viewModel.roadMapRepository.levelsList
-      int targetIndex = widget.viewModel.roadMapRepository.userCurrentLevel;
-
-      // Markazga tushirish uchun - visibleItemCount ~/ 2
-      int scrollToIndex = (targetIndex - (visibleItemCount ~/ 2))
-          .clamp(0, widget.viewModel.roadMapRepository.levelsList.length - visibleItemCount);
-
-      // double offset = scrollToIndex * itemHeight;
-      double offset = 300;
-
-      _scrollController.jumpTo(offset); // yoki animateTo
-    });
-  }
-
-  // _scrollToCurrentItem() {
-  //   // Foydalanuvchi leveli qaysi indeksda bo‘lsa, uni markazga yaqin qilish
-  //   WidgetsBinding.instance.addPostFrameCallback((_) {
-  //     double offset = -400;
-  //     _scrollController.jumpTo(offset); // yoki animateTo
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
-    // if (widget.viewModel.roadMapRepository.levelsList.isNotEmpty &&
-    //     widget.viewModel.initialRequest &&
-    //     widget.viewModel.roadMapRepository.userCurrentLevel > 15) {
-    //   _scrollToItem();
-    // }
+    return ValueListenableBuilder(
+      valueListenable: context.watch<CountdownProvider>().status,
+      builder: (context, status, child) {
+        if (status == FormzSubmissionStatus.inProgress) {
+          return Stack(
+            children: [
+              Positioned.fill(
+                child: Image.asset(
+                  Assets.images.roadmapBattleBackground1,
+                  fit: BoxFit.fitWidth,
+                ),
+              ),
+              buildLoadingState(),
+            ],
+          );
+        }
 
-    return Stack(
-      children: [
-        if (widget.viewModel.isSuccess(tag: widget.viewModel.getLevelsTag) ||
-            (widget.viewModel.isBusy(tag: widget.viewModel.getLevelsMoreTag) &&
-                widget.viewModel.page > 1))
-          buildSuccessState()
-        else
-          Positioned.fill(
-            child: Image.asset(
-              Assets.images.roadmapBattleBackground1,
-              fit: BoxFit.fitWidth,
-            ),
-          ),
-        if (widget.viewModel.isBusy(tag: widget.viewModel.getLevelsTag)) buildLoadingState(),
-        buildTopRightButton(context),
-      ],
+        return Stack(
+          children: [
+            if (widget.viewModel.isSuccess(tag: widget.viewModel.getLevelsTag) ||
+                (widget.viewModel.isBusy(tag: widget.viewModel.getLevelsMoreTag) &&
+                    widget.viewModel.page > 1))
+              buildSuccessState()
+            else
+              Positioned.fill(
+                child: Image.asset(
+                  Assets.images.roadmapBattleBackground1,
+                  fit: BoxFit.fitWidth,
+                ),
+              ),
+            if (widget.viewModel.isBusy(tag: widget.viewModel.getLevelsTag)) buildLoadingState(),
+            buildTopRightButton(context),
+          ],
+        );
+      },
     );
   }
 
@@ -248,7 +238,6 @@ class _ExampleRoadMapState extends State<ExampleRoadMap> {
               !widget.viewModel.isBusy(tag: widget.viewModel.getLevelsMoreTag);
       bool canMoreLoadBottom = widget.viewModel.roadMapRepository.canMoreLoadBottom;
 
-      log("_scrollController.position.pixels < 100 - $enableToPaginationBottom");
       if (enableToPaginationBottom && canMoreLoadBottom) {
         widget.viewModel.getLevelsBottomMore();
       }

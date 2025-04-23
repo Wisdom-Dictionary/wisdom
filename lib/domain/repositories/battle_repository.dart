@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:formz/formz.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:wisdom/data/model/roadmap/answer_entity.dart';
 import 'package:wisdom/data/model/roadmap/level_model.dart';
@@ -11,6 +12,8 @@ abstract class BattleRepository {
   Stream<String> get searchingOpponents;
 
   WebSocketChannel get webSocket;
+
+  ValueNotifier<FormzSubmissionStatus> get clientConnectedToWebsocket;
 
   Future<void> invite({required int opponentId});
 

@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:formz/formz.dart';
 import 'package:jbaza/jbaza.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:wisdom/config/constants/constants.dart';
@@ -66,6 +67,9 @@ class BattleRepositoryImpl extends BattleRepository {
       ValueNotifier<List<TestQuestionModel>>([]);
   List<TestQuestionModel> _battleQuestionsResultList = [];
 
+  final ValueNotifier<FormzSubmissionStatus> _clientConnectedToWebsocket =
+      ValueNotifier<FormzSubmissionStatus>(FormzSubmissionStatus.initial);
+
   @override
   void connectBattle(Function(Map<String, dynamic>) channelsFunction) async {
     if (_streamController.isClosed) {
@@ -112,9 +116,11 @@ class BattleRepositoryImpl extends BattleRepository {
       },
       onError: (error) {
         log("❌ WebSocket xatosi: $error");
+        errorWithWebSocket();
       },
       onDone: () {
         log("🔴 WebSocket yopildi");
+        errorWithWebSocket();
       },
       cancelOnError: true,
     );
@@ -127,7 +133,7 @@ class BattleRepositoryImpl extends BattleRepository {
     return Timer.periodic(const Duration(seconds: 30), (timer) {
       if (channel != null) {
         channel!.sink.add('Ping from client');
-        print('Ping sent');
+        log('Ping sent');
       }
     });
   }
@@ -165,19 +171,40 @@ class BattleRepositoryImpl extends BattleRepository {
   }
 
   @override
+  ValueNotifier<FormzSubmissionStatus> get clientConnectedToWebsocket =>
+      _clientConnectedToWebsocket;
+
+  @override
   Future<void> subscribeInvitationBattleChannels(Map<String, dynamic> messageData) async {
+    _clientConnectedToWebsocket.value = FormzSubmissionStatus.inProgress;
     final Map<String, dynamic> socketData = jsonDecode(messageData["data"]);
     socketId = socketData["socket_id"];
     final userData = sharedPreferenceHelper.getString(Constants.KEY_USER, "");
     UserModel user = UserModel.fromJson(jsonDecode(userData));
-    log("user.id - ${user.id}");
     await subscribeToChannel(channelName: "private-user.${user.id!}");
+    log("user.id - ${user.id}");
+    // while (_clientConnectedToWebsocket.isSuccess) {
+    // await Future.delayed(const Duration(seconds: 1));
+    // if (subscribedChannels.contains("private-user.")) {
+    _clientConnectedToWebsocket.value = FormzSubmissionStatus.success;
+    //   }
+    // }
 
     // if (interval != null && interval!.isActive) return;
     // interval = intervalSendPing();
   }
 
   Stream<String> get messageStream => _streamController.stream;
+
+  void stopListening() async {
+    await _streamController.close();
+  }
+
+  void errorWithWebSocket() {
+    subscribedChannels.clear();
+    interval?.cancel();
+    interval = null;
+  }
 
   @override
   void dispose() {
@@ -332,7 +359,7 @@ class BattleRepositoryImpl extends BattleRepository {
   @override
   void searchingOpponentsChannelClose() {
     channel!.sink.close();
-    // _streamController.close();
+    stopListening();
   }
 
   @override
@@ -458,6 +485,7 @@ class BattleRepositoryImpl extends BattleRepository {
     final requestBody = {
       "opponent_id": opponentId,
     };
+
     var response = await customClient.post(Urls.inviteBattle,
         headers: {
           "Content-Type": "application/json",
@@ -476,9 +504,7 @@ class BattleRepositoryImpl extends BattleRepository {
 
   @override
   Future<void> inviteUpdateStatus({required int battleId, required String status}) async {
-    // if (status == 'accepted') {
-    //   connectBattle(subscribeInvitationBattleChannels);
-    // }
+    _clientConnectedToWebsocket.value = FormzSubmissionStatus.initial;
     final requestBody = {
       "battle_id": battleId,
       "status": status,

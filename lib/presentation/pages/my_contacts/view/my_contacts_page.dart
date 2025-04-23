@@ -16,8 +16,8 @@ import 'package:wisdom/presentation/pages/my_contacts/view/my_contacts_app_bar.d
 import 'package:wisdom/presentation/pages/my_contacts/view/my_contacts_empty_widget.dart';
 import 'package:wisdom/presentation/pages/my_contacts/view/my_contcats_shimmer_widget.dart';
 import 'package:wisdom/presentation/pages/my_contacts/view/you_have_not_premium_dialog.dart';
-import 'package:wisdom/presentation/pages/my_contacts/view/your_friend_have_not_premium_dialog.dart';
 import 'package:wisdom/presentation/pages/my_contacts/viewmodel/my_contacts_viewmodel.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/continue_battle_viewmodel.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/searching_opponent_viewmodel.dart';
 import 'package:wisdom/presentation/routes/routes.dart';
 
@@ -31,9 +31,12 @@ class MyContactsPage extends StatefulWidget {
 class _MyContactsPageState extends State<MyContactsPage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   late final SearchingOpponentViewmodel searchingOpponentViewmodel;
+  late final ContinueBattleViewmodel continueBattleViewmodel;
   @override
   void initState() {
     searchingOpponentViewmodel = SearchingOpponentViewmodel(context: context);
+    continueBattleViewmodel = ContinueBattleViewmodel(context: context);
+    continueBattleViewmodel.checkHasInProgressBattle();
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(() {
       setState(() {}); // Tab o'zgarganda UI yangilanadi
@@ -43,7 +46,7 @@ class _MyContactsPageState extends State<MyContactsPage> with SingleTickerProvid
 
   @override
   void dispose() {
-    // searchingOpponentViewmodel.dispose();
+    continueBattleViewmodel.dispose();
     super.dispose();
   }
 
@@ -461,12 +464,14 @@ class InviteBattleWidget extends StatelessWidget {
                       context: context,
                       builder: (context) => YouHaveNotPremiumDialog(),
                     );
-                  } else if (!userIsPremium) {
-                    showDialog(
-                      context: context,
-                      builder: (context) => YourFriendHaveNotPremiumDialog(),
-                    );
-                  } else {
+                  } else
+                  // if (!userIsPremium) {
+                  //   showDialog(
+                  //     context: context,
+                  //     builder: (context) => YourFriendHaveNotPremiumDialog(),
+                  //   );
+                  // } else
+                  {
                     searchingOpponentViewmodel.postInviteBattle(opponentId: userId);
                   }
                 },

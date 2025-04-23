@@ -47,7 +47,8 @@ class RankingViewModel extends BaseViewModel {
         final userData = myContactsRepository.searchResultList.firstOrNull;
 
         if (userData != null) {
-          Navigator.pushNamed(context!, Routes.contactDetailsPage, arguments: userData.toMap());
+          Navigator.pushNamed(context!, Routes.contactDetailsPage,
+              arguments: {"isCurrentUser": item.you ?? false, ...userData.toMap()});
         }
       } else {
         callBackError(LocaleKeys.no_internet.tr());

@@ -14,24 +14,14 @@ class FlagIndicatorWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(bottom: 5, top: 9, left: 20, right: 18),
+      height: 59,
+      width: 59,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: AppColors.blue,
         border: Border.all(color: AppColors.borderWhite, width: 2),
       ),
-      child: Column(
-        children: [
-          SvgPicture.asset(Assets.icons.flag),
-          const SizedBox(
-            height: 4,
-          ),
-          Text(
-            "$userLevel",
-            style: AppTextStyle.font15W500Normal.copyWith(fontSize: 14, color: AppColors.white),
-          ),
-        ],
-      ),
+      child: Center(child: SvgPicture.asset(Assets.icons.flag)),
     );
   }
 }

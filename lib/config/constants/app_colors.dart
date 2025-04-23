@@ -24,6 +24,7 @@ abstract class AppColors {
   static const Color vibrantBlue = Color(0xFF007AFF);
   static const Color paleBlue = Color(0xFF6782D8);
   static const Color lightBlue = Color(0xFF94BDDB);
+  static const Color lightGrayishBlue = Color(0xFFCFE5FA);
 
   static const Color lightBackground = Color(0xFFF6F9FF);
   static const Color seekerBack = Color(0xFF9597A1);

@@ -83,6 +83,7 @@ class BattleResultViewmodel extends BaseViewModel {
       currentUserSpentTime != null;
 
   late final StreamSubscription _subscription;
+  bool get hasUserLives => context!.read<CountdownProvider>().hasUserLives;
 
   goBack() async {
     battleRepository.dispose();

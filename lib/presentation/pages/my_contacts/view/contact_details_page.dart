@@ -17,12 +17,20 @@ class ContactDetailsPage extends ViewModelBuilderWidget<ContactDetailsViewModel>
   ContactDetailsPage({super.key, Object? data})
       : contactItemData = (data is Map<String, dynamic>)
             ? UserDetailsModel.fromJson(data)
-            : throw ArgumentError("Invalid data format");
-  final UserDetailsModel contactItemData;
+            : throw ArgumentError("Invalid data format"),
+        isCurrentUser = (data['isCurrentUser'] is bool) ? data['isCurrentUser'] as bool : null;
+
+  UserDetailsModel contactItemData;
+  bool? isCurrentUser;
   @override
   void onViewModelReady(ContactDetailsViewModel viewModel) {
     super.onViewModelReady(viewModel);
     viewModel.setFollowStatus(contactItemData.followed ?? true);
+    if (isCurrentUser == null) {
+      viewModel.setIsCurrentUser(contactItemData);
+    } else {
+      viewModel.setIsCurrentUserValue(isCurrentUser!);
+    }
   }
 
   @override
@@ -62,15 +70,18 @@ class ContactDetailsPage extends ViewModelBuilderWidget<ContactDetailsViewModel>
                 const SizedBox(
                   height: 24,
                 ),
-                WButton(
-                  isLoading: viewModel.isBusy(tag: viewModel.getMyContactFollowTag),
-                  title: viewModel.isFollowed ? "unfollow".tr() : "follow".tr(),
-                  onTap: () {
-                    viewModel.postFollowAction(
-                      contactItemData.user?.id ?? 0,
-                    );
-                  },
-                )
+                if (!viewModel.isCurrentUser)
+                  WButton(
+                    isLoading: viewModel.isBusy(tag: viewModel.getMyContactFollowTag),
+                    title: viewModel.isFollowed ? "unfollow".tr() : "follow".tr(),
+                    color: viewModel.isFollowed ? AppColors.lightGrayishBlue : AppColors.blue,
+                    titleColor: viewModel.isFollowed ? AppColors.blue : AppColors.white,
+                    onTap: () {
+                      viewModel.postFollowAction(
+                        contactItemData.user?.id ?? 0,
+                      );
+                    },
+                  )
               ],
             ),
           )

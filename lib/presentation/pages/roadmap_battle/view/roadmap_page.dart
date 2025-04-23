@@ -8,6 +8,7 @@ import 'package:wisdom/config/constants/app_text_style.dart';
 import 'package:wisdom/config/constants/assets.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/roadmap_custom_painter.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/widgets/life_status_bar.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/continue_battle_viewmodel.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/life_countdown_provider.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/roadmap_viewmodel.dart';
 import 'package:wisdom/presentation/widgets/new_custom_app_bar.dart';
@@ -15,14 +16,21 @@ import 'package:wisdom/presentation/widgets/new_custom_app_bar.dart';
 class RoadmapPage extends ViewModelBuilderWidget<RoadMapViewModel> {
   RoadmapPage({super.key});
 
+  ContinueBattleViewmodel? continueBattleViewmodel;
   @override
   void onViewModelReady(RoadMapViewModel viewModel) {
     viewModel.userData();
 
     viewModel.getLevels();
 
-    viewModel.checkHasInProgressBattle();
+    continueBattleViewmodel?.checkHasInProgressBattle();
     super.onViewModelReady(viewModel);
+  }
+
+  @override
+  void onDestroy(RoadMapViewModel model) {
+    continueBattleViewmodel?.dispose();
+    super.onDestroy(model);
   }
 
   @override
@@ -52,6 +60,9 @@ class RoadmapPage extends ViewModelBuilderWidget<RoadMapViewModel> {
   @override
   RoadMapViewModel viewModelBuilder(BuildContext context) {
     context.read<CountdownProvider>().getLives();
+    if (continueBattleViewmodel != null) {
+      continueBattleViewmodel = ContinueBattleViewmodel(context: context);
+    }
     return RoadMapViewModel(context: context);
   }
 }

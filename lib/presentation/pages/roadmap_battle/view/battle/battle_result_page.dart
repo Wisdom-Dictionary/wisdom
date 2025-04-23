@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:jbaza/jbaza.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-import 'package:provider/provider.dart';
 import 'package:wisdom/config/constants/app_colors.dart';
 import 'package:wisdom/config/constants/app_decoration.dart';
 import 'package:wisdom/config/constants/app_text_style.dart';
@@ -16,7 +15,6 @@ import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/out_of_live
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/searching_opponent_page.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/widgets/life_status_bar.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/battle_result_viewmodel.dart';
-import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/life_countdown_provider.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/searching_opponent_viewmodel.dart';
 import 'package:wisdom/presentation/routes/routes.dart';
 import 'package:wisdom/presentation/widgets/custom_app_bar.dart';
@@ -61,7 +59,7 @@ class BattleResultPage extends ViewModelBuilderWidget<BattleResultViewmodel> {
           padding: const EdgeInsets.symmetric(vertical: 13, horizontal: 18),
           children: [
             if (!viewModel.hasOpponentData)
-              ShimmerWidget(child: statusIndicatorBar(true, 2))
+              ShimmerWidget(child: statusIndicatorBar(null, 2))
             else
               statusIndicatorBar(viewModel.currentUserWon, viewModel.currentUserGainedStars ?? 0),
             const SizedBox(height: 8),
@@ -204,8 +202,7 @@ class BattleResultPage extends ViewModelBuilderWidget<BattleResultViewmodel> {
                     isLoading: viewModel.isBusy(tag: viewModel.postRematchRequestTag),
                     title: "rematch".tr(),
                     onTap: () {
-                      final hasUserLives = context.read<CountdownProvider>().hasUserLifes;
-                      if (hasUserLives) {
+                      if (viewModel.hasUserLives) {
                         viewModel.showRematchDialog();
                       } else {
                         showDialog(
@@ -320,7 +317,11 @@ class BattleResultPage extends ViewModelBuilderWidget<BattleResultViewmodel> {
     );
   }
 
-  SizedBox statusIndicatorBar(bool pass, int livesStatusIndicator) {
+  SizedBox statusIndicatorBar(
+    bool? passValue,
+    int livesStatusIndicator,
+  ) {
+    final pass = passValue ?? true;
     return SizedBox(
       height: 80,
       child: Row(
@@ -354,17 +355,19 @@ class BattleResultPage extends ViewModelBuilderWidget<BattleResultViewmodel> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                      child: pass
-                          ? Text(
-                              "you_won".tr(),
-                              style: AppTextStyle.font17W700Normal
-                                  .copyWith(fontSize: 18, color: AppColors.blue),
-                            )
-                          : Text(
-                              "failure".tr(),
-                              style: AppTextStyle.font17W700Normal
-                                  .copyWith(fontSize: 18, color: AppColors.red),
-                            )),
+                      child: passValue == null
+                          ? const Center()
+                          : pass
+                              ? Text(
+                                  "you_won".tr(),
+                                  style: AppTextStyle.font17W700Normal
+                                      .copyWith(fontSize: 18, color: AppColors.blue),
+                                )
+                              : Text(
+                                  "failure".tr(),
+                                  style: AppTextStyle.font17W700Normal
+                                      .copyWith(fontSize: 18, color: AppColors.red),
+                                )),
                   statusIndicatorLivesBar(livesStatusIndicator == 0 ? -1 : livesStatusIndicator),
                 ],
               ),

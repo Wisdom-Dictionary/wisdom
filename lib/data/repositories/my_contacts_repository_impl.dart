@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:jbaza/jbaza.dart';
 import 'package:wisdom/config/constants/constants.dart';

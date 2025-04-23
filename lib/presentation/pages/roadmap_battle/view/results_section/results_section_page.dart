@@ -249,7 +249,8 @@ class _ExercisesResultContactsPageState extends State<ExercisesResultContactsPag
   @override
   Widget build(BuildContext context) {
     return !widget.viewModel.hasContactsPermission ||
-            widget.viewModel.roadMapRepository.rankingContactList.isEmpty
+            (widget.viewModel.roadMapRepository.rankingContactList.isEmpty &&
+                !widget.viewModel.isBusy(tag: widget.viewModel.getRankingContactTag))
         ? MyContactsEmptyPage(
             icon: SvgPicture.asset(Assets.icons.calendarOutlined),
             title: "title_my_contacts_list_empty".tr(),
@@ -389,25 +390,26 @@ class _ExercisesResultGlobalPageState extends State<ExercisesResultGlobalPage> {
                           itemBuilder: (context, index) {
                             if (index <
                                 widget.viewModel.roadMapRepository.rankingGlobalList.length) {
+                              final item =
+                                  widget.viewModel.roadMapRepository.rankingGlobalList[index];
+
                               return GestureDetector(
                                 onTap: () {
                                   if (!widget.viewModel
                                       .isBusy(tag: widget.viewModel.getUserDetailsByIdTag)) {
-                                    widget.viewModel.getUserDetails(widget
-                                        .viewModel.roadMapRepository.rankingGlobalList[index]);
+                                    widget.viewModel.getUserDetails(item);
                                   }
                                 },
                                 child: Stack(
                                   children: [
-                                    RankingItemWidget(
-                                      index: index,
-                                      item: widget
-                                          .viewModel.roadMapRepository.rankingGlobalList[index],
-                                    ),
+                                    (item.you ?? false)
+                                        ? CurrentUserItemWidget(index: index, item: item)
+                                        : RankingItemWidget(
+                                            index: index,
+                                            item: item,
+                                          ),
                                     if (widget.viewModel.selectedItem != null &&
-                                        widget.viewModel.selectedItem!.userId ==
-                                            widget.viewModel.roadMapRepository
-                                                .rankingGlobalList[index].userId)
+                                        widget.viewModel.selectedItem!.userId == item.userId)
                                       Positioned.fill(
                                           child: ShimmerWidget(
                                               child: Container(
@@ -459,7 +461,7 @@ class RankingItemWidget extends StatelessWidget {
   }
 
   Color? get itemBackgroundColor {
-    if (item.you ?? false) {
+    if (index == 0) {
       return AppColors.blanchedAlmond;
     }
     if (itemInTopRating) {
@@ -468,7 +470,7 @@ class RankingItemWidget extends StatelessWidget {
   }
 
   BorderSide get itemBorder {
-    if (item.you ?? false) {
+    if (index == 0) {
       return const BorderSide(width: 2, color: AppColors.bgAccent);
     }
     return BorderSide.none;
@@ -477,6 +479,7 @@ class RankingItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: 58,
       margin: const EdgeInsets.symmetric(horizontal: 18, vertical: 4),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration:
@@ -579,18 +582,11 @@ class CurrentUserItemWidget extends StatelessWidget {
   final RankingModel item;
   static const int topRatingCount = 3;
 
-  bool get itemInTopRating {
-    return index + 1 <= topRatingCount;
-  }
-
   Color? get itemBackgroundColor {
     return AppColors.blue;
   }
 
   BorderSide get itemBorder {
-    if (item.you ?? false) {
-      return const BorderSide(width: 2, color: AppColors.bgAccent);
-    }
     return BorderSide.none;
   }
 

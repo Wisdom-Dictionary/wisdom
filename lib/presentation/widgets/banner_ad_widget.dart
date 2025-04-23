@@ -4,9 +4,6 @@ import 'package:wisdom/core/di/app_locator.dart';
 import 'package:wisdom/core/services/purchase_observer.dart';
 import 'package:wisdom/data/viewmodel/local_viewmodel.dart';
 
-import '../../config/constants/app_decoration.dart';
-import '../../config/constants/constants.dart';
-
 class BannerAdWidget extends StatelessWidget {
   const BannerAdWidget({super.key});
 

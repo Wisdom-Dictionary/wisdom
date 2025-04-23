@@ -4,6 +4,7 @@ import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:formz/formz.dart';
 import 'package:jbaza/jbaza.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
@@ -31,8 +32,15 @@ class SearchingOpponentViewmodel extends BaseViewModel {
   SearchingOpponentViewmodel({
     required super.context,
   }) {
-    // listenToWebSocket();
-    // connectionType = type;
+    _listener = () {
+      final status = battleRepository.clientConnectedToWebsocket.value;
+      if (status == FormzSubmissionStatus.success && inviteStatus.isInitial) {
+        seconds.value = 20;
+        _startTimer(_decrementInvitationTimer);
+      }
+    };
+
+    battleRepository.clientConnectedToWebsocket.addListener(_listener);
   }
   BattleCreateType connectionType = BattleCreateType.fromSearchingOpponent;
   final battleRepository = locator<BattleRepository>();
@@ -56,6 +64,8 @@ class SearchingOpponentViewmodel extends BaseViewModel {
   ValueNotifier<bool> readyBattleTagLoading = ValueNotifier<bool>(false);
   ValueNotifier<bool> matchCancelledTag = ValueNotifier<bool>(false);
   ValueNotifier<bool> inviteUpdateStatus = ValueNotifier<bool>(false);
+  FormzSubmissionStatus inviteStatus = FormzSubmissionStatus.initial;
+  late final VoidCallback _listener;
 
   BattleUserModel? user1, user2;
   BattleUserModel battleInviteUser = BattleUserModel();
@@ -70,7 +80,7 @@ class SearchingOpponentViewmodel extends BaseViewModel {
       acceptedTag = "accepted";
   String statusTag = "";
 
-  late final StreamSubscription _subscription;
+  StreamSubscription? _subscription;
 
   void _startTimer(Function() onChange) {
     _startTime = DateTime.now();
@@ -104,7 +114,9 @@ class SearchingOpponentViewmodel extends BaseViewModel {
       seconds.value--;
     } else if (seconds.value == 0) {
       _stopTimer();
-      postInviteUpdateStatus(rejectedTag);
+      if (!inviteUpdateStatus.value) {
+        postInviteUpdateStatus(rejectedTag);
+      }
     }
   }
 
@@ -121,6 +133,9 @@ class SearchingOpponentViewmodel extends BaseViewModel {
 
   @override
   callBackError(String text) {
+    if (context == null) {
+      return;
+    }
     showTopSnackBar(
       Overlay.of(context!),
       CustomSnackBar.error(
@@ -136,6 +151,9 @@ class SearchingOpponentViewmodel extends BaseViewModel {
       } else {
         userDetailsModel = profileRepository.userCabinet;
       }
+    }
+    if (isSubscribed) {
+      return;
     }
     _subscription = battleRepository.searchingOpponents.listen(
         (message) async {
@@ -292,6 +310,7 @@ class SearchingOpponentViewmodel extends BaseViewModel {
       if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
         setBusy(true, tag: stopSearchingOpponentTag);
         await battleRepository.stopSearchingOpponents();
+        stopListening();
         battleRepository.dispose();
         Navigator.pop(navigatorKey.currentContext!);
         setSuccess(tag: stopSearchingOpponentTag);
@@ -333,11 +352,11 @@ class SearchingOpponentViewmodel extends BaseViewModel {
   // }
 
   setBattleData(Map<String, dynamic> messageData) async {
+    inviteStatus = FormzSubmissionStatus.initial;
+    _stopTimer();
     _battleId = int.tryParse(messageData['battle_id']);
     listenToWebSocket();
     battleInviteUser = BattleUserModel.fromJson(messageData['user']);
-    seconds.value = 20;
-    _startTimer(_decrementInvitationTimer);
   }
 
   int? invitedIserId;
@@ -346,17 +365,21 @@ class SearchingOpponentViewmodel extends BaseViewModel {
       if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
         invitedIserId = opponentId;
         inviteUpdateStatus.value = true;
+        inviteStatus = FormzSubmissionStatus.inProgress;
         await battleRepository.invite(opponentId: opponentId);
+        listenToWebSocket();
         connectionType = BattleCreateType.fromInvitation;
         invitedIserId = null;
         inviteUpdateStatus.value = false;
+        inviteStatus = FormzSubmissionStatus.success;
       } else {
+        inviteStatus = FormzSubmissionStatus.failure;
         callBackError(LocaleKeys.no_internet.tr());
         invitedIserId = null;
       }
     } catch (e) {
       if (e is VMException) {
-        setError(VMException(e.message, callFuncName: 'applePay', tag: postInviteTag));
+        setError(VMException(e.message, callFuncName: 'postInviteTag', tag: postInviteTag));
       }
       invitedIserId = null;
       inviteUpdateStatus.value = false;
@@ -376,7 +399,7 @@ class SearchingOpponentViewmodel extends BaseViewModel {
         inviteUpdateStatus.value = false;
 
         if (Navigator.of(navigatorKey.currentContext!).canPop() && status == rejectedTag) {
-          _subscription.cancel();
+          stopListening();
           battleRepository.dispose();
           Navigator.pop(navigatorKey.currentContext!);
         }
@@ -388,11 +411,19 @@ class SearchingOpponentViewmodel extends BaseViewModel {
     }, callFuncName: 'postInviteUpdateStatus', tag: "postInviteUpdateStatusTag", inProgress: false);
   }
 
+  bool get isSubscribed => _subscription != null;
+
+  void stopListening() {
+    _subscription?.cancel();
+    _subscription = null;
+  }
+
   @override
   void dispose() async {
     _timer?.cancel();
     _timer = null;
-    _subscription.cancel();
+    stopListening();
+    battleRepository.clientConnectedToWebsocket.removeListener(_listener);
     super.dispose();
   }
 

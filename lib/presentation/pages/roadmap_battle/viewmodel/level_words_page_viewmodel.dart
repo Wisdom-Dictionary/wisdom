@@ -1,11 +1,14 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:jbaza/jbaza.dart';
+import 'package:provider/provider.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:wisdom/core/db/preference_helper.dart';
+import 'package:wisdom/core/di/app_locator.dart';
 import 'package:wisdom/core/domain/entities/def_enum.dart';
 import 'package:wisdom/core/localization/locale_keys.g.dart';
 import 'package:wisdom/data/model/recent_model.dart';
@@ -17,6 +20,7 @@ import 'package:wisdom/domain/repositories/home_repository.dart';
 import 'package:wisdom/domain/repositories/level_test_repository.dart';
 import 'package:wisdom/domain/repositories/roadmap_repository.dart';
 import 'package:wisdom/domain/repositories/search_repository.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/life_countdown_provider.dart';
 import 'package:wisdom/presentation/routes/routes.dart';
 
 class LevelWordsPageViewModel extends BaseViewModel {
@@ -52,27 +56,43 @@ class LevelWordsPageViewModel extends BaseViewModel {
     Navigator.pushNamed(context!, Routes.myContactsPage);
   }
 
+  bool get hasUserLifes => context!.read<CountdownProvider>().hasUserLives;
+
+  goRoadmapPage() {
+    locator<LocalViewModel>().changePageIndex(3);
+  }
+
   void goLevelExercisesPage() {
     levelTestRepository.setExerciseType(TestExerciseType.levelExercise);
     Navigator.pushNamed(context!, Routes.wordExercisesPage).then((onValue) {
-      getLevelWords();
+      if (hasUserLifes) {
+        getLevelWords();
+      } else {
+        goRoadmapPage();
+      }
     });
   }
 
-  void getLevelWords() {
-    safeBlock(() async {
+  void getLevelWords() async {
+    try {
       if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
+        setBusy(true, tag: getLevelWordsTag);
         await roadmapRepository.getLevelWords();
-        if (roadmapRepository.levelWordsList.isNotEmpty) {
-          setSuccess(tag: getLevelWordsTag);
-        } else {
-          callBackError("text");
-        }
+        setSuccess(tag: getLevelWordsTag);
       } else {
         setBusy(false, tag: getLevelWordsTag);
         callBackError(LocaleKeys.no_internet.tr());
       }
-    }, callFuncName: 'getLevelWords', tag: getLevelWordsTag);
+    } catch (e) {
+      if (e is VMException) {
+        if (e.response?.statusCode == 403) {
+          locator<LocalViewModel>().changePageIndex(3);
+        }
+        final messageData = jsonDecode(e.responseBody ?? "");
+
+        setError(VMException(messageData["message"] ?? ""), tag: getLevelWordsTag);
+      }
+    }
   }
 
   void searchByWord(LevelWordModel levelWordItem) {

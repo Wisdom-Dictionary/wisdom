@@ -48,15 +48,16 @@ class PhrasesWidget extends ViewModelWidget<WordDetailPageViewModel> {
         header: Text(
           "${model.phrases!.pWord ?? ""} ",
           style: AppTextStyle.font15W700Normal.copyWith(
-              color: viewModel.isWordEqual(model.phrases!.pWord ?? "")
-                  ? isDarkTheme
-                      ? AppColors.darkForm
-                      : AppColors.blue
-                  : AppColors.blue,
-              fontSize: viewModel.fontSize! - 2,
-              backgroundColor: viewModel.isWordEqual(model.phrases!.pWord ?? "")
-                  ? Colors.yellow
-                  : Colors.transparent),
+            color: viewModel.isWordEqual(model.phrases!.pWord ?? "")
+                ? isDarkTheme
+                    ? AppColors.darkForm
+                    : AppColors.blue
+                : AppColors.blue,
+            fontSize: viewModel.fontSize! - 2,
+            backgroundColor: viewModel.isWordEqual(model.phrases!.pWord ?? "")
+                ? Colors.yellow
+                : Colors.transparent,
+          ),
         ),
         expanded: Column(
           mainAxisSize: MainAxisSize.min,

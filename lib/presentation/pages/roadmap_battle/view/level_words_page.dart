@@ -32,7 +32,7 @@ class LevelWordsPage extends ViewModelBuilderWidget<LevelWordsPageViewModel> {
           backgroundColor: isDarkTheme ? AppColors.darkBackground : AppColors.lightBackground,
           drawerEnableOpenDragGesture: false,
           appBar: CustomAppBar(
-              actions: [LifeStatusBarPadding(child: LifeStatusBar())],
+              actions: const [LifeStatusBarPadding(child: LifeStatusBar())],
               title: viewModel.levelTestRepository.selectedLevelItem.name ?? "",
               onTap: () => viewModel.goMain(),
               leadingIcon: Assets.icons.arrowLeft),

@@ -36,12 +36,20 @@ class WordExercisesViewModel extends BaseViewModel {
   int page = 0;
   List<AnswerEntity> answers = [];
 
+  bool get hasUserLives => context!.read<CountdownProvider>().hasUserLives;
+
+  bool get isLevelTest => levelTestRepository.exerciseType == TestExerciseType.levelExercise;
+
   goBackFromExercisesResultPage() async {
     Navigator.pop(context!);
   }
 
+  goRoadmapPage() {
+    locator<LocalViewModel>().changePageIndex(3);
+  }
+
   goBack() async {
-    if (levelTestRepository.exerciseType == TestExerciseType.levelExercise) {
+    if (isLevelTest) {
       final value = await showDialog<bool>(
         context: context!,
         builder: (context) => const DialogBackground(
@@ -145,7 +153,7 @@ class WordExercisesViewModel extends BaseViewModel {
     setBusy(true, tag: postWordExercisesCheckTag);
     safeBlock(() async {
       if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
-        if (levelTestRepository.exerciseType == TestExerciseType.wordExercise) {
+        if (!isLevelTest) {
           await levelTestRepository.postWordQuestionsCheck(answers);
         } else {
           final time = spendTimeForExercises > (givenTimeForExercise * 1000)
@@ -185,7 +193,7 @@ class WordExercisesViewModel extends BaseViewModel {
     safeBlock(() async {
       if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
         setBusy(true, tag: getWordExercisesTag);
-        if (levelTestRepository.exerciseType == TestExerciseType.wordExercise) {
+        if (!isLevelTest) {
           await levelTestRepository.getWordQuestions();
         } else {
           await levelTestRepository.getTestQuestions();

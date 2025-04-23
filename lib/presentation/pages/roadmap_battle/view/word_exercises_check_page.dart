@@ -97,9 +97,13 @@ class WordExercisesCheckPage extends ViewModelBuilderWidget<WordExercisesViewMod
                           ),
                         )),
                     WButton(
-                      title: "retry".tr(),
+                      title: viewModel.hasUserLives ? "retry".tr() : "main_page".tr(),
                       onTap: () {
-                        viewModel.retryWordQuestions();
+                        if (viewModel.hasUserLives) {
+                          viewModel.retryWordQuestions();
+                        } else {
+                          viewModel.goBackFromExercisesResultPage();
+                        }
                       },
                     )
                   ],

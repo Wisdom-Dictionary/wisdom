@@ -72,11 +72,11 @@ class CountdownProvider with ChangeNotifier {
       "${value ~/ 60}:${(value % 60).toString().padLeft(2, '0')}";
 
   /// Accessors
-  bool get hasUserLifes => userLife != 0;
-  bool get fullUserLives => userLife >= maxUserLife;
+  bool get hasUserLives => userLife != 0;
+  bool get fullUserLives => userLife >= maxUserLive;
 
   int get userLife => _userLiveRepository.userLifesModel?.lives ?? 0;
-  int get maxUserLife => _userLiveRepository.userLifesModel?.maxLives ?? 3;
+  int get maxUserLive => _userLiveRepository.userLifesModel?.maxLives ?? 3;
 
   @override
   void dispose() {

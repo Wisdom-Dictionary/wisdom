@@ -23,7 +23,7 @@ class LifeStatusBar extends StatelessWidget {
           builder: (context, value, child) {
             return Row(
               children: List.generate(
-                context.watch<CountdownProvider>().maxUserLife,
+                context.watch<CountdownProvider>().maxUserLive,
                 (index) => index <= (context.watch<CountdownProvider>().userLife - 1)
                     ? SvgPicture.asset(Assets.icons.heart)
                     : SvgPicture.asset(

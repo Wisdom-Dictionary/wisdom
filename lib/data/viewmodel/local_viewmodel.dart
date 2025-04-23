@@ -39,9 +39,6 @@ class LocalViewModel extends BaseViewModel {
       if (result == ConnectivityResult.none) {
         _showNoConnectionDialog();
       }
-      //  else {
-      //   _closeDialogIfOpen();
-      // }
     });
   }
 
@@ -110,7 +107,7 @@ class LocalViewModel extends BaseViewModel {
   AdService get adService => locator.get<AdService>();
 
   void _showNoConnectionDialog() {
-    if (!_isDialogShown) {
+    if (!_isDialogShown && navigatorKey.currentContext != null) {
       _isDialogShown = true;
       showDialog(
         context: navigatorKey.currentContext!,

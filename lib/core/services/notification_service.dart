@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
@@ -23,7 +24,7 @@ class AppNotificationService {
   void showTopDialog(Map<String, dynamic> messageData) {
     showGeneralDialog(
       context: navigatorKey.currentContext!,
-      barrierDismissible: true,
+      barrierDismissible: false,
       barrierLabel: "Top Dialog",
       pageBuilder: (context, anim1, anim2) {
         return InviteBattleDialog(
@@ -48,12 +49,13 @@ class AppNotificationService {
       return;
     }
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      if (Platform.isAndroid) showNotification(message, '');
       if (message.data.isNotEmpty) {
         log(message.data.toString());
         final messageData = message.data;
         if (messageData['type'] == 'battle_invitation' || messageData['type'] == 'battle_rematch') {
           showTopDialog(messageData);
+        } else {
+          if (Platform.isAndroid) showNotification(message, '');
         }
       }
     });
@@ -65,21 +67,46 @@ class AppNotificationService {
         iOS: iosInitializationSettings,
       ),
       onDidReceiveNotificationResponse: (NotificationResponse notificationResponse) async {
-        locator<LocalViewModel>().changePageIndex(1);
+        final payload = notificationResponse.payload;
+
+        if (payload != null) {
+          final messageData = jsonDecode(payload);
+          if (messageData['type'] == 'battle_invitation' ||
+              messageData['type'] == 'battle_rematch') {
+            Future.delayed(Duration.zero, () {
+              showTopDialog(messageData);
+            });
+          } else {
+            locator<LocalViewModel>().changePageIndex(1);
+          }
+        }
         print("Notification callback worked from alive");
       },
       onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
     );
     await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails().then((details) async {
       if (details != null) {
+        log("details - ${details.notificationResponse.toString()}");
         if (details.didNotificationLaunchApp) {
-          Future.delayed(
-            const Duration(seconds: 1),
-            () => locator<LocalViewModel>().changePageIndex(1),
-          );
-          print("Notification callback worked from dead");
+          final payload = details.notificationResponse?.payload;
+          if (payload != null) {
+            log("payload - $payload");
+            final messageData = jsonDecode(payload);
+            if (messageData['type'] == 'battle_invitation' ||
+                messageData['type'] == 'battle_rematch') {
+              Future.delayed(const Duration(seconds: 1), () {
+                showTopDialog(messageData);
+              });
+            } else {
+              Future.delayed(
+                const Duration(seconds: 1),
+                () => locator<LocalViewModel>().changePageIndex(1),
+              );
+            }
+          }
         }
       }
+      print("Notification callback worked from dead");
     });
   }
 
@@ -254,6 +281,7 @@ class AppNotificationService {
   Future firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     await Firebase.initializeApp();
     await setupFlutterNotifications();
+
     if (Platform.isAndroid) showNotification(message, '');
   }
 
