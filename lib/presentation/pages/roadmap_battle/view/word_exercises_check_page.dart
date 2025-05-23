@@ -372,6 +372,7 @@ class _QuestionsResultListState extends State<QuestionsResultList> {
                     child: Container(
                       height: 86,
                       decoration: BoxDecoration(
+                        borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
@@ -395,6 +396,7 @@ class _QuestionsResultListState extends State<QuestionsResultList> {
                     child: Container(
                       height: 86,
                       decoration: BoxDecoration(
+                        borderRadius: BorderRadius.vertical(bottom: Radius.circular(12)),
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,

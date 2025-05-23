@@ -95,7 +95,7 @@ class RoadmapRepositoryImpl extends RoadmapRepository {
   @override
   Future<void> getLevelsPaginationBottom() async {
     var response = await customClient.get(
-      Uri.https(Urls.baseAddress, "/api/levels", {"limit": "10", "page": "${_bottomLastPage - 1}"}),
+      Uri.https(Urls.baseAddress, "/api/levels", {"limit": "16", "page": "${_bottomLastPage - 1}"}),
     );
     if (response.isSuccessful) {
       final responseData = jsonDecode(response.body);
@@ -118,7 +118,7 @@ class RoadmapRepositoryImpl extends RoadmapRepository {
   @override
   Future<void> getLevelsPaginationTop() async {
     var response = await customClient.get(
-      Uri.https(Urls.baseAddress, "/api/levels", {"limit": "10", "page": "${_topLastPage + 1}"}),
+      Uri.https(Urls.baseAddress, "/api/levels", {"limit": "16", "page": "${_topLastPage + 1}"}),
     );
     if (response.isSuccessful) {
       final responseData = jsonDecode(response.body);

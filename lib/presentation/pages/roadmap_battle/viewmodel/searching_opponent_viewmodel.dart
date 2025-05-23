@@ -6,6 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:formz/formz.dart';
 import 'package:jbaza/jbaza.dart';
+import 'package:provider/provider.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:wisdom/app.dart';
@@ -22,6 +23,7 @@ import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/opponent_wa
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/opponent_was_not_found_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/opponent_was_rejected_invitation_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/out_of_lives_dialog.dart';
+import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/life_countdown_provider.dart';
 import 'package:wisdom/presentation/routes/routes.dart';
 
 import '../../../../core/di/app_locator.dart';
@@ -79,6 +81,7 @@ class SearchingOpponentViewmodel extends BaseViewModel {
       rejectedTag = "rejected",
       acceptedTag = "accepted";
   String statusTag = "";
+  String? lifeStatus;
 
   StreamSubscription? _subscription;
 
@@ -355,8 +358,15 @@ class SearchingOpponentViewmodel extends BaseViewModel {
     inviteStatus = FormzSubmissionStatus.initial;
     _stopTimer();
     _battleId = int.tryParse(messageData['battle_id']);
+
     listenToWebSocket();
     battleInviteUser = BattleUserModel.fromJson(messageData['user']);
+    String? status = messageData['life_status'];
+    if (status != null && status.isNotEmpty) {
+      lifeStatus = status;
+    } else if (lifeStatus != null) {
+      lifeStatus = null;
+    }
   }
 
   int? invitedIserId;
@@ -427,11 +437,14 @@ class SearchingOpponentViewmodel extends BaseViewModel {
     super.dispose();
   }
 
-  void matchCancelled() {
+  void matchCancelled() async {
+    stopListening();
+    battleRepository.dispose();
     Navigator.popUntil(
       navigatorKey.currentContext!,
       (route) => route.isFirst ? true : false,
     );
+    await navigatorKey.currentContext!.read<CountdownProvider>().getLives();
     showDialog<bool>(
       barrierDismissible: false,
       context: navigatorKey.currentContext!,

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -168,22 +169,26 @@ class UpdateProfilePageViewModel extends BaseViewModel {
   }
 
   Future onSaveChanges() async {
-    safeBlock(
-      () async {
-        final user = await profileRepository.updateUser(editedUser);
-        sharedPreferenceHelper.putString(Constants.KEY_USER, jsonEncode(user.toJson()));
-        setSuccess(tag: onSaveChangesTag);
-        showTopSnackBar(
-          Overlay.of(context!),
-          CustomSnackBar.success(
-            message: LocaleKeys.saved.tr(),
-          ),
-        );
-        saveButtonsActive = false;
-        await getUser();
-      },
-      tag: onSaveChangesTag,
-    );
+    try {
+      final user = await profileRepository.updateUser(editedUser);
+      sharedPreferenceHelper.putString(Constants.KEY_USER, jsonEncode(user.toJson()));
+      setSuccess(tag: onSaveChangesTag);
+      showTopSnackBar(
+        Overlay.of(context!),
+        CustomSnackBar.success(
+          message: LocaleKeys.saved.tr(),
+        ),
+      );
+      saveButtonsActive = false;
+      await getUser();
+    } catch (e) {
+      String? text;
+      if (e is DioException) {
+        final Map<String, dynamic> responseData = jsonDecode(e.response?.data);
+        text = responseData["message"];
+      }
+      setError(VMException(text ?? e.toString()), tag: restoreTag);
+    }
   }
 
   Future logOut() async {

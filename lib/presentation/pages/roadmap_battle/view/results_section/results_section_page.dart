@@ -314,7 +314,7 @@ class _ExercisesResultContactsPageState extends State<ExercisesResultContactsPag
                           bottom: 0,
                           child: SafeArea(
                             child: CurrentUserItemWidget(
-                                index: widget.viewModel.roadMapRepository.userContactRanking,
+                                index: widget.viewModel.roadMapRepository.userContactRanking + 1,
                                 item: RankingModel(
                                     name: "you".tr(),
                                     level: widget
@@ -403,9 +403,11 @@ class _ExercisesResultGlobalPageState extends State<ExercisesResultGlobalPage> {
                                 child: Stack(
                                   children: [
                                     (item.you ?? false)
-                                        ? CurrentUserItemWidget(index: index, item: item)
+                                        ? CurrentUserItemWidget(
+                                            index: item.ranking!,
+                                            item: RankingModel(name: "you".tr(), level: item.level))
                                         : RankingItemWidget(
-                                            index: index,
+                                            index: item.ranking!,
                                             item: item,
                                           ),
                                     if (widget.viewModel.selectedItem != null &&
@@ -457,11 +459,11 @@ class RankingItemWidget extends StatelessWidget {
   static const int topRatingCount = 3;
 
   bool get itemInTopRating {
-    return index + 1 <= topRatingCount;
+    return item.ranking! <= topRatingCount;
   }
 
   Color? get itemBackgroundColor {
-    if (index == 0) {
+    if (item.ranking == 1) {
       return AppColors.blanchedAlmond;
     }
     if (itemInTopRating) {
@@ -470,7 +472,7 @@ class RankingItemWidget extends StatelessWidget {
   }
 
   BorderSide get itemBorder {
-    if (index == 0) {
+    if (item.ranking == 1) {
       return const BorderSide(width: 2, color: AppColors.bgAccent);
     }
     return BorderSide.none;
@@ -565,7 +567,7 @@ class RankingItemWidget extends StatelessWidget {
   Text indexText() {
     if (itemInTopRating) {
       return Text(
-        "${index + 1}.",
+        "${item.ranking}.",
         style: AppTextStyle.font15W600Normal.copyWith(fontSize: 14, color: AppColors.vibrantBlue),
       );
     }

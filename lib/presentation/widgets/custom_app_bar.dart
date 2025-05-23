@@ -63,6 +63,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
         ),
       ),
       actions: widget.actions,
+      clipBehavior: Clip.none,
       leading: widget.isLeading
           ? InkResponse(
               onTap: () => widget.onTap(),

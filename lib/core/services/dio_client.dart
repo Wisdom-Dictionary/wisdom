@@ -42,6 +42,7 @@ class DioClient {
       receiveTimeout: Duration(milliseconds: _sessionManager.timeout),
       headers: {
         _sessionManager.authorization: _sessionManager.accessToken,
+        "Accept": "application/json"
       },
       validateStatus: (code) => _sessionManager.validate(code ?? 0),
     );

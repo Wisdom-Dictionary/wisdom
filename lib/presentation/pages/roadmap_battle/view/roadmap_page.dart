@@ -29,7 +29,7 @@ class RoadmapPage extends ViewModelBuilderWidget<RoadMapViewModel> {
 
   @override
   void onDestroy(RoadMapViewModel model) {
-    continueBattleViewmodel?.dispose();
+    // continueBattleViewmodel?.dispose();
     super.onDestroy(model);
   }
 
@@ -60,9 +60,7 @@ class RoadmapPage extends ViewModelBuilderWidget<RoadMapViewModel> {
   @override
   RoadMapViewModel viewModelBuilder(BuildContext context) {
     context.read<CountdownProvider>().getLives();
-    if (continueBattleViewmodel != null) {
-      continueBattleViewmodel = ContinueBattleViewmodel(context: context);
-    }
+    continueBattleViewmodel ??= ContinueBattleViewmodel(context: context);
     return RoadMapViewModel(context: context);
   }
 }
@@ -78,7 +76,7 @@ class RoadmapAppBarContent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          scoreInfo((viewModel.userDetailsModel?.statistics?.userStars ?? 0).toString(),
+          scoreInfo((viewModel.userDetailsModel?.userStarsValue ?? 0).toString(),
               SvgPicture.asset(Assets.icons.star)),
           scoreInfo((viewModel.userDetailsModel?.userCurrentLevel ?? 0).toString(),
               SvgPicture.asset(Assets.icons.verify)),

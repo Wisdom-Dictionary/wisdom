@@ -423,6 +423,10 @@ class BattleRepositoryImpl extends BattleRepository {
 
     if (!response.isSuccessful) {
       throw VMException(response.body, callFuncName: 'getTestQuestions', response: response);
+    } else {
+      if (subscribedChannels.isEmpty) {
+        connectBattle(subscribeInvitationBattleChannels);
+      }
     }
   }
 
@@ -493,7 +497,13 @@ class BattleRepositoryImpl extends BattleRepository {
         },
         body: jsonEncode(requestBody));
     if (response.isSuccessful) {
-      connectBattle(subscribeInvitationBattleChannels);
+      final Map<String, dynamic> responseData = jsonDecode(response.body);
+      if (responseData["opponent_status"] == null) {
+        connectBattle(subscribeInvitationBattleChannels);
+      } else {
+        throw VMException(responseData["opponent_status"] ?? response.body,
+            callFuncName: 'postinviteBattle', response: response);
+      }
     } else {
       final responseBody = jsonDecode(response.body);
 

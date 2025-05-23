@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:jbaza/jbaza.dart';
 import 'package:wisdom/config/constants/urls.dart';
@@ -64,6 +63,27 @@ class LevelTestRepositoryImpl extends LevelTestRepository {
       _endDate = responseData["end_date"];
       _startDate = responseData["start_date"];
       _levelExerciseId = responseData["level_exercise_id"];
+    } else {
+      throw VMException(response.body, callFuncName: 'getTestQuestions', response: response);
+    }
+  }
+
+  @override
+  Future<void> getTest100Questions() async {
+    _startDate = "";
+    _endDate = "";
+    _testQuestionsList = [];
+    var response = await customClient.get(Urls.test100Questions(_selectedLevel!.id!));
+    if (response.isSuccessful) {
+      final responseData = jsonDecode(response.body);
+
+      for (var item in (responseData['questions'] as List)) {
+        _testQuestionsList.add(TestQuestionModel.fromMap(item));
+      }
+
+      _endDate = responseData["end_date"];
+      _startDate = responseData["start_date"];
+      _levelExerciseId = responseData["hundreds_test_id"];
     } else {
       throw VMException(response.body, callFuncName: 'getTestQuestions', response: response);
     }
@@ -137,23 +157,34 @@ class LevelTestRepositoryImpl extends LevelTestRepository {
       final responseData = jsonDecode(response.body);
 
       _resultModel = LevelExerciseResultModel.fromMap(responseData);
-      if (_resultModel!.correctAnswers == null ||
-          _resultModel!.totalQuestions != _resultModel!.answers.length) {
-        try {
-          await customClient.post(
-            Uri.parse(
-                "https://api.telegram.org/bot7345804834:AAFG3oei0oLBF8-fJWPffMEzpTWXa2mvUso/sendMessage"),
-            headers: {"Content-Type": "application/json"},
-            body: jsonEncode({
-              "chat_id": "-1002433153823",
-              "text":
-                  "/levels/test-questions-check\n\n#request\n\n${response.request}\n$requestBody\n\n#response\n\n${response.body}",
-            }),
-          );
-        } catch (e) {
-          log(e.toString());
-        }
-      }
+    } else {
+      throw VMException(response.body, callFuncName: 'postWordQuestionsCheck', response: response);
+    }
+  }
+
+  @override
+  Future<void> postTest100QuestionsCheck(List<AnswerEntity> answers, int timeTaken) async {
+    _resultModel = null;
+
+    final requestBody = {
+      'hundreds_test_id': _levelExerciseId,
+      'time_taken': timeTaken,
+      'answers': answers
+          .map(
+            (e) => e.toMap(),
+          )
+          .toList()
+    };
+    var response = await customClient.post(Urls.test100QuestionsCheck,
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: jsonEncode(requestBody));
+    if (response.isSuccessful) {
+      final responseData = jsonDecode(response.body);
+
+      _resultModel = LevelExerciseResultModel.fromMap(responseData);
     } else {
       throw VMException(response.body, callFuncName: 'postWordQuestionsCheck', response: response);
     }
@@ -166,6 +197,29 @@ class LevelTestRepositoryImpl extends LevelTestRepository {
       'level_exercise_id': _levelExerciseId,
     };
     var response = await customClient.post(Urls.testQuestionsResult,
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: jsonEncode(requestBody));
+    if (response.isSuccessful) {
+      final responseData = jsonDecode(response.body);
+
+      for (var item in (responseData['questions'] as List)) {
+        _testQuestionsResultList.add(TestQuestionModel.fromMap(item));
+      }
+    } else {
+      throw VMException(response.body, callFuncName: 'getTestQuestions', response: response);
+    }
+  }
+
+  @override
+  Future<void> postTest100QuestionsResult() async {
+    _testQuestionsResultList = [];
+    final requestBody = {
+      'hundreds_test_id': _levelExerciseId,
+    };
+    var response = await customClient.post(Urls.test100QuestionsResult,
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",

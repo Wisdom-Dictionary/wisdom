@@ -92,7 +92,11 @@ void main() async {
 
   AppNotificationService.to.initNotification();
 
-  setupConfigs(() async {
+  setupConfigs(
+      enableSentry: true,
+      sentryKey:
+          "https://9b637261ca54110f0d786fa8bda21e59@o4509230842707968.ingest.us.sentry.io/4509230879342592",
+      () async {
     await SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
@@ -118,7 +122,7 @@ void main() async {
             }),
       ),
     );
-  }, appVersion: '1.0.0');
+  }, appVersion: '3.2.6');
 }
 
 Future setupNotifications() async {

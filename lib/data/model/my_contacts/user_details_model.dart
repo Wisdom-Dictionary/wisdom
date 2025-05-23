@@ -53,6 +53,7 @@ class UserDetailsModel {
     this.userCurrentLevel,
     this.user,
     this.tariff,
+    this.userStars,
     this.statistics,
     this.rank,
   });
@@ -69,6 +70,9 @@ class UserDetailsModel {
   final User? user;
 
   final Tariff? tariff;
+
+  @JsonKey(name: 'user_stars')
+  final int? userStars;
 
   final Statistics? statistics;
 
@@ -106,7 +110,7 @@ class UserDetailsModel {
 
   // int get userCurrentLevel => this.userCurrentLevel ?? 0;
 
-  int get userStars => statistics?.userStars ?? 0;
+  int get userStarsValue => statistics?.userStars ?? userStars ?? 0;
 
   int get threeStarWins => statistics?.threeStarWins ?? 0;
 
@@ -125,6 +129,7 @@ class UserDetailsModel {
       'user': user?.toMap(),
       'tariff': tariff?.toMap(),
       'statistics': statistics?.toMap(),
+      'user_stars': userStars,
       'rank': rank?.toMap(),
     };
   }

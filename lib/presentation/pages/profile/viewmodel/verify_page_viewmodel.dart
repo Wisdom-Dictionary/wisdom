@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -47,47 +48,57 @@ class VerifyPageViewModel extends BaseViewModel {
   void onNextPressed() {
     safeBlock(
       () async {
-        String? deviceId = await PlatformDeviceId.getDeviceId;
-        if (deviceId == null) {
-          callBackError("Device Id not found");
-        } else {
-          var verifyModel = await profileRepository.verify(
-            phoneNumber
-                .replaceAll('+', '')
-                .replaceAll(' ', '')
-                .replaceAll('(', '')
-                .replaceAll(')', ''),
-            codeSMS,
-            deviceId,
-          );
-          if (verifyModel != null && verifyModel.status!) {
-            sharedPreferenceHelper.putString(Constants.KEY_TOKEN, verifyModel.token!);
-            sharedPreferenceHelper.putString(Constants.KEY_PHONE, phoneNumber);
-            sharedPreferenceHelper.putInt(Constants.KEY_PROFILE_STATE, Constants.STATE_INACTIVE);
-            sharedPreferenceHelper.putString(Constants.KEY_VERIFY, jsonEncode(verifyModel));
-            final user = await profileRepository.getUser();
-            sharedPreferenceHelper.putString(
-              Constants.KEY_USER,
-              jsonEncode(user.copyWith(phone: phoneNumber)),
-            );
-
-            if (!(Platform.isWindows || Platform.isMacOS)) {
-              var tokenF = await FirebaseMessaging.instance.getToken();
-              await _addFirebase(tokenF!);
-            }
-            final isPro = await _checkSubscription();
-            await _updateWordBank();
-            await resetLocator();
-            setSuccess();
-            if (isPro) {
-              navigateTo(Routes.mainPage, isRemoveStack: true);
-            } else {
-              navigateTo(Routes.mainPage, isRemoveStack: true);
-              await Future.delayed(Duration(milliseconds: 500));
-              getProBottomSheetController.add(true);
-            }
+        try {
+          String? deviceId = await PlatformDeviceId.getDeviceId;
+          if (deviceId == null) {
+            callBackError("Device Id not found");
           } else {
-            callBackError("error_code_entered".tr());
+            var verifyModel = await profileRepository.verify(
+              phoneNumber
+                  .replaceAll('+', '')
+                  .replaceAll(' ', '')
+                  .replaceAll('(', '')
+                  .replaceAll(')', ''),
+              codeSMS,
+              deviceId,
+            );
+            if (verifyModel != null && verifyModel.status!) {
+              sharedPreferenceHelper.putString(Constants.KEY_TOKEN, verifyModel.token!);
+              sharedPreferenceHelper.putString(Constants.KEY_PHONE, phoneNumber);
+              sharedPreferenceHelper.putInt(Constants.KEY_PROFILE_STATE, Constants.STATE_INACTIVE);
+              sharedPreferenceHelper.putString(Constants.KEY_VERIFY, jsonEncode(verifyModel));
+              final user = await profileRepository.getUser();
+              sharedPreferenceHelper.putString(
+                Constants.KEY_USER,
+                jsonEncode(user.copyWith(phone: phoneNumber)),
+              );
+
+              if (!(Platform.isWindows || Platform.isMacOS)) {
+                var tokenF = await FirebaseMessaging.instance.getToken();
+                await _addFirebase(tokenF!);
+              }
+              final isPro = await _checkSubscription();
+              await _updateWordBank();
+              await resetLocator();
+              setSuccess();
+              if (isPro) {
+                navigateTo(Routes.mainPage, isRemoveStack: true);
+              } else {
+                navigateTo(Routes.mainPage, isRemoveStack: true);
+                await Future.delayed(Duration(milliseconds: 500));
+                getProBottomSheetController.add(true);
+              }
+            } else {
+              callBackError("error_code_entered".tr());
+            }
+          }
+        } catch (e) {
+          if (e is DioException) {
+            final responseMessage = jsonDecode(e.response!.data);
+            throw VMException(
+              responseMessage["message"] ?? responseMessage,
+              callFuncName: 'verify',
+            );
           }
         }
       },

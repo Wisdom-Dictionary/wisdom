@@ -135,7 +135,7 @@ class LifeStatusBarPadding extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: EdgeInsets.only(top: 15.h, right: 15),
+        padding: EdgeInsets.only(top: 13.h, right: 15),
         child: Align(
           alignment: Alignment.center,
           child: child,

@@ -35,7 +35,9 @@ class Urls {
   static var getBattleData = Uri.parse('$battle/get-battle-data');
 
   static var testQuestionsCheck = Uri.parse('${baseUrl}api/levels/test-questions-check');
+  static var test100QuestionsCheck = Uri.parse('${baseUrl}api/levels/hundreds-test-check');
   static var testQuestionsResult = Uri.parse('${baseUrl}api/levels/get-full-test-result');
+  static var test100QuestionsResult = Uri.parse('${baseUrl}api/levels/get-full-hundreds-result');
   static var myContactsFollowed = Uri.parse('${baseUrl}api/my-contacts/followed');
   static var myContacts = Uri.parse('${baseUrl}api/my-contacts/get-contacts');
   static var myContactsFollow = Uri.parse('${baseUrl}api/my-contacts/follow');
@@ -50,6 +52,11 @@ class Urls {
   static Uri testQuestions(int id) => Uri.https(
         Urls.baseAddress,
         "/api/levels/$id/test-questions",
+      );
+
+  static Uri test100Questions(int id) => Uri.https(
+        Urls.baseAddress,
+        "/api/levels/$id/hundreds-test",
       );
 
   static Uri levelWords(int id) => Uri.https(

@@ -149,6 +149,8 @@ class ProfileRepositoryImpl extends ProfileRepository {
         );
         _userDetailsModel = user;
         return user;
+      } else {
+        throw VMException(response.data, callFuncName: 'getUser');
       }
     } else {
       final userStorage = preferenceHelper.getString(Constants.KEY_USER_CABINET, '');
@@ -170,6 +172,7 @@ class ProfileRepositoryImpl extends ProfileRepository {
         "email": userModel.email,
       },
     );
+    log(response.data);
     if (response.isSuccessful) {
       final user = UserModel.fromJson(jsonDecode(response.data)['user']);
       return user;

@@ -19,8 +19,12 @@ class InviteBattleDialog extends ViewModelBuilderWidget<SearchingOpponentViewmod
   @override
   void onViewModelReady(SearchingOpponentViewmodel viewModel) {
     viewModel.setBattleData(messageData);
-    viewModel.battleRepository
-        .connectBattle(viewModel.battleRepository.subscribeInvitationBattleChannels);
+    String? status = messageData['life_status'];
+
+    if (status == null || status.isEmpty) {
+      viewModel.battleRepository
+          .connectBattle(viewModel.battleRepository.subscribeInvitationBattleChannels);
+    }
     super.onViewModelReady(viewModel);
   }
 
@@ -39,8 +43,8 @@ class InviteBattleDialog extends ViewModelBuilderWidget<SearchingOpponentViewmod
                   borderRadius: BorderRadius.circular(28),
                   color: AppColors.blue,
                   child: ListView(
-                    padding: EdgeInsets.only(top: 24, left: 16, right: 16, bottom: 16),
-                    physics: ClampingScrollPhysics(),
+                    padding: const EdgeInsets.only(top: 24, left: 16, right: 16, bottom: 16),
+                    physics: const ClampingScrollPhysics(),
                     shrinkWrap: true,
                     children: [
                       Row(
@@ -119,6 +123,16 @@ class InviteBattleDialog extends ViewModelBuilderWidget<SearchingOpponentViewmod
                           ],
                         ),
                       ),
+                      if (viewmodel.lifeStatus != null)
+                        Padding(
+                          padding: const EdgeInsets.only(left: 32, right: 32, bottom: 16),
+                          child: Text(
+                            viewmodel.lifeStatus!,
+                            textAlign: TextAlign.center,
+                            style: AppTextStyle.font13W500Normal
+                                .copyWith(color: AppColors.orange, fontSize: 14),
+                          ),
+                        ),
                       ValueListenableBuilder(
                           valueListenable: viewmodel.battleRepository.clientConnectedToWebsocket,
                           builder: (context, status, child) {
@@ -150,41 +164,43 @@ class InviteBattleDialog extends ViewModelBuilderWidget<SearchingOpponentViewmod
                                     },
                                   ),
                                 )),
-                                SizedBox(
-                                  width: 12,
-                                ),
-                                Expanded(
-                                  child: ValueListenableBuilder(
-                                    valueListenable: viewmodel.inviteUpdateStatus,
-                                    builder: (context, value, child) => WButton(
-                                      isLoading:
-                                          value && viewmodel.statusTag == viewmodel.acceptedTag,
-                                      color: AppColors.lavender,
-                                      height: 45,
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          SvgPicture.asset(
-                                            Assets.icons.battle,
-                                            colorFilter:
-                                                ColorFilter.mode(AppColors.blue, BlendMode.srcIn),
-                                          ),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Text(
-                                            "accept".tr(),
-                                            style: AppTextStyle.font13W500Normal
-                                                .copyWith(color: AppColors.blue, fontSize: 14),
-                                          )
-                                        ],
-                                      ),
-                                      onTap: () {
-                                        viewmodel.postInviteUpdateStatus(viewmodel.acceptedTag);
-                                      },
-                                    ),
+                                if (viewmodel.lifeStatus == null) ...[
+                                  const SizedBox(
+                                    width: 12,
                                   ),
-                                )
+                                  Expanded(
+                                    child: ValueListenableBuilder(
+                                      valueListenable: viewmodel.inviteUpdateStatus,
+                                      builder: (context, value, child) => WButton(
+                                        isLoading:
+                                            value && viewmodel.statusTag == viewmodel.acceptedTag,
+                                        color: AppColors.lavender,
+                                        height: 45,
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            SvgPicture.asset(
+                                              Assets.icons.battle,
+                                              colorFilter: const ColorFilter.mode(
+                                                  AppColors.blue, BlendMode.srcIn),
+                                            ),
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text(
+                                              "accept".tr(),
+                                              style: AppTextStyle.font13W500Normal
+                                                  .copyWith(color: AppColors.blue, fontSize: 14),
+                                            )
+                                          ],
+                                        ),
+                                        onTap: () {
+                                          viewmodel.postInviteUpdateStatus(viewmodel.acceptedTag);
+                                        },
+                                      ),
+                                    ),
+                                  )
+                                ]
                               ],
                             );
                           }),

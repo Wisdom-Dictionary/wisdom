@@ -28,7 +28,10 @@ class CustomClient extends JClient {
 
   @override
   Future updateToken() {
-    throw UnimplementedError();
+    throw VMException(
+      "401",
+      callFuncName: 'updateToken',
+    );
   }
 }
 

@@ -43,7 +43,9 @@ class LevelExerciseResultModel {
   factory LevelExerciseResultModel.fromMap(Map<String, dynamic> map) {
     return LevelExerciseResultModel(
       levelExerciseId: map['level_exercise_id'] != null ? map['level_exercise_id'] as int : null,
-      pass: map['pass'] != null ? map['pass'] as bool : null,
+      pass: map['pass'] != null
+          ? (map['pass'] is int ? (map['pass'] == 0 ? false : true) : map['pass'] as bool)
+          : null,
       star: map['star'] != null ? map['star'] as int : null,
       totalQuestions: map['total_questions'] != null ? map['total_questions'] as int : null,
       correctAnswers: map['correct_answers'] != null ? map['correct_answers'] as int : null,
@@ -51,7 +53,7 @@ class LevelExerciseResultModel {
       optimalTime: map['optimal_time'] != null ? map['optimal_time'] as int : null,
       timeTaken: map['time_taken'] != null ? map['time_taken'] as int : null,
       answers: List<TestAnswerModel>.from(
-        (map['answers'] as List).map<TestAnswerModel>(
+        ((map['answers'] == null ? map['results'] : map['answers']) as List).map<TestAnswerModel>(
           (x) => TestAnswerModel.fromMap(x as Map<String, dynamic>),
         ),
       ),

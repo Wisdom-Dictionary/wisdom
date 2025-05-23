@@ -14,9 +14,15 @@ abstract class LevelTestRepository {
 
   Future<void> getTestQuestions();
 
+  Future<void> getTest100Questions();
+
   Future<void> postTestQuestionsCheck(List<AnswerEntity> answers, int timeTaken);
 
+  Future<void> postTest100QuestionsCheck(List<AnswerEntity> answers, int timeTaken);
+
   Future<void> postTestQuestionsResult();
+
+  Future<void> postTest100QuestionsResult();
 
   Future<void> getWordQuestions();
 

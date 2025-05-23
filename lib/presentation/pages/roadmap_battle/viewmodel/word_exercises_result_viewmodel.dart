@@ -28,12 +28,20 @@ class WordExercisesResultViewModel extends BaseViewModel {
     Navigator.pop(context!);
   }
 
+  bool get isWordTest => levelTestRepository.exerciseType == TestExerciseType.wordExercise;
+
+  bool get isLevelTest => levelTestRepository.exerciseType == TestExerciseType.levelExercise;
+
+  bool get isLevel100Test => levelTestRepository.exerciseType == TestExerciseType.level100Exercise;
+
   void postTestQuestionsResult() {
     setBusy(true, tag: postWordExercisesResultTag);
     safeBlock(() async {
       if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
-        if (levelTestRepository.exerciseType == TestExerciseType.wordExercise) {
+        if (isWordTest) {
           await levelTestRepository.postWordQuestionsResult();
+        } else if (isLevel100Test) {
+          await levelTestRepository.postTest100QuestionsResult();
         } else {
           await levelTestRepository.postTestQuestionsResult();
         }

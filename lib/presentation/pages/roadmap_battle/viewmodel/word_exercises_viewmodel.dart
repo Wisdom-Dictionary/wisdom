@@ -38,7 +38,11 @@ class WordExercisesViewModel extends BaseViewModel {
 
   bool get hasUserLives => context!.read<CountdownProvider>().hasUserLives;
 
+  bool get isWordTest => levelTestRepository.exerciseType == TestExerciseType.wordExercise;
+
   bool get isLevelTest => levelTestRepository.exerciseType == TestExerciseType.levelExercise;
+
+  bool get isLevel100Test => levelTestRepository.exerciseType == TestExerciseType.level100Exercise;
 
   goBackFromExercisesResultPage() async {
     Navigator.pop(context!);
@@ -49,7 +53,7 @@ class WordExercisesViewModel extends BaseViewModel {
   }
 
   goBack() async {
-    if (isLevelTest) {
+    if (!isWordTest && isSuccess(tag: getWordExercisesTag)) {
       final value = await showDialog<bool>(
         context: context!,
         builder: (context) => const DialogBackground(
@@ -153,13 +157,17 @@ class WordExercisesViewModel extends BaseViewModel {
     setBusy(true, tag: postWordExercisesCheckTag);
     safeBlock(() async {
       if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
-        if (!isLevelTest) {
+        if (isWordTest) {
           await levelTestRepository.postWordQuestionsCheck(answers);
         } else {
           final time = spendTimeForExercises > (givenTimeForExercise * 1000)
               ? (givenTimeForExercise * 1000)
               : spendTimeForExercises;
-          await levelTestRepository.postTestQuestionsCheck(answers, time);
+          if (isLevel100Test) {
+            await levelTestRepository.postTest100QuestionsCheck(answers, time);
+          } else {
+            await levelTestRepository.postTestQuestionsCheck(answers, time);
+          }
           if (!levelTestRepository.pass) {
             await context!.read<CountdownProvider>().getLives();
           }
@@ -193,10 +201,13 @@ class WordExercisesViewModel extends BaseViewModel {
     safeBlock(() async {
       if (await localViewModel.netWorkChecker.isNetworkAvailable()) {
         setBusy(true, tag: getWordExercisesTag);
-        if (!isLevelTest) {
-          await levelTestRepository.getWordQuestions();
-        } else {
+
+        if (isLevel100Test) {
+          await levelTestRepository.getTest100Questions();
+        } else if (isLevelTest) {
           await levelTestRepository.getTestQuestions();
+        } else {
+          await levelTestRepository.getWordQuestions();
         }
         setSuccess(tag: getWordExercisesTag);
       } else {

@@ -9,6 +9,7 @@ import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:wisdom/core/db/db_helper.dart';
 import 'package:wisdom/core/db/preference_helper.dart';
+import 'package:wisdom/core/domain/entities/def_enum.dart';
 import 'package:wisdom/core/localization/locale_keys.g.dart';
 import 'package:wisdom/core/session/manager/session_manager.dart';
 import 'package:wisdom/data/model/battle/battle_user_model.dart';
@@ -24,6 +25,7 @@ import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/out_of_live
 import 'package:wisdom/presentation/pages/roadmap_battle/view/battle/start_battle_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/sign_in_dialog.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/viewmodel/life_countdown_provider.dart';
+import 'package:wisdom/presentation/routes/routes.dart';
 
 import '../../../../core/di/app_locator.dart';
 
@@ -98,12 +100,6 @@ class RoadMapViewModel extends BaseViewModel {
         if (e is VMException) {
           if (e.response != null) {
             if (e.response!.statusCode == 403) {
-              // showDialog(
-              //   context: context!,
-              //   builder: (context) => const DialogBackground(
-              //     child: SignInDialog(),
-              //   ),
-              // );
               locator<SessionManager>().endLocalSession();
             }
           }
@@ -127,12 +123,6 @@ class RoadMapViewModel extends BaseViewModel {
         if (e is VMException) {
           if (e.response != null) {
             if (e.response!.statusCode == 403) {
-              // showDialog(
-              //   context: context!,
-              //   builder: (context) => const DialogBackground(
-              //     child: SignInDialog(),
-              //   ),
-              // );
               locator<SessionManager>().endLocalSession();
             }
           }
@@ -170,6 +160,13 @@ class RoadMapViewModel extends BaseViewModel {
     }, callFuncName: 'getLevelsMore', tag: getLevelsMoreTag, inProgress: false);
   }
 
+  bool get hasUserLifes => context!.read<CountdownProvider>().hasUserLives;
+
+  void goLevel100ExercisesPage() {
+    levelTestRepository.setExerciseType(TestExerciseType.level100Exercise);
+    Navigator.pushNamed(context!, Routes.wordExercisesPage);
+  }
+
   void selectLevel(LevelModel item) async {
     final noUserLives = !context!.read<CountdownProvider>().hasUserLives;
     if (noUserLives) {
@@ -190,6 +187,11 @@ class RoadMapViewModel extends BaseViewModel {
         builder: (context) => StartBattleDialog(),
       );
       locator<LocalViewModel>().changeRoadMapLoadingStatus(true);
+      return;
+    }
+    if (item.type == LevelType.test) {
+      levelTestRepository.setSelectedLevel(item);
+      goLevel100ExercisesPage();
       return;
     }
     if (!(item.userCurrentLevel ?? false) && (item.star ?? 0) == 0) {

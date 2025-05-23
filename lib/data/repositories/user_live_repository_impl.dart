@@ -9,10 +9,10 @@ import 'package:wisdom/core/di/app_locator.dart';
 import 'package:wisdom/core/domain/http_is_success.dart';
 import 'package:wisdom/core/services/custom_client.dart';
 import 'package:wisdom/data/model/roadmap/user_life_entity.dart';
-import 'package:wisdom/data/viewmodel/local_viewmodel.dart';
 import 'package:wisdom/domain/repositories/user_live_repository.dart';
 import 'package:wisdom/presentation/components/dialog_background.dart';
 import 'package:wisdom/presentation/pages/roadmap_battle/view/sign_in_dialog.dart';
+import 'package:wisdom/presentation/routes/routes.dart';
 
 class UserLiveRepositoryImpl extends UserLiveRepository {
   UserLiveRepositoryImpl(this.customClient);
@@ -38,25 +38,24 @@ class UserLiveRepositoryImpl extends UserLiveRepository {
         if (e.response != null) {
           log("e.response!.statusCode - ${e.response!.statusCode}");
           if (e.response!.statusCode == 403) {
-            showDialog(
-              context: navigatorKey.currentContext!,
-              builder: (context) => const DialogBackground(
-                child: SignInDialog(),
-              ),
-            );
-            locator<LocalViewModel>().changePageIndex(0);
+            showSignInDialog();
           }
         }
       } else {
-        showDialog(
-          context: navigatorKey.currentContext!,
-          builder: (context) => const DialogBackground(
-            child: SignInDialog(),
-          ),
-        );
-        locator<LocalViewModel>().changePageIndex(0);
+        showSignInDialog();
       }
     }
+  }
+
+  showSignInDialog() async {
+    await resetLocator();
+    await navigateTo(Routes.mainPage, isRemoveStack: true);
+    showDialog(
+      context: navigatorKey.currentContext!,
+      builder: (context) => const DialogBackground(
+        child: SignInDialog(),
+      ),
+    );
   }
 
   @override
@@ -72,5 +71,22 @@ class UserLiveRepositoryImpl extends UserLiveRepository {
     } else {
       throw VMException(response.body, callFuncName: 'postClaimLives', response: response);
     }
+  }
+
+  Future<T?> navigateTo<T extends Object?>(String route,
+      {bool isRemoveStack = false, Object? arg, int? waitTime, BuildContext? ctx}) async {
+    if (ctx != null || navigatorKey.currentContext != null) {
+      if (waitTime != null) {
+        await Future.delayed(Duration(seconds: waitTime));
+      }
+      if (isRemoveStack) {
+        return Navigator.pushNamedAndRemoveUntil<T>(
+            ctx ?? navigatorKey.currentContext!, route, (route) => false,
+            arguments: arg);
+      } else {
+        return Navigator.pushNamed<T>(ctx ?? navigatorKey.currentContext!, route, arguments: arg);
+      }
+    }
+    return Future.value(null);
   }
 }
