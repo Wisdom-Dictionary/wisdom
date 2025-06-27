@@ -1,0 +1,2 @@
+# wisdom
+Wisdom dictionary app
